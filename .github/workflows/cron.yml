@@ -1,0 +1,19 @@
+name: Daily_Bot
+on:
+  schedule:
+    - cron: '30 0 * * *'  # 台北 08:30 (UTC 00:30)
+  workflow_dispatch:      # 讓我們可以手動測試
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - run: pip install requests
+      - env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python main.py
