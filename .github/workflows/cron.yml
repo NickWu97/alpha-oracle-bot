@@ -1,10 +1,11 @@
-name: Daily_Bot
+name: Realtime_Alpha_Signal
 on:
   schedule:
-    - cron: '30 0 * * *'  # 台北 08:30 (UTC 00:30)
-  workflow_dispatch:      # 讓我們可以手動測試
+    - cron: '*/15 * * * *'  # 每 15 分鐘執行一次
+  workflow_dispatch:        # 允許手動測試
+
 jobs:
-  run:
+  check_market:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
