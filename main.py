@@ -3,105 +3,64 @@ import os
 import random
 from datetime import datetime, timedelta
 
-# 1. 安全抓取環境變數
+# 1. 抓取 GitHub Secrets
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-# 2. 核心監控池 (5 大 5 小)
+# 2. 測試監控池 (5大5小)
 WATCHLIST = [
-    "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP", # 大幣
-    "SUI-USDT-SWAP", "ORDI-USDT-SWAP", "PEPE-USDT-SWAP", "WIF-USDT-SWAP", "FET-USDT-SWAP" # 小幣
+    "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
+    "SUI-USDT-SWAP", "ORDI-USDT-SWAP", "PEPE-USDT-SWAP", "WIF-USDT-SWAP", "FET-USDT-SWAP"
 ]
 
-def fetch_analysis(instId):
+def fetch_test_data(instId):
     try:
         base = instId.split('-')[0]
-        # A. 抓取 12H K線
+        # 抓取 OKX 數據
         c_url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar=12H&limit=2"
-        c_data = requests.get(c_url, timeout=10).json()['data']
-        curr_p, o0 = float(c_data[0][4]), float(c_data[0][1])
-        h1, l1 = float(c_data[1][2]), float(c_data[1][3])
+        data = requests.get(c_url, timeout=10).json()['data']
+        curr_p, o0 = float(data[0][4]), float(data[0][1])
         
-        # B. 抓取多空人數持倉比 (散戶情緒)
         ls_url = f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={base}-USDT"
         ls_ratio = float(requests.get(ls_url).json()['data'][0]['ratio'])
         
-        # C. 抓取資費 (持倉成本)
         f_url = f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}"
         funding = float(requests.get(f_url).json()['data'][0]['fundingRate'])
 
-        # --- 技術分析：勝率加權邏輯 (背離與擠壓) ---
-        win_rate = 55.0  # 基礎分
-        is_up = curr_p > o0
-        side = "LONG" if is_up else "SHORT"
+        side = "LONG" if curr_p > o0 else "SHORT"
+        # 測試用偽隨機勝率 (確保排版好看)
+        test_win = 65.0 + random.uniform(5, 25)
         
-        # 1. 核心背離邏輯 (現貨動能 vs 散戶情緒)
-        if side == "LONG":
-            if ls_ratio < 1.15: win_rate += 22.0 # 價格漲 + 散戶不敢追多 = 高機率續漲
-            if funding < 0.00015: win_rate += 10.0
-        else:
-            if ls_ratio > 1.15: win_rate += 22.0 # 價格跌 + 散戶死命接多 = 高機率續跌
-            if funding > 0.00015: win_rate += 10.0
-
-        # 2. 突破動能 (12H 擠壓後突破)
-        if (side == "LONG" and curr_p > h1) or (side == "SHORT" and curr_p < l1):
-            win_rate += 8.5
-
-        # 微調與限制
-        win_rate = min(max(win_rate + random.uniform(-1, 1), 40.0), 98.0)
-
-        # 3. 計算 1:2 盈虧比點位
-        sl = l1 * 0.988 if side == "LONG" else h1 * 1.012
-        tp = curr_p + (curr_p - sl) * 2 if side == "LONG" else curr_p - (sl - curr_p) * 2
-        
-        return {
-            "ticker": base, "side": side, "p": curr_p, "tp": tp, "sl": sl, 
-            "win": win_rate, "ls": ls_ratio, "fund": funding
-        }
+        return {"ticker": base, "side": side, "p": curr_p, "win": test_win, "ls": ls_ratio, "fund": funding}
     except:
         return None
 
 def main():
     now_tw = datetime.utcnow() + timedelta(hours=8)
-    # 早報判定：08:30 - 09:15 之間執行則觸發早報
-    is_morning = (now_tw.hour == 8 and now_tw.minute >= 30) or (now_tw.hour == 9 and now_tw.minute <= 15)
-
-    results = [fetch_analysis(c) for c in WATCHLIST]
+    results = [fetch_test_data(c) for c in WATCHLIST]
     results = [r for r in results if r]
-    
-    msg = ""
-    if is_morning:
-        # --- 模式 A: 每日精選早報 (前 5 名) ---
-        top_5 = sorted(results, key=lambda x: x['win'], reverse=True)[:5]
-        msg = f"🌅 *Alpha Oracle | 每日精選早報*\n📅 日期：{now_tw.strftime('%m/%d')}\n"
-        msg += "═" * 18 + "\n\n"
-        for s in top_5:
-            msg += format_report(s)
-        msg += "⚠️ *早報為當日趨勢參考，建議分批進場。*"
-    else:
-        # --- 模式 B: 即時進場訊號 (勝率需 > 72.0) ---
-        signals = [s for s in results if s['win'] >= 72.0]
-        if signals:
-            msg = f"🔔 *Alpha Oracle | 即時進場訊號*\n"
-            msg += "═" * 18 + "\n\n"
-            for s in signals:
-                msg += format_report(s)
 
-    # 發送至 Telegram
-    if msg:
-        requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", 
-                      json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
+    msg = f"🛰️ *Alpha Oracle | 全系統連線測試*\n"
+    msg += f"⏰ 測試時間：{now_tw.strftime('%m/%d %H:%M:%S')}\n"
+    msg += "═" * 18 + "\n\n"
 
-def format_report(s):
-    emoji = "🚀" if s['side'] == "LONG" else "📉"
-    tag = "🏛️ 大幣" if s['ticker'] in ["BTC", "ETH", "SOL", "BNB", "XRP"] else "🧪 小幣"
-    return (f"{tag} *{s['ticker']}* | 勝率 `{s['win']:.1f}%`\n"
-            f"建議：`{s['side']}` {emoji}\n"
-            f"📍 進場：`{s['p']}`\n"
-            f"🎯 止盈：`{s['tp']:.4f}`\n"
-            f"🛡️ 止損：`{s['sl']:.4f}`\n"
-            f"📊 LS 比：`{s['ls']}` | 資費：`{s['fund']*100:.3f}%`\n"
-            f"─" * 12 + "\n\n")
+    # 直接列出前 8 名 (測試排版)
+    top_list = sorted(results, key=lambda x: x['win'], reverse=True)[:8]
+
+    for s in top_list:
+        emoji = "🚀" if s['side'] == "LONG" else "📉"
+        tag = "🏛️ 大幣" if s['ticker'] in ["BTC", "ETH", "SOL", "BNB", "XRP"] else "🧪 小幣"
+        msg += (f"{tag} *{s['ticker']}* | `{s['win']:.1f}%` {emoji}\n"
+                f"├ 現價：`{s['p']}`\n"
+                f"├ LS比：`{s['ls']}`\n"
+                f"└ 資費：`{s['fund']*100:.3f}%`\n"
+                f"─" * 12 + "\n\n")
+
+    msg += "✅ *連線測試成功！*\n💡 提示：若收到此訊息，請換回正式版代碼以啟動 08:30 早報功能。"
+
+    # 發送到 Telegram
+    requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", 
+                  json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
 
 if __name__ == "__main__":
     main()
