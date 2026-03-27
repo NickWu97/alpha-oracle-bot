@@ -1,28 +1,33 @@
-name: Alpha Oracle Bot
+name: Alpha Oracle SMC Bot
 
 on:
   schedule:
-    # 每 15 分鐘執行一次 (UTC 時間，08:30 TW = 00:30 UTC)
+    # 這裡設定每 15 分鐘執行一次 (UTC 00:00 是台灣 08:00)
+    # 你可以根據需求調整，例如 '*/15 * * * *' 代表每 15 分鐘
     - cron: '*/15 * * * *'
-  workflow_dispatch: # 允許手動點擊執行
+  workflow_dispatch: # 允許你在 GitHub 網頁上手動點擊 "Run workflow" 測試
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: pip install requests
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pandas numpy
 
-      - name: Run Bot
+      - name: Run Alpha Oracle Bot
         env:
+          # 這兩項必須在 GitHub Settings > Secrets > Actions 裡設定
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
