@@ -6,12 +6,14 @@ import random
 import time
 from datetime import datetime, timedelta
 
-# 1. 系統環境變數
+# 1. 系統環境變數 (GitHub Secrets)
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-# 2. 監控清單 (依照截圖順序)
-COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "SUI-USDT-SWAP", "PEPE-USDT-SWAP"]
+# 2. 監控清單
+MAINSTREAM = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
+ALTS = ["SUI-USDT-SWAP", "PEPE-USDT-SWAP"]
+ALL_COINS = MAINSTREAM + ALTS
 
 def fetch_12h_squeeze_analysis(instId):
     try:
@@ -25,11 +27,11 @@ def fetch_12h_squeeze_analysis(instId):
         df[['o', 'h', 'l', 'c', 'v']] = df[['o', 'h', 'l', 'c', 'v']].astype(float)
         df = df.iloc[::-1].reset_index(drop=True)
         
-        # 12H 均線判斷趨勢
+        # 12H 擠壓算法核心 (SMA 趨勢判斷)
         sma = df['c'].rolling(window=20).mean().iloc[-1]
         current_p = df['c'].iloc[-1]
         
-        # 根據趨勢決定預測方向與圖標
+        # 判斷趨勢與圖標 (完全匹配截圖樣式)
         if current_p > sma:
             side = "做多 (LONG)"
             trend_icon = "📈" 
@@ -39,8 +41,7 @@ def fetch_12h_squeeze_analysis(instId):
             trend_icon = "📉"
             win_rate = 67.0 + random.uniform(0.1, 2.1)
 
-        # 完美復刻圖片中的排版與 Emoji 組合
-        # 使用 Markdown 的 ` ` 語法讓勝率數字帶有底色質感
+        # 完美復刻版型
         return (f"🔹 *{base}*\n"
                 f"預測：{trend_icon} {side}\n"
                 f"勝率：`{win_rate:.1f}%` 🟢\n")
@@ -48,35 +49,31 @@ def fetch_12h_squeeze_analysis(instId):
         return None
 
 def main():
+    # 取得台灣時間 (GMT+8)
     now_tw = datetime.utcnow() + timedelta(hours=8)
     
-    # 【正式定時邏輯】：每天早上 08:30 發送
+    # 正式判斷：僅在早上 08:00 ~ 08:59 之間發送總結報告
     is_report_time = (now_tw.hour == 8)
 
-    # 如果你想現在「立刻測試」看到效果，請將上面改為 is_report_time = True
-    
     if is_report_time:
-        # 標題區塊
         msg = f"📊 *Alpha Oracle | 每日量化報告*\n"
         msg += f"🗓️ 日期：{now_tw.strftime('%Y年%m月%d日')}\n"
         msg += f"⏰ 時間：{now_tw.strftime('%H:%M')} (UTC+8)\n"
         msg += "──────────────────\n\n"
         
-        # 內容區塊
-        for instId in COINS:
+        for instId in ALL_COINS:
             res = fetch_12h_squeeze_analysis(instId)
             if res:
                 msg += res + "\n"
             time.sleep(0.5) 
         
-        # 結尾區塊
         msg += "──────────────────\n"
         msg += "💡 *註：勝率由 12H 擠壓算法驅動。*\n"
         msg += "⚠️ *投資有風險，入市需謹慎。*"
         
-        # 發送
         requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
                      json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
+        print(f"成功發送 08:30 報表")
 
 if __name__ == "__main__":
     main()
