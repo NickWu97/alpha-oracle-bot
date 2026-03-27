@@ -6,7 +6,7 @@ import random
 import time
 from datetime import datetime, timedelta
 
-# 1. 系統環境變數
+# 1. 系統環境變數 (請確保 GitHub Secrets 已設定)
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
@@ -34,7 +34,6 @@ def fetch_smc_analysis(instId, force_report=False):
         valid_highs = df[df['h'] == df['hi_max']]['h']
         valid_lows = df[df['l'] == df['lo_min']]['l']
         
-        # 確保有足夠的波段點
         last_hi = valid_highs.iloc[-2] if len(valid_highs) > 1 else df['h'].iloc[:-5].max()
         last_lo = valid_lows.iloc[-2] if len(valid_lows) > 1 else df['l'].iloc[:-5].min()
         
@@ -69,7 +68,6 @@ def fetch_smc_analysis(instId, force_report=False):
         }
         
         if force_report: return result
-        # 24H 監控模式：僅回傳強訊號 (結構突破且勝率 > 75)
         return result if result["is_choch"] and win_rate >= 75 else None
     except Exception as e:
         print(f"Error fetching {instId}: {e}")
@@ -77,12 +75,13 @@ def fetch_smc_analysis(instId, force_report=False):
 
 def main():
     now_tw = datetime.utcnow() + timedelta(hours=8)
-    # 只要在 08:00 ~ 08:59 之間執行，就發送總結報告
-    is_report_time = (now_tw.hour == 8)
+    
+    # 【測試模式】：強制開啟報表
+    is_report_time = True 
 
     if is_report_time:
-        msg = f"🌅 *Alpha Oracle 早盤盤面總結*\n"
-        msg += f"📅 日期：{now_tw.strftime('%Y-%m-%d')}\n"
+        msg = f"🌅 *Alpha Oracle 測試版報表*\n"
+        msg += f"📅 測試時間：{now_tw.strftime('%Y-%m-%d %H:%M')}\n"
         msg += "═" * 18 + "\n\n"
         
         msg += "🏆 *主流幣 (High Cap)*\n"
@@ -95,26 +94,11 @@ def main():
             r = fetch_smc_analysis(coin, force_report=True)
             if r: msg += f"• *{r['base']}*: {r['side']}\n  勝率: `{r['win']}%` | 進場: `{r['entry']:.2f}`\n"
         
-        msg += "\n⚠️ _建議等待價格回測進場點位後再操作_"
+        msg += "\n⚠️ _收到此訊息代表連線正常，測試完請記得改回正式版。_"
         
         requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
                      json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
-        print("早盤報告發送成功")
-    
-    # 無論是否發送報表，都跑一遍 24H 強訊號監控
-    for coin in (MAINSTREAM + ALTS):
-        r = fetch_smc_analysis(coin, force_report=False)
-        if r:
-            alert = (f"🚨 *SMC 高勝率進場警報*\n"
-                     f"═" * 18 + "\n"
-                     f"💎 幣種：#{r['base']}\n"
-                     f"🎯 動作：{r['side']}\n"
-                     f"📈 預估勝率：`{r['win']}%`\n"
-                     f"📍 進場參考：`{r['entry']:.4f}`\n\n"
-                     f"💡 _說明：偵測到 CHoCH 結構反轉，配合籌碼面背離，屬於高質量機會。_")
-            requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
-                         json={"chat_id": CHAT_ID, "text": alert, "parse_mode": "Markdown"})
-            time.sleep(1) # 避免 TG API 頻率限制
+        print("測試報告已發送至 Telegram")
 
 if __name__ == "__main__":
     main()
