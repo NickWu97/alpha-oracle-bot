@@ -1,4 +1,4 @@
-name: Alpha Oracle Bot
+name: Alpha Oracle SMC Bot
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  check_market: # 對應你截圖左邊的名字
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
