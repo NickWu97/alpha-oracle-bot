@@ -1,0 +1,28 @@
+name: Alpha Oracle Bot
+
+on:
+  schedule:
+    # 每 15 分鐘執行一次 (UTC 時間，08:30 TW = 00:30 UTC)
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # 允許手動點擊執行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Bot
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python your_script_name.py  # 記得改成你的檔名
