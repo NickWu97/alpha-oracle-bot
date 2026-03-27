@@ -25,4 +25,4 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: python your_script_name.py  # 記得改成你的檔名
+run: python main.py
