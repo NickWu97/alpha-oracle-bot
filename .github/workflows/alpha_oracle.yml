@@ -2,12 +2,15 @@ name: Alpha Oracle SMC Bot
 
 on:
   schedule:
+    # 每 15 分鐘執行一次 (UTC 00:30 約為台灣 08:30)
+    # GitHub Actions 的 cron 可能會有 5-10 分鐘的延遲，這是正常的
     - cron: '*/15 * * * *'
-  workflow_dispatch:
+  workflow_dispatch: # 允許你隨時在 GitHub 網頁上手動點擊 "Run workflow" 測試
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,8 +25,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests pandas numpy
 
-      - name: Run Bot
+      - name: Run Alpha Oracle Bot
         env:
+          # 請確保你在 GitHub Settings > Secrets > Actions 已經設定好這兩個變數
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
