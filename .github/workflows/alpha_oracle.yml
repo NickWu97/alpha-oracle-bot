@@ -1,49 +1,46 @@
-name: Alpha Oracle Position Tracker
+name: Alpha Oracle Sniper Bot
 
 on:
   schedule:
-    # 每 15 分鐘執行一次，確保捕捉 15m K 線的 BoS 突破與 CVD 背離
+    # 每 15 分鐘運行一次
     - cron: '*/15 * * * *'
-  workflow_dispatch: # 允許你隨時在 Actions 頁面手動點擊執行測試
+  workflow_dispatch: # 允許手動點擊執行測試
 
 jobs:
-  build:
+  run_bot:
     runs-on: ubuntu-latest
-    # 給予寫入權限，讓 Actions 可以把交易紀錄檔 (csv) 推送回倉庫
     permissions:
-      contents: write
+      contents: write # 必須有寫入權限才能更新 csv 紀錄
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
-        with:
-          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests pandas numpy
 
-      - name: Run Alpha Oracle Bot
+      - name: Execute Sniper Bot
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
 
-      - name: Save Trade Logs and Reports
+      - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # 檢查是否有檔案變動，如果有則提交
-          git add active_trades.csv daily_ok.txt || true
+          # 如果 CSV 檔案有更新，自動提交回倉庫紀錄
+          git add active_trades.csv trade_history.csv daily.ok || true
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Update Alpha Oracle trade logs [skip ci]"
+            git commit -m "Update trade logs [skip ci]"
             git push
           fi
