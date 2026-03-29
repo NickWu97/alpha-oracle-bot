@@ -2,21 +2,25 @@ name: Alpha-Oracle-Final-Official
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # 每 15 分鐘執行一次
+    - cron: '*/15 * * * *' # 每 15 分鐘運行一次
   workflow_dispatch: # 支援手動觸發測試
 
 jobs:
   trade_job:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 賦予寫入權限以更新 CSV 紀錄
+      contents: write # 確保 CSV 可以回寫
+
+    # 核心修正：在 Job 層級強制使用 Node.js 24
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4 # 升級至 v4 (支援 Node 24)
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5 # 升級至 v5 (支援 Node 24)
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
 
@@ -27,8 +31,6 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          # 提前採用 Node 24 運行環境
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
         run: python main.py
 
       - name: Commit and Push Changes
