@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # 升級至 v4 (支援 Node 24)
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # 升級至 v5 (支援 Node 24)
         with:
           python-version: '3.9'
 
@@ -27,6 +27,8 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
+          # 提前採用 Node 24 運行環境
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
         run: python main.py
 
       - name: Commit and Push Changes
