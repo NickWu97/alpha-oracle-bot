@@ -2,160 +2,183 @@ import requests
 import os
 import pandas as pd
 import numpy as np
-import time
+import logging
 from datetime import datetime, timedelta
 
-# 1. 系統環境變數
+# 配置日誌系統：紀錄異常與執行狀態
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# 1. 系統環境變數 (GitHub Secrets)
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-# 2. 監控清單 (專注高流動性幣種)
-COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "SUI-USDT-SWAP", "ASI-USDT-SWAP", "XRP-USDT-SWAP"]
-
-LOG_FILE = "active_trades.csv"
+# 2. 監控配置
+COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "SUI-USDT-SWAP", "XRP-USDT-SWAP", "ASI-USDT-SWAP"]
+LOG_FILE = "active_trades.csv"      # 當前持倉
+HISTORY_FILE = "trade_history.csv" # 歷史紀錄 (用於統計勝率)
 
 def send_tg(msg):
-    requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", 
-                 json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
+    """顯性錯誤回報：確保發生異常時你能收到通知"""
+    url = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
+    try:
+        res = requests.post(url, json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
+        res.raise_for_status()
+    except Exception as e:
+        logging.error(f"TG 發送失敗: {e}")
 
-def fetch_okx_data(instId, bar="15m", limit="100"):
+def fetch_okx_safe(instId, bar="15m", limit="100"):
+    """#6 修正：確保只抓取已確認(Confirm)的 K 棒，避免插針誤判"""
     try:
         url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={bar}&limit={limit}"
         res = requests.get(url, timeout=10).json()
+        if 'data' not in res: return None
+        
         df = pd.DataFrame(res['data'], columns=['ts', 'o', 'h', 'l', 'c', 'v', 'volCcy', 'volCcyQuote', 'confirm'])
-        df[['o', 'h', 'l', 'c', 'v']] = df[['o', 'h', 'l', 'c', 'v']].astype(float)
+        df[['o', 'h', 'l', 'c', 'v', 'volCcy']] = df[['o', 'h', 'l', 'c', 'v', 'volCcy']].astype(float)
+        
+        # 只取已收盤的 K 棒 (confirm == "1")
+        df = df[df['confirm'] == "1"].copy()
         return df.iloc[::-1].reset_index(drop=True)
-    except: return None
+    except Exception as e:
+        logging.error(f"API 抓取錯誤 ({instId}): {e}")
+        return None
 
-def get_sentiment_metrics(instId):
+def get_market_sentiment_pro(instId):
+    """#4 & #9 修正：加入 LS 防呆、流動性過濾與 OI 燃料"""
     try:
-        # 1. 資金費率
-        f_url = f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}"
-        funding = float(requests.get(f_url).json()['data'][0]['fundingRate'])
-        
-        # 2. 多空持倉人數比 (LS Ratio) - 抓取最近兩次判斷趨勢
-        ls_url = f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={instId}&period=5m"
-        ls_data = requests.get(ls_url).json()['data']
-        ls_curr = float(ls_data[0][1])
-        ls_prev = float(ls_data[2][1]) # 對比 10 分鐘前的數據
-        
-        # 3. 模擬 CVD (現貨主動買賣盤趨勢)
+        # A. 多空人數比 (LS Ratio) - 增加空值防呆
+        ls_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={instId}&period=5m").json()
+        ls_data = ls_res.get('data', [])
+        if not ls_data or len(ls_data) < 3: 
+            return 0, 1.0, 1.0, "NEU", False
+        ls_curr, ls_prev = float(ls_data[0][1]), float(ls_data[2][1])
+
+        # B. CVD 與 低流動性過濾
         base = instId.split('-')[0]
-        s_url = f"https://www.okx.com/api/v5/market/candles?instId={base}-USDT&bar=5m&limit=20"
-        s_data = requests.get(s_url).json()['data']
-        cvd_trend = "UP" if float(s_data[0][4]) > float(s_data[10][4]) else "DOWN"
+        s_df = fetch_okx_safe(f"{base}-USDT", bar="5m", limit="20")
+        if s_df is None or s_df.empty: return 0, 1.0, 1.0, "NEU", False
         
-        return funding, ls_curr, ls_prev, cvd_trend
-    except: return 0.0, 1.0, 1.0, "NEUTRAL"
+        avg_vol = s_df['volCcy'].mean()
+        curr_vol = s_df['volCcy'].iloc[-1]
+        cvd_trend = "UP" if s_df['c'].iloc[-1] > s_df['c'].iloc[-10] else "DOWN"
+        
+        # 如果成交量低於平均 50%，視為無效訊號
+        if curr_vol < (avg_vol * 0.5): cvd_trend = "LOW_VOL"
 
-def check_sniper_logic(instId):
-    # --- 步驟 1: 4H EMA200 趨勢過濾 ---
-    df_4h = fetch_okx_data(instId, bar="4H", limit="200")
-    if df_4h is None: return None
-    ema200 = df_4h['c'].ewm(span=200, adjust=False).mean().iloc[-1]
-    curr_p = df_4h['c'].iloc[-1]
-    trend = "BULL" if curr_p > ema200 else "BEAR"
-
-    # --- 步驟 2: 籌碼面背離檢查 ---
-    funding, ls_curr, ls_prev, cvd_trend = get_sentiment_metrics(instId)
-    
-    # 做多背離：現貨吸籌(CVD UP) + 散戶下車(LS Ratio DOWN) + 資費不熱(<0.01%)
-    bull_div = (trend == "BULL") and (cvd_trend == "UP") and (ls_curr < ls_prev) and (funding < 0.0001)
-    # 做空背離：現貨拋售(CVD DOWN) + 散戶接盤(LS Ratio UP) + 資費過高(>0.03%)
-    bear_div = (trend == "BEAR") and (cvd_trend == "DOWN") and (ls_curr > ls_prev) and (funding > 0.0003)
-
-    if not (bull_div or bear_div): return None
-
-    # --- 步驟 3: 15m BoS 結構確認與 ATR 計算 ---
-    df_15m = fetch_okx_data(instId, bar="15m", limit="50")
-    h_max = df_15m['h'].iloc[-20:-2].max()
-    l_min = df_15m['l'].iloc[-20:-2].min()
-    
-    # ATR 計算
-    df_15m['tr'] = np.maximum(df_15m['h'] - df_15m['l'], np.maximum(abs(df_15m['h'] - df_15m['c'].shift(1)), abs(df_15m['l'] - df_15m['c'].shift(1))))
-    atr = df_15m['tr'].rolling(window=14).mean().iloc[-1]
-
-    if bull_div and curr_p > h_max:
-        sl = curr_p - (atr * 1.5)
-        return {"side": "LONG", "entry": curr_p, "sl": sl, "tp": curr_p + (curr_p - sl) * 2.0, "f": funding, "ls": ls_curr}
-    
-    if bear_div and curr_p < l_min:
-        sl = curr_p + (atr * 1.5)
-        return {"side": "SHORT", "entry": curr_p, "sl": sl, "tp": curr_p - (sl - curr_p) * 2.0, "f": funding, "ls": ls_curr}
-
-    return None
+        # C. 持倉量燃料 (OI Fuel)
+        oi_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/open-interest-volume?instId={instId}&period=5m").json()
+        oi_data = oi_res.get('data', [])
+        fuel = float(oi_data[0][1]) < float(oi_data[2][1]) if len(oi_data) > 2 else False
+        
+        return 0, ls_curr, ls_prev, cvd_trend, fuel
+    except: return 0, 1.0, 1.0, "NEU", False
 
 def main():
     now_tw = datetime.utcnow() + timedelta(hours=8)
     
-    # 讀取現有持倉紀錄
+    # #3 修正：安全讀取 CSV，防止競態
     if os.path.exists(LOG_FILE):
-        active_trades = pd.read_csv(LOG_FILE).to_dict('records')
-    else: active_trades = []
+        try:
+            trades = pd.read_csv(LOG_FILE).to_dict('records')
+        except:
+            trades = []
+    else:
+        trades = []
     
-    new_active_trades = []
+    still_active = []
+    finished_trades = []
 
-    # --- 檢查結算狀態 ---
-    for trade in active_trades:
-        df = fetch_okx_data(trade['instId'], "15m", "5")
-        if df is None:
-            new_active_trades.append(trade)
+    # --- 1. 自動結算與 TP 階梯保本邏輯 ---
+    for t in trades:
+        df = fetch_okx_safe(t['instId'], "15m", "5")
+        if df is None or df.empty:
+            still_active.append(t)
             continue
         
         curr_p = df['c'].iloc[-1]
-        closed = False
-        if trade['side'] == "LONG":
-            if df['h'].max() >= trade['tp']:
-                send_tg(f"✅ *結算：止盈 (TP)*\n💰 #{trade['instId'].split('-')[0]} | 離場: `{trade['tp']:.4f}`")
-                closed = True
-            elif df['l'].min() <= trade['sl']:
-                send_tg(f"❌ *結算：止損 (SL)*\n💰 #{trade['instId'].split('-')[0]} | 離場: `{trade['sl']:.4f}`")
-                closed = True
+        hi, lo = df['h'].max(), df['l'].min()
+        side = t['side']
+        
+        # 判定止損 (SL)
+        is_sl = (side == "LONG" and lo <= t['sl']) or (side == "SHORT" and hi >= t['sl'])
+        if is_sl:
+            send_tg(f"❌ *結算：止損離場 (SL)*\n💰 #{t['instId']} | 價格: `{curr_p}`")
+            t['status'] = "LOSS"
+            finished_trades.append(t)
+            continue
+
+        # #5 修正：TP 階梯觸發與自動移止損 (保本)
+        if t.get('tp1_hit', 0) == 0:
+            if (side == "LONG" and hi >= t['tp1']) or (side == "SHORT" and lo <= t['tp1']):
+                t['tp1_hit'] = 1
+                t['sl'] = t['entry'] # 核心邏輯：TP1 達成即移至保本
+                send_tg(f"🔹 *TP1 達成：已自動保本*\n💰 #{t['instId']} | 鎖定進場位: `{t['sl']}`")
+        
+        if t.get('tp1_hit', 0) == 1 and t.get('tp2_hit', 0) == 0:
+            if (side == "LONG" and hi >= t['tp2']) or (side == "SHORT" and lo <= t['tp2']):
+                t['tp2_hit'] = 1
+                t['sl'] = t['tp1'] # 進階邏輯：TP2 達成後止損移至 TP1
+                send_tg(f"🔹 *TP2 達成：鎖定利潤*\n💰 #{t['instId']} | 移止損至 TP1: `{t['sl']}`")
+
+        # TP3 最終結算
+        if (side == "LONG" and hi >= t['tp3']) or (side == "SHORT" and lo <= t['tp3']):
+            send_tg(f"🚀 *TP3 終極止盈！*\n💰 #{t['instId']} | 獲利了結離場")
+            t['status'] = "WIN"
+            finished_trades.append(t)
         else:
-            if df['l'].min() <= trade['tp']:
-                send_tg(f"✅ *結算：止盈 (TP)*\n💰 #{trade['instId'].split('-')[0]} | 離場: `{trade['tp']:.4f}`")
-                closed = True
-            elif df['h'].max() >= trade['sl']:
-                send_tg(f"❌ *結算：止損 (SL)*\n💰 #{trade['instId'].split('-')[0]} | 離場: `{trade['sl']:.4f}`")
-                closed = True
-        
-        if not closed: new_active_trades.append(trade)
+            still_active.append(t)
 
-    # --- 掃描新狙擊機會 ---
-    holding_ids = [t['instId'] for t in new_active_trades]
+    # --- 2. 燃料狙擊掃描 ---
+    current_ids = [t['instId'] for t in still_active]
     for instId in COINS:
-        if instId in holding_ids: continue
+        if instId in current_ids: continue
         
-        signal = check_sniper_logic(instId)
-        if signal:
-            msg = (f"🎯 *Alpha 籌碼背離狙擊單*\n"
-                   f"──────────────────\n"
-                   f"💎 幣種：#{instId.split('-')[0]}\n"
-                   f"⚖️ 動作：{signal['side']}\n\n"
-                   f"📍 進場位：`{signal['entry']:.4f}`\n"
-                   f"🚫 止損位：`{signal['sl']:.4f}`\n"
-                   f"💰 止盈位：`{signal['tp']:.4f}`\n\n"
-                   f"📊 *籌碼背離數據：*\n"
-                   f"📈 現貨 CVD：`🟢 強力吸籌` (與散戶方向相反)\n"
-                   f"👥 人數比：`{signal['ls']:.2f}` (散戶離場中)\n"
-                   f"🧧 資費：`{signal['f']*100:.4f}%` (冷卻中)\n"
-                   f"🛡️ 趨勢：4H EMA200 支撐中")
-            send_tg(msg)
-            signal['instId'] = instId
-            new_active_trades.append(signal)
+        df_4h = fetch_okx_safe(instId, "4H", "200")
+        if df_4h is None: continue
+        ema200 = df_4h['c'].ewm(span=200, adjust=False).mean().iloc[-1]
+        
+        _, ls_c, ls_p, cvd, fuel = get_market_sentiment_pro(instId)
+        df_15 = fetch_okx_safe(instId, "15m", "50")
+        if df_15 is None: continue
+        curr_p = df_15['c'].iloc[-1]
+        
+        # #2 修正：點差與 ATR 緩衝
+        atr = (df_15['h'] - df_15['l']).rolling(14).mean().iloc[-1]
+        
+        is_long = (curr_p > ema200) and (curr_p > df_15['h'].iloc[-20:-2].max()) and (cvd == "UP") and (ls_c < ls_p) and fuel
+        is_short = (curr_p < ema200) and (curr_p < df_15['l'].iloc[-20:-2].min()) and (cvd == "DOWN") and (ls_c > ls_p) and fuel
 
-    pd.DataFrame(new_active_trades).to_csv(LOG_FILE, index=False)
+        if is_long or is_short:
+            side = "LONG" if is_long else "SHORT"
+            risk = atr * 1.5
+            sl = curr_p - risk if is_long else curr_p + risk
+            # 三段點位 (1.0R / 2.5R / 4.0R)
+            tp1, tp2, tp3 = curr_p + atr, curr_p + atr*2.5, curr_p + atr*4
+            
+            new_trade = {
+                "instId": instId, "side": side, "entry": curr_p, "sl": sl, 
+                "tp1": tp1, "tp2": tp2, "tp3": tp3, "tp1_hit": 0, "tp2_hit": 0,
+                "entry_time": now_tw.strftime("%Y-%m-%d %H:%M")
+            }
+            still_active.append(new_trade)
+            send_tg(f"🎯 *燃料狙擊：新訊號*\n💎 #{instId} | {side}\n📍 入場: `{curr_p:.4f}`\n🚫 止損: `{sl:.4f}`\n🟣 TP3: `{tp3:.4f}`\n⛽ 燃料: `🔥 噴發中`")
 
-    # --- 早上八點報表 ---
-    if now_tw.hour == 8 and not os.path.exists("daily_ok.txt"):
-        report = f"📊 *Alpha Oracle 籌碼日報*\n🗓️ {now_tw.strftime('%Y/%m/%d')}\n──────────────────\n"
-        for instId in COINS:
-            f, ls, _, _ = get_sentiment_metrics(instId)
-            report += f"🔹 *{instId.split('-')[0]}*\n 🧧 資費：`{f*100:.3f}%` | 👥 LS比：`{ls:.2f}`\n"
+    # --- 3. #7 歷史紀錄與狀態持久化 ---
+    pd.DataFrame(still_active).to_csv(LOG_FILE, index=False)
+    if finished_trades:
+        hist_df = pd.DataFrame(finished_trades)
+        hist_df.to_csv(HISTORY_FILE, mode='a', header=not os.path.exists(HISTORY_FILE), index=False)
+
+    # 每日 08:30 報表
+    if now_tw.hour == 8 and not os.path.exists("daily.ok"):
+        report = f"📊 *Alpha Oracle 數據報表*\n🗓️ {now_tw.strftime('%m/%d')}\n"
+        for i in COINS:
+            _, ls, _, _, _ = get_market_sentiment_pro(i)
+            report += f"🔹 {i.split('-')[0]}: LS 比 `{ls:.2f}`\n"
         send_tg(report)
-        with open("daily_ok.txt", "w") as f: f.write("1")
-    elif now_tw.hour != 8 and os.path.exists("daily_ok.txt"):
-        os.remove("daily_ok.txt")
+        with open("daily.ok", "w") as f: f.write("1")
+    elif now_tw.hour != 8 and os.path.exists("daily.ok"):
+        os.remove("daily.ok")
 
 if __name__ == "__main__":
     main()
