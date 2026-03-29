@@ -1,12 +1,10 @@
-name: Alpha-Oracle-TEST-MODE
-
+name: Alpha-Oracle-PRO-Official
 on:
   schedule:
-    - cron: '*/5 * * * *' # 測試期間每 5 分鐘跑一次
-  workflow_dispatch:
-
+    - cron: '*/15 * * * *' # 正式版 15 分鐘一次
+  workflow_dispatch: # 支援手動測試
 jobs:
-  test_run:
+  pro_run:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -16,15 +14,15 @@ jobs:
         with:
           python-version: '3.9'
       - run: pip install requests pandas numpy
-      - name: Run Test Bot
+      - name: Run Official Bot
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
-      - name: Save Test Logs
+      - name: Save Records
         run: |
-          git config --global user.name "AlphaTester"
-          git config --global user.email "test@alpha.com"
+          git config --global user.name "AlphaOracle-Bot"
+          git config --global user.email "bot@alpha-oracle.com"
           git add active_trades.csv trade_history.csv daily.ok || true
-          git commit -m "Test Log Update [skip ci]" || true
+          git commit -m "Update Alpha Logs [skip ci]" || true
           git push || true
