@@ -14,96 +14,118 @@ CHAT_ID = os.getenv("CHAT_ID")
 COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
          "SUI-USDT-SWAP", "ORDI-USDT-SWAP", "PEPE-USDT-SWAP", "WIF-USDT-SWAP", "ASI-USDT-SWAP"]
 
-def fetch_analysis(instId, mode="SMC"):
+LOG_FILE = "active_trades.csv"
+
+def load_trades():
+    if os.path.exists(LOG_FILE):
+        return pd.read_csv(LOG_FILE).to_dict('records')
+    return []
+
+def save_trades(trades):
+    pd.DataFrame(trades).to_csv(LOG_FILE, index=False)
+
+def send_tg(msg):
+    requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", 
+                 json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
+
+def fetch_data(instId, bar="15m"):
     try:
-        base = instId.split('-')[0]
-        bar = "15m" if mode == "SMC" else "12H"
-        c_url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={bar}&limit=100"
-        res = requests.get(c_url, timeout=10).json()
-        if 'data' not in res or not res['data']: return None
-        
+        url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={bar}&limit=100"
+        res = requests.get(url, timeout=10).json()
         df = pd.DataFrame(res['data'], columns=['ts', 'o', 'h', 'l', 'c', 'v', 'volCcy', 'volCcyQuote', 'confirm'])
         df[['o', 'h', 'l', 'c', 'v']] = df[['o', 'h', 'l', 'c', 'v']].astype(float)
-        df = df.iloc[::-1].reset_index(drop=True)
-        curr_p = df['c'].iloc[-1]
-
-        # 計算指標：ATR (用於緊湊止損)
-        df['tr'] = np.maximum(df['h'] - df['l'], np.maximum(abs(df['h'] - df['c'].shift(1)), abs(df['l'] - df['c'].shift(1))))
-        atr = df['tr'].rolling(window=14).mean().iloc[-1]
-
-        if mode == "REPORT":
-            sma = df['c'].rolling(window=20).mean().iloc[-1]
-            side = "做多 (LONG)" if curr_p > sma else "做空 (SHORT)"
-            trend_icon = "📈" if curr_p > sma else "📉"
-            win_rate = 68.0 + random.uniform(0.5, 3.5)
-            return f"🔹 *{base}*\n預測：{trend_icon} {side}\n勝率：`{win_rate:.1f}%` 🟢\n"
-
-        else:
-            # --- 穩健 SMC 邏輯：CHoCH + BoS 確認 ---
-            # 識別最近的高低點區間
-            h_max = df['h'].iloc[-20:-1].max()
-            l_min = df['l'].iloc[-20:-1].min()
-            
-            # 1. 偵測 CHoCH (初步翻轉)
-            choch_bull = df['c'].iloc[-5] > h_max  # 前幾根已經先破了高點
-            choch_bear = df['c'].iloc[-5] < l_min  # 前幾根已經先破了低點
-            
-            # 2. 偵測 BoS (趨勢確認：當前價格再次突破前高/低)
-            is_bos_bull = choch_bull and curr_p > df['h'].iloc[-5:-1].max()
-            is_bos_bear = choch_bear and curr_p < df['l'].iloc[-5:-1].min()
-            
-            # 3. 尋找 FVG 回踩點 (BoS 之後的回測位)
-            entry_p = None
-            if is_bos_bull:
-                side = "🟢 趨勢確立 (CHoCH+BoS)"
-                entry_p = df['l'].iloc[-2] # 設在 BoS 突破前的支撐位
-                sl = curr_p - (atr * 1.2) # 緊湊止損
-                tp1 = curr_p + (curr_p - sl) * 1.5
-                tp2 = curr_p + (curr_p - sl) * 3.0
-            elif is_bos_bear:
-                side = "🔴 趨勢確立 (CHoCH+BoS)"
-                entry_p = df['h'].iloc[-2] # 設在 BoS 突破前的壓力位
-                sl = curr_p + (atr * 1.2)
-                tp1 = curr_p - (sl - curr_p) * 1.5
-                tp2 = curr_p - (sl - curr_p) * 3.0
-
-            if entry_p:
-                return (f"💎 *Alpha 穩健交易訊號*\n──────────────────\n"
-                        f"💰 幣種：#{base}\n🎯 動作：{side}\n\n"
-                        f"📍 建議進場位：`{entry_p:.4f}`\n🚫 止損位 (SL)：`{sl:.4f}`\n"
-                        f"💰 止盈 1 (TP1)：`{tp1:.4f}`\n💰 止盈 2 (TP2)：`{tp2:.4f}`\n\n"
-                        f"🛡️ 策略：結構雙重突破，等候回踩進場。")
-            return None
+        return df.iloc[::-1].reset_index(drop=True)
     except: return None
+
+def check_logic(instId):
+    df = fetch_data(instId, "15m")
+    if df is None: return None
+    curr_p = df['c'].iloc[-1]
+    
+    # ATR 波動率計算
+    df['tr'] = np.maximum(df['h'] - df['l'], np.maximum(abs(df['h'] - df['c'].shift(1)), abs(df['l'] - df['c'].shift(1))))
+    atr = df['tr'].rolling(window=14).mean().iloc[-1]
+
+    # 雙重結構確認 (CHoCH + BoS)
+    h_max = df['h'].iloc[-20:-1].max()
+    l_min = df['l'].iloc[-20:-1].min()
+    
+    is_bull = df['c'].iloc[-5] > h_max and curr_p > df['h'].iloc[-5:-1].max()
+    is_bear = df['c'].iloc[-5] < l_min and curr_p < df['l'].iloc[-5:-1].min()
+
+    if is_bull:
+        sl = curr_p - (atr * 1.5)
+        return {"side": "LONG", "entry": curr_p, "sl": sl, "tp": curr_p + (curr_p - sl) * 2.0}
+    if is_bear:
+        sl = curr_p + (atr * 1.5)
+        return {"side": "SHORT", "entry": curr_p, "sl": sl, "tp": curr_p - (sl - curr_p) * 2.0}
+    return None
 
 def main():
     now_tw = datetime.utcnow() + timedelta(hours=8)
-    
-    # 修正早上八點發送邏輯 (判定 08:00 ~ 08:59)
-    is_report_hour = (now_tw.hour == 8)
+    active_trades = load_trades()
+    new_active_trades = []
 
-    if is_report_hour:
-        # 使用一個本地標記檔案，確保每天 8 點只發一次
-        if not os.path.exists("daily_ok.txt"):
-            msg = f"📊 *Alpha Oracle | 每日趨勢報告*\n🗓️ 日期：{now_tw.strftime('%Y/%m/%d')}\n⏰ 時間：{now_tw.strftime('%H:%M')}\n──────────────────\n\n"
-            for instId in COINS:
-                res = fetch_analysis(instId, mode="REPORT")
-                if res: msg += res + "\n"
-                time.sleep(0.5)
-            msg += "──────────────────\n💡 *雙重結構確認模式已上線*"
-            requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"})
-            with open("daily_ok.txt", "w") as f: f.write("done")
-    else:
-        # 非 8 點時段，清除標記
-        if os.path.exists("daily_ok.txt"):
-            os.remove("daily_ok.txt")
+    # --- 第一部分：檢查現有持倉狀態 (TP/SL) ---
+    for trade in active_trades:
+        instId = trade['instId']
+        df = fetch_data(instId, "15m")
+        if df is None:
+            new_active_trades.append(trade)
+            continue
+        
+        curr_p = df['c'].iloc[-1]
+        high_p = df['h'].iloc[-1]
+        low_p = df['l'].iloc[-1]
+        
+        closed = False
+        if trade['side'] == "LONG":
+            if high_p >= trade['tp']:
+                send_tg(f"✅ *結算通知：止盈 (TP)*\n💰 幣種：#{instId.split('-')[0]}\n📈 方向：做多\n🎯 離場價：`{trade['tp']:.4f}`")
+                closed = True
+            elif low_p <= trade['sl']:
+                send_tg(f"❌ *結算通知：止損 (SL)*\n💰 幣種：#{instId.split('-')[0]}\n📉 方向：做多\n🎯 離場價：`{trade['sl']:.4f}`")
+                closed = True
+        else:
+            if low_p <= trade['tp']:
+                send_tg(f"✅ *結算通知：止盈 (TP)*\n💰 幣種：#{instId.split('-')[0]}\n📉 方向：做空\n🎯 離場價：`{trade['tp']:.4f}`")
+                closed = True
+            elif high_p >= trade['sl']:
+                send_tg(f"❌ *結算通知：止損 (SL)*\n💰 幣種：#{instId.split('-')[0]}\n📈 方向：做空\n🎯 離場價：`{trade['sl']:.4f}`")
+                closed = True
+        
+        if not closed:
+            new_active_trades.append(trade)
 
-    # 執行即時監控
+    # --- 第二部分：掃描新訊號 (排除已持倉幣種) ---
+    current_holding_coins = [t['instId'] for t in new_active_trades]
     for instId in COINS:
-        res = fetch_analysis(instId, mode="SMC")
-        if res:
-            requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": res, "parse_mode": "Markdown"})
-            time.sleep(1)
+        if instId in current_holding_coins: continue
+        
+        signal = check_logic(instId)
+        if signal:
+            msg = (f"🚀 *Alpha 雙重結構進場單*\n──────────────────\n"
+                   f"💎 幣種：#{instId.split('-')[0]}\n🎯 動作：{signal['side']}\n\n"
+                   f"📍 進場位：`{signal['entry']:.4f}`\n🚫 止損位：`{signal['sl']:.4f}`\n💰 止盈位：`{signal['tp']:.4f}`\n\n"
+                   f"⏳ 狀態：已進入追蹤，結算前不再重複報單。")
+            send_tg(msg)
+            signal['instId'] = instId
+            new_active_trades.append(signal)
+
+    save_trades(new_active_trades)
+
+    # --- 第三部分：早上八點報表 ---
+    if now_tw.hour == 8 and not os.path.exists("report_done.txt"):
+        report = f"📊 *Alpha Oracle 每日趨勢*\n🗓️ {now_tw.strftime('%m/%d')} 08:30\n──────────────────\n"
+        for instId in COINS:
+            df_12h = fetch_data(instId, "12H")
+            if df_12h is not None:
+                side = "做多" if df_12h['c'].iloc[-1] > df_12h['c'].rolling(20).mean().iloc[-1] else "做空"
+                report += f"🔹 {instId.split('-')[0]}: {side}\n"
+        send_tg(report)
+        with open("report_done.txt", "w") as f: f.write("1")
+    elif now_tw.hour != 8 and os.path.exists("report_done.txt"):
+        os.remove("report_done.txt")
 
 if __name__ == "__main__":
     main()
