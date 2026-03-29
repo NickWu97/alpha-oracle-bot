@@ -1,10 +1,10 @@
-name: Alpha-Oracle-PRO-Official
+name: Alpha-Oracle-Official
 on:
   schedule:
-    - cron: '*/15 * * * *' # 正式版 15 分鐘一次
-  workflow_dispatch: # 支援手動測試
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 jobs:
-  pro_run:
+  run_bot:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -19,10 +19,10 @@ jobs:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
-      - name: Save Records
+      - name: Commit Logs
         run: |
-          git config --global user.name "AlphaOracle-Bot"
-          git config --global user.email "bot@alpha-oracle.com"
-          git add active_trades.csv trade_history.csv daily.ok || true
-          git commit -m "Update Alpha Logs [skip ci]" || true
+          git config --global user.name "Alpha-Bot"
+          git config --global user.email "bot@alpha.com"
+          git add active_trades.csv trade_history.csv || true
+          git commit -m "Sync trade data" || true
           git push || true
