@@ -5,160 +5,146 @@ import numpy as np
 import logging
 from datetime import datetime, timedelta
 
-# --- 測試開關：若想「現在」立刻看到 TG 報告請設為 True，測試完請改回 False ---
+# --- 測試模式：手動執行若想立刻看排版請設為 True，正式運行請設為 False ---
 TEST_MODE = False 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-# 幣種配置 (5主流 + 8山寨)
-MAINSTREAM = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP"]
-ALTS = ["SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP", "ZAMA-USDT-SWAP", "BCH-USDT-SWAP", "ASI-USDT-SWAP", "DOGE-USDT-SWAP"]
-ALL_COINS = MAINSTREAM + ALTS
+# 幣種清單 (5主流 + 8山寨)
+ALL_COINS = [
+    "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
+    "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP", 
+    "ZAMA-USDT-SWAP", "BCH-USDT-SWAP", "ASI-USDT-SWAP", "DOGE-USDT-SWAP"
+]
 
-# 檔案路徑
-LOG_FILE = "active_trades.csv"     # 存儲目前正在監控/持倉的單子
-STATS_FILE = "daily_stats.csv"   # 存儲當日已結算的 TP/SL 紀錄
+LOG_FILE = "active_trades.csv"
+STATS_FILE = "daily_stats.csv"
+
+# --- 數據獲取模組 ---
+def get_market_metrics(instId):
+    """獲取資費、多空比、CVD 主動買賣情況"""
+    try:
+        base_id = instId.replace("-SWAP", "")
+        # 1. 資金費率
+        f_url = f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}"
+        funding = requests.get(f_url, timeout=5).json()['data'][0]['fundingRate']
+        # 2. 多空持倉人數比
+        ls_url = f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={base_id}"
+        ls_ratio = requests.get(ls_url, timeout=5).json()['data'][0]['ratio']
+        # 3. Taker 成交量 (模擬 CVD)
+        cvd_url = f"https://www.okx.com/api/v5/rubik/stat/taker-volume?instId={base_id}"
+        cvd_data = requests.get(cvd_url, timeout=5).json()['data'][0]
+        cvd_status = "🔥 買盤強勢" if float(cvd_data['buyVol']) > float(cvd_data['sellVol']) else "🧊 賣盤強勢"
+        
+        return {"funding": f"{float(funding)*100:.4f}%", "ls": ls_ratio, "cvd": cvd_status}
+    except:
+        return {"funding": "N/A", "ls": "N/A", "cvd": "N/A"}
 
 def send_tg(msg):
     url = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
-    try:
-        requests.post(url, json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
-    except:
-        logging.error("Telegram 發送失敗")
+    try: requests.post(url, json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
+    except: pass
 
 def fetch_okx(instId, bar="15m", limit="100"):
     try:
         url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={bar}&limit={limit}"
         res = requests.get(url, timeout=10).json()
-        if 'data' not in res or not res['data']: return None
         df = pd.DataFrame(res['data'], columns=['ts','o','h','l','c','v','volCcy','volCcyQuote','confirm'])
         df[['o','h','l','c','v']] = df[['o','h','l','c','v']].astype(float)
         return df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
     except: return None
 
 def find_smc_setup(df):
-    """SMC 邏輯：偵測 BOS 並定義回補區間 (OB/FVG)"""
+    """SMC 核心邏輯：BOS 突破 + FVG 識別"""
     if len(df) < 30: return None
-    # 檢查最近 10 根 K 棒
     for i in range(len(df)-3, len(df)-12, -1):
         k1, k2, k3 = df.iloc[i], df.iloc[i+1], df.iloc[i+2]
-        # 多頭 BOS: K3 收盤高於前 15 根最高，且 K3 與 K1 之間有 FVG 缺口
+        # 多頭 BOS
         if k3['c'] > k3['o'] and k3['l'] > k1['h'] and k3['h'] > df.iloc[i-15:i]['h'].max():
-            return {"side": "LONG", "entry_p": k1['h'], "sl": k1['l'], "tp_target": 3.0}
+            return {"side": "LONG", "entry": k1['h'], "sl": k1['l']}
         # 空頭 BOS
         if k3['c'] < k3['o'] and k3['h'] < k1['l'] and k3['l'] < df.iloc[i-15:i]['l'].min():
-            return {"side": "SHORT", "entry_p": k1['l'], "sl": k1['h'], "tp_target": 3.0}
+            return {"side": "SHORT", "entry": k1['l'], "sl": k1['h']}
     return None
 
 def main():
     now_tw = datetime.utcnow() + timedelta(hours=8)
     
-    # 1. 確保檔案存在，若無則建立
-    if not os.path.exists(LOG_FILE):
-        pd.DataFrame(columns=["instId","side","status","entry_p","sl","tp3","tp1_hit"]).to_csv(LOG_FILE, index=False)
-    if not os.path.exists(STATS_FILE):
-        pd.DataFrame(columns=["instId","result","time"]).to_csv(STATS_FILE, index=False)
+    # 檔案初始化
+    for f in [LOG_FILE, STATS_FILE]:
+        if not os.path.exists(f):
+            pd.DataFrame(columns=["instId","side","status","entry","sl","tp1","tp2","tp3"]).to_csv(f, index=False)
 
-    # 2. 每日 08:30 結算昨日勝率報告
+    # --- 1. 每日 08:30 總結勝率 ---
     if (now_tw.hour == 8 and 30 <= now_tw.minute < 45) or TEST_MODE:
         if not os.path.exists("daily_report.ok") or TEST_MODE:
-            stats_df = pd.read_csv(STATS_FILE)
-            tp_count = len(stats_df[stats_df['result'] == 'TP'])
-            sl_count = len(stats_df[stats_df['result'] == 'SL'])
-            total = tp_count + sl_count
-            win_rate = (tp_count / total * 100) if total > 0 else 0
+            df_s = pd.read_csv(STATS_FILE)
+            tp_c, sl_c = len(df_s[df_s['result'] == 'TP']), len(df_s[df_s['result'] == 'SL'])
+            total = tp_c + sl_c
+            wr = (tp_c / total * 100) if total > 0 else 0
             
-            report = f"📊 *Alpha Oracle | 每日戰績結報*\n"
-            report += f"──────────────────\n"
+            report = f"📊 *Alpha Oracle | 每日戰績結報*\n──────────────────\n"
             report += f"🗓 日期：{now_tw.strftime('%Y/%m/%d')}\n"
-            report += f"✅ 止盈次數：{tp_count}\n"
-            report += f"❌ 止損次數：{sl_count}\n"
-            report += f"📈 總計單數：{total}\n"
-            report += f"🔥 總勝率：*{win_rate:.1f}%*\n"
-            report += f"──────────────────\n"
-            report += "💡 *數據已歸零，開始今日監控...*"
+            report += f"✅ 止盈：{tp_c} | ❌ 止損：{sl_c}\n🔥 總勝率：*{wr:.1f}%*\n"
+            report += "──────────────────\n💡 *昨日數據已歸零，開始新輪詢...*"
             send_tg(report)
-            
-            # 報完後清空統計檔案（開始新的一天）
-            pd.DataFrame(columns=["instId","result","time"]).to_csv(STATS_FILE, index=False)
+            pd.DataFrame(columns=["instId","result"]).to_csv(STATS_FILE, index=False)
             if not TEST_MODE:
                 with open("daily_report.ok", "w") as f: f.write("done")
     elif now_tw.hour != 8 and os.path.exists("daily_report.ok"):
         os.remove("daily_report.ok")
 
-    # 3. 讀取現有監控單
+    # --- 2. 核心監控邏輯 ---
     trades_df = pd.read_csv(LOG_FILE)
     active_ids = trades_df['instId'].tolist()
-    new_active_list = []
+    new_trades = []
 
-    # 4. 掃描所有幣種
     for instId in ALL_COINS:
-        df = fetch_okx(instId, "15m", "60")
-        if df is None or len(df) < 40: continue
+        df = fetch_okx(instId)
+        if df is None: continue
         curr_p = df['c'].iloc[-1]
 
-        # A. 如果該幣種不在監控中 -> 尋找新訊號 (BOS)
+        # A. 搜尋新訊號 (不重複報單)
         if instId not in active_ids:
             setup = find_smc_setup(df)
             if setup:
-                action = "🟢 強力看多" if setup['side'] == "LONG" else "🔴 強力看空"
-                msg = f"🔥 *SMC 高勝率進場訊號*\n"
-                msg += "──────────────────\n\n"
-                msg += f"💎 幣種：#{instId.split('-')[0]}\n"
-                msg += f"🎯 動作：{action} (BOS突破)\n\n"
-                msg += f"📍 建議進場位：{setup['entry_p']:.4f} (回踩點)\n"
-                msg += f"🚫 止損位 (SL)：{setup['sl']:.4f}\n"
-                msg += "──────────────────\n"
-                msg += "💡 *狀態：等待價格回調觸碰進場位...*"
-                send_tg(msg)
+                m = get_market_metrics(instId)
+                risk = abs(setup['entry'] - setup['sl'])
+                tp1 = setup['entry'] + risk*1.5 if setup['side']=="LONG" else setup['entry'] - risk*1.5
+                tp2 = setup['entry'] + risk*2.0 if setup['side']=="LONG" else setup['entry'] - risk*2.0
+                tp3 = setup['entry'] + risk*3.0 if setup['side']=="LONG" else setup['entry'] - risk*3.0
                 
-                # 加入 WAITING 狀態清單
-                new_active_list.append({
-                    "instId": instId, "side": setup['side'], "status": "WAITING", 
-                    "entry_p": setup['entry_p'], "sl": setup['sl'], "tp3": 0, "tp1_hit": 0
-                })
+                msg = f"🔥 *SMC 高勝率進場訊號*\n──────────────────\n\n"
+                msg += f"💎 幣種：#{instId.split('-')[0]}\n🎯 動作：{'🟢 多' if setup['side']=='LONG' else '🔴 空'} (BOS + FVG)\n\n"
+                msg += f"📊 市場數據：\n📈 CVD：{m['cvd']}\n👥 多空比：{m['ls']}\n💰 資費：{m['funding']}\n\n"
+                msg += f"📍 建議進場位：{setup['entry']:.4f}\n🚫 止損位 (SL)：{setup['sl']:.4f}\n"
+                msg += f"💰 止盈 (TP1)：{tp1:.4f}\n💰 止盈 (TP2)：{tp2:.4f}\n💰 止盈 (TP3)：{tp3:.4f}\n\n"
+                msg += "💡 *等待價格回踩區間成交...*"
+                send_tg(msg)
+                new_trades.append({"instId":instId,"side":setup['side'],"status":"WAITING","entry":setup['entry'],"sl":setup['sl'],"tp1":tp1,"tp2":tp2,"tp3":tp3})
             continue
 
-        # B. 處理已在監控中的幣種 (等待回補或持倉中)
+        # B. 監控成交與止盈損
         t = trades_df[trades_df['instId'] == instId].iloc[0].to_dict()
-        
-        # 情況 1: 等待回補進場 (WAITING)
         if t['status'] == "WAITING":
-            is_hit = (t['side'] == "LONG" and curr_p <= t['entry_p']) or (t['side'] == "SHORT" and curr_p >= t['entry_p'])
-            if is_hit:
+            if (t['side'] == "LONG" and curr_p <= t['entry']) or (t['side'] == "SHORT" and curr_p >= t['entry']):
                 t['status'] = "ACTIVE"
-                risk = abs(float(t['entry_p']) - float(t['sl']))
-                t['tp3'] = t['entry_p'] + (risk * 3) if t['side'] == "LONG" else t['entry_p'] - (risk * 3)
-                
-                msg = f"🚀 *SMC 回補成交*\n"
-                msg += "──────────────────\n"
-                msg += f"💎 幣種：#{instId.split('-')[0]} | {t['side']}\n"
-                msg += f"✅ 成交價格：`{curr_p}`\n"
-                msg += f"🎯 止盈目標 (TP3)：`{t['tp3']:.4f}`\n"
-                send_tg(msg)
-            new_active_list.append(t)
-
-        # 情況 2: 持倉管理 (ACTIVE)
+                send_tg(f"🚀 *SMC 回踩成交* | #{instId.split('-')[0]}\n✅ 成交價：`{curr_p}`")
+            new_trades.append(t)
         elif t['status'] == "ACTIVE":
-            # 止損檢查
-            if (t['side'] == "LONG" and curr_p <= float(t['sl'])) or (t['side'] == "SHORT" and curr_p >= float(t['sl'])):
-                send_tg(f"❌ *結算：止損離場* | #{instId.split('-')[0]} 💸")
-                pd.DataFrame([{"instId": instId, "result": "SL", "time": now_tw}]).to_csv(STATS_FILE, mode='a', header=False, index=False)
-                continue # 移除出監控清單
-            
-            # 止盈檢查 (使用 15m 高低點)
-            hi, lo = df['h'].max(), df['l'].min()
-            if (t['side'] == "LONG" and hi >= float(t['tp3'])) or (t['side'] == "SHORT" and lo <= float(t['tp3'])):
-                send_tg(f"🚀 *結算：TP3 完美止盈！* | #{instId.split('-')[0]} 💰")
-                pd.DataFrame([{"instId": instId, "result": "TP", "time": now_tw}]).to_csv(STATS_FILE, mode='a', header=False, index=False)
-                continue # 移除出監控清單
-            
-            new_active_list.append(t)
+            if (t['side'] == "LONG" and curr_p <= t['sl']) or (t['side'] == "SHORT" and curr_p >= t['sl']):
+                send_tg(f"❌ *止損離場* | #{instId.split('-')[0]} 💸")
+                pd.DataFrame([{"instId":instId,"result":"SL"}]).to_csv(STATS_FILE, mode='a', header=False, index=False)
+                continue
+            if (t['side'] == "LONG" and df['h'].max() >= t['tp3']) or (t['side'] == "SHORT" and df['l'].min() <= t['tp3']):
+                send_tg(f"🚀 *TP3 終極止盈* | #{instId.split('-')[0]} 💰")
+                pd.DataFrame([{"instId":instId,"result":"TP"}]).to_csv(STATS_FILE, mode='a', header=False, index=False)
+                continue
+            new_trades.append(t)
 
-    # 5. 儲存更新後的監控清單
-    pd.DataFrame(new_active_list).to_csv(LOG_FILE, index=False)
+    pd.DataFrame(new_trades).to_csv(LOG_FILE, index=False)
 
 if __name__ == "__main__":
     main()
