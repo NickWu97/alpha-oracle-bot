@@ -75,7 +75,7 @@ def main():
     if not os.path.exists(STATS_FILE):
         pd.DataFrame(columns=["instId","result","time"]).to_csv(STATS_FILE, index=False)
 
-    # --- 1. 每日 00:00 結算 ---
+    # --- 1. 每日 00:00 結算 (台灣時間) ---
     if now_tw.hour == 0 and 0 <= now_tw.minute < 15:
         if not os.path.exists("midnight_report.ok"):
             df_s = pd.read_csv(STATS_FILE)
@@ -92,7 +92,7 @@ def main():
     elif now_tw.hour != 0 and os.path.exists("midnight_report.ok"):
         os.remove("midnight_report.ok")
 
-    # --- 2. 核心循環 ---
+    # --- 2. 核心監控 ---
     trades_df = pd.read_csv(LOG_FILE)
     active_ids = trades_df['instId'].tolist()
     new_active_list = []
@@ -109,21 +109,19 @@ def main():
                 lev = calculate_leverage(setup['entry'], setup['sl'])
                 risk = abs(setup['entry'] - setup['sl'])
                 
-                # 計算點位
-                tp1 = setup['entry'] + risk*1.5 if setup['side']=="LONG" else setup['entry'] - risk*1.5
-                tp2 = setup['entry'] + risk*2.0 if setup['side']=="LONG" else setup['entry'] - risk*2.0
-                tp3 = setup['entry'] + risk*3.0 if setup['side']=="LONG" else setup['entry'] - risk*3.0
+                tp1 = setup['entry'] + (risk * 1.5) if setup['side'] == "LONG" else setup['entry'] - (risk * 1.5)
+                tp2 = setup['entry'] + (risk * 2.0) if setup['side'] == "LONG" else setup['entry'] - (risk * 2.0)
+                tp3 = setup['entry'] + (risk * 3.0) if setup['side'] == "LONG" else setup['entry'] - (risk * 3.0)
                 sl = setup['sl']
                 
-                # --- 訊息顯示修正處 ---
                 msg = f"🔍 *發現機會 (等待回補)*\n──────────────────\n"
                 msg += f"💎 幣種：#{instId.split('-')[0]}\n🎯 動作：{'🟢 多' if setup['side']=='LONG' else '🔴 空'}\n"
                 msg += f"📊 數據：CVD {m['cvd']} | LS {m['ls']}\n\n"
                 msg += f"📍 **進場位：`{setup['entry']:.4f}`**\n"
                 msg += f"🚫 **止損位 (SL)：`{sl:.4f}`**\n\n"
-                msg += f"💰 **目標 TP1：`{tp1:.4f}`** (1.5R)\n"
-                msg += f"💰 **目標 TP2：`{tp2:.4f}`** (2.0R)\n"
-                msg += f"💰 **目標 TP3：`{tp3:.4f}`** (3.0R)\n"
+                msg += f"💰 **目標 TP1：`{tp1:.4f}`**\n"
+                msg += f"💰 **目標 TP2：`{tp2:.4f}`**\n"
+                msg += f"💰 **目標 TP3：`{tp3:.4f}`**\n"
                 msg += f"⚖️ **建議槓桿：{lev}x**\n──────────────────"
                 
                 send_tg(msg)
