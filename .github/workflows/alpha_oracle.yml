@@ -1,53 +1,36 @@
-name: Alpha-Oracle-Final-Official
+name: Alpha Oracle Bot
 
 on:
   schedule:
-    # 這裡設定每 15 分鐘執行一次 (UTC 時間)
-    - cron: '*/15 * * * *'
-  workflow_dispatch: # 讓你可以隨時在 GitHub 網頁手動點擊 "Run workflow" 測試
+    - cron: '*/15 * * * *'  # 每 15 分鐘運行一次
+  workflow_dispatch:        # 允許手動點擊運行
 
 jobs:
-  trade_job:
+  trade:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # 賦予權限讓機器人可以寫入並推送 CSV 檔案
-    
-    env:
-      # 強制使用 Node 24 確保環境最新且穩定
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install requests pandas numpy
 
-      - name: Run Alpha Oracle Bot
+      - name: Run Bot
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
 
-      - name: Commit and Push Changes
+      - name: Commit and Push CSV changes
         run: |
-          git config --global user.name "Alpha-Oracle-Bot"
-          git config --global user.email "bot@alpha-oracle.com"
-          
-          # 確保所有紀錄檔案都會被推回 GitHub 儲存
-          git add active_trades.csv trade_history.csv daily_report.ok || true
-          
-          # 檢查是否有變動，有的話才 commit
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Auto-sync trade logs and heartbeat [skip ci]"
-            git push
-          fi
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add active_trades.csv daily_stats.csv
+          git commit -m "Update trade logs [skip ci]" || echo "No changes to commit"
+          git push
