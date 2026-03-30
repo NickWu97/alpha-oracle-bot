@@ -5,11 +5,16 @@ import numpy as np
 import logging
 from datetime import datetime, timedelta
 
-# 1. 系統配置
+# 1. 基礎配置
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "SUI-USDT-SWAP", "XRP-USDT-SWAP", "ASI-USDT-SWAP"]
+
+# 幣種清單
+MAINSTREAM = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP"]
+ALTS = ["SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP", "PEPE-USDT-SWAP", "ASI-USDT-SWAP", "DOGE-USDT-SWAP"]
+ALL_COINS = MAINSTREAM + ALTS
+
 LOG_FILE = "active_trades.csv"
 HISTORY_FILE = "trade_history.csv"
 
@@ -19,108 +24,118 @@ def send_tg(msg):
         requests.post(url, json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
     except: pass
 
-def fetch_okx(instId, bar="15m", limit="300"):
+def fetch_okx(instId, bar="15m", limit="100"):
     try:
         url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={bar}&limit={limit}"
         res = requests.get(url, timeout=10).json()
-        if 'data' not in res or not res['data']: return None
-        df = pd.DataFrame(res['data'], columns=['ts', 'o', 'h', 'l', 'c', 'v', 'volCcy', 'volCcyQuote', 'confirm'])
-        df[['o', 'h', 'l', 'c', 'v']] = df[['o', 'h', 'l', 'c', 'v']].astype(float)
-        df = df[df['confirm'] == "1"].copy()
-        return df.iloc[::-1].reset_index(drop=True)
+        if 'data' not in res: return None
+        df = pd.DataFrame(res['data'], columns=['ts','o','h','l','c','v','volCcy','volCcyQuote','confirm'])
+        df[['o','h','l','c','v']] = df[['o','h','l','c','v']].astype(float)
+        return df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
     except: return None
 
-def get_sentiment(instId):
-    try:
-        ls_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={instId}&period=5m").json()
-        ls_c, ls_p = float(ls_res['data'][0][1]), float(ls_res['data'][2][1])
-        base = instId.split('-')[0]
-        s_df = fetch_okx(f"{base}-USDT", bar="5m", limit="20")
-        cvd_up = s_df['c'].iloc[-1] > s_df['c'].iloc[-10] if s_df is not None else False
-        oi_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/open-interest-volume?instId={instId}&period=5m").json()
-        fuel = float(oi_res['data'][0][1]) < float(oi_res['data'][2][1]) if len(oi_res.get('data', [])) > 2 else False
-        return ls_c, ls_p, cvd_up, fuel
-    except: return 1.0, 1.0, False, False
+def get_market_score(instId):
+    """計算趨勢強度 (距離 4H EMA200 乖離)"""
+    df = fetch_okx(instId, "4H", "250")
+    if df is None or len(df) < 200: return -999
+    ema200 = df['c'].ewm(span=200, adjust=False).mean().iloc[-1]
+    return round(((df['c'].iloc[-1] - ema200) / ema200) * 100, 2)
+
+def find_fvg_setup(df):
+    """偵測 SMC 結構：BOS 突破 + FVG 缺口形成"""
+    if len(df) < 10: return None
+    # 檢查最近 5 根 K 棒
+    for i in range(len(df)-3, len(df)-6, -1):
+        k1, k2, k3 = df.iloc[i], df.iloc[i+1], df.iloc[i+2]
+        
+        # 多頭 FVG: K3 低點 > K1 高點 (強勢陽線 BOS)
+        if k3['c'] > k3['o'] and k3['l'] > k1['h']:
+            if k3['h'] > df.iloc[i-10:i]['h'].max(): # 確認是突破 BOS
+                return {"side": "LONG", "fvg_low": k1['h'], "fvg_high": k3['l'], "sl": k1['l']}
+        
+        # 空頭 FVG: K3 高點 < K1 低點 (強勢陰線 BOS)
+        if k3['c'] < k3['o'] and k3['h'] < k1['l']:
+            if k3['l'] < df.iloc[i-10:i]['l'].min(): # 確認是跌破 BOS
+                return {"side": "SHORT", "fvg_low": k3['h'], "fvg_high": k1['l'], "sl": k1['h']}
+    return None
 
 def main():
-    # 強制轉換為台北時間 (UTC+8)
     now_tw = datetime.utcnow() + timedelta(hours=8)
-    logging.info(f"--- 啟動掃描: {now_tw.strftime('%Y-%m-%d %H:%M:%S')} ---")
     
+    # --- 1. 08:30 高勝率 5+5 日報 ---
+    if now_tw.hour == 8 and 30 <= now_tw.minute < 45:
+        if not os.path.exists("daily_report.ok"):
+            m_list = sorted([(c, get_market_score(c)) for c in MAINSTREAM], key=lambda x: x[1], reverse=True)[:5]
+            a_list = sorted([(c, get_market_score(c)) for c in ALTS], key=lambda x: x[1], reverse=True)[:5]
+            
+            msg = f"☀️ *Alpha Oracle 晨間高勝率篩選*\n📅 `{now_tw.strftime('%m/%d')}` | ⏰ `08:30` AM\n\n"
+            msg += "🔵 *主流幣 Top 5:*\n" + "\n".join([f"• #{x[0].split('-')[0]} (`{x[1]}%`)" for x in m_list])
+            msg += "\n\n🟠 *山寨幣 Top 5:*\n" + "\n".join([f"• #{x[0].split('-')[0]} (`{x[1]}%`)" for x in a_list])
+            msg += "\n\n🚀 *SMC 24H 狙擊系統已鎖定回踩區間...*"
+            send_tg(msg)
+            with open("daily_report.ok", "w") as f: f.write("done")
+    elif now_tw.hour != 8 and os.path.exists("daily_report.ok"):
+        os.remove("daily_report.ok")
+
+    # --- 2. 載入與初始化持倉檔案 ---
     if not os.path.exists(LOG_FILE):
-        pd.DataFrame(columns=["instId", "side", "entry", "sl", "tp1", "tp3", "tp1_hit"]).to_csv(LOG_FILE, index=False)
+        pd.DataFrame(columns=["instId","side","status","entry_zone","sl","tp1","tp3","entry_p","tp1_hit"]).to_csv(LOG_FILE, index=False)
     
     trades = pd.read_csv(LOG_FILE).to_dict('records')
-    still_active, finished = [], []
+    new_active_list = []
+    history = []
 
-    # --- 功能 A：每日 08:30 狀態回報 (心跳包) ---
-    # 因為 Action 是每 15 分鐘跑一次，我們抓 08:30 到 08:45 之間觸發
-    if now_tw.hour == 8 and 30 <= now_tw.minute < 45:
-        # 檢查今天是否已經發過日報 (防止 15 分鐘內重複發送)
-        if not os.path.exists("daily_report.ok"):
-            active_count = len(trades)
-            report_msg = (f"☀️ *Alpha Oracle 每日狀態報告*\n"
-                          f"──────────────────\n"
-                          f"⏰ 時間：`{now_tw.strftime('%m/%d %H:%M')}`\n"
-                          f"🛡️ 監控中幣種：`{len(COINS)}` 個\n"
-                          f"📊 目前持倉數：`{active_count}` 筆\n"
-                          f"✅ 系統狀態：`正常運作中`\n"
-                          f"──────────────────\n"
-                          f"💪 *今天也是充滿燃料的一天！*")
-            send_tg(report_msg)
-            with open("daily_report.ok", "w") as f: f.write("done")
-    elif now_tw.hour != 8:
-        # 過了 8 點後，移除標記檔案，明天才能再發
-        if os.path.exists("daily_report.ok"):
-            os.remove("daily_report.ok")
-
-    # --- 功能 B：監控持倉與自動保本 ---
-    for t in trades:
-        df = fetch_okx(t['instId'], "15m", "10")
-        if df is None or df.empty: still_active.append(t); continue
-        curr_p, hi, lo = df['c'].iloc[-1], df['h'].max(), df['l'].min()
-        
-        if (t['side'] == "LONG" and lo <= t['sl']) or (t['side'] == "SHORT" and hi >= t['sl']):
-            send_tg(f"❌ *止損離場*\n💰 #{t['instId']} | 價格: `{curr_p}`"); finished.append(t); continue
-
-        if t.get('tp1_hit', 0) == 0:
-            if (t['side'] == "LONG" and hi >= t['tp1']) or (t['side'] == "SHORT" and lo <= t['tp1']):
-                t['tp1_hit'] = 1; t['sl'] = t['entry'] 
-                send_tg(f"🔹 *TP1 達成：自動保本*\n💰 #{t['instId']} | 止損移至: `{t['sl']}`")
-        
-        if (t['side'] == "LONG" and hi >= t['tp3']) or (t['side'] == "SHORT" and lo <= t['tp3']):
-            send_tg(f"🚀 *TP3 終極止盈！*\n💰 #{t['instId']}"); finished.append(t)
-        else:
-            still_active.append(t)
-
-    # --- 功能 C：掃描新訊號 ---
-    for instId in COINS:
-        if instId in [x['instId'] for x in still_active]: continue
-        df_4h = fetch_okx(instId, "4H", "300")
-        if df_4h is None or len(df_4h) < 200: continue
-        
-        ema200 = df_4h['c'].ewm(span=200, adjust=False).mean().iloc[-1]
-        ls_c, ls_p, cvd_up, fuel = get_sentiment(instId)
-        df_15 = fetch_okx(instId, "15m", "100")
-        if df_15 is None: continue
-        
+    # --- 3. 全天候監控與進場邏輯 ---
+    active_ids = [t['instId'] for t in trades]
+    
+    for instId in ALL_COINS:
+        df_15 = fetch_okx(instId, "15m", "60")
+        if df_15 is None or len(df_15) < 30: continue
         curr_p = df_15['c'].iloc[-1]
-        atr = (df_15['h'] - df_15['l']).rolling(14).mean().iloc[-1]
-        h_max, l_min = df_15['h'].iloc[-20:-2].max(), df_15['l'].iloc[-20:-2].min()
 
-        long_c = (curr_p > ema200) and (curr_p > h_max) and cvd_up and (ls_c < ls_p) and fuel
-        short_c = (curr_p < ema200) and (curr_p < l_min) and (not cvd_up) and (ls_c > ls_p) and fuel
+        # A. 若該幣種不在監控中，尋找新訊號 (BOS + FVG)
+        if instId not in active_ids:
+            setup = find_fvg_setup(df_15)
+            if setup:
+                zone = f"{setup['fvg_low']:.4f}-{setup['fvg_high']:.4f}"
+                send_tg(f"🔍 *SMC 結構突破 (BOS)*\n💎 #{instId.split('-')[0]} | {setup['side']}\n📐 FVG 回踩區: `{zone}`\n⏳ *等待價格進入區間進場...*")
+                new_active_list.append({"instId": instId, "side": setup['side'], "status": "WAITING", 
+                                        "entry_zone": zone, "sl": setup['sl'], "tp1": 0, "tp3": 0, "entry_p": 0, "tp1_hit": 0})
+            continue
 
-        if long_c or short_c:
-            side = "LONG" if long_c else "SHORT"
-            sl = curr_p - (atr * 1.5) if long_c else curr_p + (atr * 1.5)
-            tp1, tp3 = curr_p + atr if long_c else curr_p - atr, curr_p + (atr * 4) if long_c else curr_p - (atr * 4)
-            still_active.append({"instId": instId, "side": side, "entry": curr_p, "sl": sl, "tp1": tp1, "tp3": tp3, "tp1_hit": 0})
-            send_tg(f"🎯 *Alpha 燃料狙擊*\n💎 #{instId.split('-')[0]} | {side}\n📍 進場: `{curr_p:.4f}`\n🚫 止損: `{sl:.4f}`\n⛽ 燃料: `🔥 點燃`")
+        # B. 若在監控中，處理 WAITING (回踩) 或 ACTIVE (持倉)
+        t = [x for x in trades if x['instId'] == instId][0]
+        
+        if t['status'] == "WAITING":
+            low_z, hi_z = map(float, str(t['entry_zone']).split('-'))
+            # 判斷回踩進場
+            if (t['side'] == "LONG" and curr_p <= hi_z) or (t['side'] == "SHORT" and curr_p >= low_z):
+                t['status'] = "ACTIVE"
+                t['entry_p'] = curr_p
+                risk = abs(t['entry_p'] - t['sl'])
+                t['tp1'] = t['entry_p'] + risk if t['side'] == "LONG" else t['entry_p'] - risk
+                t['tp3'] = t['entry_p'] + risk*3 if t['side'] == "LONG" else t['entry_p'] - risk*3
+                send_tg(f"🚀 *SMC 回踩成功：成交進場*\n💎 #{instId.split('-')[0]} | {t['side']}\n✅ 價格: `{curr_p}`\n🚫 止損: `{t['sl']:.4f}`\n🎯 TP3: `{t['tp3']:.4f}`")
+            new_active_list.append(t)
 
-    # 3. 儲存與回寫 (必須包含 daily_report.ok)
-    pd.DataFrame(still_active).to_csv(LOG_FILE, index=False)
-    if finished: pd.DataFrame(finished).to_csv(HISTORY_FILE, mode='a', header=not os.path.exists(HISTORY_FILE), index=False)
+        elif t['status'] == "ACTIVE":
+            hi, lo = df_15['h'].max(), df_15['l'].min()
+            # 止損判定
+            if (t['side'] == "LONG" and curr_p <= t['sl']) or (t['side'] == "SHORT" and curr_p >= t['sl']):
+                send_tg(f"❌ *止損離場*\n💰 #{instId} | 價格: `{curr_p}`"); history.append(t); continue
+            # TP1 保本
+            if t['tp1_hit'] == 0:
+                if (t['side'] == "LONG" and hi >= t['tp1']) or (t['side'] == "SHORT" and lo <= t['tp1']):
+                    t['tp1_hit'] = 1; t['sl'] = t['entry_p']
+                    send_tg(f"🔹 *TP1 達成：自動保本*\n💰 #{instId} | 止損移至: `{t['sl']:.4f}`")
+            # TP3 止盈
+            if (t['side'] == "LONG" and hi >= t['tp3']) or (t['side'] == "SHORT" and lo <= t['tp3']):
+                send_tg(f"🚀 *TP3 終極止盈！*\n💰 #{instId}"); history.append(t); continue
+            new_active_list.append(t)
+
+    # 4. 存檔與更新
+    pd.DataFrame(new_active_list).to_csv(LOG_FILE, index=False)
+    if history: pd.DataFrame(history).to_csv(HISTORY_FILE, mode='a', header=not os.path.exists(HISTORY_FILE), index=False)
 
 if __name__ == "__main__":
     main()
