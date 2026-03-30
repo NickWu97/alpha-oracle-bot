@@ -5,12 +5,10 @@ import numpy as np
 import logging
 from datetime import datetime, timedelta
 
-# 1. 系統日誌與環境變數
+# 1. 系統配置
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-
-# 2. 監控配置 (ASI 是新幣，數據若不足會自動跳過)
 COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "SUI-USDT-SWAP", "XRP-USDT-SWAP", "ASI-USDT-SWAP"]
 LOG_FILE = "active_trades.csv"
 HISTORY_FILE = "trade_history.csv"
@@ -18,8 +16,7 @@ HISTORY_FILE = "trade_history.csv"
 def send_tg(msg):
     url = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
     try:
-        res = requests.post(url, json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
-        res.raise_for_status()
+        requests.post(url, json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
     except: pass
 
 def fetch_okx(instId, bar="15m", limit="300"):
@@ -36,24 +33,48 @@ def fetch_okx(instId, bar="15m", limit="300"):
 def get_sentiment(instId):
     try:
         ls_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={instId}&period=5m").json()
-        ls_curr, ls_prev = float(ls_res['data'][0][1]), float(ls_res['data'][2][1])
+        ls_c, ls_p = float(ls_res['data'][0][1]), float(ls_res['data'][2][1])
         base = instId.split('-')[0]
         s_df = fetch_okx(f"{base}-USDT", bar="5m", limit="20")
         cvd_up = s_df['c'].iloc[-1] > s_df['c'].iloc[-10] if s_df is not None else False
         oi_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/open-interest-volume?instId={instId}&period=5m").json()
         fuel = float(oi_res['data'][0][1]) < float(oi_res['data'][2][1]) if len(oi_res.get('data', [])) > 2 else False
-        return ls_curr, ls_prev, cvd_up, fuel
+        return ls_c, ls_p, cvd_up, fuel
     except: return 1.0, 1.0, False, False
 
 def main():
+    # 強制轉換為台北時間 (UTC+8)
     now_tw = datetime.utcnow() + timedelta(hours=8)
+    logging.info(f"--- 啟動掃描: {now_tw.strftime('%Y-%m-%d %H:%M:%S')} ---")
+    
     if not os.path.exists(LOG_FILE):
         pd.DataFrame(columns=["instId", "side", "entry", "sl", "tp1", "tp3", "tp1_hit"]).to_csv(LOG_FILE, index=False)
     
     trades = pd.read_csv(LOG_FILE).to_dict('records')
     still_active, finished = [], []
 
-    # 監控持倉
+    # --- 功能 A：每日 08:30 狀態回報 (心跳包) ---
+    # 因為 Action 是每 15 分鐘跑一次，我們抓 08:30 到 08:45 之間觸發
+    if now_tw.hour == 8 and 30 <= now_tw.minute < 45:
+        # 檢查今天是否已經發過日報 (防止 15 分鐘內重複發送)
+        if not os.path.exists("daily_report.ok"):
+            active_count = len(trades)
+            report_msg = (f"☀️ *Alpha Oracle 每日狀態報告*\n"
+                          f"──────────────────\n"
+                          f"⏰ 時間：`{now_tw.strftime('%m/%d %H:%M')}`\n"
+                          f"🛡️ 監控中幣種：`{len(COINS)}` 個\n"
+                          f"📊 目前持倉數：`{active_count}` 筆\n"
+                          f"✅ 系統狀態：`正常運作中`\n"
+                          f"──────────────────\n"
+                          f"💪 *今天也是充滿燃料的一天！*")
+            send_tg(report_msg)
+            with open("daily_report.ok", "w") as f: f.write("done")
+    elif now_tw.hour != 8:
+        # 過了 8 點後，移除標記檔案，明天才能再發
+        if os.path.exists("daily_report.ok"):
+            os.remove("daily_report.ok")
+
+    # --- 功能 B：監控持倉與自動保本 ---
     for t in trades:
         df = fetch_okx(t['instId'], "15m", "10")
         if df is None or df.empty: still_active.append(t); continue
@@ -72,7 +93,7 @@ def main():
         else:
             still_active.append(t)
 
-    # 掃描新訊號
+    # --- 功能 C：掃描新訊號 ---
     for instId in COINS:
         if instId in [x['instId'] for x in still_active]: continue
         df_4h = fetch_okx(instId, "4H", "300")
@@ -93,10 +114,11 @@ def main():
         if long_c or short_c:
             side = "LONG" if long_c else "SHORT"
             sl = curr_p - (atr * 1.5) if long_c else curr_p + (atr * 1.5)
-            tp1, tp3 = curr_p + atr if long_c else curr_p - atr, curr_p + atr*4 if long_c else curr_p - atr*4
+            tp1, tp3 = curr_p + atr if long_c else curr_p - atr, curr_p + (atr * 4) if long_c else curr_p - (atr * 4)
             still_active.append({"instId": instId, "side": side, "entry": curr_p, "sl": sl, "tp1": tp1, "tp3": tp3, "tp1_hit": 0})
             send_tg(f"🎯 *Alpha 燃料狙擊*\n💎 #{instId.split('-')[0]} | {side}\n📍 進場: `{curr_p:.4f}`\n🚫 止損: `{sl:.4f}`\n⛽ 燃料: `🔥 點燃`")
 
+    # 3. 儲存與回寫 (必須包含 daily_report.ok)
     pd.DataFrame(still_active).to_csv(LOG_FILE, index=False)
     if finished: pd.DataFrame(finished).to_csv(HISTORY_FILE, mode='a', header=not os.path.exists(HISTORY_FILE), index=False)
 
