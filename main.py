@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-# 監控幣種 (5主流 + 8山寨)
+# 監控幣種 (5主流 + 7山寨)
 ALL_COINS = [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
     "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP", 
@@ -20,7 +20,7 @@ ALL_COINS = [
 LOG_FILE = "active_trades.csv"
 STATS_FILE = "daily_stats.csv"
 
-# --- 數據模組 ---
+# --- 數據抓取模組 ---
 def get_market_metrics(instId):
     try:
         base_id = instId.replace("-SWAP", "")
@@ -37,7 +37,7 @@ def get_market_metrics(instId):
 def calculate_leverage(entry, sl):
     try:
         gap = abs(entry - sl) / entry
-        lev = int(0.12 / gap) 
+        lev = int(0.12 / gap) # 基於 1.2% 風險係數
         return max(1, min(lev, 20))
     except: return 5
 
@@ -53,16 +53,20 @@ def fetch_okx(instId):
         if 'data' not in res or not res['data']: return None
         df = pd.DataFrame(res['data'], columns=['ts','o','h','l','c','v','volCcy','volCcyQuote','confirm'])
         df[['o','h','l','c','v']] = df[['o','h','l','c','v']].astype(float)
+        # 只取已收盤的 K 線
         valid_df = df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
         return valid_df if not valid_df.empty else None
     except: return None
 
+# --- SMC 核心邏輯 (BOS + 缺口驗證) ---
 def find_smc_setup(df):
     if df is None or len(df) < 35: return None
     for i in range(len(df)-3, len(df)-15, -1):
         k1, k2, k3 = df.iloc[i], df.iloc[i+1], df.iloc[i+2]
+        # 多頭突破 (BOS)
         if k3['c'] > k3['o'] and k3['l'] > k1['h'] and k3['h'] > df.iloc[i-15:i]['h'].max():
             return {"side": "LONG", "entry": k1['h'], "sl": k1['l']}
+        # 空頭突破 (BOS)
         if k3['c'] < k3['o'] and k3['h'] < k1['l'] and k3['l'] < df.iloc[i-15:i]['l'].min():
             return {"side": "SHORT", "entry": k1['l'], "sl": k1['h']}
     return None
@@ -70,12 +74,13 @@ def find_smc_setup(df):
 def main():
     now_tw = datetime.utcnow() + timedelta(hours=8)
     
+    # 檔案初始化
     if not os.path.exists(LOG_FILE):
         pd.DataFrame(columns=["instId","side","status","entry","sl","tp1","tp2","tp3","locked","time"]).to_csv(LOG_FILE, index=False)
     if not os.path.exists(STATS_FILE):
         pd.DataFrame(columns=["instId","result","time"]).to_csv(STATS_FILE, index=False)
 
-    # --- 1. 每日 00:00 結算 ---
+    # --- 1. 每日 00:00 結報 (台灣時間) ---
     if now_tw.hour == 0 and 0 <= now_tw.minute < 15:
         if not os.path.exists("midnight_report.ok"):
             df_s = pd.read_csv(STATS_FILE)
@@ -92,16 +97,19 @@ def main():
     elif now_tw.hour != 0 and os.path.exists("midnight_report.ok"):
         os.remove("midnight_report.ok")
 
-    # --- 2. 核心監控 ---
+    # --- 2. 核心監控循環 ---
     trades_df = pd.read_csv(LOG_FILE)
     active_ids = trades_df['instId'].tolist()
     new_active_list = []
 
     for instId in ALL_COINS:
         df = fetch_okx(instId)
-        if df is None or df.empty: continue
+        if df is None or df.empty: # 解決 IndexError 的關鍵檢查
+            continue
+            
         curr_p = df['c'].iloc[-1]
 
+        # A. 搜尋新訊號
         if instId not in active_ids:
             setup = find_smc_setup(df)
             if setup:
@@ -109,7 +117,7 @@ def main():
                 lev = calculate_leverage(setup['entry'], setup['sl'])
                 risk = abs(setup['entry'] - setup['sl'])
                 
-                # 計算點位 1.5R / 2R / 3R
+                # 計算點位 1.5R / 2.0R / 3.0R
                 tp1 = setup['entry'] + (risk * 1.5) if setup['side'] == "LONG" else setup['entry'] - (risk * 1.5)
                 tp2 = setup['entry'] + (risk * 2.0) if setup['side'] == "LONG" else setup['entry'] - (risk * 2.0)
                 tp3 = setup['entry'] + (risk * 3.0) if setup['side'] == "LONG" else setup['entry'] - (risk * 3.0)
@@ -129,20 +137,22 @@ def main():
                 new_active_list.append({"instId":instId,"side":setup['side'],"status":"WAITING","entry":setup['entry'],"sl":sl,"tp1":tp1,"tp2":tp2,"tp3":tp3,"locked":0,"time":now_tw})
             continue
 
+        # B. 監控已發布交易
         t = trades_df[trades_df['instId'] == instId].iloc[0].to_dict()
         if t['status'] == "WAITING":
             is_hit = (t['side']=="LONG" and curr_p <= t['entry']) or (t['side']=="SHORT" and curr_p >= t['entry'])
             if is_hit:
                 t['status'] = "ACTIVE"
-                send_tg(f"🚀 *【確認進場】* | #{instId.split('-')[0]}\n✅ 已回補成交：`{curr_p}`")
+                send_tg(f"🚀 *【確認進場】* | #{instId.split('-')[0]}\n✅ 已回補成交，當前價格：`{curr_p}`")
             new_active_list.append(t)
         elif t['status'] == "ACTIVE":
-            # TP2 鎖利邏輯
+            # TP2 鎖利提醒
             is_tp2 = (t['side']=="LONG" and curr_p >= t['tp2']) or (t['side']=="SHORT" and curr_p <= t['tp2'])
             if is_tp2 and t['locked'] == 0:
                 t['locked'] = 1
                 send_tg(f"🔒 *鎖定利潤提醒* | #{instId.split('-')[0]}\n⚠️ 已達 **TP2 (2.0R)**，請將 SL 移至 **TP1 (`{t['tp1']:.4f}`)** 鎖定獲利！")
             
+            # 判斷結算
             current_sl = t['tp1'] if t['locked'] == 1 else t['sl']
             is_sl = (t['side']=="LONG" and curr_p <= current_sl) or (t['side']=="SHORT" and curr_p >= current_sl)
             is_tp3 = (t['side']=="LONG" and df['h'].max() >= t['tp3']) or (t['side']=="SHORT" and df['l'].min() <= t['tp3'])
