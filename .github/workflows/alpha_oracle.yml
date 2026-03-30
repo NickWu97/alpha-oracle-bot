@@ -2,7 +2,7 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # 每 15 分鐘掃描一次
+    - cron: '*/15 * * * *'  # 每 15 分鐘運行一次
   workflow_dispatch:
 
 jobs:
@@ -26,10 +26,10 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
 
-      - name: Commit and Push Logs
+      - name: Commit and Push Changes
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "bot@github.com"
           git add active_trades.csv daily_stats.csv
-          git commit -m "Sync logs [skip ci]" || echo "No changes"
+          git commit -m "Update trade logs" || echo "No changes"
           git push
