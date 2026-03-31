@@ -2,22 +2,18 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    # 每 15 分鐘執行一次 (UTC 格式，對應台灣時間 00, 15, 30, 45 分)
-    - cron: '*/15 * * * *'
-  workflow_dispatch: # 允許手動點擊執行測試
+    - cron: '*/15 * * * *' # 每 15 分鐘執行一次
+  workflow_dispatch:
 
 jobs:
-  trade: # 這裡對應你圖片中的 job 名稱
+  run-bot:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # 賦予寫入權限
-
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
@@ -26,21 +22,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests pandas numpy
 
-      - name: Run Alpha Oracle Bot
+      - name: Run Main Script
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
 
-      - name: Commit and Push Changes
+      - name: Save Logs
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Bot"
+          git config --global user.email "bot@github.com"
           git add active_trades.csv daily_stats.csv
-          # 檢查是否有變動，有的話才提交
-          if [ -n "$(git status --porcelain)" ]; then
-            git commit -m "📊 Update trade logs and stats [skip ci]"
-            git push
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "Sync trade logs [skip ci]" || exit 0
+          git push
