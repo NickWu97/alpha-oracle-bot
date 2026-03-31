@@ -2,17 +2,12 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    - cron: '*/15 * * * *' # 每 15 分鐘執行一次
-  workflow_dispatch:      # 允許手動執行
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    # 防止同時執行多個 Job 導致 CSV 衝突
-    concurrency:
-      group: trading-bot
-      cancel-in-progress: false
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
