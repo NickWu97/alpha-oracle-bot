@@ -44,5 +44,5 @@ jobs:
           git config --global user.name "GitHub Bot"
           git config --global user.email "bot@github.com"
           git add active_trades.csv daily_stats.csv
-          git commit -m "Update trades [skip ci]" || exit 0
+          git commit -m "Update logs [skip ci]" || exit 0
           git push
