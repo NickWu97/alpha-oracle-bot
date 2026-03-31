@@ -7,10 +7,10 @@ on:
   workflow_dispatch: # 允許手動點擊執行測試
 
 jobs:
-  build:
+  trade: # 這裡對應你圖片中的 job 名稱
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 重要：賦予機器人寫入檔案的權限
+      contents: write # 賦予寫入權限
 
     steps:
       - name: Checkout Code
@@ -37,5 +37,10 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add active_trades.csv daily_stats.csv
-          # 只有在檔案有變動時才提交，避免報錯
-          git diff --quiet && git diff --staged --quiet || (git commit -m "📊 Update trade logs and stats [skip ci]" && git push)
+          # 檢查是否有變動，有的話才提交
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "📊 Update trade logs and stats [skip ci]"
+            git push
+          else
+            echo "No changes to commit"
+          fi
