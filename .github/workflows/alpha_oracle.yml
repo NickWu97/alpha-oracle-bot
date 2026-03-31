@@ -3,11 +3,16 @@ name: Alpha Oracle Bot
 on:
   schedule:
     - cron: '*/15 * * * *' # 每 15 分鐘執行一次
-  workflow_dispatch:
+  workflow_dispatch:      # 允許手動執行
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    # 防止同時執行多個 Job 導致 CSV 衝突
+    concurrency:
+      group: trading-bot
+      cancel-in-progress: false
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -32,6 +37,6 @@ jobs:
         run: |
           git config --global user.name "GitHub Bot"
           git config --global user.email "bot@github.com"
-          git add active_trades.csv daily_stats.csv
-          git commit -m "Sync trade logs [skip ci]" || exit 0
+          git add active_trades.csv
+          git commit -m "Sync trade logs" || exit 0
           git push
