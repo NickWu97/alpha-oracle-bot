@@ -5,17 +5,20 @@ import numpy as np
 import logging
 import traceback
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 
-# --- 1. 基礎配置 ---
+# --- 1. 基礎配置與 30 幣種監控清單 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# 請確保環境變數已設定，或直接在此輸入字串
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-# 監控清單
-MAIN_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP"]
-ALT_COINS = ["SUI-USDT-SWAP", "AVAX-USDT-SWAP", "ADA-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP"]
-ALL_MONITOR = MAIN_COINS + ALT_COINS
+# 擴展後的 30 個高流動性幣種
+KING_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP"]
+MAJOR_ALTS = ["SUI-USDT-SWAP", "AVAX-USDT-SWAP", "ADA-USDT-SWAP", "XRP-USDT-SWAP", "DOT-USDT-SWAP", "LINK-USDT-SWAP", "NEAR-USDT-SWAP", "APT-USDT-SWAP", "OP-USDT-SWAP", "ARB-USDT-SWAP", "TIA-USDT-SWAP", "FET-USDT-SWAP"]
+HOT_ALTS = ["TON-USDT-SWAP", "WIF-USDT-SWAP", "PEPE-USDT-SWAP", "ORDI-USDT-SWAP", "STX-USDT-SWAP", "INJ-USDT-SWAP", "FIL-USDT-SWAP", "LDO-USDT-SWAP", "SEI-USDT-SWAP", "PYTH-USDT-SWAP", "JUP-USDT-SWAP", "ENA-USDT-SWAP", "PENDLE-USDT-SWAP", "RNDR-USDT-SWAP"]
+ALL_MONITOR = KING_COINS + MAJOR_ALTS + HOT_ALTS
 
 LOG_FILE = "active_trades.csv"
 STATS_FILE = "daily_stats.csv"
@@ -23,7 +26,6 @@ STATS_FILE = "daily_stats.csv"
 # --- 2. 數據工具函數 ---
 
 def fetch_okx(instId, bar='15m', limit='100'):
-    """獲取 K 線數據"""
     try:
         url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={bar}&limit={limit}"
         res = requests.get(url, timeout=10).json()
@@ -32,99 +34,109 @@ def fetch_okx(instId, bar='15m', limit='100'):
         df[['o','h','l','c','v']] = df[['o','h','l','c','v']].astype(float)
         return df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
     except Exception as e:
-        logging.error(f"Fetch OKX Error for {instId}: {e}")
+        logging.error(f"Fetch Error {instId}: {e}")
         return None
 
 def get_advanced_metrics(instId):
-    """獲取 LS Ratio 與 CVD 傾向"""
+    """獲取 LS Ratio (散戶情緒指標)"""
     try:
         base_id = instId.replace("-SWAP", "")
         ls_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={base_id}", timeout=5).json()
-        ls_ratio = ls_res['data'][0]['ratio']
-        cvd_status = "🟢 大戶吸籌" if float(ls_ratio) < 0.95 else "🔴 散戶較多"
+        ls_ratio = float(ls_res['data'][0]['ratio'])
+        cvd_status = "🟢 機構收籌" if ls_ratio < 0.95 else "🔴 散戶過重"
         return {"ls_ratio": ls_ratio, "cvd": cvd_status}
-    except: return {"ls_ratio": "N/A", "cvd": "N/A"}
+    except: return {"ls_ratio": 1.0, "cvd": "N/A"}
 
 def calculate_atr(df):
-    """計算 14 週期 ATR"""
-    hl = df['h'] - df['l']
-    hc = np.abs(df['h'] - df['c'].shift())
-    lc = np.abs(df['l'] - df['c'].shift())
+    hl, hc, lc = df['h']-df['l'], np.abs(df['h']-df['c'].shift()), np.abs(df['l']-df['c'].shift())
     tr = np.max(pd.concat([hl, hc, lc], axis=1), axis=1)
     return tr.rolling(window=14).mean().iloc[-1]
 
-# --- 3. SMC 策略核心 ---
+# --- 3. 核心決策大腦 (核心升級) ---
 
-def check_mtf_trend(instId):
-    """1H 大趨勢濾網 (EMA 200)"""
-    df_1h = fetch_okx(instId, bar='1H', limit='200')
-    if df_1h is None or len(df_1h) < 200: return "NEUTRAL"
-    ema200 = df_1h['c'].ewm(span=200, adjust=False).mean().iloc[-1]
-    return "BULL" if df_1h['c'].iloc[-1] > ema200 else "BEAR"
+def get_market_regime(df_1h):
+    """判斷市場環境：強趨勢(適合1H長單) 或 區間震盪(適合15m短線)"""
+    if df_1h is None or len(df_1h) < 50: return "RANGE"
+    ema50 = df_1h['c'].ewm(span=50).mean().iloc[-1]
+    curr_p = df_1h['c'].iloc[-1]
+    bias = abs(curr_p - ema50) / ema50
+    # 乖離大於 2.5% 認定為趨勢啟動
+    return "TREND" if bias > 0.025 else "RANGE"
 
-def find_smc_setup(df, instId):
-    """SMC 結構偵測邏輯：偵測突破並尋找回踩點"""
-    if df is None or len(df) < 60: return None
+def is_high_probability_setup(setup, instId, df_1h):
+    """三合一高勝率過濾：時間(KillZone) + 趨勢 + 資金流(LS Ratio)"""
+    score = 0
+    now = datetime.now()
     
-    mtf_trend = check_mtf_trend(instId)
+    # A. 交易活躍時段過濾 (Kill Zones: 15-18 倫敦, 20-24 紐約)
+    if (15 <= now.hour <= 18) or (20 <= now.hour <= 23): score += 1
+    
+    # B. 順勢過濾 (與 1H EMA50 方向一致)
+    ema50_1h = df_1h['c'].ewm(span=50).mean().iloc[-1]
+    curr_p = df_1h['c'].iloc[-1]
+    is_with_trend = (setup['side'] == 'LONG' and curr_p > ema50_1h) or \
+                    (setup['side'] == 'SHORT' and curr_p < ema50_1h)
+    if is_with_trend: score += 1
+
+    # C. 散戶對手盤過濾 (LS Ratio 逆向參考)
+    met = get_advanced_metrics(instId)
+    ls = met['ls_ratio']
+    # 多頭時：散戶在空 (LS < 0.98)；空頭時：散戶在多 (LS > 1.05)
+    ls_check = (setup['side'] == 'LONG' and ls < 0.98) or \
+               (setup['side'] == 'SHORT' and ls > 1.05)
+    if ls_check: score += 1
+        
+    # 至少要符合 2 項條件才算高勝率
+    return score >= 2, score
+
+# --- 4. SMC 策略核心邏輯 ---
+
+def find_smc_setup(df, instId, regime):
+    """SMC 結構偵測：加入動態盈虧比要求"""
+    if df is None or len(df) < 40: return None
     atr = calculate_atr(df)
-    vol_sma = df['v'].rolling(5).mean().iloc[-1]
+    vol_sma = df['v'].rolling(10).mean().iloc[-1]
     
-    # 尋找最近 20 根 K 線內的結構破壞
-    for i in range(len(df)-3, len(df)-20, -1):
+    # 趨勢模式要求 2.8R 長單，震盪模式要求 1.8R 短線
+    min_r = 2.8 if regime == "TREND" else 1.8
+    
+    for i in range(len(df)-2, len(df)-12, -1):
         k0, k1, k2 = df.iloc[i-1], df.iloc[i], df.iloc[i+1]
         
-        # 多頭判斷：價格突破前 15 根高點 + 順 1H 趨勢 + 量增
-        if k2['c'] > df['h'].iloc[i-15:i].max() and mtf_trend == "BULL" and k2['v'] > vol_sma:
-            sweep = k1['l'] < df['l'].iloc[i-10:i].min() # 掃損標記
-            swing_low, swing_high = df['l'].iloc[i-15:i+1].min(), k2['c']
-            # 取 FVG 中心與 50% 折價區的較佳位
-            entry = min((k2['l'] + k0['h']) / 2 if k2['l'] > k0['h'] else k1['o'], (swing_high + swing_low) / 2)
-            sl = k1['l'] - (0.4 * atr)
-            tp = df['h'].iloc[-60:].max()
+        # 多頭：BOS + 量增
+        if k2['c'] > df['h'].iloc[i-15:i].max() and k2['v'] > vol_sma:
+            sweep = k1['l'] < df['l'].iloc[i-10:i].min()
+            entry = (k2['l'] + k0['h']) / 2 if k2['l'] > k0['h'] else k1['o']
+            sl = k1['l'] - (0.5 * atr) # 稍微放大止損距離增加容錯
+            tp = entry + (abs(entry - sl) * min_r)
             r = abs(tp - entry) / abs(entry - sl) if abs(entry - sl) != 0 else 0
-            
-            if r >= 1.5 and (swing_high - entry) / entry < 0.025:
+            if r >= min_r:
                 return {"side": "LONG", "entry": entry, "sl": sl, "tp": tp, "r_ratio": round(r, 2), "sweep": sweep}
 
-        # 空頭判斷
-        if k2['c'] < df['l'].iloc[i-15:i].min() and mtf_trend == "BEAR" and k2['v'] > vol_sma:
+        # 空頭：BOS + 量增
+        if k2['c'] < df['l'].iloc[i-15:i].min() and k2['v'] > vol_sma:
             sweep = k1['h'] > df['h'].iloc[i-10:i].max()
-            swing_high, swing_low = df['h'].iloc[i-15:i+1].max(), k2['c']
-            entry = max((k2['h'] + k0['l']) / 2 if k2['h'] < k0['l'] else k1['o'], (swing_high + swing_low) / 2)
-            sl = k1['h'] + (0.4 * atr)
-            tp = df['l'].iloc[-60:].min()
+            entry = (k2['h'] + k0['l']) / 2 if k2['h'] < k0['l'] else k1['o']
+            sl = k1['h'] + (0.5 * atr)
+            tp = entry - (abs(sl - entry) * min_r)
             r = abs(entry - tp) / abs(sl - entry) if abs(sl - entry) != 0 else 0
-            
-            if r >= 1.5 and (entry - swing_low) / entry < 0.025:
+            if r >= min_r:
                 return {"side": "SHORT", "entry": entry, "sl": sl, "tp": tp, "r_ratio": round(r, 2), "sweep": sweep}
     return None
 
-# --- 4. 主循環邏輯 ---
+# --- 5. 主程序與發送邏輯 ---
 
 def send_tg(msg):
     if not TG_TOKEN or not CHAT_ID: return
-    try: requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=15)
+    try: requests.post(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}, timeout=10)
     except: pass
 
 def run_oracle():
-    now_tw = datetime.now()
+    # 初始化文件與欄位
     log_cols = ["instId","side","status","entry","sl","tp","r_ratio","locked"]
-    
-    # 確保 CSV 檔案存在
-    for f, cols in [(LOG_FILE, log_cols), (STATS_FILE, ["instId","result"])]:
-        if not os.path.exists(f) or os.stat(f).st_size == 0:
-            pd.DataFrame(columns=cols).to_csv(f, index=False)
+    if not os.path.exists(LOG_FILE): pd.DataFrame(columns=log_cols).to_csv(LOG_FILE, index=False)
+    if not os.path.exists(STATS_FILE): pd.DataFrame(columns=["instId","result"]).to_csv(STATS_FILE, index=False)
 
-    # 每天 08:00 發送早報 (掃描頻率 5 分鐘，確保只發一次)
-    if now_tw.hour == 8 and 0 <= now_tw.minute < 5:
-        m_msg = "☕ *Alpha Oracle 晨間巡檢*\n──────────────────\n"
-        for inst in ALL_MONITOR[:6]: # 晨報顯示前 6 隻
-            met = get_advanced_metrics(inst)
-            m_msg += f"• #{inst.split('-')[0]}: {met['cvd']} | LS {met['ls_ratio']}\n"
-        send_tg(m_msg + "\n💡 *SMC 提醒：順勢而為，回調入場。*")
-
-    # 讀取當前持倉/掛單
     try: trades_df = pd.read_csv(LOG_FILE)
     except: trades_df = pd.DataFrame(columns=log_cols)
     
@@ -132,74 +144,64 @@ def run_oracle():
     updated_trades = []
 
     for instId in ALL_MONITOR:
-        df = fetch_okx(instId)
+        # 1. 先用 1H 判斷市場脾氣
+        df_1h = fetch_okx(instId, bar='1H', limit='100')
+        regime = get_market_regime(df_1h)
+        
+        # 2. 決定當前掃描時區
+        target_tf = '1H' if regime == "TREND" else '15m'
+        df = fetch_okx(instId, bar=target_tf)
         if df is None: continue
         curr_p = df['c'].iloc[-1]
 
-        # A. 發現新訊號 (若該幣種目前無紀錄)
+        # A. 尋找新機會
         if instId not in active_ids:
-            setup = find_smc_setup(df, instId)
+            setup = find_smc_setup(df, instId, regime)
             if setup:
-                met = get_advanced_metrics(instId)
-                tag = "⚡ (獵取流動性)" if setup['sweep'] else ""
-                msg = f"🔍 *Alpha Oracle | SMC 訊號*\n──────────────────\n#{instId.split('-')[0]} {tag}\n數據：{met['cvd']} | LS {met['ls_ratio']}\n\n📍 進場：{setup['entry']:.4f}\n🚫 止損：{setup['sl']:.4f}\n💰 止盈：{setup['tp']:.4f}\n📈 盈虧比：*{setup['r_ratio']}R*"
-                send_tg(msg)
-                
-                setup.pop('sweep') # 移除 TG 標記欄位再存入 CSV
-                setup.update({"instId": instId, "status": "WAITING", "locked": 0})
-                updated_trades.append(setup)
-            continue
+                # 3. 三合一高勝率過濾
+                is_good, score = is_high_probability_setup(setup, instId, df_1h)
+                if is_good:
+                    mode_tag = "🏛 長單模式" if target_tf == '1H' else "⚡ 短線模式"
+                    stars = "⭐" * score
+                    msg = f"🚀 *Alpha Oracle | {stars}*\n──────────────────\n"
+                    msg += f"#{instId.split('-')[0]} [{mode_tag}]\n評分：{score}/3\n"
+                    msg += f"📍 進場：{setup['entry']:.4f}\n🚫 止損：{setup['sl']:.4f}\n💰 止盈：{setup['tp']:.4f}\n📈 盈虧比：*{setup['r_ratio']}R*"
+                    send_tg(msg)
+                    
+                    setup.update({"instId": instId, "status": "WAITING", "locked": 0})
+                    if 'sweep' in setup: setup.pop('sweep')
+                    updated_trades.append(setup)
+        else:
+            # B. 追蹤現有訂單 (成交、結算、保本)
+            t = trades_df[trades_df['instId'] == instId].iloc[0].to_dict()
+            if t['status'] == "WAITING":
+                # 成交判定
+                if (t['side']=="LONG" and curr_p <= t['entry']) or (t['side']=="SHORT" and curr_p >= t['entry']):
+                    t['status'] = "ACTIVE"
+                    send_tg(f"🔔 *成交通知*：#{instId.split('-')[0]} 已觸發進場位！")
+                updated_trades.append(t)
+            elif t['status'] == "ACTIVE":
+                # 結算判定
+                is_sl = (curr_p <= t['sl'] if t['side']=="LONG" else curr_p >= t['sl'])
+                is_tp = (curr_p >= t['tp'] if t['side']=="LONG" else curr_p <= t['tp'])
+                if is_sl or is_tp:
+                    res = "TP 獲利 💰" if is_tp else "SL 止損 ❌"
+                    send_tg(f"🏁 *結算*：#{instId.split('-')[0]} 結果：{res}")
+                    pd.DataFrame([{"instId":instId,"result":res}]).to_csv(STATS_FILE, mode='a', header=False, index=False)
+                else:
+                    updated_trades.append(t)
 
-        # B. 追蹤現有訊號 (持倉或掛單)
-        # 獲取該幣種的 CSV 資料
-        t = trades_df[trades_df['instId'] == instId].iloc[0].to_dict()
-        
-        if t['status'] == "WAITING":
-            # 結構失效判定 (尚未成交就先破了止損)
-            if (t['side']=="LONG" and curr_p <= t['sl']) or (t['side']=="SHORT" and curr_p >= t['sl']):
-                send_tg(f"⚠️ *撤單通知*：#{instId.split('-')[0]} 結構在成交前失效。")
-                continue # 不加入 updated_trades 等於從 CSV 刪除
-                
-            # 成交判定 (回踩進場位)
-            if (t['side']=="LONG" and curr_p <= t['entry']) or (t['side']=="SHORT" and curr_p >= t['entry']):
-                t['status'] = "ACTIVE"
-                send_tg(f"🚀 *成交提醒*：#{instId.split('-')[0]} 已回踩進場位成交！")
-            updated_trades.append(t)
-            
-        elif t['status'] == "ACTIVE":
-            # 50% 空間鎖利/保本
-            mid = (t['entry'] + t['tp']) / 2
-            if t['locked'] == 0:
-                is_halfway = (t['side']=="LONG" and curr_p >= mid) or (t['side']=="SHORT" and curr_p <= mid)
-                if is_halfway:
-                    t['locked'], t['sl'] = 1, t['entry']
-                    send_tg(f"🔒 *鎖利保本*：#{instId.split('-')[0]} 已達 50% 目標，止損移至開倉位。")
-            
-            # 結算判定
-            is_sl = (curr_p <= t['sl'] if t['side']=="LONG" else curr_p >= t['sl'])
-            is_tp = (curr_p >= t['tp'] if t['side']=="LONG" else curr_p <= t['tp'])
-            
-            if is_sl or is_tp:
-                res = "TP" if (is_tp or t['locked'] == 1) else "SL"
-                emoji = "💰 獲利" if res == "TP" else "❌ 止損"
-                send_tg(f"🏁 *交易結算*：#{instId.split('-')[0]} 結果：{emoji}")
-                pd.DataFrame([{"instId":instId,"result":res}]).to_csv(STATS_FILE, mode='a', header=False, index=False)
-                continue # 完成結算，不再加入更新清單
-            updated_trades.append(t)
-
-    # 將所有狀態存回 CSV
+    # 存回更新後的持倉
     pd.DataFrame(updated_trades).to_csv(LOG_FILE, index=False)
 
 if __name__ == "__main__":
-    print(f"🚀 Alpha Oracle 正式上線時間: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    send_tg("🤖 *Alpha Oracle 啟動完成*\n目前的掃描頻率為：每 5 分鐘一次。")
+    print(f"Alpha Oracle 3.0 正式部署 - 監控數量: {len(ALL_MONITOR)}")
+    send_tg("🤖 *Alpha Oracle 3.0 決策版上線*\n已啟動「趨勢/震盪自動切換」與「三合一過濾系統」。")
     
     while True:
         try:
             run_oracle()
-            print(f"✅ 循環完成：{datetime.now().strftime('%H:%M:%S')} - 監控中...")
-        except Exception as e:
-            logging.error(f"⚠️ 運行異常: {e}")
-            traceback.print_exc()
-        
-        time.sleep(300) # 每 5 分鐘掃描一次
+            time.sleep(300) # 每 5 分鐘執行一次
+        except Exception:
+            logging.error(traceback.format_exc())
+            time.sleep(60)
