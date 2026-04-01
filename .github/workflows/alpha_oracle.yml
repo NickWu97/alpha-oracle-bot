@@ -1,48 +1,63 @@
-name: Alpha Oracle Bot
+# Alpha Oracle 3.0 系統配置
+system:
+  scan_interval: 300  # 掃描頻率 (秒)
+  log_file: "active_trades.csv"
+  stats_file: "daily_stats.csv"
 
-on:
-  schedule:
-    - cron: '*/15 * * * *' # 每 15 分鐘執行一次
-  workflow_dispatch:
-    inputs:
-      send_report:
-        description: '立刻發送戰績報表？'
-        required: false
-        default: false
-        type: boolean
+# 30 個高流動性監控幣種
+monitor_list:
+  king_coins:
+    - "BTC-USDT-SWAP"
+    - "ETH-USDT-SWAP"
+    - "SOL-USDT-SWAP"
+    - "BNB-USDT-SWAP"
+  major_alts:
+    - "SUI-USDT-SWAP"
+    - "AVAX-USDT-SWAP"
+    - "ADA-USDT-SWAP"
+    - "XRP-USDT-SWAP"
+    - "DOT-USDT-SWAP"
+    - "LINK-USDT-SWAP"
+    - "NEAR-USDT-SWAP"
+    - "APT-USDT-SWAP"
+    - "OP-USDT-SWAP"
+    - "ARB-USDT-SWAP"
+    - "TIA-USDT-SWAP"
+    - "FET-USDT-SWAP"
+  hot_alts:
+    - "TON-USDT-SWAP"
+    - "WIF-USDT-SWAP"
+    - "PEPE-USDT-SWAP"
+    - "ORDI-USDT-SWAP"
+    - "STX-USDT-SWAP"
+    - "INJ-USDT-SWAP"
+    - "FIL-USDT-SWAP"
+    - "LDO-USDT-SWAP"
+    - "SEI-USDT-SWAP"
+    - "PYTH-USDT-SWAP"
+    - "JUP-USDT-SWAP"
+    - "ENA-USDT-SWAP"
+    - "PENDLE-USDT-SWAP"
+    - "RNDR-USDT-SWAP"
 
-jobs:
-  run-bot:
-    runs-on: ubuntu-latest
-    concurrency:
-      group: trading-bot
-      cancel-in-progress: false
+# SMC 策略參數
+strategy_params:
+  # 趨勢模式 (1H)
+  trend_mode:
+    min_r_ratio: 2.8
+    bias_threshold: 0.025  # 乖離率閾值
+    timeframe: "1H"
+  # 震盪模式 (15m)
+  range_mode:
+    min_r_ratio: 1.8
+    timeframe: "15m"
+  # 過濾器閾值
+  filters:
+    min_score: 2           # 滿分 3 分，至少需 2 分才發送
+    ls_long_threshold: 0.98 # 多單 LS Ratio 需低於此值
+    ls_short_threshold: 1.05 # 空單 LS Ratio 需高於此值
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests pandas numpy
-
-      - name: Run Main Script
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          MANUAL_REPORT: ${{ github.event.inputs.send_report }}
-        run: python main.py
-
-      - name: Save Logs
-        run: |
-          git config --global user.name "GitHub Bot"
-          git config --global user.email "bot@github.com"
-          git add active_trades.csv daily_stats.csv
-          git commit -m "Update logs [skip ci]" || exit 0
-          git push
+# 交易時段 (台灣時間)
+kill_zones:
+  london: [15, 18]
+  new_york: [20, 24]
