@@ -1,44 +1,38 @@
-name: Alpha Oracle Bot 3.0
+name: Alpha Oracle Bot
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # 每 5 分鐘自動執行一次
-  workflow_dispatch:      # 允許手動點擊 "Run workflow" 按鈕
-  push:
-    branches: [ main ]    # 當你上傳新代碼到 main 分支時也會觸發
+    # 每 15 分鐘執行一次 (抓 15m 短線訊號)
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # 允許手動點擊執行
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
-    # 給予寫入權限，這樣機器人才有權力把 CSV 存回你的倉庫
-    permissions:
-      contents: write
-
     steps:
-      - name: 1. 檢出代碼 (Checkout)
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: 2. 安裝 Python 環境
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: 3. 安裝必要套件 (Dependencies)
+      - name: Install Dependencies
         run: |
           pip install requests pandas numpy
 
-      - name: 4. 執行機器人主程式 (Run Oracle)
+      - name: Run Oracle Bot
         env:
-          # 這裡從 GitHub Secrets 讀取你的 API 金鑰
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python main.py
 
-      - name: 5. 自動存回交易紀錄 (Auto Commit CSV)
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "🤖 機器人自動更新交易紀錄 [skip ci]"
-          file_pattern: "*.csv"
-          commit_user_name: "GitHub Actions Bot"
-          commit_user_email: "actions@github.com"
+      - name: Commit and Push CSV
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add active_trades.csv
+          # 只有在檔案有變動時才 commit，避免報錯
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update Trade Logs [Skip CI]"
+          git push
