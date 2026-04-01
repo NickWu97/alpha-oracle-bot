@@ -2,7 +2,7 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/15 * * * *' # 每 15 分鐘執行一次
   workflow_dispatch:
     inputs:
       send_report:
