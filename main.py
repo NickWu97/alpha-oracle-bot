@@ -185,3 +185,9 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"程式崩潰: {e}")
         traceback.print_exc()
+if __name__ == "__main__":
+    send_tg("機器人連線測試成功！") # 先加這行測試
+    try:
+        run_oracle()
+    except Exception as e:
+        # ...
