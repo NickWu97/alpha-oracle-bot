@@ -1,14 +1,19 @@
 name: Alpha Oracle Fusion Bot
 
 on:
-  workflow_dispatch: # 允許手動點擊執行
+  workflow_dispatch:
+    inputs:
+      send_report:
+        description: '是否立即發送當前勝率戰報？'
+        required: false
+        default: 'false'
+        type: boolean
   schedule:
-    - cron: '*/15 * * * *' # 每 15 分鐘自動執行一次掃描
+    - cron: '*/15 * * * *'
 
 jobs:
   trade-monitor:
     runs-on: ubuntu-latest
-    # 權限設定，確保機器人可以讀寫儲存庫內的 CSV 檔案
     permissions:
       contents: write
 
@@ -30,15 +35,13 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          # 如果需要手動觸發報表，可以在手動執行時設定此變數
-          MANUAL_REPORT: ${{ github.event.inputs.manual_report || 'false' }}
+          MANUAL_REPORT: ${{ github.event.inputs.send_report || 'false' }}
         run: python main.py
 
       - name: Commit and Push Changes
-        # 此步驟非常重要：它會將更新後的 active_trades.csv 與 daily_stats.csv 存回 GitHub
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add active_trades.csv daily_stats.csv midnight.ok || true
-          git commit -m "Update trade logs and stats [skip ci]" || echo "No changes to commit"
+          git commit -m "Update trade logs and stats" || echo "No changes to commit"
           git push
