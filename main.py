@@ -20,14 +20,17 @@ ALL_COINS = [
 LOG_FILE = "active_trades.csv"
 STATS_FILE = "daily_stats.csv"
 
-# --- 2. 進階數據工具 ---
+# --- 2. 工具函數 ---
 def get_extra_metrics(instId):
+    """獲取資費、多空人數比、持倉量"""
     try:
         base_id = instId.replace("-SWAP", "")
         f_res = requests.get(f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5).json()
         funding = f"{float(f_res['data'][0]['fundingRate']) * 100:.4f}%"
+        
         ls_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={base_id}", timeout=5).json()
         ls_ratio = ls_res['data'][0]['ratio']
+        
         oi_res = requests.get(f"https://www.okx.com/api/v5/public/open-interest?instId={instId}", timeout=5).json()
         oi = oi_res['data'][0]['oi']
         return {"funding": funding, "ls_ratio": ls_ratio, "oi": oi}
@@ -63,10 +66,12 @@ def find_smc_setup(df):
     atr = calculate_atr(df)
     for i in range(len(df)-3, len(df)-25, -1):
         k0, k1, k2 = df.iloc[i-1], df.iloc[i], df.iloc[i+1]
+        # 多頭 Choch
         if k2['c'] > k2['o'] and k2['c'] > df['h'].iloc[i-15:i].max():
             entry = (k2['l'] + k0['h']) / 2 if k2['l'] > k0['h'] else (k1['l'] + k1['o']) / 2
             sl = k1['l'] - (0.4 * atr)
             return {"side": "LONG", "entry": entry, "sl": sl}
+        # 空頭 Choch
         if k2['c'] < k2['o'] and k2['c'] < df['l'].iloc[i-15:i].min():
             entry = (k2['h'] + k0['l']) / 2 if k2['h'] < k0['l'] else (k1['h'] + k1['o']) / 2
             sl = k1['h'] + (0.4 * atr)
@@ -83,33 +88,34 @@ def main():
         log_cols = ["instId","side","status","entry","sl","tp1","tp2","tp3","locked"]
         stats_cols = ["instId","result"]
 
-        # 檔案物理存在檢查
+        # 檔案物理存在與初始化檢查
         for f, cols in zip([LOG_FILE, STATS_FILE], [log_cols, stats_cols]):
             if not os.path.exists(f) or os.stat(f).st_size == 0:
                 pd.DataFrame(columns=cols).to_csv(f, index=False)
 
-        # 🔴 強制連線測試
+        # 🔴 連線測試 (手動執行時發送)
         if manual_report:
             send_tg(f"🔔 *Alpha Oracle 連線檢查*\n──────────────────\n✅ 伺服器運作中\n🕒 時間：{now_tw.strftime('%Y-%m-%d %H:%M')}\n📡 監控：{len(ALL_COINS)} 幣種")
 
-        # A. 戰績報表
-        if (now_tw.hour == 0 and 0 <= now_tw.minute < 15) or manual_report:
+        # A. 戰績報表結算
+        is_midnight = (now_tw.hour == 0 and 0 <= now_tw.minute < 15)
+        if is_midnight or manual_report:
             if not os.path.exists("midnight.ok") or manual_report:
                 df_s = pd.read_csv(STATS_FILE)
                 if not df_s.empty:
                     tp_c, sl_c = len(df_s[df_s['result'] == 'TP']), len(df_s[df_s['result'] == 'SL'])
                     wr = (tp_c / (tp_c + sl_c) * 100) if (tp_c + sl_c) > 0 else 0
                     send_tg(f"📊 *Alpha Oracle 戰績結算*\n──────────────────\n✅ 止盈：{tp_c} | ❌ 止損：{sl_c}\n🔥 勝率：*{wr:.1f}%*")
-                    if not manual_report:
+                    if is_midnight:
                         pd.DataFrame(columns=stats_cols).to_csv(STATS_FILE, index=False)
                         with open("midnight.ok", "w") as f: f.write("ok")
         elif now_tw.hour != 0 and os.path.exists("midnight.ok"):
             os.remove("midnight.ok")
 
-        # B. 核心監控 (防空檔案讀取錯誤)
+        # B. 核心監控 (防讀取錯誤)
         try:
             trades_df = pd.read_csv(LOG_FILE)
-        except pd.errors.EmptyDataError:
+        except:
             trades_df = pd.DataFrame(columns=log_cols)
 
         active_ids = trades_df['instId'].tolist()
@@ -120,29 +126,43 @@ def main():
             if df is None or df.empty: continue
             curr_p, m = df['c'].iloc[-1], get_extra_metrics(instId)
 
+            # 1. 發現新訊號
             if instId not in active_ids:
                 setup = find_smc_setup(df)
                 if setup:
                     risk = abs(setup['entry'] - setup['sl'])
-                    tp1, tp2, tp3 = setup['entry'] + risk*1.5, setup['entry'] + risk*2.0, setup['entry'] + risk*3.0
-                    if setup['side'] == "SHORT": tp1, tp2, tp3 = setup['entry'] - risk*1.5, setup['entry'] - risk*2.0, setup['entry'] - risk*3.0
+                    tp1 = setup['entry'] + risk*1.5 if setup['side']=="LONG" else setup['entry'] - risk*1.5
+                    tp2 = setup['entry'] + risk*2.0 if setup['side']=="LONG" else setup['entry'] - risk*2.0
+                    tp3 = setup['entry'] + risk*3.0 if setup['side']=="LONG" else setup['entry'] - risk*3.0
                     
-                    msg = f"🎯 *Alpha Oracle | SMC 掛單提醒*\n──────────────────\n💎 幣種：#{instId.split('-')[0]} | {'🟢 多' if setup['side']=='LONG' else '🔴 空'}\n📍 進場：`{setup['entry']:.4f}`\n🛡️ 止損：`{setup['sl']:.4f}` (**-1.0R**)\n\n📊 **數據：**\n├ 資費：`{m['funding']}`\n├ 多空比：`{m['ls_ratio']}`\n└ 持倉：`{m['oi']}`"
+                    msg = f"🎯 *Alpha Oracle | SMC 掛單提醒*\n──────────────────\n"
+                    msg += f"💎 幣種：#{instId.split('-')[0]} | {'🟢 多' if setup['side']=='LONG' else '🔴 空'}\n"
+                    msg += f"📍 進場位：`{setup['entry']:.4f}`\n"
+                    msg += f"🛡️ 止損位：`{setup['sl']:.4f}` (**-1.0R**)\n"
+                    msg += f"💰 **止盈目標：**\n"
+                    msg += f"  ├ TP1: `{tp1:.4f}` (+1.5R)\n"
+                    msg += f"  ├ TP2: `{tp2:.4f}` (+2.0R)\n"
+                    msg += f"  └ TP3: `{tp3:.4f}` (+3.0R)\n\n"
+                    msg += f"📊 **市場數據：**\n├ 資費：`{m['funding']}`\n├ 多空比：`{m['ls_ratio']}`\n└ 持倉：`{m['oi']}`"
                     send_tg(msg)
                     updated_trades.append({"instId":instId,"side":setup['side'],"status":"WAITING","entry":setup['entry'],"sl":setup['sl'],"tp1":tp1,"tp2":tp2,"tp3":tp3,"locked":0})
                 continue
 
+            # 2. 追蹤掛單與成交
             t = trades_df[trades_df['instId'] == instId].iloc[0].to_dict()
             if t['status'] == "WAITING":
-                if (t['side']=="LONG" and curr_p <= t['entry']) or (t['side']=="SHORT" and curr_p >= t['entry']):
+                is_hit = (t['side']=="LONG" and curr_p <= t['entry']) or (t['side']=="SHORT" and curr_p >= t['entry'])
+                if is_hit:
                     t['status'] = "ACTIVE"
                     send_tg(f"🚀 *掛單成交 | #{instId.split('-')[0]}*\n──────────────────\n✅ **成交價：`{curr_p:.4f}`**\n📊 多空比：`{m['ls_ratio']}`\n💰 資費：`{m['funding']}`")
                 updated_trades.append(t)
             elif t['status'] == "ACTIVE":
+                # 鎖利檢查
                 if t['locked'] == 0 and ((t['side']=="LONG" and curr_p >= t['tp2']) or (t['side']=="SHORT" and curr_p <= t['tp2'])):
                     t['locked'], t['sl'] = 1, t['tp1']
-                    send_tg(f"🔒 *鎖利啟動* | #{instId.split('-')[0]} 止損移至 1.5R")
+                    send_tg(f"🔒 *鎖利啟動* | #{instId.split('-')[0]} 止損移至 `{t['tp1']:.4f}`")
                 
+                # 結算檢查
                 is_sl = (t['side']=="LONG" and curr_p <= t['sl']) or (t['side']=="SHORT" and curr_p >= t['sl'])
                 is_tp3 = (t['side']=="LONG" and curr_p >= t['tp3']) or (t['side']=="SHORT" and curr_p <= t['tp3'])
                 if is_sl or is_tp3:
