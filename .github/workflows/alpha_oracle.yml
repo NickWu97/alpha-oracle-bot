@@ -1,63 +1,44 @@
-# Alpha Oracle 3.0 系統配置
-system:
-  scan_interval: 300  # 掃描頻率 (秒)
-  log_file: "active_trades.csv"
-  stats_file: "daily_stats.csv"
+name: Alpha Oracle Bot 3.0
 
-# 30 個高流動性監控幣種
-monitor_list:
-  king_coins:
-    - "BTC-USDT-SWAP"
-    - "ETH-USDT-SWAP"
-    - "SOL-USDT-SWAP"
-    - "BNB-USDT-SWAP"
-  major_alts:
-    - "SUI-USDT-SWAP"
-    - "AVAX-USDT-SWAP"
-    - "ADA-USDT-SWAP"
-    - "XRP-USDT-SWAP"
-    - "DOT-USDT-SWAP"
-    - "LINK-USDT-SWAP"
-    - "NEAR-USDT-SWAP"
-    - "APT-USDT-SWAP"
-    - "OP-USDT-SWAP"
-    - "ARB-USDT-SWAP"
-    - "TIA-USDT-SWAP"
-    - "FET-USDT-SWAP"
-  hot_alts:
-    - "TON-USDT-SWAP"
-    - "WIF-USDT-SWAP"
-    - "PEPE-USDT-SWAP"
-    - "ORDI-USDT-SWAP"
-    - "STX-USDT-SWAP"
-    - "INJ-USDT-SWAP"
-    - "FIL-USDT-SWAP"
-    - "LDO-USDT-SWAP"
-    - "SEI-USDT-SWAP"
-    - "PYTH-USDT-SWAP"
-    - "JUP-USDT-SWAP"
-    - "ENA-USDT-SWAP"
-    - "PENDLE-USDT-SWAP"
-    - "RNDR-USDT-SWAP"
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 每 5 分鐘自動執行一次
+  workflow_dispatch:      # 允許手動點擊 "Run workflow" 按鈕
+  push:
+    branches: [ main ]    # 當你上傳新代碼到 main 分支時也會觸發
 
-# SMC 策略參數
-strategy_params:
-  # 趨勢模式 (1H)
-  trend_mode:
-    min_r_ratio: 2.8
-    bias_threshold: 0.025  # 乖離率閾值
-    timeframe: "1H"
-  # 震盪模式 (15m)
-  range_mode:
-    min_r_ratio: 1.8
-    timeframe: "15m"
-  # 過濾器閾值
-  filters:
-    min_score: 2           # 滿分 3 分，至少需 2 分才發送
-    ls_long_threshold: 0.98 # 多單 LS Ratio 需低於此值
-    ls_short_threshold: 1.05 # 空單 LS Ratio 需高於此值
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    # 給予寫入權限，這樣機器人才有權力把 CSV 存回你的倉庫
+    permissions:
+      contents: write
 
-# 交易時段 (台灣時間)
-kill_zones:
-  london: [15, 18]
-  new_york: [20, 24]
+    steps:
+      - name: 1. 檢出代碼 (Checkout)
+        uses: actions/checkout@v3
+
+      - name: 2. 安裝 Python 環境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 3. 安裝必要套件 (Dependencies)
+        run: |
+          pip install requests pandas numpy
+
+      - name: 4. 執行機器人主程式 (Run Oracle)
+        env:
+          # 這裡從 GitHub Secrets 讀取你的 API 金鑰
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+        run: python main.py
+
+      - name: 5. 自動存回交易紀錄 (Auto Commit CSV)
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "🤖 機器人自動更新交易紀錄 [skip ci]"
+          file_pattern: "*.csv"
+          commit_user_name: "GitHub Actions Bot"
+          commit_user_email: "actions@github.com"
