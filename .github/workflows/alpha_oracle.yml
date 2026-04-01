@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       send_report:
-        description: '立刻發送連線測試與報表？'
+        description: '立刻發送戰績報表？'
         required: false
         default: false
         type: boolean
