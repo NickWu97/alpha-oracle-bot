@@ -2,16 +2,17 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    # 每 15 分鐘執行一次 (對應 15m K線)
+    # 每 15 分鐘執行一次 (對應你的 15m K線策略)
     - cron: '*/15 * * * *'
   workflow_dispatch:
+    # 允許手動觸發測試
     inputs:
       manual_report:
         description: '是否手動觸發戰報 (true/false)'
         default: 'false'
 
 permissions:
-  contents: write  # 允許腳本將 CSV 檔案寫回 GitHub 倉庫
+  contents: write  # 重要：允許機器人寫回 CSV 紀錄
 
 jobs:
   trade:
@@ -33,15 +34,13 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          # 讀取手動觸發參數或默認 false
           MANUAL_REPORT: ${{ github.event.inputs.manual_report || 'false' }}
-        run: python your_script_name.py  # <--- 這裡記得改你的檔名
+        run: python main.py  # 這裡已經幫你改好對應你的檔名了
 
       - name: Commit and Push Changes
-        # 這個步驟至關重要：它會把腳本更新後的 CSV 提交回倉庫
+        # 自動將更新後的 CSV 檔案存回 GitHub，防止機器人失憶
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add active_trades.csv daily_stats.csv
-          # 只有在檔案有變動時才 commit，避免報錯
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update trade logs [skip ci]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 機器人自動更新交易紀錄 [skip ci]" && git push)
