@@ -22,7 +22,7 @@ LOG_FILE            = "active_trades.csv"
 STATS_FILE          = "daily_stats.csv"
 WAITING_EXPIRY_BARS = 20  # WAITING 超過幾根 K 棒自動清除（15m × 20 = 5 小時）
 
-LOG_COLS   = ["instId", "side", "status", "entry", "sl", "tp1", "tp2", "tp3", "locked", "wait_since"]
+LOG_COLS   = ["instId", "side", "status", "entry", "sl", "tp1", "tp2", "tp3", "locked", "wait_since", "tp1_hit"]
 STATS_COLS = ["instId", "result"]
 
 
@@ -51,6 +51,7 @@ def normalize_trade(t: dict) -> dict:
         "tp3":        safe_float(t.get("tp3")),
         "locked":     safe_int(t.get("locked")),
         "wait_since": safe_int(t.get("wait_since", 0)),
+        "tp1_hit":    safe_int(t.get("tp1_hit", 0)),  # 0=未通知, 1=已通知
     }
 
 
@@ -462,6 +463,8 @@ def main():
             trades_df = pd.read_csv(LOG_FILE)
             if "wait_since" not in trades_df.columns:
                 trades_df["wait_since"] = 0
+            if "tp1_hit" not in trades_df.columns:
+                trades_df["tp1_hit"] = 0
         except Exception:
             trades_df = pd.DataFrame(columns=LOG_COLS)
 
@@ -552,6 +555,7 @@ def main():
                         "tp3":        setup['tp3'],
                         "locked":     0,
                         "wait_since": current_bar,
+                        "tp1_hit":    0,
                     })
                 time.sleep(0.2)
                 continue
@@ -592,6 +596,26 @@ def main():
 
             # ACTIVE 狀態
             elif t['status'] == "ACTIVE":
+
+                # 達到 TP1 → 通知（只發一次，用 tp1_hit 旗標防止重複）
+                if t['tp1_hit'] == 0 and (
+                    (t['side'] == "LONG"  and curr_p >= t['tp1']) or
+                    (t['side'] == "SHORT" and curr_p <= t['tp1'])
+                ):
+                    t['tp1_hit'] = 1
+                    send_tg(
+                        f"🎯 *Alpha Oracle | 達到 TP1*\n"
+                        f"──────────────────\n"
+                        f"💎 幣種：#{coin_sym}\n"
+                        f"✅ 已觸及第一止盈位\n"
+                        f"\n"
+                        f"📍 當前價：{curr_p:.4f}\n"
+                        f"💰 TP1：{t['tp1']:.4f}  ✅\n"
+                        f"💰 TP2：{t['tp2']:.4f}\n"
+                        f"💰 TP3：{t['tp3']:.4f}\n"
+                        f"🚫 止損位：{t['sl']:.4f}"
+                    )
+
                 # 達到 TP2 → 鎖利保護（止損移至 TP1）
                 if t['locked'] == 0 and (
                     (t['side'] == "LONG"  and curr_p >= t['tp2']) or
