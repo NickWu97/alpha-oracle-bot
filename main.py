@@ -11,6 +11,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
+# 監控幣種
 ALL_COINS = [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
     "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP", 
@@ -21,11 +22,15 @@ LOG_FILE = "active_trades.csv"
 STATS_FILE = "daily_stats.csv"
 
 # --- 2. 工具函數 ---
+
 def get_extra_metrics(instId):
+    """抓取情緒數據：CVD(由資金費率模擬) 與 LS Ratio"""
     try:
-        base_id = instId.replace("-SWAP", "")
+        base_id = instId.replace("-SWAP", "").split("-")[0]
+        # 1. 資金費率
         f_res = requests.get(f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5).json()
         funding = f"{float(f_res['data'][0]['fundingRate']) * 100:.4f}%"
+        # 2. 多空持倉人數比 (使用 Rubik API)
         ls_res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={base_id}", timeout=5).json()
         ls_ratio = ls_res['data'][0]['ratio']
         return {"funding": funding, "ls_ratio": ls_ratio}
@@ -45,10 +50,12 @@ def fetch_okx(instId):
         res = requests.get(url, timeout=10).json()
         df = pd.DataFrame(res['data'], columns=['ts','o','h','l','c','v','volCcy','volCcyQuote','confirm'])
         df[['o','h','l','c','v']] = df[['o','h','l','c','v']].astype(float)
+        # 只取已收盤的 K 線 (confirm=="1")
         return df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
     except: return None
 
 def calculate_atr(df):
+    """計算平均真實波幅 (ATR) 用於動態止損"""
     high_low = df['h'] - df['l']
     high_close = np.abs(df['h'] - df['c'].shift())
     low_close = np.abs(df['l'] - df['c'].shift())
@@ -57,14 +64,22 @@ def calculate_atr(df):
     return true_range.rolling(window=14).mean().iloc[-1]
 
 def find_smc_setup(df):
+    """SMC 結構掃描：FVG + 結構突破 (BOS/CHoCH)"""
     if df is None or len(df) < 40: return None
     atr = calculate_atr(df)
+    
+    # 掃描最近 25 根 K 線尋找進場機會
     for i in range(len(df)-3, len(df)-25, -1):
         k0, k1, k2 = df.iloc[i-1], df.iloc[i], df.iloc[i+1]
+        
+        # 多頭條件：K2 突破前 15 根高點 且 K2 為陽線 (BOS)
         if k2['c'] > k2['o'] and k2['c'] > df['h'].iloc[i-15:i].max():
+            # 進場位取 FVG 缺口或 K 線中點 (較激進)
             entry = (k2['l'] + k0['h']) / 2 if k2['l'] > k0['h'] else (k1['l'] + k1['o']) / 2
-            sl = k1['l'] - (0.4 * atr)
+            sl = k1['l'] - (0.4 * atr) # 動態 ATR 止損
             return {"side": "LONG", "entry": entry, "sl": sl}
+            
+        # 空頭條件：K2 跌破前 15 根低點 且 K2 為陰線 (BOS)
         if k2['c'] < k2['o'] and k2['c'] < df['l'].iloc[i-15:i].min():
             entry = (k2['h'] + k0['l']) / 2 if k2['h'] < k0['l'] else (k1['h'] + k1['o']) / 2
             sl = k1['h'] + (0.4 * atr)
@@ -80,12 +95,12 @@ def main():
         log_cols = ["instId","side","status","entry","sl","tp1","tp2","tp3","locked"]
         stats_cols = ["instId","result"]
 
-        # 檔案物理檢查與初始化
+        # 檔案初始化
         for f, cols in zip([LOG_FILE, STATS_FILE], [log_cols, stats_cols]):
             if not os.path.exists(f) or os.stat(f).st_size == 0:
                 pd.DataFrame(columns=cols).to_csv(f, index=False)
 
-        # 🌙 A. 午夜勝率回報 (00:00 - 00:15 觸發)
+        # 🌙 A. 戰績回報 (午夜 00:00 或 手動觸發)
         is_midnight = (now_tw.hour == 0 and 0 <= now_tw.minute < 15)
         if is_midnight or manual_report:
             if not os.path.exists("midnight.ok") or manual_report:
@@ -97,11 +112,10 @@ def main():
                     wr = (tp_c / total * 100) if total > 0 else 0
                     
                     report_msg = f"📊 *Alpha Oracle 戰績回報*\n"
-                    report_msg += f"──────────────────\n\n"
-                    report_msg += f"✅ 止盈成交：{tp_c} 單\n"
-                    report_msg += f"❌ 止損離場：{sl_c} 單\n"
-                    report_msg += f"🔥 昨日勝率：*{wr:.1f}%*\n\n"
-                    report_msg += f"🕒 統計時間：{now_tw.strftime('%Y-%m-%d')}"
+                    report_msg += f"──────────────────\n"
+                    report_msg += f"✅ 盈：{tp_c} | ❌ 損：{sl_c}\n"
+                    report_msg += f"🔥 勝率：*{wr:.1f}%*\n"
+                    report_msg += f"🕒 統計時間：{now_tw.strftime('%Y-%m-%d %H:%M')}"
                     send_tg(report_msg)
                     
                     if is_midnight:
@@ -110,7 +124,7 @@ def main():
         elif now_tw.hour != 0 and os.path.exists("midnight.ok"):
             os.remove("midnight.ok")
 
-        # 核心監控
+        # B. 核心監控邏輯
         try:
             trades_df = pd.read_csv(LOG_FILE)
         except:
@@ -124,7 +138,7 @@ def main():
             if df is None or df.empty: continue
             curr_p, m = df['c'].iloc[-1], get_extra_metrics(instId)
 
-            # 1. 發現機會 (等待掛單)
+            # 1. 發現新機會
             if instId not in active_ids:
                 setup = find_smc_setup(df)
                 if setup:
@@ -134,16 +148,13 @@ def main():
                     tp3 = setup['entry'] + risk*3.0 if setup['side']=="LONG" else setup['entry'] - risk*3.0
                     
                     msg = f"🔍 *Alpha Oracle | 發現機會*\n"
-                    msg += f"──────────────────\n\n"
-                    msg += f"💎 幣種：#{instId.split('-')[0]}\n"
-                    msg += f"🎯 動作：{'🟢 多' if setup['side']=='LONG' else '🔴 空'}\n"
+                    msg += f"──────────────────\n"
+                    msg += f"💎 #{instId.split('-')[0]} | {'🟢 多' if setup['side']=='LONG' else '🔴 空'}\n"
                     msg += f"📊 數據：CVD {m['funding']} | LS {m['ls_ratio']}\n\n"
                     msg += f"📍 進場位：{setup['entry']:.4f}\n"
-                    msg += f"🚫 止損位：{setup['sl']:.4f}\n\n"
-                    msg += f"💰 TP1 (1.5R)：{tp1:.4f}\n"
-                    msg += f"💰 TP2 (2.0R)：{tp2:.4f}\n"
-                    msg += f"💰 TP3 (3.0R)：{tp3:.4f}\n\n"
-                    msg += f"💡 *等待價格回踩成交...*"
+                    msg += f"🚫 止損位：{setup['sl']:.4f}\n"
+                    msg += f"💰 TP1：{tp1:.4f} | TP3：{tp3:.4f}\n\n"
+                    msg += f"💡 *等待回踩成交...*"
                     send_tg(msg)
                     updated_trades.append({"instId":instId,"side":setup['side'],"status":"WAITING","entry":setup['entry'],"sl":setup['sl'],"tp1":tp1,"tp2":tp2,"tp3":tp3,"locked":0})
                 continue
@@ -151,32 +162,26 @@ def main():
             # 2. 追蹤現有單據
             t = trades_df[trades_df['instId'] == instId].iloc[0].to_dict()
             
-            # --- [通知] 進場成交 ---
+            # 檢查是否進場成交
             if t['status'] == "WAITING":
                 is_hit = (t['side']=="LONG" and curr_p <= t['entry']) or (t['side']=="SHORT" and curr_p >= t['entry'])
                 if is_hit:
                     t['status'] = "ACTIVE"
-                    msg = f"🚀 *Alpha Oracle | 成交提醒*\n"
+                    msg = f"🚀 *Alpha Oracle | 已成交*\n"
                     msg += f"──────────────────\n"
                     msg += f"✅ #{instId.split('-')[0]} 已觸發進場\n"
-                    msg += f"📍 成交價格：{curr_p:.4f}\n"
-                    msg += f"🛡️ 止損設定：{t['sl']:.4f}\n"
-                    msg += f"📊 當前數據：CVD {m['funding']} | LS {m['ls_ratio']}"
+                    msg += f"📍 成交價：{curr_p:.4f} | 🛡️ 止損：{t['sl']:.4f}"
                     send_tg(msg)
                 updated_trades.append(t)
             
-            # --- [通知] 鎖利與結算 (TP/SL) ---
+            # 檢查鎖利與結算
             elif t['status'] == "ACTIVE":
-                # 達 2R 鎖利
+                # 觸發 2.0R 鎖利保護 (止損移至保本 TP1 位)
                 if t['locked'] == 0 and ((t['side']=="LONG" and curr_p >= t['tp2']) or (t['side']=="SHORT" and curr_p <= t['tp2'])):
                     t['locked'], t['sl'] = 1, t['tp1']
-                    msg = f"🔒 *Alpha Oracle | 鎖利保護*\n"
-                    msg += f"──────────────────\n"
-                    msg += f"#{instId.split('-')[0]} 已達 2.0R 目標\n"
-                    msg += f"🛡️ 止損已自動移至 TP1：{t['tp1']:.4f}"
-                    send_tg(msg)
+                    send_tg(f"🔒 *Alpha Oracle | 鎖利保護*\n──────────────────\n#{instId.split('-')[0]} 達 2.0R，止損已移至 TP1: {t['tp1']:.4f}")
                 
-                # 結算判斷
+                # 結算判斷 (TP3 或 止損/保本)
                 is_sl = (t['side']=="LONG" and curr_p <= t['sl']) or (t['side']=="SHORT" and curr_p >= t['sl'])
                 is_tp3 = (t['side']=="LONG" and curr_p >= t['tp3']) or (t['side']=="SHORT" and curr_p <= t['tp3'])
                 
@@ -185,14 +190,15 @@ def main():
                     msg = f"🏁 *Alpha Oracle | 交易結算*\n"
                     msg += f"──────────────────\n"
                     msg += f"#{instId.split('-')[0]} 結算離場\n"
-                    msg += f"🏆 結果：{'💰 強力止盈 (3R)' if is_tp3 else '🛡️ 保本/止損離場'}\n"
-                    msg += f"📍 出場價格：{curr_p:.4f}"
+                    msg += f"🏆 結果：{'💰 強力止盈 (3.0R)' if is_tp3 else '🛡️ 保本/止損離場'}\n"
+                    msg += f"📍 離場價：{curr_p:.4f}"
                     send_tg(msg)
-                    # 記錄到統計檔案
+                    # 寫入統計
                     pd.DataFrame([{"instId":instId,"result":res}]).to_csv(STATS_FILE, mode='a', header=False, index=False)
                     continue
                 updated_trades.append(t)
 
+        # 儲存當前狀態，供下次 Actions 讀取
         pd.DataFrame(updated_trades).to_csv(LOG_FILE, index=False)
     except:
         traceback.print_exc()
