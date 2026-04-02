@@ -2,21 +2,22 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    # 每 15 分鐘執行一次 (對應你的 15m K線策略)
     - cron: '*/15 * * * *'
   workflow_dispatch:
-    # 允許手動觸發測試
     inputs:
-      manual_report:
-        description: '是否手動觸發戰報 (true/false)'
-        default: 'false'
-
-permissions:
-  contents: write  # 重要：允許機器人寫回 CSV 紀錄
+      send_report:
+        description: '立刻發送戰績報表？'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
-  trade:
+  run-bot:
     runs-on: ubuntu-latest
+    concurrency:
+      group: trading-bot
+      cancel-in-progress: false
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -28,19 +29,20 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install requests pandas numpy pytz
+          python -m pip install --upgrade pip
+          pip install requests pandas numpy
 
-      - name: Run Bot
+      - name: Run Main Script
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          MANUAL_REPORT: ${{ github.event.inputs.manual_report || 'false' }}
-        run: python main.py  # 這裡已經幫你改好對應你的檔名了
+          MANUAL_REPORT: ${{ github.event.inputs.send_report }}
+        run: python main.py
 
-      - name: Commit and Push Changes
-        # 自動將更新後的 CSV 檔案存回 GitHub，防止機器人失憶
+      - name: Save Logs
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --global user.name "GitHub Bot"
+          git config --global user.email "bot@github.com"
           git add active_trades.csv daily_stats.csv
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 機器人自動更新交易紀錄 [skip ci]" && git push)
+          git commit -m "Update logs [skip ci]" || exit 0
+          git push
