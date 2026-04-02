@@ -275,6 +275,52 @@ def suggest_leverage(atr: float, price: float) -> tuple[str, str]:
     elif vol_pct > 1.5: return "5x ~ 10x",  "中波動"
     else:               return "10x ~ 20x", "低波動"
 
+# ─────────────────────────────────────────────
+# 6. 三層過濾器
+# ─────────────────────────────────────────────
+
+def fetch_funding_rate_raw(instId: str) -> float:
+    """抓取資金費率原始浮點值（用於過濾判斷）"""
+    try:
+        res = requests.get(
+            f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5
+        ).json()
+        return float(res['data'][0]['fundingRate'])
+    except Exception as e:
+        logging.warning(f"[{instId}] 資金費率原始值抓取失敗: {e}")
+        return 0.0  # 抓不到時不過濾
+
+def is_trending_market(df: pd.DataFrame) -> bool:
+    """
+    盤整過濾：當前 ATR(14) 必須高於近 50 根均 ATR × 0.7。
+    ATR 太小代表市場在盤整，SMC 訊號在此環境下失真率高。
+    """
+    if len(df) < 50:
+        return True  # 資料不足，不過濾
+    high_low   = df['h'] - df['l']
+    high_close = np.abs(df['h'] - df['c'].shift())
+    low_close  = np.abs(df['l'] - df['c'].shift())
+    tr         = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+    current_atr = tr.rolling(14).mean().iloc[-1]
+    avg_atr_50  = tr.tail(50).mean()
+    return current_atr > avg_atr_50 * 0.7
+
+def get_btc_direction(btc_df: pd.DataFrame, lookback: int = 5) -> str:
+    """
+    BTC 近期方向判斷：
+    近 N 根 K 棒中 4 根以上為陰線 → DOWN
+    近 N 根 K 棒中 4 根以上為陽線 → UP
+    否則 → NEUTRAL
+    """
+    if btc_df is None or len(btc_df) < lookback:
+        return "NEUTRAL"
+    recent  = btc_df.tail(lookback)
+    bearish = int((recent['c'] < recent['o']).sum())
+    bullish = lookback - bearish
+    if bearish >= 4: return "DOWN"
+    if bullish >= 4: return "UP"
+    return "NEUTRAL"
+
 def classify_trade(side: str, structure: str, risk_pct: float) -> str:
     """
     自動判斷短單/長單：
@@ -423,6 +469,11 @@ def main():
         updated_trades = []
         current_bar    = int(datetime.utcnow().timestamp() // 900)  # 15m bar index
 
+        # 過濾器 ③ 前置：先抓 BTC 方向（整個迴圈只需抓一次）
+        btc_df    = fetch_okx("BTC-USDT-SWAP")
+        btc_trend = get_btc_direction(btc_df)
+        logging.info(f"BTC 當前方向：{btc_trend}")
+
         for instId in ALL_COINS:
             df = fetch_okx(instId)
             if df is None or df.empty:
@@ -434,8 +485,39 @@ def main():
 
             # ── 1. 發現新機會 ───────────────────────────────────────────
             if instId not in active_ids:
+
+                # 過濾器 ①：盤整市場 — ATR 不足時跳過，避免假突破
+                if not is_trending_market(df):
+                    logging.info(f"[{instId}] 盤整市場，跳過")
+                    time.sleep(0.2)
+                    continue
+
                 setup = find_smc_setup(df)
                 if setup:
+
+                    # 過濾器 ②：資金費率極端值
+                    # 資費 > +0.05% 代表多頭過熱，不追多；< -0.05% 代表空頭過熱，不追空
+                    fr = fetch_funding_rate_raw(instId)
+                    if setup['side'] == "LONG" and fr > 0.0005:
+                        logging.info(f"[{instId}] 資費過高 ({fr*100:.4f}%)，多頭過熱，跳過")
+                        time.sleep(0.2)
+                        continue
+                    if setup['side'] == "SHORT" and fr < -0.0005:
+                        logging.info(f"[{instId}] 資費過低 ({fr*100:.4f}%)，空頭過熱，跳過")
+                        time.sleep(0.2)
+                        continue
+
+                    # 過濾器 ③：BTC 方向（山寨幣專用，BTC 本身不限制）
+                    # BTC 下跌中不做山寨多頭；BTC 上漲中不做山寨空頭
+                    if instId != "BTC-USDT-SWAP":
+                        if setup['side'] == "LONG" and btc_trend == "DOWN":
+                            logging.info(f"[{instId}] BTC 下跌中，山寨多頭跳過")
+                            time.sleep(0.2)
+                            continue
+                        if setup['side'] == "SHORT" and btc_trend == "UP":
+                            logging.info(f"[{instId}] BTC 上漲中，山寨空頭跳過")
+                            time.sleep(0.2)
+                            continue
                     funding, ls_ratio = get_funding_ls(instId)
                     side_zh = "🟢 多單 (LONG)" if setup['side'] == "LONG" else "🔴 空單 (SHORT)"
 
