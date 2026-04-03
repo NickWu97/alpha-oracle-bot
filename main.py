@@ -517,7 +517,19 @@ def main():
                 setup = find_smc_setup(df)
                 if setup:
 
-                    # 過濾器 ②：資金費率極端值
+                    # 過濾器 ②：CVD 方向與訊號一致性
+                    # 大戶出貨（CVD-）不做多；大戶吸籌（CVD+）不做空
+                    cvd_val, _ = calculate_cvd(df)
+                    if setup['side'] == "LONG" and cvd_val < 0:
+                        logging.info(f"[{instId}] CVD 負值（大戶出貨），多頭訊號跳過")
+                        time.sleep(0.2)
+                        continue
+                    if setup['side'] == "SHORT" and cvd_val > 0:
+                        logging.info(f"[{instId}] CVD 正值（大戶吸籌），空頭訊號跳過")
+                        time.sleep(0.2)
+                        continue
+
+                    # 過濾器 ③：資金費率極端值
                     # 資費 > +0.05% 代表多頭過熱，不追多；< -0.05% 代表空頭過熱，不追空
                     fr = fetch_funding_rate_raw(instId)
                     if setup['side'] == "LONG" and fr > 0.0005:
