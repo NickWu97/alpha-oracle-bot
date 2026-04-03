@@ -571,24 +571,31 @@ def main():
                     time.sleep(0.2)
                     continue
 
+                # FIX：改用 K 棒影線判斷，不只看收盤價
+                # 多頭：只要這根 K 棒的最低點 <= 進場位，即視為成交
+                # 空頭：只要這根 K 棒的最高點 >= 進場位，即視為成交
+                candle_low  = df['l'].iloc[-1]
+                candle_high = df['h'].iloc[-1]
                 is_hit = (
-                    (t['side'] == "LONG"  and curr_p <= t['entry']) or
-                    (t['side'] == "SHORT" and curr_p >= t['entry'])
+                    (t['side'] == "LONG"  and candle_low  <= t['entry']) or
+                    (t['side'] == "SHORT" and candle_high >= t['entry'])
                 )
                 if is_hit:
                     t['status'] = "ACTIVE"
-                    side_zh = "🟢 多單 (LONG)" if t['side'] == "LONG" else "🔴 空單 (SHORT)"
+                    fill_price  = t['entry']  # 以計劃進場位作為成交價
+                    side_zh     = "🟢 多單 (LONG)" if t['side'] == "LONG" else "🔴 空單 (SHORT)"
+                    risk_r      = abs(t['entry'] - t['sl']) + 1e-10
                     send_tg(
                         f"🚀 *Alpha Oracle | 進場成交* 🚀\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
                         f"🎯 方向：{side_zh}\n"
                         f"\n"
-                        f"📍 成交價：{curr_p:.4f}\n"
-                        f"🚫 止損位：{t['sl']:.4f}\n"
-                        f"💰 TP1：{t['tp1']:.4f}\n"
-                        f"💰 TP2：{t['tp2']:.4f}\n"
-                        f"💰 TP3：{t['tp3']:.4f}\n"
+                        f"📍 成交價：{fill_price:.4f}\n"
+                        f"🚫 止損位：{t['sl']:.4f}  (-1R)\n"
+                        f"💰 TP1 (+{abs(t['tp1']-t['entry'])/risk_r:.1f}R)：{t['tp1']:.4f}\n"
+                        f"💰 TP2 (+{abs(t['tp2']-t['entry'])/risk_r:.1f}R)：{t['tp2']:.4f}\n"
+                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}\n"
                         f"\n"
                         f"🎯 *單已開，緊盯止損*"
                     )
@@ -596,6 +603,8 @@ def main():
 
             # ACTIVE 狀態
             elif t['status'] == "ACTIVE":
+
+                risk_r = abs(t['entry'] - t['sl']) + 1e-10
 
                 # 達到 TP1 → 通知（只發一次，用 tp1_hit 旗標防止重複）
                 if t['tp1_hit'] == 0 and (
@@ -610,10 +619,10 @@ def main():
                         f"✅ 已觸及第一止盈位\n"
                         f"\n"
                         f"📍 當前價：{curr_p:.4f}\n"
-                        f"💰 TP1：{t['tp1']:.4f}  ✅\n"
-                        f"💰 TP2：{t['tp2']:.4f}\n"
-                        f"💰 TP3：{t['tp3']:.4f}\n"
-                        f"🚫 止損位：{t['sl']:.4f}"
+                        f"💰 TP1 (+{abs(t['tp1']-t['entry'])/risk_r:.1f}R)：{t['tp1']:.4f}  ✅\n"
+                        f"💰 TP2 (+{abs(t['tp2']-t['entry'])/risk_r:.1f}R)：{t['tp2']:.4f}\n"
+                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}\n"
+                        f"🚫 止損位：{t['sl']:.4f}  (-1R)"
                     )
 
                 # 達到 TP2 → 鎖利保護（止損移至 TP1）
@@ -624,14 +633,14 @@ def main():
                     t['locked'] = 1
                     t['sl']     = t['tp1']
                     send_tg(
-                        f"🔒 *Alpha Oracle | 鎖利保護*\n"
+                        f"🔒 *Alpha Oracle | 達到 TP2 · 鎖利保護*\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
                         f"✅ 已達 TP2，止損上移保本\n"
                         f"\n"
                         f"📍 當前價：{curr_p:.4f}\n"
-                        f"🚫 新止損：{t['tp1']:.4f}（保本）\n"
-                        f"💰 TP3：{t['tp3']:.4f}"
+                        f"🚫 新止損：{t['tp1']:.4f}（保本 · 0R）\n"
+                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}"
                     )
 
                 is_sl  = (
@@ -659,10 +668,10 @@ def main():
                         f"🏆 結果：{result_label}\n"
                         f"\n"
                         f"📍 離場價：{curr_p:.4f}\n"
-                        f"🚫 止損位：{t['sl']:.4f}\n"
-                        f"💰 TP1：{t['tp1']:.4f}\n"
-                        f"💰 TP2：{t['tp2']:.4f}\n"
-                        f"💰 TP3：{t['tp3']:.4f}"
+                        f"🚫 止損位：{t['sl']:.4f}  (-1R)\n"
+                        f"💰 TP1 (+{abs(t['tp1']-t['entry'])/risk_r:.1f}R)：{t['tp1']:.4f}\n"
+                        f"💰 TP2 (+{abs(t['tp2']-t['entry'])/risk_r:.1f}R)：{t['tp2']:.4f}\n"
+                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}"
                     )
                     pd.DataFrame([{"instId": instId, "result": res}]).to_csv(
                         STATS_FILE, mode='a', header=False, index=False
