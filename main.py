@@ -377,12 +377,15 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
 
         # 多頭 BOS：K2 突破前 15 根高點且為陽線
         if k2['c'] > k2['o'] and k2['c'] > df['h'].iloc[i - 15:i].max():
-            entry = (k2['l'] + k0['h']) / 2 if k2['l'] > k0['h'] else (k1['l'] + k1['o']) / 2
+            # 進場位改用 FVG 上緣（k2['l']）：最靠近當前價格，只需小幅回踩即可成交
+            # 若無 FVG 則用 k1 收盤（BOS 前最後一根 K 棒收盤，同樣比中點更容易被觸及）
+            entry = k2['l'] if k2['l'] > k0['h'] else k1['c']
             best  = {"side": "LONG", "entry": entry}
 
         # 空頭 BOS：K2 跌破前 15 根低點且為陰線
         elif k2['c'] < k2['o'] and k2['c'] < df['l'].iloc[i - 15:i].min():
-            entry = (k2['h'] + k0['l']) / 2 if k2['h'] < k0['l'] else (k1['h'] + k1['o']) / 2
+            # 空頭同理：用 FVG 下緣（k2['h']）或 k1 收盤
+            entry = k2['h'] if k2['h'] < k0['l'] else k1['c']
             best  = {"side": "SHORT", "entry": entry}
 
     if best is None:
