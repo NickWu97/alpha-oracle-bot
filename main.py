@@ -73,6 +73,22 @@ def fetch_okx(instId: str) -> pd.DataFrame | None:
         logging.warning(f"[{instId}] K 線抓取失敗: {e}")
         return None
 
+def fetch_current_candle_hl(instId: str) -> tuple[float, float]:
+    """
+    抓取當前「未收盤」K 棒的最高/最低價（confirm="0"）。
+    用於 WAITING 進場偵測，避免漏掉正在形成中的 K 棒觸及進場位。
+    回傳 (low, high)；抓不到時回傳不影響判斷的安全值。
+    """
+    try:
+        url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar=15m&limit=3"
+        res = requests.get(url, timeout=5).json()
+        for row in res['data']:
+            if row[8] == "0":                    # confirm == "0" 即當前未收盤
+                return float(row[3]), float(row[2])  # (low, high)
+    except Exception as e:
+        logging.warning(f"[{instId}] 當前 K 棒抓取失敗: {e}")
+    return float('inf'), float('-inf')           # 安全值：不觸發任何判斷
+
 def get_funding_ls(instId: str) -> tuple[str, str]:
     """抓取資金費率與多空持倉比"""
     base_id  = instId.replace("-SWAP", "").split("-")[0]
@@ -571,14 +587,16 @@ def main():
                     time.sleep(0.2)
                     continue
 
-                # FIX：改用 K 棒影線判斷，不只看收盤價
-                # 多頭：只要這根 K 棒的最低點 <= 進場位，即視為成交
-                # 空頭：只要這根 K 棒的最高點 >= 進場位，即視為成交
-                candle_low  = df['l'].iloc[-1]
-                candle_high = df['h'].iloc[-1]
+                # 進場觸發：同時檢查三層，避免漏單
+                # ① 最近 3 根已收盤 K 棒（防止 bot 上次執行時跳過某根）
+                # ② 當前未收盤 K 棒（防止進場位在本根 K 棒內被觸及但尚未確認）
+                n_check      = min(3, len(df))
+                cur_low, cur_high = fetch_current_candle_hl(instId)
+                check_low    = min(df['l'].iloc[-n_check:].min(), cur_low)
+                check_high   = max(df['h'].iloc[-n_check:].max(), cur_high)
                 is_hit = (
-                    (t['side'] == "LONG"  and candle_low  <= t['entry']) or
-                    (t['side'] == "SHORT" and candle_high >= t['entry'])
+                    (t['side'] == "LONG"  and check_low  <= t['entry']) or
+                    (t['side'] == "SHORT" and check_high >= t['entry'])
                 )
                 if is_hit:
                     t['status'] = "ACTIVE"
