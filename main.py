@@ -668,20 +668,22 @@ def main():
                     time.sleep(0.2)
                     continue
 
-                # 進場觸發：同時檢查三層，避免漏單
-                # ① 最近 3 根已收盤 K 棒（防止 bot 上次執行時跳過某根）
-                # ② 當前未收盤 K 棒（防止進場位在本根 K 棒內被觸及但尚未確認）
-                n_check      = min(3, len(df))
+                # 進場觸發：四層防漏偵測
+                # ① 最近 8 根已收盤 K 棒（擴大回溯，防止 bot 在錯誤時間點執行而漏單）
+                # ② 當前未收盤 K 棒的最高/最低（防止進場位在本根 K 棒內觸及但尚未確認）
+                # ③ 當前收盤價（curr_p）直接補充判斷：
+                #    API 失敗導致 cur_low=inf 時仍可透過 curr_p 觸發進場
+                n_check      = min(8, len(df))
                 cur_low, cur_high = fetch_current_candle_hl(instId)
-                check_low    = min(df['l'].iloc[-n_check:].min(), cur_low)
-                check_high   = max(df['h'].iloc[-n_check:].max(), cur_high)
+                check_low    = min(df['l'].iloc[-n_check:].min(), cur_low, curr_p)
+                check_high   = max(df['h'].iloc[-n_check:].max(), cur_high, curr_p)
                 is_hit = (
                     (t['side'] == "LONG"  and check_low  <= t['entry']) or
                     (t['side'] == "SHORT" and check_high >= t['entry'])
                 )
 
-                # 進場保護：若當前價已突破止損（價格直接穿過 entry+SL），
-                # 代表這是一根大陰/陽棒直接掃過去，不應進場，直接清除此單
+                # 進場保護：若當前收盤價已突破止損，
+                # 代表價格直接穿過 entry+SL，不應進場，直接清除此單
                 already_sl = (
                     (t['side'] == "LONG"  and curr_p < t['sl']) or
                     (t['side'] == "SHORT" and curr_p > t['sl'])
@@ -717,10 +719,17 @@ def main():
 
                 risk_r = abs(t['entry'] - t['sl']) + 1e-10
 
+                # 嚴格執行：用最近 3 根 K 棒高低點 + 當前未收盤 K 棒判斷 TP/SL
+                # 避免只盯收盤價而漏掉在同一根 K 棒內觸及的 TP 或 SL
+                act_n          = min(3, len(df))
+                act_cur_lo, act_cur_hi = fetch_current_candle_hl(instId)
+                act_low  = min(df['l'].iloc[-act_n:].min(), act_cur_lo, curr_p)
+                act_high = max(df['h'].iloc[-act_n:].max(), act_cur_hi, curr_p)
+
                 # 達到 TP1 → 通知（只發一次，用 tp1_hit 旗標防止重複）
                 if t['tp1_hit'] == 0 and (
-                    (t['side'] == "LONG"  and curr_p >= t['tp1']) or
-                    (t['side'] == "SHORT" and curr_p <= t['tp1'])
+                    (t['side'] == "LONG"  and act_high >= t['tp1']) or
+                    (t['side'] == "SHORT" and act_low  <= t['tp1'])
                 ):
                     t['tp1_hit'] = 1
                     send_tg(
@@ -730,16 +739,16 @@ def main():
                         f"✅ 已觸及第一止盈位\n"
                         f"\n"
                         f"📍 當前價：{curr_p:.4f}\n"
-                        f"💰 TP1 (+{abs(t['tp1']-t['entry'])/risk_r:.1f}R)：{t['tp1']:.4f}  ✅\n"
-                        f"💰 TP2 (+{abs(t['tp2']-t['entry'])/risk_r:.1f}R)：{t['tp2']:.4f}\n"
-                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}\n"
+                        f"💰 TP1 (1.0R)：{t['tp1']:.4f}  ✅\n"
+                        f"💰 TP2 (2.0R)：{t['tp2']:.4f}\n"
+                        f"💰 TP3 (3.0R)：{t['tp3']:.4f}\n"
                         f"🚫 止損位：{t['sl']:.4f}  (-1R)"
                     )
 
                 # 達到 TP2 → 鎖利保護（止損移至 TP1）
                 if t['locked'] == 0 and (
-                    (t['side'] == "LONG"  and curr_p >= t['tp2']) or
-                    (t['side'] == "SHORT" and curr_p <= t['tp2'])
+                    (t['side'] == "LONG"  and act_high >= t['tp2']) or
+                    (t['side'] == "SHORT" and act_low  <= t['tp2'])
                 ):
                     t['locked'] = 1
                     t['sl']     = t['tp1']
@@ -750,39 +759,45 @@ def main():
                         f"✅ 已達 TP2，止損上移保本\n"
                         f"\n"
                         f"📍 當前價：{curr_p:.4f}\n"
-                        f"🚫 新止損：{t['tp1']:.4f}（保本 · 0R）\n"
-                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}"
+                        f"🚫 新止損：{t['tp1']:.4f}（已移至 TP1 · 保本）\n"
+                        f"💰 TP3 (3.0R)：{t['tp3']:.4f}"
                     )
 
+                # SL 觸發：用 K 棒低點（多單）/ 高點（空單）判斷，嚴格執行
                 is_sl  = (
-                    (t['side'] == "LONG"  and curr_p <= t['sl']) or
-                    (t['side'] == "SHORT" and curr_p >= t['sl'])
+                    (t['side'] == "LONG"  and act_low  <= t['sl']) or
+                    (t['side'] == "SHORT" and act_high >= t['sl'])
                 )
+                # TP3 觸發：同上，用高低點判斷
                 is_tp3 = (
-                    (t['side'] == "LONG"  and curr_p >= t['tp3']) or
-                    (t['side'] == "SHORT" and curr_p <= t['tp3'])
+                    (t['side'] == "LONG"  and act_high >= t['tp3']) or
+                    (t['side'] == "SHORT" and act_low  <= t['tp3'])
                 )
 
                 if is_sl or is_tp3:
                     is_breakeven = is_sl and t['locked'] == 1  # 止損已移至保本位
                     res          = "SL" if (is_sl and not is_breakeven) else "TP"  # 保本算 TP
+                    # 決定離場價格顯示
                     if is_tp3:
                         result_label = "💰 止盈達標 (TP3)"
+                        exit_p       = t['tp3']
                     elif is_breakeven:
                         result_label = "🔒 保本出場 (Break Even)"
+                        exit_p       = t['tp1']
                     else:
                         result_label = "❌ 止損離場"
+                        exit_p       = t['sl']
                     send_tg(
                         f"🏁 *Alpha Oracle | 交易結算*\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
                         f"🏆 結果：{result_label}\n"
                         f"\n"
-                        f"📍 離場價：{curr_p:.4f}\n"
+                        f"📍 離場價：{exit_p:.4f}\n"
                         f"🚫 止損位：{t['sl']:.4f}  (-1R)\n"
-                        f"💰 TP1 (+{abs(t['tp1']-t['entry'])/risk_r:.1f}R)：{t['tp1']:.4f}\n"
-                        f"💰 TP2 (+{abs(t['tp2']-t['entry'])/risk_r:.1f}R)：{t['tp2']:.4f}\n"
-                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}"
+                        f"💰 TP1 (1.0R)：{t['tp1']:.4f}\n"
+                        f"💰 TP2 (2.0R)：{t['tp2']:.4f}\n"
+                        f"💰 TP3 (3.0R)：{t['tp3']:.4f}"
                     )
                     pd.DataFrame([{"instId": instId, "result": res}]).to_csv(
                         STATS_FILE, mode='a', header=False, index=False
