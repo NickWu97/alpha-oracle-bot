@@ -613,6 +613,18 @@ def main():
                     (t['side'] == "LONG"  and check_low  <= t['entry']) or
                     (t['side'] == "SHORT" and check_high >= t['entry'])
                 )
+
+                # 進場保護：若當前價已突破止損（價格直接穿過 entry+SL），
+                # 代表這是一根大陰/陽棒直接掃過去，不應進場，直接清除此單
+                already_sl = (
+                    (t['side'] == "LONG"  and curr_p < t['sl']) or
+                    (t['side'] == "SHORT" and curr_p > t['sl'])
+                )
+                if is_hit and already_sl:
+                    logging.info(f"[{instId}] 進場位已觸及但當前價已穿破止損，放棄此單")
+                    time.sleep(0.2)
+                    continue  # 不加入 updated_trades，直接清除
+
                 if is_hit:
                     t['status'] = "ACTIVE"
                     fill_price  = t['entry']  # 以計劃進場位作為成交價
