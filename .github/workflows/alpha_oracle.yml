@@ -31,35 +31,20 @@ jobs:
       # 3. 執行 bot
       - name: Run Alpha Oracle
         env:
-          # ── Telegram ──────────────────────────────
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID:  ${{ secrets.CHAT_ID }}
+          TG_TOKEN:      ${{ secrets.TG_TOKEN }}
+          CHAT_ID:       ${{ secrets.CHAT_ID }}
           MANUAL_REPORT: ${{ github.event.inputs.manual_report || 'false' }}
-          # ── OKX 自動下單（不需要自動下單可不填）────
-          OKX_API_KEY:    ${{ secrets.OKX_API_KEY }}
-          OKX_SECRET_KEY: ${{ secrets.OKX_SECRET_KEY }}
-          OKX_PASSPHRASE: ${{ secrets.OKX_PASSPHRASE }}
-          AUTO_TRADE:     ${{ secrets.AUTO_TRADE }}      # true / false
-          OKX_DEMO:       ${{ secrets.OKX_DEMO }}        # true=模擬倉 / false=實盤
-          # ── 倉位大小（二選一）────────────────────────
-          # 方式 A：固定張數（OKX_RISK_PCT 不填或填 0 時生效）
-          OKX_TRADE_SIZE: ${{ secrets.OKX_TRADE_SIZE }}  # 固定合約張數，例如 1
-          # 方式 B：風險比例自動算張數（填大於 0 的值時優先使用）
-          OKX_RISK_PCT:   ${{ secrets.OKX_RISK_PCT }}    # 每單風險 %，例如 1（=淨值1%）
-          # ── 其他設定 ─────────────────────────────────
-          OKX_LEVER:         ${{ secrets.OKX_LEVER }}          # 槓桿倍數，例如 5
-          OKX_TD_MODE:       ${{ secrets.OKX_TD_MODE }}        # isolated / cross
-          OKX_MAX_POSITIONS: ${{ secrets.OKX_MAX_POSITIONS }}  # 最大同時倉位數，例如 10
         run: python main.py
 
       # 4. ⭐ 關鍵：把更新後的 CSV 狀態 commit 回 repo
       #    這樣下一次執行才能讀到上次的 trade 狀態
+      #    必須在 repo Settings > Actions > General >
+      #    Workflow permissions 選 "Read and write permissions"
       - name: Save state back to repo
         run: |
           git config user.name  "alpha-oracle-bot"
           git config user.email "bot@alpha-oracle"
           git add -f active_trades.csv daily_stats.csv midnight.ok 2>/dev/null || true
-          # 只在有變動時才 commit，避免空 commit
           git diff --staged --quiet || git commit -m "chore: update trade state [skip ci]"
           git push
         env:
