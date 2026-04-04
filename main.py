@@ -149,6 +149,72 @@ def calculate_cvd(df: pd.DataFrame, lookback: int = 20) -> tuple[float, str]:
     label = "🟢 大戶吸籌 (CVD+)" if cvd > 0 else "🔴 大戶出貨 (CVD-)"
     return cvd, label
 
+def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float = 3.0) -> int:
+    """
+    Supertrend 指標（ATR 基準趨勢方向過濾）
+    period=10, multiplier=3.0（與 Pine Script 預設一致）
+    回傳  1 → 多頭趨勢（只做多）
+    回傳 -1 → 空頭趨勢（只做空）
+    回傳  0 → 資料不足，不過濾
+    """
+    if len(df) < period + 2:
+        return 0
+
+    high  = df['h'].values.astype(float)
+    low   = df['l'].values.astype(float)
+    close = df['c'].values.astype(float)
+    n     = len(df)
+
+    # True Range
+    tr = np.zeros(n)
+    for i in range(1, n):
+        tr[i] = max(high[i] - low[i],
+                    abs(high[i] - close[i - 1]),
+                    abs(low[i]  - close[i - 1]))
+
+    # Wilder ATR（與 Pine Script 的 ta.atr 相同）
+    atr = np.zeros(n)
+    atr[period] = tr[1:period + 1].mean()
+    for i in range(period + 1, n):
+        atr[i] = (atr[i - 1] * (period - 1) + tr[i]) / period
+
+    hl2 = (high + low) / 2.0
+
+    # 基礎上下軌
+    basic_up = hl2 - multiplier * atr   # 多頭支撐下軌（up line）
+    basic_dn = hl2 + multiplier * atr   # 空頭壓力上軌（dn line）
+
+    # Trailing 軌道 + 趨勢方向
+    final_up = np.zeros(n)
+    final_dn = np.zeros(n)
+    trend    = np.ones(n, dtype=int)
+
+    final_up[period] = basic_up[period]
+    final_dn[period] = basic_dn[period]
+
+    for i in range(period + 1, n):
+        # 多頭下軌只能往上收緊
+        final_up[i] = (
+            basic_up[i]
+            if basic_up[i] > final_up[i - 1] or close[i - 1] < final_up[i - 1]
+            else final_up[i - 1]
+        )
+        # 空頭上軌只能往下收緊
+        final_dn[i] = (
+            basic_dn[i]
+            if basic_dn[i] < final_dn[i - 1] or close[i - 1] > final_dn[i - 1]
+            else final_dn[i - 1]
+        )
+        # 趨勢翻轉判斷
+        if trend[i - 1] == -1 and close[i] > final_dn[i - 1]:
+            trend[i] = 1
+        elif trend[i - 1] == 1 and close[i] < final_up[i - 1]:
+            trend[i] = -1
+        else:
+            trend[i] = trend[i - 1]
+
+    return int(trend[-1])
+
 
 # ─────────────────────────────────────────────
 # 5. SMC 結構分析
@@ -259,31 +325,16 @@ def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: floa
             return sl
         return entry + atr * 1.5
 
-def get_liquidity_tps(
-    df: pd.DataFrame, entry: float, side: str, sl: float
-) -> tuple[float, float, float]:
+def get_fixed_r_tps(entry: float, sl: float, side: str) -> tuple[float, float, float]:
     """
-    流動性導向止盈：
-    目標 = 前方擺動高/低點（市場會往那裡「掃流動性」）。
-    找不到足夠目標時，備用 1.5R / 2.5R / 3.5R。
+    固定 R 倍數止盈：TP1=1R, TP2=2R, TP3=3R
+    清晰、可預期，方便風險管理。
     """
-    swing_highs, swing_lows = find_swing_points(df, n=2, lookback=80)
     risk = abs(entry - sl) + 1e-10
-
     if side == "LONG":
-        targets = sorted([h for h in swing_highs if h > entry * 1.003])
+        return entry + risk, entry + risk * 2, entry + risk * 3
     else:
-        targets = sorted([l for l in swing_lows if l < entry * 0.997], reverse=True)
-
-    fallback = [
-        entry + risk * 1.5 if side == "LONG" else entry - risk * 1.5,
-        entry + risk * 2.5 if side == "LONG" else entry - risk * 2.5,
-        entry + risk * 3.5 if side == "LONG" else entry - risk * 3.5,
-    ]
-    while len(targets) < 3:
-        targets.append(fallback[len(targets)])
-
-    return targets[0], targets[1], targets[2]
+        return entry - risk, entry - risk * 2, entry - risk * 3
 
 def suggest_leverage(atr: float, price: float) -> tuple[str, str]:
     """根據 ATR 波動率自動建議槓桿倍數"""
@@ -398,8 +449,8 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
     # 結構性止損
     sl = calculate_structural_sl(df, side, entry, atr)
 
-    # 流動性導向止盈
-    tp1, tp2, tp3 = get_liquidity_tps(df, entry, side, sl)
+    # 固定 R 倍數止盈：TP1=1R, TP2=2R, TP3=3R
+    tp1, tp2, tp3 = get_fixed_r_tps(entry, sl, side)
 
     # 各項分析
     risk          = abs(entry - sl) + 1e-10
@@ -409,10 +460,9 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
     trade_type    = classify_trade(side, structure, risk_pct)
     _, cvd_label  = calculate_cvd(df)
 
-    # 實際 R 倍數
-    r1 = abs(tp1 - entry) / risk
-    r2 = abs(tp2 - entry) / risk
-    r3 = abs(tp3 - entry) / risk
+    # Supertrend 方向
+    st_val   = calculate_supertrend(df)
+    st_label = "📈 多頭" if st_val == 1 else ("📉 空頭" if st_val == -1 else "⚪ 未知")
 
     return {
         "side":          side,
@@ -421,14 +471,16 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
         "tp1":           tp1,
         "tp2":           tp2,
         "tp3":           tp3,
-        "r1":            r1,
-        "r2":            r2,
-        "r3":            r3,
+        "r1":            1.0,
+        "r2":            2.0,
+        "r3":            3.0,
         "structure":     structure,
         "leverage":      lev,
         "leverage_note": lev_note,
         "trade_type":    trade_type,
         "cvd_label":     cvd_label,
+        "st_val":        st_val,
+        "st_label":      st_label,
     }
 
 
@@ -552,6 +604,19 @@ def main():
                             logging.info(f"[{instId}] BTC 上漲中，山寨空頭跳過")
                             time.sleep(0.2)
                             continue
+
+                    # 過濾器 ④：Supertrend 方向一致性
+                    # Supertrend 空頭（-1）時不做多；多頭（1）時不做空
+                    # st_val==0 表示資料不足，放行不過濾
+                    if setup['st_val'] == -1 and setup['side'] == "LONG":
+                        logging.info(f"[{instId}] Supertrend 空頭，多頭訊號跳過")
+                        time.sleep(0.2)
+                        continue
+                    if setup['st_val'] == 1 and setup['side'] == "SHORT":
+                        logging.info(f"[{instId}] Supertrend 多頭，空頭訊號跳過")
+                        time.sleep(0.2)
+                        continue
+
                     funding, ls_ratio = get_funding_ls(instId)
                     side_zh = "🟢 多單 (LONG)" if setup['side'] == "LONG" else "🔴 空單 (SHORT)"
 
@@ -563,12 +628,13 @@ def main():
                     msg += f"📊 數據：多空比 {ls_ratio} | 資費 {funding} | {setup['cvd_label']}\n"
                     msg += f"\n"
                     msg += f"📍 進場位：{setup['entry']:.4f}\n"
-                    msg += f"🚫 止損位：{setup['sl']:.4f}\n"
-                    msg += f"💰 TP1 ({setup['r1']:.1f}R)：{setup['tp1']:.4f}\n"
-                    msg += f"💰 TP2 ({setup['r2']:.1f}R)：{setup['tp2']:.4f}\n"
-                    msg += f"💰 TP3 ({setup['r3']:.1f}R)：{setup['tp3']:.4f}\n"
+                    msg += f"🚫 止損位：{setup['sl']:.4f}  (-1R)\n"
+                    msg += f"💰 TP1 (1.0R)：{setup['tp1']:.4f}\n"
+                    msg += f"💰 TP2 (2.0R)：{setup['tp2']:.4f}\n"
+                    msg += f"💰 TP3 (3.0R)：{setup['tp3']:.4f}\n"
                     msg += f"\n"
                     msg += f"🏗️ 結構：{setup['structure']}\n"
+                    msg += f"📡 Supertrend：{setup['st_label']}\n"
                     msg += f"🕹️ 槓桿：{setup['leverage']} ({setup['leverage_note']})\n"
                     msg += f"📌 類型：{setup['trade_type']}\n"
                     msg += f"\n"
