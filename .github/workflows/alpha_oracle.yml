@@ -2,7 +2,8 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # 每 15 分鐘執行一次
+    - cron: '*/15 * * * *'   # 每 15 分鐘執行一次（正常掃描）
+    - cron: '0 16 * * *'     # 每天 UTC 16:00 = 台灣時間 00:00（午夜戰績回報）
   workflow_dispatch:
     inputs:
       manual_report:
