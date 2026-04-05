@@ -36,9 +36,10 @@ MAX_CONCURRENT = 3
 # 止損最小距離（佔進場價 %），低於此值代表 SL 太緊，直接跳過
 SL_MIN_PCT = 0.007  # 0.7%
 
-# 止損/止盈後冷卻期（單位：K 棒，每棒 15 分鐘）
-# 16 棒 = 4 小時，防止同幣短時間反覆進出
-COOLDOWN_BARS = 16
+# 止損後冷卻期（單位：K 棒，每棒 15 分鐘）
+# SL 後需要等市場結構重新形成再考慮進場
+COOLDOWN_BARS_SL = 8   # 8 棒 = 2 小時（止損後冷卻）
+COOLDOWN_BARS_TP = 4   # 4 棒 = 1 小時（止盈後冷卻，可更快回來）
 
 LOG_FILE            = "active_trades.csv"
 STATS_FILE          = "daily_stats.csv"
@@ -330,57 +331,51 @@ def check_1h_trend(instId, side):
 
 def check_4h_trend(instId, side):
     """
-    過濾器⑪：4H Supertrend 大週期確認（最關鍵過濾器）
-    ─────────────────────────────────────────────────────
-    為什麼 4H 比 1H 更重要？
-    1H 多頭可以只是 4H 下跌趨勢中的短暫反彈（死貓跳）。
-    若 4H 也是多頭，代表大趨勢順方向，勝率大幅提升。
-    反之，4H 空頭做多 = 逆大趨勢，絕大多數會止損。
+    過濾器⑪：4H 大趨勢過濾（放鬆版）
+    ────────────────────────────────────────────────────
+    策略邏輯：
+    ❌ 強烈反向（4H ST 已明確翻向）→ 拒絕
+    ✅ 中性 / 未知（4H ST=0）      → 允許，靠 1H+15m 判斷
+    ✅ 順向（4H ST 同方向）        → 允許，加分
 
-    同時也檢查 4H EMA50 位置：
-    - LONG：價格需在 4H EMA50 上方（大趨勢上行）
-    - SHORT：價格需在 4H EMA50 下方（大趨勢下行）
+    為什麼不要求「4H 必須順向」？
+    Supertrend 是滯後指標。等 4H ST 翻多時，往往已漲 60-70%，
+    最佳進場點已過。只要「4H 不是明確空頭」就允許多，
+    是兼顧勝率與訊號數量的最佳平衡。
     """
     df_4h = fetch_okx(instId, bar="4H", limit=80)
     if df_4h is None or len(df_4h) < 15:
         return True, "⚪ 4H N/A"
 
-    st_4h   = calculate_supertrend(df_4h)
+    st_4h    = calculate_supertrend(df_4h)
     ema50_4h = calculate_ema(df_4h, 50).iloc[-1]
     price_4h = df_4h['c'].iloc[-1]
-    ema_ok   = (price_4h > ema50_4h) if side == "LONG" else (price_4h < ema50_4h)
+    ema_gap  = (price_4h - ema50_4h) / ema50_4h * 100
 
     if st_4h == 1:    st_label = "📈 4H多頭"
     elif st_4h == -1: st_label = "📉 4H空頭"
-    else:             st_label = "⚪ 4H未知"
+    else:             st_label = "⚪ 4H中性"
 
-    ema_label = f"{'↑' if ema_ok else '↓'} 4H EMA50"
-    label = f"{st_label} | {ema_label}"
+    label = f"{st_label} EMA50({ema_gap:+.1f}%)"
 
-    # 4H Supertrend 必須與方向一致（否則直接拒絕）
-    if st_4h != 0:
-        if side == "LONG"  and st_4h != 1:  return False, label
-        if side == "SHORT" and st_4h != -1: return False, label
-
-    # 4H EMA50 位置也必須一致（雙重確認）
-    if not ema_ok:
-        return False, label
+    # 只阻止「強烈反向」，中性（0）允許通過
+    if side == "LONG"  and st_4h == -1: return False, label
+    if side == "SHORT" and st_4h ==  1: return False, label
 
     return True, label
 
 def check_btc_4h_trend(btc_df_4h, side):
     """
-    BTC 4H 趨勢過濾（非 BTC 幣種使用）
-    BTC 是整個市場的錨定點。若 BTC 4H 是空頭，做 altcoin 多單
-    等於逆市場大方向，是高風險行為。
+    BTC 4H 趨勢過濾（非 BTC 幣種使用，放鬆版）
+    只阻止 BTC 4H 強烈反向時的 altcoin 順勢單，中性允許通過。
     """
     if btc_df_4h is None or len(btc_df_4h) < 15:
         return True, "⚪ BTC 4H N/A"
     st = calculate_supertrend(btc_df_4h)
-    label = f"BTC 4H {'📈多頭' if st==1 else ('📉空頭' if st==-1 else '⚪未知')}"
-    if st == 0: return True, label
-    if side == "LONG"  and st != 1:  return False, label
-    if side == "SHORT" and st != -1: return False, label
+    label = f"BTC 4H {'📈多頭' if st==1 else ('📉空頭' if st==-1 else '⚪中性')}"
+    # 只阻止強烈反向，中性（0）允許
+    if side == "LONG"  and st == -1: return False, label
+    if side == "SHORT" and st ==  1: return False, label
     return True, label
 
 def is_trading_session(now_tw: datetime) -> tuple[bool, str]:
@@ -839,10 +834,13 @@ def main():
                         STATS_FILE, mode='a', header=False, index=False
                     )
                     # ⭐ 進入冷卻期而非直接移除，防止同幣短時間內重複進出
+                    # SL 冷卻 2 小時，TP 冷卻 1 小時（TP 後市場可能繼續有機會）
+                    cooldown_duration = COOLDOWN_BARS_SL if res == "SL" else COOLDOWN_BARS_TP
                     updated.append({
                         **t,
                         "status":     "COOLDOWN",
                         "wait_since": current_bar,
+                        "locked":     cooldown_duration,   # 借用 locked 欄位存冷卻長度
                     })
                     time.sleep(0.3)
                     continue
@@ -850,13 +848,16 @@ def main():
                 updated.append(t)
 
             elif t['status'] == "COOLDOWN":
-                # ⭐ 冷卻期：止損/止盈後 COOLDOWN_BARS 棒內不接受此幣新訊號
-                bars_cooled = current_bar - t['wait_since']
-                if bars_cooled >= COOLDOWN_BARS:
-                    logging.info(f"[{instId}] 冷卻期結束（{bars_cooled} 棒），恢復掃描")
-                    # 不加入 updated → 自動從 CSV 移除
+                # ⭐ 冷卻期：止損後 2 小時、止盈後 1 小時內不接受此幣新訊號
+                # locked 欄位存放這次冷卻的總 bar 數
+                cooldown_total  = int(t.get('locked', COOLDOWN_BARS_SL))
+                bars_cooled     = current_bar - t['wait_since']
+                if bars_cooled >= cooldown_total:
+                    remaining_type = "SL" if cooldown_total == COOLDOWN_BARS_SL else "TP"
+                    logging.info(f"[{instId}] 冷卻期結束（{bars_cooled}/{cooldown_total} 棒，{remaining_type}），恢復掃描")
+                    # 不加入 updated → 自動從 CSV 移除，下次可以重新掃描
                 else:
-                    remaining_min = (COOLDOWN_BARS - bars_cooled) * 15
+                    remaining_min = (cooldown_total - bars_cooled) * 15
                     logging.info(f"[{instId}] 冷卻中，剩餘約 {remaining_min} 分鐘")
                     updated.append(t)   # 保留在 CSV
 
