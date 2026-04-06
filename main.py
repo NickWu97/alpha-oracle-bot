@@ -106,32 +106,51 @@ def is_us_dst(d: datetime) -> bool:
 def utc_to_ny(now_utc: datetime) -> datetime:
     return now_utc + timedelta(hours=-4 if is_us_dst(now_utc) else -5)
 
-def is_ict_killzone(now_utc: datetime) -> tuple[bool, str]:
+def get_kz_tier(now_utc: datetime) -> tuple[str, str]:
     """
-    ★ v2 更新：新增 Silver Bullet 時段
-    ICT 殺手時段（New York Time 為準）
-    ✅ London Open    : 03:00 – 05:00 NY  (歐盤開盤掃損)
-    ✅ New York Open  : 07:00 – 10:00 NY  (美盤開盤掃損)
-    ✅ Silver Bullet AM: 10:00 – 11:00 NY (ICT 最高機率做單時段)
-    ✅ Silver Bullet PM: 14:00 – 15:00 NY (下午 Silver Bullet)
-    ❌ 其他時段一律忽略新訊號
+    ★ 重構：Killzone 改為三段式評級，不再硬性封鎖
+    ─────────────────────────────────────────────
+    PRIME   (+1分) — ICT 最佳時段：有明顯機構參與、高度流動性
+      倫敦開盤  02:00-06:00 NY
+      紐約開盤  07:00-11:00 NY
+      下午時段  13:00-16:00 NY
+
+    NORMAL  (0分)  — 普通時段：流動性尚可，訊號品質較低
+      其餘交易時段（亞洲尾盤、歐洲尾盤等）
+
+    DEAD    (-1分) — 死區：亞洲深夜，幾乎無機構參與，假突破多
+      20:00-01:00 NY（UTC 00:00-06:00）
+
+    改為評分調整器而非硬性封鎖，讓好的設置在任何時段都能觸發，
+    但死區設置因評分-1 更難達到最低門檻，自然被過濾。
     """
     ny = utc_to_ny(now_utc)
     h  = ny.hour
-    if 2 <= h < 6:                                     # 放寬：3-5 → 2-6（倫敦前置+後延）
-        return True, f"🇬🇧 London Open ({h:02d}:xx NY)"
-    if 7 <= h < 11:                                    # 放寬：7-10 → 7-11（含 Silver Bullet AM）
-        return True, f"🗽 New York Open ({h:02d}:xx NY)"
-    if 13 <= h < 16:                                   # 放寬：14-15 → 13-16（下午時段擴大）
-        return True, f"🥈 Silver Bullet PM ({h:02d}:xx NY)"
-    return False, f"⏸ 非 Killzone ({h:02d}:xx NY)"
+    # Prime Killzones
+    if 2 <= h < 6:
+        return "PRIME", f"🇬🇧 London Open ({h:02d}:xx NY)"
+    if 7 <= h < 11:
+        return "PRIME", f"🗽 New York Open ({h:02d}:xx NY)"
+    if 13 <= h < 16:
+        return "PRIME", f"🥈 Afternoon Session ({h:02d}:xx NY)"
+    # Dead Zone（亞洲深夜）
+    if h >= 20 or h < 1:
+        return "DEAD", f"💤 Dead Zone ({h:02d}:xx NY)"
+    # 其餘 Normal
+    return "NORMAL", f"🕐 Normal Hours ({h:02d}:xx NY)"
+
+def is_ict_killzone(now_utc: datetime) -> tuple[bool, str]:
+    """向後相容包裝器：讓舊呼叫仍可使用，DEAD 區視為 False"""
+    tier, label = get_kz_tier(now_utc)
+    return tier != "DEAD", label
 
 def get_kz_quality(kz_label: str) -> str:
-    """評估 Killzone 品質（Silver Bullet 最高分）"""
-    if "Silver Bullet" in kz_label: return "SILVER_BULLET"
-    if "New York"      in kz_label: return "NY"
-    if "London"        in kz_label: return "LONDON"
-    return "OTHER"
+    """從 label 反推品質等級（供評分使用）"""
+    if "London" in kz_label or "New York" in kz_label or "Afternoon" in kz_label:
+        return "PRIME"
+    if "Dead" in kz_label:
+        return "DEAD"
+    return "NORMAL"
 
 # ─────────────────────────────────────────────
 # 4. 數據抓取
@@ -368,33 +387,65 @@ def check_liquidity_sweep(
                     }
     return False, None
 
-def check_h4_bias(instId: str, side: str) -> tuple[bool, str, float]:
+def check_h4_bias(instId: str, side: str) -> tuple[bool, str, float, bool]:
+    """
+    ★ 重構：H4 分離為「硬性條件」和「加分條件」
+    ─────────────────────────────────────────────
+    硬性條件（hard_ok）：H4 沒有明確的反向結構
+      → 做多時：H4 最近不是明確的 Lower Low（空頭BOS）
+      → 做空時：H4 最近不是明確的 Higher High（多頭BOS）
+      → 若反向結構明確，則直接 return False（訊號方向完全錯誤）
+
+    加分條件（premium_ok）：H4 BOS + 折/溢價區同時滿足
+      → 滿足時評分 +2，只有 BOS 時評分 +1，都沒有時評分 +0
+      → 不影響硬性通過與否
+
+    返回: (hard_ok, label, tp3_tgt, premium_ok)
+    """
     df4 = fetch_okx(instId, bar="4H", limit=200)
     if df4 is None or len(df4) < 40:
-        return True, "⚪ H4 N/A", 0.0
+        return True, "⚪ H4 N/A", 0.0, False
     sh_list, sl_list = find_swing_ict(df4, lookleft=10, lookright=3)
     if len(sh_list) < 2 or len(sl_list) < 2:
-        return True, "⚪ H4 結構不足", 0.0
+        return True, "⚪ H4 結構不足", 0.0, False
+
     curr    = float(df4['c'].iloc[-1])
     last_sh = sh_list[-1]['price'];  prev_sh = sh_list[-2]['price']
     last_sl = sl_list[-1]['price'];  prev_sl = sl_list[-2]['price']
     rng       = last_sh - last_sl
     fifty_pct = (last_sh + last_sl) / 2 if rng > 0 else curr
+
     if side == "LONG":
-        bos      = last_sh > prev_sh
-        discount = curr < fifty_pct
-        ok       = bos and discount
-        label    = ("✅ H4 多頭BOS折價" if ok
-                    else ("H4 多頭BOS溢價" if bos else "H4 空頭結構"))
-        tp3_tgt  = last_sh if ok else 0.0
-    else:
-        bos      = last_sl < prev_sl
-        premium  = curr > fifty_pct
-        ok       = bos and premium
-        label    = ("✅ H4 空頭BOS溢價" if ok
-                    else ("H4 空頭BOS折價" if bos else "H4 多頭結構"))
-        tp3_tgt  = last_sl if ok else 0.0
-    return ok, label, tp3_tgt
+        bearish_bos = last_sl < prev_sl          # 確認的空頭結構 → 硬性封鎖做多
+        if bearish_bos:
+            return False, "❌ H4 空頭BOS，禁止做多", 0.0, False
+        bullish_bos = last_sh > prev_sh          # 多頭BOS
+        discount    = curr < fifty_pct           # 折價區
+        premium_ok  = bullish_bos and discount
+        if premium_ok:
+            label = "✅ H4 多頭BOS+折價 (+2)"
+        elif bullish_bos:
+            label = "🟡 H4 多頭BOS（溢價，+1）"
+        else:
+            label = "⚪ H4 無明確結構 (+0)"
+        tp3_tgt = last_sh if bullish_bos else 0.0
+        return True, label, tp3_tgt, premium_ok
+
+    else:  # SHORT
+        bullish_bos = last_sh > prev_sh          # 確認的多頭結構 → 硬性封鎖做空
+        if bullish_bos:
+            return False, "❌ H4 多頭BOS，禁止做空", 0.0, False
+        bearish_bos = last_sl < prev_sl          # 空頭BOS
+        premium     = curr > fifty_pct           # 溢價區
+        premium_ok  = bearish_bos and premium
+        if premium_ok:
+            label = "✅ H4 空頭BOS+溢價 (+2)"
+        elif bearish_bos:
+            label = "🟡 H4 空頭BOS（折價，+1）"
+        else:
+            label = "⚪ H4 無明確結構 (+0)"
+        tp3_tgt = last_sl if bearish_bos else 0.0
+        return True, label, tp3_tgt, premium_ok
 
 def find_mss_fvg_entry(instId: str, side: str) -> tuple[bool, dict | None]:
     df5 = fetch_okx(instId, bar="5m", limit=200)
@@ -690,81 +741,93 @@ def check_weekly_bias(instId: str, side: str) -> tuple[bool, str]:
 
 # ── 7F. Confluence Score 匯流評分 ─────────────────────────────────────────────
 def calculate_confluence_score(
-    h4_ok           : bool,
-    weekly_ok        : bool,
-    is_swept         : bool,
-    fvg_ok           : bool,
-    ob_confluence    : bool,
-    ote_ok           : bool,
-    kz_quality       : str,    # "SILVER_BULLET" / "NY" / "LONDON"
-    funding_aligned  : bool,
-    atr_volatile     : bool,   # ★ 新增：ATR 波動率是否足夠
+    h4_premium_ok   : bool,    # H4 BOS + 折/溢價（滿分條件）
+    h4_bos_only     : bool,    # H4 僅 BOS（半分條件）
+    weekly_ok       : bool,
+    is_swept        : bool,
+    fvg_ok          : bool,
+    ob_confluence   : bool,
+    ote_ok          : bool,
+    kz_tier         : str,     # "PRIME" / "NORMAL" / "DEAD"
+    funding_aligned : bool,
+    atr_volatile    : bool,
 ) -> tuple[int, list]:
     """
-    ★ 更新：匯流評分系統（0-9 分，含 ATR 扣分）
-    只有 ≥ CONFLUENCE_MIN_SCORE(5) 分才送出訊號。
+    ★ 重構：匯流評分系統（-1 ~ 9 分）
+    最低門檻 CONFLUENCE_MIN_SCORE = 3
 
-    評分細則：
-    ① H4 BOS + 折/溢價   → +2分（核心條件，權重最高）
+    ① H4 BOS + 折/溢價   → +2分（最強確認）
+       H4 僅 BOS（無折溢）→ +1分（方向對但位置不理想）
     ② 週線方向一致        → +1分
-    ③ M15 流動性掃蕩      → +1分
+    ③ M15 流動性掃蕩      → +1分（核心結構條件）
     ④ M5 MSS + FVG        → +1分
-    ⑤ M15 Order Block 匯流 → +1分
+    ⑤ M15 Order Block 匯流→ +1分
     ⑥ OTE 最佳進場區間    → +1分
-    ⑦ Silver Bullet 時段  → +1分（比其他時段多1分）
-    ⑧ 資費率方向一致      → +1分（輔助確認）
-    ⑨ ATR 縮量震盪        → -1分（★ 新增扣分項）
-
-    返回: (score, details_list)
+    ⑦ Prime Killzone      → +1分（黃金時段加分）
+       Dead Zone           → -1分（死區扣分）
+    ⑧ 資費率方向一致      → +1分
+    ⑨ ATR 縮量震盪        → -1分
     """
     details = []
     score   = 0
 
-    if h4_ok:
+    # ① H4（分層給分）
+    if h4_premium_ok:
         score += 2; details.append("✅ H4 BOS+折溢價 (+2)")
+    elif h4_bos_only:
+        score += 1; details.append("🟡 H4 BOS（無折溢）(+1)")
     else:
-        details.append("❌ H4偏向不符 (+0)")
+        details.append("⚪ H4 無結構 (+0)")
 
+    # ② 週線
     if weekly_ok:
         score += 1; details.append("✅ 週線方向一致 (+1)")
     else:
         details.append("⚠️ 週線方向不符 (+0)")
 
+    # ③ 掃損
     if is_swept:
-        score += 1; details.append("✅ 流動性掃蕩確認 (+1)")
+        score += 1; details.append("✅ 流動性掃蕩 (+1)")
     else:
         details.append("❌ 無掃損 (+0)")
 
+    # ④ FVG
     if fvg_ok:
-        score += 1; details.append("✅ MSS+FVG確認 (+1)")
+        score += 1; details.append("✅ MSS+FVG (+1)")
     else:
         details.append("❌ 無FVG (+0)")
 
+    # ⑤ OB
     if ob_confluence:
-        score += 1; details.append("✅ OB訂單塊匯流 (+1)")
+        score += 1; details.append("✅ OB匯流 (+1)")
     else:
-        details.append("⚠️ 無OB匯流 (+0)")
+        details.append("⚪ 無OB (+0)")
 
+    # ⑥ OTE
     if ote_ok:
-        score += 1; details.append("✅ OTE最佳進場區 (+1)")
+        score += 1; details.append("✅ OTE區間 (+1)")
     else:
-        details.append("⚠️ 非OTE區間 (+0)")
+        details.append("⚪ 非OTE (+0)")
 
-    if kz_quality == "SILVER_BULLET":
-        score += 1; details.append("✅ Silver Bullet時段 (+1)")
-    elif kz_quality in ("NY", "LONDON"):
-        details.append("✅ Killzone時段 (+0)")
+    # ⑦ Killzone 等級
+    if kz_tier == "PRIME":
+        score += 1; details.append("✅ Prime KZ (+1)")
+    elif kz_tier == "DEAD":
+        score -= 1; details.append("💤 Dead Zone (-1)")
+    else:
+        details.append("🕐 Normal (+0)")
 
+    # ⑧ 資費率
     if funding_aligned:
-        score += 1; details.append("✅ 資費率方向一致 (+1)")
+        score += 1; details.append("✅ 資費率對齊 (+1)")
     else:
-        details.append("⚠️ 資費率偏向不符 (+0)")
+        details.append("⚪ 資費率偏向不符 (+0)")
 
-    # ★ 新增：ATR 縮量扣分
+    # ⑨ ATR 縮量
     if not atr_volatile:
-        score -= 1; details.append("⚠️ ATR縮量震盪 (-1)")
+        score -= 1; details.append("⚠️ ATR縮量 (-1)")
     else:
-        details.append("✅ ATR波動正常 (+0)")
+        details.append("✅ ATR正常 (+0)")
 
     return score, details
 
@@ -894,15 +957,15 @@ def main():
         updated         = []
         current_bar     = int(now_utc.timestamp() // 900)
 
-        kz_ok, kz_label = is_ict_killzone(now_utc)
-        kz_quality      = get_kz_quality(kz_label)
+        kz_tier, kz_label = get_kz_tier(now_utc)
+        kz_ok = (kz_tier != "DEAD")              # Dead Zone 才硬性停止
         today_sl_count  = get_today_sl_count(STATS_FILE, today_str)
         daily_limit_hit = today_sl_count >= MAX_DAILY_SL
 
         if daily_limit_hit:
             logging.info(f"今日止損 {today_sl_count} 次，達上限，停止新訊號")
 
-        logging.info(f"Killzone:{kz_label}  今日SL:{today_sl_count}/{MAX_DAILY_SL}")
+        logging.info(f"KZ-Tier:{kz_tier} {kz_label}  今日SL:{today_sl_count}/{MAX_DAILY_SL}")
 
         # ── C. 逐幣掃描 ───────────────────────────────────────────────
         for instId in ALL_COINS:
@@ -917,7 +980,9 @@ def main():
             # 1. 掃描新訊號
             # ══════════════════════════════════════════════
             if instId not in active_ids:
-                if not kz_ok or daily_limit_hit:
+                if daily_limit_hit:
+                    time.sleep(0.3); continue
+                if not kz_ok:   # 只有 Dead Zone 才停止
                     time.sleep(0.3); continue
 
                 open_count = len(trades_df[trades_df['status'].isin(['WAITING','ACTIVE'])])
@@ -942,19 +1007,21 @@ def main():
                     # 注意：週線不符不強制跳過，但在評分中扣分
 
                     # ────────────────────────────────────────
-                    # ② H4 BOS + 折/溢價區（原有）
+                    # ② H4 Bias（硬性：反向BOS封鎖；軟性：折溢價加分）
                     # ────────────────────────────────────────
-                    h4_ok, h4_label, h4_tp3 = check_h4_bias(instId, side)
-                    if not h4_ok:
-                        logging.info(f"[{instId}][{side}] H4偏向不符: {h4_label}")
+                    h4_hard_ok, h4_label, h4_tp3, h4_premium = check_h4_bias(instId, side)
+                    if not h4_hard_ok:
+                        logging.info(f"[{instId}][{side}] H4反向結構封鎖: {h4_label}")
                         continue
+                    h4_bos_only = (not h4_premium) and ("BOS" in h4_label)
 
                     # ────────────────────────────────────────
                     # ③ 收集流動性水位（原有 + EQH/EQL 強化）
                     # ────────────────────────────────────────
                     pdh, pdl = get_pdh_pdl(instId)
                     pwh, pwl = get_pwh_pwl(instId)
-                    sh15, sl15 = find_swing_ict(df15, lookleft=20, lookright=5)
+                    # 放寬：lookleft 20→12，lookright 5→2（更快確認、更多分型）
+                    sh15, sl15 = find_swing_ict(df15, lookleft=12, lookright=2)
 
                     # ★ 新增：EQH/EQL 等高等低水位
                     eqh_levels, eql_levels = find_equal_levels(df15, threshold=0.0012)
@@ -976,6 +1043,19 @@ def main():
                     if not is_swept:
                         logging.info(f"[{instId}][{side}] 無掃損")
                         continue
+
+                    # ★ 前備提醒：掃損已確認，等待 MSS/FVG（發一次性提醒）
+                    pre_alert_key = f"pre_{instId}_{side}"
+                    if not os.path.exists(f"{pre_alert_key}.ok"):
+                        send_tg(
+                            f"👀 *Alpha Oracle | 掃損偵測*\n"
+                            f"──────────────────\n"
+                            f"💎 #{coin_sym}  {'🟢 多' if side=='LONG' else '🔴 空'}\n"
+                            f"🎣 已掃蕩流動性水位：`{sweep_info['liq_level']:.4f}`\n"
+                            f"🕐 {kz_label}\n\n"
+                            f"⏳ 等待 M5 MSS + FVG 確認進場..."
+                        )
+                        with open(f"{pre_alert_key}.ok", "w") as f_pre: f_pre.write("ok")
 
                     # ────────────────────────────────────────
                     # ⑥ M15 Order Block 偵測（新增）
@@ -1032,16 +1112,21 @@ def main():
                         (side=="SHORT" and fr >= -0.0005)
                     )
                     score, score_details = calculate_confluence_score(
-                        h4_ok          = h4_ok,
+                        h4_premium_ok  = h4_premium,
+                        h4_bos_only    = h4_bos_only,
                         weekly_ok      = weekly_ok,
                         is_swept       = is_swept,
                         fvg_ok         = fvg_ok,
                         ob_confluence  = ob_hit,
                         ote_ok         = ote_ok_flag,
-                        kz_quality     = kz_quality,
+                        kz_tier        = kz_tier,
                         funding_aligned= funding_aligned,
                         atr_volatile   = atr_volatile,
                     )
+                    # 清除前備提醒標記（避免下次重複觸發）
+                    pre_alert_key = f"pre_{instId}_{side}"
+                    if os.path.exists(f"{pre_alert_key}.ok"):
+                        os.remove(f"{pre_alert_key}.ok")
 
                     if score < CONFLUENCE_MIN_SCORE:
                         logging.info(f"[{instId}][{side}] 匯流分數不足: {score}/{CONFLUENCE_MIN_SCORE} → 跳過")
@@ -1130,7 +1215,7 @@ def main():
                 msg += f"──────────────────\n"
                 msg += f"💎 幣種：#{coin_sym}  |  {kz_label}\n"
                 msg += f"🎯 方向：{side_zh}\n"
-                msg += f"🌟 匯流評分：{s['score']}/9 {score_stars}\n"
+                msg += f"🌟 匯流評分：{s['score']}/9 {score_stars}  (門檻≥{CONFLUENCE_MIN_SCORE})\n"
                 msg += f"\n"
                 msg += f"📐 *多時框分析*\n"
                 msg += f"  📅 週線：{s['weekly_label']}\n"
