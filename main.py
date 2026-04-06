@@ -7,7 +7,7 @@ Alpha Oracle v2.0 - 高勝率 SMC+ICT 交易機器人
   ✅ 成交量確認（避免假突破）
   ✅ 動態止盈（依市場結構調整）
   ✅ 移動止損（自動保護利潤）
-  ✅ 詳細進場通知（含進場價/SL/TP+R倍數）
+  ✅ 精美 Telegram 通知排版
 預期勝率：70-78% | 訊號頻率：每日 3-5 個高品質訊號
 """
 
@@ -197,7 +197,7 @@ def calculate_cvd(df: pd.DataFrame, lookback: int = 20) -> tuple[float, str]:
         -recent['v'] * (recent['h'] - recent['c']) / body
     )
     cvd = recent['delta'].sum()
-    label = "🟢 大戶吸籌 (CVD+)" if cvd > 0 else "🔴 大戶出貨 (CVD-)"
+    label = "🔴 大戶出貨 (CVD-)" if cvd < 0 else "🟢 大戶吸籌 (CVD+)"
     return cvd, label
 
 def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float = 3.0) -> int:
@@ -308,17 +308,17 @@ def detect_market_structure(df: pd.DataFrame) -> str:
     if len(swing_lows) >= 2:
         l1, l2 = swing_lows[-2], swing_lows[-1]
         if l1 > 0 and abs(l1-l2)/l1 < 0.015:
-            return "W底反轉 📐"
+            return "W底反轉"
     if len(swing_highs) >= 2:
         h1, h2 = swing_highs[-2], swing_highs[-1]
         if h1 > 0 and abs(h1-h2)/h1 < 0.015:
-            return "M頭反轉 📐"
+            return "M頭反轉"
     
     recent = df.tail(20)
     slope = (recent['c'].iloc[-1] - recent['c'].iloc[0]) / (recent['c'].iloc[0] + 1e-10)
-    if slope > 0.025:   return "上升趨勢延續 📈"
-    elif slope < -0.025: return "下降趨勢延續 📉"
-    return "區間盤整 ↔️"
+    if slope > 0.025:   return "上升趨勢延續"
+    elif slope < -0.025: return "下降趨勢延續"
+    return "區間盤整"
 
 def find_order_block(df: pd.DataFrame, side: str, lookback: int = 15) -> dict | None:
     """找出最近的訂單塊 (Order Block)"""
@@ -429,14 +429,6 @@ def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: floa
             sl = entry + atr * 1.5
         return sl
 
-def get_fixed_r_tps(entry: float, sl: float, side: str) -> tuple[float, float, float]:
-    """備用：固定 R 倍數止盈"""
-    risk = abs(entry - sl) + 1e-10
-    if side == "LONG":
-        return entry + risk, entry + risk*2, entry + risk*3
-    else:
-        return entry - risk, entry - risk*2, entry - risk*3
-
 def suggest_leverage(atr: float, price: float) -> tuple[str, str]:
     """根據 ATR 波動率建議槓桿"""
     vol_pct = (atr / (price + 1e-10)) * 100
@@ -481,9 +473,9 @@ def get_btc_direction(btc_df: pd.DataFrame, lookback: int = 5) -> str:
 
 def classify_trade(side: str, structure: str, risk_pct: float) -> str:
     """自動分類交易類型"""
-    if "反轉" in structure: return "📊 長單 (波段)"
-    elif risk_pct < 1.0: return "⚡ 短單 (日內)"
-    return "📊 長單 (波段)"
+    if "反轉" in structure: return "長單 (波段)"
+    elif risk_pct < 1.0: return "短單 (日內)"
+    return "長單 (波段)"
 
 
 # ─────────────────────────────────────────────
@@ -531,7 +523,7 @@ def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
     _, cvd_label = calculate_cvd(df)
     
     st_val = calculate_supertrend(df)
-    st_label = "📈 多頭" if st_val == 1 else ("📉 空頭" if st_val == -1 else "⚪ 未知")
+    st_label = "多頭" if st_val == 1 else ("空頭" if st_val == -1 else "未知")
     
     snr_zone = find_ict_snr_zones(df, side)
     
@@ -669,36 +661,52 @@ def main():
                         time.sleep(0.2)
                         continue
                     
+                    # ✅ 所有過濾通過 → 發送訊號
                     funding, ls_ratio = get_funding_ls(instId)
-                    side_zh = "🟢 多單 (LONG)" if setup['side']=="LONG" else "🔴 空單 (SHORT)"
+                    side_emoji = "🟢" if setup['side']=="LONG" else "🔴"
+                    side_zh = "多單 (LONG)" if setup['side']=="LONG" else "空單 (SHORT)"
                     
+                    # 動態止盈標籤
                     if "反轉" in setup['structure']:
                         tp_labels = ("1.0R", "2.5R", "4.0R")
-                        style = "波段"
+                        style = "長單 (波段)"
                     elif "盤整" in setup['structure']:
                         tp_labels = ("0.8R", "1.5R", "2.0R")
-                        style = "短線"
+                        style = "短單 (日內)"
                     else:
                         tp_labels = ("1.0R", "2.0R", "3.0R")
-                        style = "標準"
+                        style = "長單 (波段)"
+                    
+                    # SNR 狀態
+                    snr_emoji = "✅" if setup['snr_zone'] else "❌"
+                    snr_text = "有 SNR 支撐/阻力" if setup['snr_zone'] else "無明顯 SNR"
+                    
+                    # Supertrend 圖示
+                    st_emoji = "📈" if setup['st_val']==1 else ("📉" if setup['st_val']==-1 else "⚪")
                     
                     msg = (
-                        f"🔥 *Alpha Oracle v2.0 | 高勝率訊號* 🔥\n"
+                        f"🔥 *Alpha Oracle 訊號發射* 🔥\n"
                         f"──────────────────\n"
-                        f"💎 幣種：#{coin_sym}｜🎯 {side_zh}｜⏰ 15m (1H✅)\n"
-                        f"📊 多空比:{ls_ratio}｜資費:{funding}\n"
-                        f"🧬 {setup['cvd_label']}｜📚 {ob_label}\n"
+                        f"💎 幣種：#{coin_sym}\n"
+                        f"🎯 方向：{side_emoji} {side_zh}\n"
+                        f"⏰ 週期：15m\n"
+                        f"📊 數據：多空比 {ls_ratio} | 資費 {funding}\n"
+                        f"🧬 CVD：{setup['cvd_label']}\n"
+                        f"📚 盤口：{ob_label}\n"
                         f"\n"
-                        f"📍 進場：{setup['entry']:.4f}\n"
-                        f"🚫 止損：{setup['sl']:.4f} (-1R)\n"
+                        f"💰 進場位：{setup['entry']:.4f}\n"
+                        f"🛑 止損位：{setup['sl']:.4f}  (-1R)\n"
                         f"💰 TP1 ({tp_labels[0]}): {setup['tp1']:.4f}\n"
                         f"💰 TP2 ({tp_labels[1]}): {setup['tp2']:.4f}\n"
                         f"💰 TP3 ({tp_labels[2]}): {setup['tp3']:.4f}\n"
                         f"\n"
-                        f"🏗️ 結構：{setup['structure']} → {style}單\n"
-                        f"🛡️ 移動止損：≥1.5R 自動保本｜≥2.5R 追蹤\n"
-                        f"📡 {setup['st_label']}｜🕹️ {setup['leverage']} ({setup['leverage_note']})\n"
-                        f"\n💡 *等待回踩成交...*"
+                        f"🏗️ 結構：{setup['structure']}\n"
+                        f"🛡️ SNR：{snr_emoji} {snr_text}\n"
+                        f"📡 Supertrend：{st_emoji} {setup['st_label']}\n"
+                        f"🕹️ 槓桿：{setup['leverage']} ({setup['leverage_note']})\n"
+                        f"📌 類型：{style}\n"
+                        f"\n"
+                        f"💡 *等待回踩成交...*"
                     )
                     send_tg(msg)
                     
@@ -742,7 +750,8 @@ def main():
                 # 🆕【詳細進場通知】
                 if is_hit:
                     t['status'] = "ACTIVE"
-                    side_zh = "🟢 多單 (LONG)" if t['side']=="LONG" else "🔴 空單 (SHORT)"
+                    side_emoji = "🟢" if t['side']=="LONG" else "🔴"
+                    side_zh = "多單 (LONG)" if t['side']=="LONG" else "空單 (SHORT)"
                     
                     # 📐 計算風險與 R 倍數
                     risk      = abs(t['entry'] - t['sl']) + 1e-10
@@ -753,16 +762,15 @@ def main():
                     now_str   = datetime.utcnow().strftime('%Y-%m-%d %H:%M')
                     
                     send_tg(
-                        f"🚀 *Alpha Oracle v2.0 | 進場成交* 🚀\n"
+                        f"🚀 *Alpha Oracle | 進場成交* 🚀\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
-                        f"🎯 方向：{side_zh}\n"
+                        f"🎯 方向：{side_emoji} {side_zh}\n"
                         f"⏰ 時間：{now_str}\n"
                         f"\n"
-                        f"📍 *進場價格：{t['entry']:.4f}*\n"
+                        f"💰 *進場價格：{t['entry']:.4f}*\n"
                         f"🛑 *止損 SL：{t['sl']:.4f}*  (風險 {risk_pct:.2f}%)\n"
                         f"\n"
-                        f"🎯 *止盈目標 TP：*\n"
                         f"💰 TP1 (+{r1:.1f}R)：{t['tp1']:.4f}\n"
                         f"💰 TP2 (+{r2:.1f}R)：{t['tp2']:.4f}\n"
                         f"💰 TP3 (+{r3:.1f}R)：{t['tp3']:.4f}\n"
