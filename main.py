@@ -1,59 +1,17 @@
+
 import requests
 import os
-import json
-import hmac
-import hashlib
-import base64
 import pandas as pd
 import numpy as np
 import logging
 import traceback
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
-# ─────────────────────────────────────────────
-# 1. 基礎配置
-# ─────────────────────────────────────────────
+# --- 1. 基礎配置 ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Telegram
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID  = os.getenv("CHAT_ID")
-
-# OKX 自動下單（設 AUTO_TRADE=true 才啟用）
-OKX_API_KEY    = os.getenv("OKX_API_KEY",    "")
-OKX_SECRET     = os.getenv("OKX_SECRET_KEY", "")
-OKX_PASSPHRASE = os.getenv("OKX_PASSPHRASE", "")
-OKX_TD_MODE    = os.getenv("OKX_TD_MODE", "isolated")  # isolated=逐倉 / cross=全倉
-OKX_LEVER      = int(os.getenv("OKX_LEVER", "5"))       # 槓桿倍數
-AUTO_TRADE     = os.getenv("AUTO_TRADE", "false").lower() == "true"
-
-# ── 模擬倉模式 ──────────────────────────────────────────────────────────────
-# OKX_DEMO=true → 所有 API 請求加上 x-simulated-trading:1，走模擬帳戶
-# 模擬倉需要在 OKX「模擬交易」頁面另外建立 API Key（非實盤 Key）
-OKX_DEMO = os.getenv("OKX_DEMO", "false").lower() == "true"
-
-# ── 同時開倉上限 ───────────────────────────────────────────────────────────
-# 最多同時持有幾個倉位（含 WAITING 等待進場）
-# 200U / 10倉 = 每倉最多 20U 風險資金
-OKX_MAX_POSITIONS = int(os.getenv("OKX_MAX_POSITIONS", "10"))
-
-# ── 倉位大小風控（二選一）───────────────────────────────────────────────────
-#
-# 【方式 A】風險比例（推薦，OKX_RISK_PCT > 0 時優先生效）
-#   OKX_RISK_PCT=1  → 每單最大虧損 = 帳戶淨值 × 1%
-#   例：帳戶 200U，OKX_RISK_PCT=1 → 每單最多虧 2U
-#   bot 自動抓餘額與合約乘數，換算下幾張。虧損永遠不超過設定比例。
-#
-# 【方式 B】固定張數（OKX_RISK_PCT=0 時生效）
-#   OKX_TRADE_SIZE=1 → 每單固定下 1 張合約（不管帳戶大小）
-#
-# 建議設定（200U / 10倉 嚴格風控）：
-#   OKX_RISK_PCT=1   → 每單最多虧 2U（帳戶的 1%）
-#   OKX_MAX_POSITIONS=10 → 最多同時持有 10 倉
-#   OKX_TD_MODE=isolated → 逐倉，每倉獨立風控，一倉爆倉不影響其他
-OKX_TRADE_SZ_FIXED = os.getenv("OKX_TRADE_SIZE", "1")
-OKX_RISK_PCT       = float(os.getenv("OKX_RISK_PCT", "1"))  # 預設 1%
 
 ALL_COINS = [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
@@ -65,9 +23,7 @@ LOG_FILE            = "active_trades.csv"
 STATS_FILE          = "daily_stats.csv"
 WAITING_EXPIRY_BARS = 20  # WAITING 超過幾根 K 棒自動清除（15m × 20 = 5 小時）
 
-# ord_id = 進場單 ID（追蹤用）；algo_id = 止損 Algo 單 ID（移動止損用）
-LOG_COLS   = ["instId", "side", "status", "entry", "sl", "tp1", "tp2", "tp3",
-              "locked", "wait_since", "tp1_hit", "ord_id", "algo_id"]
+LOG_COLS   = ["instId", "side", "status", "entry", "sl", "tp1", "tp2", "tp3", "locked", "wait_since", "tp1_hit"]
 STATS_COLS = ["instId", "result"]
 
 
@@ -97,8 +53,6 @@ def normalize_trade(t: dict) -> dict:
         "locked":     safe_int(t.get("locked")),
         "wait_since": safe_int(t.get("wait_since", 0)),
         "tp1_hit":    safe_int(t.get("tp1_hit", 0)),  # 0=未通知, 1=已通知
-        "ord_id":     str(t.get("ord_id",  "")),       # OKX 進場單 ID
-        "algo_id":    str(t.get("algo_id", "")),       # OKX 止損 Algo 單 ID
     }
 
 
@@ -167,224 +121,6 @@ def send_tg(msg: str):
         )
     except Exception as e:
         logging.warning(f"Telegram 發送失敗: {e}")
-
-
-# ─────────────────────────────────────────────
-# 4-A. OKX 自動下單 API
-# ─────────────────────────────────────────────
-
-def _okx_headers(method: str, path: str, body: str = "") -> dict:
-    """產生 OKX REST API 簽名 Header（模擬倉時自動加 x-simulated-trading:1）"""
-    ts  = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.000Z')
-    msg = ts + method.upper() + path + body
-    sig = base64.b64encode(
-        hmac.new(OKX_SECRET.encode(), msg.encode(), hashlib.sha256).digest()
-    ).decode()
-    h = {
-        "OK-ACCESS-KEY":        OKX_API_KEY,
-        "OK-ACCESS-SIGN":       sig,
-        "OK-ACCESS-TIMESTAMP":  ts,
-        "OK-ACCESS-PASSPHRASE": OKX_PASSPHRASE,
-        "Content-Type":         "application/json",
-    }
-    if OKX_DEMO:
-        h["x-simulated-trading"] = "1"   # 模擬倉專用 Header
-    return h
-
-def _okx_get(path: str, params: str = "") -> dict:
-    """OKX GET 通用函數"""
-    full_path = path + params
-    try:
-        r = requests.get(
-            f"https://www.okx.com{full_path}",
-            headers=_okx_headers("GET", full_path),
-            timeout=10
-        ).json()
-        return r
-    except Exception as e:
-        logging.warning(f"OKX GET {path} 異常: {e}")
-        return {"code": "-1", "msg": str(e), "data": []}
-
-def _okx_post(path: str, payload) -> dict:
-    """OKX POST 通用函數（payload 可為 dict 或 list）"""
-    body = json.dumps(payload)
-    try:
-        r = requests.post(
-            f"https://www.okx.com{path}",
-            headers=_okx_headers("POST", path, body),
-            data=body, timeout=10
-        ).json()
-        return r
-    except Exception as e:
-        logging.warning(f"OKX POST {path} 異常: {e}")
-        return {"code": "-1", "msg": str(e), "data": []}
-
-def okx_get_equity() -> float:
-    """
-    抓取帳戶 USDT 淨值（用於風險比例計算倉位）。
-    回傳淨值浮點數，失敗時回傳 0.0。
-    """
-    r = _okx_get("/api/v5/account/balance", "?ccy=USDT")
-    try:
-        details = r["data"][0]["details"]
-        for d in details:
-            if d.get("ccy") == "USDT":
-                eq = float(d.get("eq", 0))
-                logging.info(f"帳戶 USDT 淨值：{eq:.2f}")
-                return eq
-    except Exception as e:
-        logging.warning(f"帳戶餘額解析失敗: {e}")
-    return 0.0
-
-# 合約乘數快取（避免每單重複請求）
-_ct_val_cache: dict[str, float] = {}
-
-def okx_get_ct_val(instId: str) -> float:
-    """
-    抓取合約乘數 ctVal（每張合約代表多少標的資產）。
-    例：BTC-USDT-SWAP ctVal=0.01，即 1 張 = 0.01 BTC。
-    快取結果，整個執行週期只請求一次。
-    """
-    if instId in _ct_val_cache:
-        return _ct_val_cache[instId]
-    r = _okx_get("/api/v5/public/instruments",
-                 f"?instType=SWAP&instId={instId}")
-    try:
-        ct_val = float(r["data"][0]["ctVal"])
-        _ct_val_cache[instId] = ct_val
-        logging.info(f"[{instId}] ctVal={ct_val}")
-        return ct_val
-    except Exception as e:
-        logging.warning(f"[{instId}] ctVal 取得失敗: {e}，使用預設 1")
-        return 1.0
-
-def okx_calc_size(instId: str, entry: float, sl: float) -> str:
-    """
-    自動計算下單張數：
-    ┌ 若 OKX_RISK_PCT > 0（風險比例模式）：
-    │   張數 = floor(帳戶淨值 × 風險% / (|entry-sl| × ctVal))
-    │   最少 1 張
-    └ 否則（固定張數模式）：
-        直接回傳 OKX_TRADE_SZ_FIXED
-    回傳字串（OKX sz 欄位需要字串）
-    """
-    if OKX_RISK_PCT <= 0:
-        return OKX_TRADE_SZ_FIXED          # 固定張數
-
-    equity  = okx_get_equity()
-    if equity <= 0:
-        logging.warning("帳戶餘額為 0，退回固定張數")
-        return OKX_TRADE_SZ_FIXED
-
-    ct_val       = okx_get_ct_val(instId)
-    price_risk   = abs(entry - sl)          # 每單位標的的虧損（USDT）
-    risk_usdt    = equity * OKX_RISK_PCT / 100
-    # 每張合約在此次交易中的潛在虧損 = price_risk × ctVal
-    loss_per_lot = price_risk * ct_val
-    if loss_per_lot <= 0:
-        return OKX_TRADE_SZ_FIXED
-
-    sz = max(1, int(risk_usdt / loss_per_lot))
-    logging.info(
-        f"[{instId}] 風險計算 → 淨值:{equity:.1f} 風險:{risk_usdt:.1f}U "
-        f"每張虧:{loss_per_lot:.4f}U → 下 {sz} 張"
-    )
-    return str(sz)
-
-def okx_set_leverage(instId: str, lever: int):
-    """設定雙向持倉槓桿（開倉前呼叫）"""
-    for ps in ["long", "short"]:
-        r = _okx_post("/api/v5/account/set-leverage", {
-            "instId":  instId,
-            "lever":   str(lever),
-            "mgnMode": OKX_TD_MODE,
-            "posSide": ps,
-        })
-        if r.get("code") != "0":
-            logging.warning(f"[{instId}] 設定槓桿 {ps} 失敗: {r.get('msg')}")
-
-def okx_place_entry(instId: str, side: str, sz: str) -> str:
-    """
-    市價進場單。
-    side: "LONG" or "SHORT"；sz: 張數字串
-    回傳 ordId（失敗時回傳 ""）
-    """
-    demo_tag = " [模擬倉]" if OKX_DEMO else ""
-    payload = {
-        "instId":  instId,
-        "tdMode":  OKX_TD_MODE,
-        "side":    "buy"  if side == "LONG" else "sell",
-        "posSide": "long" if side == "LONG" else "short",
-        "ordType": "market",
-        "sz":      sz,
-    }
-    r = _okx_post("/api/v5/trade/order", payload)
-    if r.get("code") == "0":
-        oid = r["data"][0].get("ordId", "")
-        logging.info(f"[{instId}]{demo_tag} 進場單成功 ordId={oid}  sz={sz}")
-        return oid
-    logging.warning(f"[{instId}] 進場單失敗: {r.get('msg')}")
-    send_tg(
-        f"⚠️ *[{instId.split('-')[0]}] 自動進場失敗{demo_tag}*\n"
-        f"`{r.get('msg', '未知錯誤')}`"
-    )
-    return ""
-
-def okx_place_sl_algo(instId: str, side: str, sl_px: float, sz: str) -> str:
-    """
-    下止損 Algo 單（conditional order）。
-    觸發後以市價平倉。
-    回傳 algoId（失敗時回傳 ""）
-    """
-    payload = {
-        "instId":          instId,
-        "tdMode":          OKX_TD_MODE,
-        "side":            "sell" if side == "LONG" else "buy",
-        "posSide":         "long" if side == "LONG" else "short",
-        "ordType":         "conditional",
-        "sz":              sz,
-        "slTriggerPx":     f"{sl_px:.6f}",
-        "slOrdPx":         "-1",
-        "slTriggerPxType": "last",
-    }
-    r = _okx_post("/api/v5/trade/order-algo", payload)
-    if r.get("code") == "0":
-        aid = r["data"][0].get("algoId", "")
-        logging.info(f"[{instId}] 止損 Algo 成功 algoId={aid}  SL={sl_px:.4f}  sz={sz}")
-        return aid
-    logging.warning(f"[{instId}] 止損 Algo 失敗: {r.get('msg')}")
-    send_tg(
-        f"⚠️ *[{instId.split('-')[0]}] 止損 Algo 設定失敗*\n"
-        f"`{r.get('msg', '未知錯誤')}`\n"
-        f"請手動設止損：{sl_px:.4f}"
-    )
-    return ""
-
-def okx_cancel_algo(instId: str, algo_id: str):
-    """取消 Algo 單（移動止損前先取消舊的）"""
-    if not algo_id:
-        return
-    r = _okx_post("/api/v5/trade/cancel-algos",
-                  [{"instId": instId, "algoId": algo_id}])
-    if r.get("code") != "0":
-        logging.warning(f"[{instId}] 取消 Algo {algo_id} 失敗: {r.get('msg')}")
-
-def okx_close_market(instId: str, side: str, sz: str):
-    """
-    市價平倉（TP3 達到時由 bot 主動平倉）。
-    若倉位已被 Algo 平掉，OKX 會回傳錯誤，忽略即可。
-    """
-    payload = {
-        "instId":  instId,
-        "tdMode":  OKX_TD_MODE,
-        "side":    "sell" if side == "LONG" else "buy",
-        "posSide": "long" if side == "LONG" else "short",
-        "ordType": "market",
-        "sz":      sz,
-    }
-    r = _okx_post("/api/v5/trade/order", payload)
-    if r.get("code") != "0":
-        logging.warning(f"[{instId}] 市價平倉回應: {r.get('msg')} (可能已由 Algo 平倉)")
 
 
 # ─────────────────────────────────────────────
@@ -813,10 +549,6 @@ def main():
         btc_trend = get_btc_direction(btc_df)
         logging.info(f"BTC 當前方向：{btc_trend}")
 
-        # 計算目前 ACTIVE + WAITING 的倉位數（用於上限判斷）
-        current_positions = len(trades_df)
-        logging.info(f"目前倉位數：{current_positions} / {OKX_MAX_POSITIONS}")
-
         for instId in ALL_COINS:
             df = fetch_okx(instId)
             if df is None or df.empty:
@@ -828,13 +560,6 @@ def main():
 
             # ── 1. 發現新機會 ───────────────────────────────────────────
             if instId not in active_ids:
-
-                # ── 倉位上限檢查 ──────────────────────────────────────
-                # 含 WAITING 計入上限，避免掛太多等待單佔滿 10 個位子
-                if current_positions >= OKX_MAX_POSITIONS:
-                    logging.info(f"[{instId}] 已達倉位上限 {OKX_MAX_POSITIONS}，跳過新訊號")
-                    time.sleep(0.2)
-                    continue
 
                 # 過濾器 ①：盤整市場 — ATR 不足時跳過，避免假突破
                 if not is_trending_market(df):
@@ -929,10 +654,7 @@ def main():
                         "locked":     0,
                         "wait_since": current_bar,
                         "tp1_hit":    0,
-                        "ord_id":     "",
-                        "algo_id":    "",
                     })
-                    current_positions += 1  # 即時更新，避免同一輪開過多單
                 time.sleep(0.2)
                 continue
 
@@ -974,32 +696,9 @@ def main():
 
                 if is_hit:
                     t['status'] = "ACTIVE"
-                    fill_price  = t['entry']
+                    fill_price  = t['entry']  # 以計劃進場位作為成交價
                     side_zh     = "🟢 多單 (LONG)" if t['side'] == "LONG" else "🔴 空單 (SHORT)"
-
-                    # ── 自動下單 ─────────────────────────────────────────
-                    auto_tag = ""
-                    if AUTO_TRADE and OKX_API_KEY:
-                        demo_str = "🔬 模擬倉" if OKX_DEMO else "💵 實盤"
-                        # ① 計算下單張數（風險比例 or 固定張數）
-                        sz = okx_calc_size(instId, t['entry'], t['sl'])
-                        # ② 設定槓桿
-                        okx_set_leverage(instId, OKX_LEVER)
-                        # ③ 市價進場
-                        ord_id  = okx_place_entry(instId, t['side'], sz)
-                        t['ord_id'] = ord_id
-                        # ④ 設止損 Algo（OKX 端保護，bot 故障也能止損）
-                        algo_id = okx_place_sl_algo(instId, t['side'], t['sl'], sz)
-                        t['algo_id'] = algo_id
-                        sz_mode = (f"風險{OKX_RISK_PCT}%" if OKX_RISK_PCT > 0
-                                   else f"固定{sz}張")
-                        auto_tag = (
-                            f"\n\n🤖 *自動下單已執行 ({demo_str})*\n"
-                            f"📦 下單：{sz} 張 ({sz_mode})\n"
-                            f"🔧 槓桿：{OKX_LEVER}x | {OKX_TD_MODE}"
-                        )
-                    # ─────────────────────────────────────────────────────
-
+                    risk_r      = abs(t['entry'] - t['sl']) + 1e-10
                     send_tg(
                         f"🚀 *Alpha Oracle | 進場成交* 🚀\n"
                         f"──────────────────\n"
@@ -1008,10 +707,11 @@ def main():
                         f"\n"
                         f"📍 成交價：{fill_price:.4f}\n"
                         f"🚫 止損位：{t['sl']:.4f}  (-1R)\n"
-                        f"💰 TP1 (1.0R)：{t['tp1']:.4f}\n"
-                        f"💰 TP2 (2.0R)：{t['tp2']:.4f}\n"
-                        f"💰 TP3 (3.0R)：{t['tp3']:.4f}\n"
-                        f"{auto_tag}"
+                        f"💰 TP1 (+{abs(t['tp1']-t['entry'])/risk_r:.1f}R)：{t['tp1']:.4f}\n"
+                        f"💰 TP2 (+{abs(t['tp2']-t['entry'])/risk_r:.1f}R)：{t['tp2']:.4f}\n"
+                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}\n"
+                        f"\n"
+                        f"🎯 *單已開，緊盯止損*"
                     )
                 updated_trades.append(t)
 
@@ -1027,22 +727,12 @@ def main():
                 act_low  = min(df['l'].iloc[-act_n:].min(), act_cur_lo, curr_p)
                 act_high = max(df['h'].iloc[-act_n:].max(), act_cur_hi, curr_p)
 
-                # 達到 TP1 → 通知 + 移動止損到保本（進場位）
+                # 達到 TP1 → 通知（只發一次，用 tp1_hit 旗標防止重複）
                 if t['tp1_hit'] == 0 and (
                     (t['side'] == "LONG"  and act_high >= t['tp1']) or
                     (t['side'] == "SHORT" and act_low  <= t['tp1'])
                 ):
                     t['tp1_hit'] = 1
-                    be_tag = ""
-                    if AUTO_TRADE and OKX_API_KEY:
-                        # 取消舊止損 Algo，重新設在進場位（保本）
-                        sz_be   = okx_calc_size(instId, t['entry'], t['sl'])
-                        okx_cancel_algo(instId, t.get('algo_id', ''))
-                        new_sl  = t['entry']
-                        new_aid = okx_place_sl_algo(instId, t['side'], new_sl, sz_be)
-                        t['algo_id'] = new_aid
-                        t['sl']      = new_sl
-                        be_tag = f"\n🤖 *止損已自動移至進場位（保本）*"
                     send_tg(
                         f"🎯 *Alpha Oracle | 達到 TP1*\n"
                         f"──────────────────\n"
@@ -1053,34 +743,25 @@ def main():
                         f"💰 TP1 (1.0R)：{t['tp1']:.4f}  ✅\n"
                         f"💰 TP2 (2.0R)：{t['tp2']:.4f}\n"
                         f"💰 TP3 (3.0R)：{t['tp3']:.4f}\n"
-                        f"🚫 止損移至保本：{t['sl']:.4f}"
-                        f"{be_tag}"
+                        f"🚫 止損位：{t['sl']:.4f}  (-1R)"
                     )
 
-                # 達到 TP2 → 移動止損到 TP1（鎖利）
+                # 達到 TP2 → 鎖利保護（止損移至 TP1）
                 if t['locked'] == 0 and (
                     (t['side'] == "LONG"  and act_high >= t['tp2']) or
                     (t['side'] == "SHORT" and act_low  <= t['tp2'])
                 ):
                     t['locked'] = 1
                     t['sl']     = t['tp1']
-                    lock_tag = ""
-                    if AUTO_TRADE and OKX_API_KEY:
-                        sz_lk   = okx_calc_size(instId, t['entry'], t['sl'])
-                        okx_cancel_algo(instId, t.get('algo_id', ''))
-                        new_aid = okx_place_sl_algo(instId, t['side'], t['tp1'], sz_lk)
-                        t['algo_id'] = new_aid
-                        lock_tag = f"\n🤖 *止損已自動移至 TP1*"
                     send_tg(
                         f"🔒 *Alpha Oracle | 達到 TP2 · 鎖利保護*\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
-                        f"✅ 已達 TP2，止損上移鎖利\n"
+                        f"✅ 已達 TP2，止損上移保本\n"
                         f"\n"
                         f"📍 當前價：{curr_p:.4f}\n"
-                        f"🚫 新止損：{t['tp1']:.4f}（TP1 位置 · 鎖利）\n"
+                        f"🚫 新止損：{t['tp1']:.4f}（已移至 TP1 · 保本）\n"
                         f"💰 TP3 (3.0R)：{t['tp3']:.4f}"
-                        f"{lock_tag}"
                     )
 
                 # SL 觸發：用 K 棒低點（多單）/ 高點（空單）判斷，嚴格執行
@@ -1095,8 +776,9 @@ def main():
                 )
 
                 if is_sl or is_tp3:
-                    is_breakeven = is_sl and t['locked'] == 1
-                    res          = "SL" if (is_sl and not is_breakeven) else "TP"
+                    is_breakeven = is_sl and t['locked'] == 1  # 止損已移至保本位
+                    res          = "SL" if (is_sl and not is_breakeven) else "TP"  # 保本算 TP
+                    # 決定離場價格顯示
                     if is_tp3:
                         result_label = "💰 止盈達標 (TP3)"
                         exit_p       = t['tp3']
@@ -1106,20 +788,6 @@ def main():
                     else:
                         result_label = "❌ 止損離場"
                         exit_p       = t['sl']
-
-                    # ── 自動平倉 ──────────────────────────────────────
-                    auto_close_tag = ""
-                    if AUTO_TRADE and OKX_API_KEY:
-                        sz_cl = okx_calc_size(instId, t['entry'], t['sl'])
-                        if is_tp3:
-                            okx_cancel_algo(instId, t.get('algo_id', ''))
-                            okx_close_market(instId, t['side'], sz_cl)
-                            auto_close_tag = "\n🤖 *已自動市價平倉 (TP3)*"
-                        else:
-                            okx_cancel_algo(instId, t.get('algo_id', ''))
-                            auto_close_tag = "\n🤖 *止損 Algo 已執行平倉*"
-                    # ─────────────────────────────────────────────────
-
                     send_tg(
                         f"🏁 *Alpha Oracle | 交易結算*\n"
                         f"──────────────────\n"
@@ -1127,11 +795,10 @@ def main():
                         f"🏆 結果：{result_label}\n"
                         f"\n"
                         f"📍 離場價：{exit_p:.4f}\n"
-                        f"🚫 止損位：{t['sl']:.4f}\n"
+                        f"🚫 止損位：{t['sl']:.4f}  (-1R)\n"
                         f"💰 TP1 (1.0R)：{t['tp1']:.4f}\n"
                         f"💰 TP2 (2.0R)：{t['tp2']:.4f}\n"
                         f"💰 TP3 (3.0R)：{t['tp3']:.4f}"
-                        f"{auto_close_tag}"
                     )
                     pd.DataFrame([{"instId": instId, "result": res}]).to_csv(
                         STATS_FILE, mode='a', header=False, index=False
