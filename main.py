@@ -58,15 +58,15 @@ CORR_GROUPS = [
     {"LINK-USDT-SWAP", "ADA-USDT-SWAP", "XRP-USDT-SWAP"},
 ]
 
-MAX_DAILY_SL        = 2
+MAX_DAILY_SL        = 3          # 2 → 3：每日止損上限略放寬
 MAX_CONCURRENT      = 3
-SL_MIN_PCT          = 0.005
-WAITING_EXPIRY_BARS = 24
+SL_MIN_PCT          = 0.003      # 0.5% → 0.3%：允許更緊的結構性 SL
+WAITING_EXPIRY_BARS = 36         # 24 → 36 根（6h→9h）：等待 FVG 回測更有耐心
 COOLDOWN_BARS_SL    = 8
 COOLDOWN_BARS_TP    = 4
 
-# ★ 新增：匯流評分門檻（0-8分，≥5 才進場）
-CONFLUENCE_MIN_SCORE = 5
+# ★ 匯流評分門檻（0-9分）— 放寬：5 → 4
+CONFLUENCE_MIN_SCORE = 4
 
 LOG_FILE   = "active_trades.csv"
 STATS_FILE = "daily_stats.csv"
@@ -118,13 +118,11 @@ def is_ict_killzone(now_utc: datetime) -> tuple[bool, str]:
     """
     ny = utc_to_ny(now_utc)
     h  = ny.hour
-    if 3 <= h < 5:
+    if 2 <= h < 6:                                     # 放寬：3-5 → 2-6（倫敦前置+後延）
         return True, f"🇬🇧 London Open ({h:02d}:xx NY)"
-    if 7 <= h < 10:
+    if 7 <= h < 11:                                    # 放寬：7-10 → 7-11（含 Silver Bullet AM）
         return True, f"🗽 New York Open ({h:02d}:xx NY)"
-    if 10 <= h < 11:
-        return True, f"🥈 Silver Bullet AM ({h:02d}:xx NY)"
-    if 14 <= h < 15:
+    if 13 <= h < 16:                                   # 放寬：14-15 → 13-16（下午時段擴大）
         return True, f"🥈 Silver Bullet PM ({h:02d}:xx NY)"
     return False, f"⏸ 非 Killzone ({h:02d}:xx NY)"
 
@@ -236,7 +234,7 @@ def check_atr_volatility(df: pd.DataFrame,
         return True, "⚪ ATR(基準為零)", 1.0
 
     atr_ratio   = current_atr / long_avg_atr
-    is_volatile = atr_ratio >= 0.50
+    is_volatile = atr_ratio >= 0.35   # 放寬：50% → 35%（只過濾極度縮量）
 
     if is_volatile:
         label = f"✅ 波動率正常 ({atr_ratio:.0%})"
@@ -310,7 +308,7 @@ def check_liquidity_sweep(
 ) -> tuple[bool, dict | None]:
     n = len(df)
     if n < 12: return False, None
-    check_start = max(0, n - 12)
+    check_start = max(0, n - 20)   # 放寬：12 → 20 根（往前多看 2 小時）
 
     if side == "LONG":
         levels = sorted([l for l in liq_lows if l and l > 0])
@@ -323,7 +321,7 @@ def check_liquidity_sweep(
                 rng = k['h'] - k['l']
                 if rng < 1e-10: continue
                 lower_wick = min(k['o'], k['c']) - k['l']
-                if lower_wick / rng < 0.50: continue
+                if lower_wick / rng < 0.40: continue  # 放寬：50% → 40% 影線比例
                 displaced = False
                 disp_close = 0.0
                 for j in range(i+1, min(i+3, n)):
@@ -351,7 +349,7 @@ def check_liquidity_sweep(
                 rng = k['h'] - k['l']
                 if rng < 1e-10: continue
                 upper_wick = k['h'] - max(k['o'], k['c'])
-                if upper_wick / rng < 0.50: continue
+                if upper_wick / rng < 0.40: continue   # 放寬：50% → 40% 影線比例
                 displaced = False
                 disp_close = 0.0
                 for j in range(i+1, min(i+3, n)):
@@ -931,9 +929,9 @@ def main():
                 setup_found = None
 
                 for side in ["LONG", "SHORT"]:
-                    # 資費率過濾
-                    if side=="LONG"  and fr >  0.0005: continue
-                    if side=="SHORT" and fr < -0.0005: continue
+                    # 資費率過濾（放寬：0.05% → 0.10%）
+                    if side=="LONG"  and fr >  0.001: continue
+                    if side=="SHORT" and fr < -0.001: continue
 
                     if not check_correlated_group(instId, trades_df, side): continue
 
@@ -1030,8 +1028,8 @@ def main():
                     # ⑪ 匯流評分（含 ATR 扣分）
                     # ────────────────────────────────────────
                     funding_aligned = (
-                        (side=="LONG"  and fr <= 0.0003) or
-                        (side=="SHORT" and fr >= -0.0003)
+                        (side=="LONG"  and fr <= 0.0005) or   # 放寬評分門檻與過濾門檻一致
+                        (side=="SHORT" and fr >= -0.0005)
                     )
                     score, score_details = calculate_confluence_score(
                         h4_ok          = h4_ok,
