@@ -39,7 +39,7 @@ def safe_int(val, fallback=0):
     except: return fallback
 
 def normalize_trade(t: dict) -> dict:
-    """確保從 CSV 讀回來的欄位型態正確（原本 locked="0" 比較失效的 bug）"""
+    """確保從 CSV 讀回來的欄位型態正確"""
     return {
         "instId":     str(t.get("instId", "")),
         "side":       str(t.get("side", "")),
@@ -51,7 +51,7 @@ def normalize_trade(t: dict) -> dict:
         "tp3":        safe_float(t.get("tp3")),
         "locked":     safe_int(t.get("locked")),
         "wait_since": safe_int(t.get("wait_since", 0)),
-        "tp1_hit":    safe_int(t.get("tp1_hit", 0)),  # 0=未通知, 1=已通知
+        "tp1_hit":    safe_int(t.get("tp1_hit", 0)),
     }
 
 
@@ -74,20 +74,16 @@ def fetch_okx(instId: str) -> pd.DataFrame | None:
         return None
 
 def fetch_current_candle_hl(instId: str) -> tuple[float, float]:
-    """
-    抓取當前「未收盤」K 棒的最高/最低價（confirm="0"）。
-    用於 WAITING 進場偵測，避免漏掉正在形成中的 K 棒觸及進場位。
-    回傳 (low, high)；抓不到時回傳不影響判斷的安全值。
-    """
+    """抓取當前「未收盤」K 棒的最高/最低價"""
     try:
         url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar=15m&limit=3"
         res = requests.get(url, timeout=5).json()
         for row in res['data']:
-            if row[8] == "0":                    # confirm == "0" 即當前未收盤
+            if row[8] == "0":
                 return float(row[3]), float(row[2])  # (low, high)
     except Exception as e:
         logging.warning(f"[{instId}] 當前 K 棒抓取失敗: {e}")
-    return float('inf'), float('-inf')           # 安全值：不觸發任何判斷
+    return float('inf'), float('-inf')
 
 def get_funding_ls(instId: str) -> tuple[str, str]:
     """抓取資金費率與多空持倉比"""
@@ -121,6 +117,45 @@ def send_tg(msg: str):
     except Exception as e:
         logging.warning(f"Telegram 發送失敗: {e}")
 
+def fetch_order_book_imbalance(instId: str, depth: int = 20) -> tuple[float, str]:
+    """
+    抓取盤口深度並計算不平衡度 (Imbalance)。
+    回傳 (imbalance_ratio, label)
+    Ratio > 1.2 代表買盤強 (Bid > Ask)
+    Ratio < 0.8 代表賣盤強 (Ask > Bid)
+    """
+    try:
+        # sz=20 表示抓取前 20 檔深度
+        url = f"https://www.okx.com/api/v5/market/books?instId={instId}&sz={depth}"
+        res = requests.get(url, timeout=5).json()
+        if res['code'] != '0' or not res['data']:
+            return 1.0, "⚪ 盤口均衡"
+        
+        data = res['data'][0]
+        bids = data['bids'] # [price, vol, ...]
+        asks = data['asks']
+        
+        # 計算總掛單量 (價格 * 數量 的加權或單純數量加權，這裡用單純數量加權較快)
+        bid_vol = sum(float(b[1]) for b in bids)
+        ask_vol = sum(float(a[1]) for a in asks)
+        
+        if ask_vol == 0: return 1.0, "⚪ 盤口均衡"
+        
+        ratio = bid_vol / ask_vol
+        
+        if ratio > 1.2:
+            label = f"🟢 買盤強勢 ({ratio:.2f})"
+        elif ratio < 0.8:
+            label = f"🔴 賣盤強勢 ({ratio:.2f})"
+        else:
+            label = f"⚪ 盤口均衡 ({ratio:.2f})"
+            
+        return ratio, label
+        
+    except Exception as e:
+        logging.warning(f"[{instId}] 盤口數據抓取失敗: {e}")
+        return 1.0, "⚪ 數據缺失"
+
 
 # ─────────────────────────────────────────────
 # 4. 技術指標
@@ -134,29 +169,20 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> float:
     return tr.rolling(period).mean().iloc[-1]
 
 def calculate_cvd(df: pd.DataFrame, lookback: int = 20) -> tuple[float, str]:
-    """
-    真實 CVD 估算：用每根 K 棒方向加權成交量，累積買賣壓差異。
-    陽線視為買壓主導，陰線視為賣壓主導。
-    """
+    """真實 CVD 估算"""
     recent = df.tail(lookback).copy()
     body   = (recent['h'] - recent['l']).replace(0, 1e-10)
     recent['delta'] = np.where(
         recent['c'] >= recent['o'],
-        recent['v'] * (recent['c'] - recent['l']) / body,   # 買壓
-        -recent['v'] * (recent['h'] - recent['c']) / body   # 賣壓
+        recent['v'] * (recent['c'] - recent['l']) / body,
+        -recent['v'] * (recent['h'] - recent['c']) / body
     )
     cvd = recent['delta'].sum()
     label = "🟢 大戶吸籌 (CVD+)" if cvd > 0 else "🔴 大戶出貨 (CVD-)"
     return cvd, label
 
 def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float = 3.0) -> int:
-    """
-    Supertrend 指標（ATR 基準趨勢方向過濾）
-    period=10, multiplier=3.0（與 Pine Script 預設一致）
-    回傳  1 → 多頭趨勢（只做多）
-    回傳 -1 → 空頭趨勢（只做空）
-    回傳  0 → 資料不足，不過濾
-    """
+    """Supertrend 指標"""
     if len(df) < period + 2:
         return 0
 
@@ -165,26 +191,21 @@ def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float =
     close = df['c'].values.astype(float)
     n     = len(df)
 
-    # True Range
     tr = np.zeros(n)
     for i in range(1, n):
         tr[i] = max(high[i] - low[i],
                     abs(high[i] - close[i - 1]),
                     abs(low[i]  - close[i - 1]))
 
-    # Wilder ATR（與 Pine Script 的 ta.atr 相同）
     atr = np.zeros(n)
     atr[period] = tr[1:period + 1].mean()
     for i in range(period + 1, n):
         atr[i] = (atr[i - 1] * (period - 1) + tr[i]) / period
 
     hl2 = (high + low) / 2.0
+    basic_up = hl2 - multiplier * atr
+    basic_dn = hl2 + multiplier * atr
 
-    # 基礎上下軌
-    basic_up = hl2 - multiplier * atr   # 多頭支撐下軌（up line）
-    basic_dn = hl2 + multiplier * atr   # 空頭壓力上軌（dn line）
-
-    # Trailing 軌道 + 趨勢方向
     final_up = np.zeros(n)
     final_dn = np.zeros(n)
     trend    = np.ones(n, dtype=int)
@@ -193,19 +214,16 @@ def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float =
     final_dn[period] = basic_dn[period]
 
     for i in range(period + 1, n):
-        # 多頭下軌只能往上收緊
         final_up[i] = (
             basic_up[i]
             if basic_up[i] > final_up[i - 1] or close[i - 1] < final_up[i - 1]
             else final_up[i - 1]
         )
-        # 空頭上軌只能往下收緊
         final_dn[i] = (
             basic_dn[i]
             if basic_dn[i] < final_dn[i - 1] or close[i - 1] > final_dn[i - 1]
             else final_dn[i - 1]
         )
-        # 趨勢翻轉判斷
         if trend[i - 1] == -1 and close[i] > final_dn[i - 1]:
             trend[i] = 1
         elif trend[i - 1] == 1 and close[i] < final_up[i - 1]:
@@ -217,14 +235,11 @@ def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float =
 
 
 # ─────────────────────────────────────────────
-# 5. SMC 結構分析
+# 5. SMC & ICT 結構分析
 # ─────────────────────────────────────────────
 
 def find_swing_points(df: pd.DataFrame, n: int = 2, lookback: int = 80) -> tuple[list, list]:
-    """
-    找出擺動高低點 (流動性池)。
-    n = 每側需要幾根 K 棒確認，n 越大找出的越是顯著擺動。
-    """
+    """找出擺動高低點"""
     data = df.tail(lookback).reset_index(drop=True)
     swing_highs, swing_lows = [], []
     for i in range(n, len(data) - n):
@@ -237,27 +252,19 @@ def find_swing_points(df: pd.DataFrame, n: int = 2, lookback: int = 80) -> tuple
     return sorted(set(swing_highs)), sorted(set(swing_lows))
 
 def detect_market_structure(df: pd.DataFrame) -> str:
-    """
-    偵測市場結構：
-    • W底（雙底）：兩個相近低點 → 多頭反轉訊號
-    • M頭（雙頂）：兩個相近高點 → 空頭反轉訊號
-    • 趨勢延續 / 盤整
-    """
+    """偵測市場結構"""
     swing_highs, swing_lows = find_swing_points(df, n=3, lookback=60)
 
-    # W底：最近兩個擺動低點差異 < 1.5%
     if len(swing_lows) >= 2:
         l1, l2 = swing_lows[-2], swing_lows[-1]
         if l1 > 0 and abs(l1 - l2) / l1 < 0.015:
             return "W底反轉 📐"
 
-    # M頭：最近兩個擺動高點差異 < 1.5%
     if len(swing_highs) >= 2:
         h1, h2 = swing_highs[-2], swing_highs[-1]
         if h1 > 0 and abs(h1 - h2) / h1 < 0.015:
             return "M頭反轉 📐"
 
-    # 趨勢判斷（近 20 根 K 棒漲跌幅）
     recent = df.tail(20)
     slope  = (recent['c'].iloc[-1] - recent['c'].iloc[0]) / (recent['c'].iloc[0] + 1e-10)
     if   slope >  0.025: return "上升趨勢延續 📈"
@@ -265,11 +272,7 @@ def detect_market_structure(df: pd.DataFrame) -> str:
     return "區間盤整 ↔️"
 
 def find_order_block(df: pd.DataFrame, side: str, lookback: int = 15) -> dict | None:
-    """
-    找出最近的訂單塊 (Order Block)：
-    • 多頭 OB = 上漲前的最後一根陰線
-    • 空頭 OB = 下跌前的最後一根陽線
-    """
+    """找出最近的訂單塊 (Order Block)"""
     data = df.tail(lookback).reset_index(drop=True)
     for i in range(len(data) - 2, 0, -1):
         k, k_next = data.iloc[i], data.iloc[i + 1]
@@ -280,11 +283,7 @@ def find_order_block(df: pd.DataFrame, side: str, lookback: int = 15) -> dict | 
     return None
 
 def find_recent_fvg(df: pd.DataFrame, side: str) -> dict | None:
-    """
-    找出最近的 FVG (公平價值缺口)：
-    • 多頭 FVG = k2['l'] > k0['h']（三根K棒向上留下缺口）
-    • 空頭 FVG = k2['h'] < k0['l']
-    """
+    """找出最近的 FVG (公平價值缺口)"""
     for i in range(len(df) - 3, max(len(df) - 20, 0), -1):
         k0, k2 = df.iloc[i - 1], df.iloc[i + 1]
         if side == "LONG"  and k2['l'] > k0['h']:
@@ -293,23 +292,52 @@ def find_recent_fvg(df: pd.DataFrame, side: str) -> dict | None:
             return {"high": k0['l'], "low": k2['h']}
     return None
 
+def find_ict_snr_zones(df: pd.DataFrame, side: str, lookback: int = 30) -> dict | None:
+    """
+    ICT SNR (Support/Resistance) 分析：
+    尋找近期未被測試的關鍵支撐/阻力位。
+    LONG: 尋找近期的 Swing Low 或 Demand Zone (未被跌破)
+    SHORT: 尋找近期的 Swing High 或 Supply Zone (未被突破)
+    """
+    data = df.tail(lookback).reset_index(drop=True)
+    
+    if side == "LONG":
+        # 尋找最近的一個顯著低點 (Swing Low)
+        # 簡單定義：過去 30 根內的最低點，且該低點發生在至少 3 根 K 棒前
+        min_idx = data['l'].iloc[:-3].argmin()
+        min_val = data['l'].iloc[min_idx]
+        # 確認之後沒有被有效跌破 (收盤價沒低於它太多)
+        subsequent_closes = data['c'].iloc[min_idx+1:]
+        if all(c > min_val * 0.995 for c in subsequent_closes):
+            return {"level": min_val, "type": "Demand/SNR"}
+            
+    else: # SHORT
+        # 尋找最近的一個顯著高點
+        max_idx = data['h'].iloc[:-3].argmax()
+        max_val = data['h'].iloc[max_idx]
+        # 確認之後沒有被有效突破
+        subsequent_closes = data['c'].iloc[max_idx+1:]
+        if all(c < max_val * 1.005 for c in subsequent_closes):
+            return {"level": max_val, "type": "Supply/SNR"}
+            
+    return None
+
 def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: float) -> float:
-    """
-    結構性止損：
-    優先掛在 OB 或 FVG 邊緣外側（加 ATR×0.25 緩衝），
-    避免純 ATR 止損被輕易掃單。
-    """
+    """結構性止損"""
     buffer = atr * 0.25
     ob     = find_order_block(df, side)
     fvg    = find_recent_fvg(df, side)
+    snr    = find_ict_snr_zones(df, side) # 新增 SNR 引用
 
     if side == "LONG":
         candidates = []
         if ob  and ob['low']  < entry: candidates.append(ob['low']  - buffer)
         if fvg and fvg['low'] < entry: candidates.append(fvg['low'] - buffer)
+        if snr and snr['level'] < entry: candidates.append(snr['level'] - buffer) # SNR 作為止損參考
+        
         if candidates:
-            sl = max(candidates)  # 取最近（最高）的支撐
-            if (entry - sl) / (entry + 1e-10) < 0.004:  # 止損 < 0.4% 太近，加寬
+            sl = max(candidates)
+            if (entry - sl) / (entry + 1e-10) < 0.004:
                 sl = entry - atr * 1.5
             return sl
         return entry - atr * 1.5
@@ -318,6 +346,8 @@ def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: floa
         candidates = []
         if ob  and ob['high']  > entry: candidates.append(ob['high']  + buffer)
         if fvg and fvg['high'] > entry: candidates.append(fvg['high'] + buffer)
+        if snr and snr['level'] > entry: candidates.append(snr['level'] + buffer) # SNR 作為止損參考
+        
         if candidates:
             sl = min(candidates)
             if (sl - entry) / (entry + 1e-10) < 0.004:
@@ -326,10 +356,7 @@ def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: floa
         return entry + atr * 1.5
 
 def get_fixed_r_tps(entry: float, sl: float, side: str) -> tuple[float, float, float]:
-    """
-    固定 R 倍數止盈：TP1=1R, TP2=2R, TP3=3R
-    清晰、可預期，方便風險管理。
-    """
+    """固定 R 倍數止盈"""
     risk = abs(entry - sl) + 1e-10
     if side == "LONG":
         return entry + risk, entry + risk * 2, entry + risk * 3
@@ -344,11 +371,11 @@ def suggest_leverage(atr: float, price: float) -> tuple[str, str]:
     else:               return "10x ~ 20x", "低波動"
 
 # ─────────────────────────────────────────────
-# 6. 三層過濾器
+# 6. 三層過濾器 + 盤口/SNR
 # ─────────────────────────────────────────────
 
 def fetch_funding_rate_raw(instId: str) -> float:
-    """抓取資金費率原始浮點值（用於過濾判斷）"""
+    """抓取資金費率原始浮點值"""
     try:
         res = requests.get(
             f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5
@@ -356,15 +383,12 @@ def fetch_funding_rate_raw(instId: str) -> float:
         return float(res['data'][0]['fundingRate'])
     except Exception as e:
         logging.warning(f"[{instId}] 資金費率原始值抓取失敗: {e}")
-        return 0.0  # 抓不到時不過濾
+        return 0.0
 
 def is_trending_market(df: pd.DataFrame) -> bool:
-    """
-    盤整過濾：當前 ATR(14) 必須高於近 50 根均 ATR × 0.7。
-    ATR 太小代表市場在盤整，SMC 訊號在此環境下失真率高。
-    """
+    """盤整過濾"""
     if len(df) < 50:
-        return True  # 資料不足，不過濾
+        return True
     high_low   = df['h'] - df['l']
     high_close = np.abs(df['h'] - df['c'].shift())
     low_close  = np.abs(df['l'] - df['c'].shift())
@@ -374,12 +398,7 @@ def is_trending_market(df: pd.DataFrame) -> bool:
     return current_atr > avg_atr_50 * 0.7
 
 def get_btc_direction(btc_df: pd.DataFrame, lookback: int = 5) -> str:
-    """
-    BTC 近期方向判斷：
-    近 N 根 K 棒中 4 根以上為陰線 → DOWN
-    近 N 根 K 棒中 4 根以上為陽線 → UP
-    否則 → NEUTRAL
-    """
+    """BTC 近期方向判斷"""
     if btc_df is None or len(btc_df) < lookback:
         return "NEUTRAL"
     recent  = btc_df.tail(lookback)
@@ -390,11 +409,7 @@ def get_btc_direction(btc_df: pd.DataFrame, lookback: int = 5) -> str:
     return "NEUTRAL"
 
 def classify_trade(side: str, structure: str, risk_pct: float) -> str:
-    """
-    自動判斷短單/長單：
-    • 反轉結構（W底/M頭）→ 波段長單，等待更大空間
-    • 趨勢延續 + 小 risk → 日內短單，快進快出
-    """
+    """自動判斷短單/長單"""
     if "反轉" in structure:
         return "📊 長單 (波段)"
     elif risk_pct < 1.0:
@@ -403,18 +418,12 @@ def classify_trade(side: str, structure: str, risk_pct: float) -> str:
 
 
 # ─────────────────────────────────────────────
-# 6. SMC 訊號掃描（整合所有分析）
+# 7. SMC 訊號掃描（整合所有分析）
 # ─────────────────────────────────────────────
 
-def find_smc_setup(df: pd.DataFrame) -> dict | None:
+def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
     """
-    完整 SMC 掃描流程：
-    1. BOS / CHoCH 結構突破偵測
-    2. 結構性止損（OB / FVG 邊緣）
-    3. 流動性導向止盈（擺動高低點）
-    4. W底 / M頭市場結構識別
-    5. CVD 買賣壓估算
-    6. 槓桿建議 + 短/長單分類
+    完整 SMC + ICT SNR + 盤口 掃描流程
     """
     if df is None or len(df) < 40:
         return None
@@ -426,16 +435,13 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
     for i in range(len(df) - 3, len(df) - 25, -1):
         k0, k1, k2 = df.iloc[i - 1], df.iloc[i], df.iloc[i + 1]
 
-        # 多頭 BOS：K2 突破前 15 根高點且為陽線
+        # 多頭 BOS
         if k2['c'] > k2['o'] and k2['c'] > df['h'].iloc[i - 15:i].max():
-            # 進場位改用 FVG 上緣（k2['l']）：最靠近當前價格，只需小幅回踩即可成交
-            # 若無 FVG 則用 k1 收盤（BOS 前最後一根 K 棒收盤，同樣比中點更容易被觸及）
             entry = k2['l'] if k2['l'] > k0['h'] else k1['c']
             best  = {"side": "LONG", "entry": entry}
 
-        # 空頭 BOS：K2 跌破前 15 根低點且為陰線
+        # 空頭 BOS
         elif k2['c'] < k2['o'] and k2['c'] < df['l'].iloc[i - 15:i].min():
-            # 空頭同理：用 FVG 下緣（k2['h']）或 k1 收盤
             entry = k2['h'] if k2['h'] < k0['l'] else k1['c']
             best  = {"side": "SHORT", "entry": entry}
 
@@ -446,10 +452,10 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
     entry = best['entry']
     price = df['c'].iloc[-1]
 
-    # 結構性止損
+    # 結構性止損 (已包含 SNR 邏輯)
     sl = calculate_structural_sl(df, side, entry, atr)
 
-    # 固定 R 倍數止盈：TP1=1R, TP2=2R, TP3=3R
+    # 固定 R 倍數止盈
     tp1, tp2, tp3 = get_fixed_r_tps(entry, sl, side)
 
     # 各項分析
@@ -463,6 +469,10 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
     # Supertrend 方向
     st_val   = calculate_supertrend(df)
     st_label = "📈 多頭" if st_val == 1 else ("📉 空頭" if st_val == -1 else "⚪ 未知")
+    
+    # ICT SNR 狀態
+    snr_zone = find_ict_snr_zones(df, side)
+    snr_status = "✅ 有 SNR 支撐/阻力" if snr_zone else "⚠️ 無明顯 SNR"
 
     return {
         "side":          side,
@@ -481,11 +491,13 @@ def find_smc_setup(df: pd.DataFrame) -> dict | None:
         "cvd_label":     cvd_label,
         "st_val":        st_val,
         "st_label":      st_label,
+        "snr_status":    snr_status,
+        "snr_zone":      snr_zone,
     }
 
 
 # ─────────────────────────────────────────────
-# 7. 主程式
+# 8. 主程式
 # ─────────────────────────────────────────────
 
 def main():
@@ -498,15 +510,14 @@ def main():
             if not os.path.exists(f) or os.stat(f).st_size == 0:
                 pd.DataFrame(columns=cols).to_csv(f, index=False)
 
-        # ── A. 戰績回報（午夜 00:00 或手動觸發）────────────────────────
+        # ── A. 戰績回報 ────────────────────────────────────────────────
         is_midnight = (now_tw.hour == 0 and 0 <= now_tw.minute < 15)
         if is_midnight or manual_report:
             if not os.path.exists("midnight.ok") or manual_report:
                 df_s = pd.read_csv(STATS_FILE)
                 if not df_s.empty:
-                    tp_c  = len(df_s[df_s['result'] == 'TP'])   # 含保本
+                    tp_c  = len(df_s[df_s['result'] == 'TP'])
                     sl_c  = len(df_s[df_s['result'] == 'SL'])
-                    be_c  = len(df_s[df_s['result'] == 'BE'])   # 額外保本細項（若有）
                     total = tp_c + sl_c
                     wr    = (tp_c / total * 100) if total > 0 else 0
                     date_str = (now_tw - timedelta(days=1)).strftime('%Y-%m-%d')
@@ -515,13 +526,11 @@ def main():
                         f"──────────────────\n"
                         f"📅 日期：{date_str}\n"
                         f"\n"
-                        f"✅ 盈利（含保本）：{tp_c} 單\n"
+                        f"✅ 盈利：{tp_c} 單\n"
                         f"❌ 止損：{sl_c} 單\n"
                         f"📊 總計：{total} 單\n"
                         f"\n"
-                        f"🔥 勝率：*{wr:.1f}%*\n"
-                        f"──────────────────\n"
-                        f"📌 保本亦計為獲勝"
+                        f"🔥 勝率：*{wr:.1f}%*"
                     )
                     if is_midnight:
                         pd.DataFrame(columns=STATS_COLS).to_csv(STATS_FILE, index=False)
@@ -541,9 +550,9 @@ def main():
 
         active_ids     = trades_df['instId'].tolist()
         updated_trades = []
-        current_bar    = int(datetime.utcnow().timestamp() // 900)  # 15m bar index
+        current_bar    = int(datetime.utcnow().timestamp() // 900)
 
-        # 過濾器 ③ 前置：先抓 BTC 方向（整個迴圈只需抓一次）
+        # 過濾器 ③ 前置：先抓 BTC 方向
         btc_df    = fetch_okx("BTC-USDT-SWAP")
         btc_trend = get_btc_direction(btc_df)
         logging.info(f"BTC 當前方向：{btc_trend}")
@@ -560,41 +569,38 @@ def main():
             # ── 1. 發現新機會 ───────────────────────────────────────────
             if instId not in active_ids:
 
-                # 過濾器 ①：盤整市場 — ATR 不足時跳過，避免假突破
+                # 過濾器 ①：盤整市場
                 if not is_trending_market(df):
                     logging.info(f"[{instId}] 盤整市場，跳過")
                     time.sleep(0.2)
                     continue
 
-                setup = find_smc_setup(df)
+                setup = find_smc_setup(df, instId)
                 if setup:
 
-                    # 過濾器 ②：CVD 方向與訊號一致性
-                    # 大戶出貨（CVD-）不做多；大戶吸籌（CVD+）不做空
+                    # 過濾器 ②：CVD 方向
                     cvd_val, _ = calculate_cvd(df)
                     if setup['side'] == "LONG" and cvd_val < 0:
-                        logging.info(f"[{instId}] CVD 負值（大戶出貨），多頭訊號跳過")
+                        logging.info(f"[{instId}] CVD 負值，多頭訊號跳過")
                         time.sleep(0.2)
                         continue
                     if setup['side'] == "SHORT" and cvd_val > 0:
-                        logging.info(f"[{instId}] CVD 正值（大戶吸籌），空頭訊號跳過")
+                        logging.info(f"[{instId}] CVD 正值，空頭訊號跳過")
                         time.sleep(0.2)
                         continue
 
-                    # 過濾器 ③：資金費率極端值
-                    # 資費 > +0.05% 代表多頭過熱，不追多；< -0.05% 代表空頭過熱，不追空
+                    # 過濾器 ③：資金費率
                     fr = fetch_funding_rate_raw(instId)
                     if setup['side'] == "LONG" and fr > 0.0005:
-                        logging.info(f"[{instId}] 資費過高 ({fr*100:.4f}%)，多頭過熱，跳過")
+                        logging.info(f"[{instId}] 資費過高，多頭過熱，跳過")
                         time.sleep(0.2)
                         continue
                     if setup['side'] == "SHORT" and fr < -0.0005:
-                        logging.info(f"[{instId}] 資費過低 ({fr*100:.4f}%)，空頭過熱，跳過")
+                        logging.info(f"[{instId}] 資費過低，空頭過熱，跳過")
                         time.sleep(0.2)
                         continue
 
-                    # 過濾器 ③：BTC 方向（山寨幣專用，BTC 本身不限制）
-                    # BTC 下跌中不做山寨多頭；BTC 上漲中不做山寨空頭
+                    # 過濾器 ④：BTC 方向
                     if instId != "BTC-USDT-SWAP":
                         if setup['side'] == "LONG" and btc_trend == "DOWN":
                             logging.info(f"[{instId}] BTC 下跌中，山寨多頭跳過")
@@ -605,15 +611,37 @@ def main():
                             time.sleep(0.2)
                             continue
 
-                    # 過濾器 ④：Supertrend 方向一致性
-                    # Supertrend 空頭（-1）時不做多；多頭（1）時不做空
-                    # st_val==0 表示資料不足，放行不過濾
+                    # 過濾器 ⑤：Supertrend 方向
                     if setup['st_val'] == -1 and setup['side'] == "LONG":
                         logging.info(f"[{instId}] Supertrend 空頭，多頭訊號跳過")
                         time.sleep(0.2)
                         continue
                     if setup['st_val'] == 1 and setup['side'] == "SHORT":
                         logging.info(f"[{instId}] Supertrend 多頭，空頭訊號跳過")
+                        time.sleep(0.2)
+                        continue
+                    
+                    # --- 新增過濾器 ⑥：ICT SNR 確認 ---
+                    # 如果找不到對應方向的 SNR 支撐/阻力，風險較高，可選擇跳過或僅記錄警告
+                    # 這裡設定為：如果沒有 SNR 支援，則不發射訊號 (嚴格模式)
+                    if setup['snr_zone'] is None:
+                         logging.info(f"[{instId}] 未找到明確 ICT SNR 區域，跳過以降低雜訊")
+                         time.sleep(0.2)
+                         continue
+
+                    # --- 新增過濾器 ⑦：盤口不平衡 (Order Book) ---
+                    # 即時抓取盤口，確保進場瞬間有流動性支持
+                    ob_ratio, ob_label = fetch_order_book_imbalance(instId)
+                    
+                    # 多頭需要買盤強勢 (Ratio > 0.9 即可，不需極端，避免錯失)
+                    if setup['side'] == "LONG" and ob_ratio < 0.9:
+                        logging.info(f"[{instId}] 盤口買氣不足 ({ob_label})，多頭跳過")
+                        time.sleep(0.2)
+                        continue
+                    
+                    # 空頭需要賣盤強勢 (Ratio < 1.1)
+                    if setup['side'] == "SHORT" and ob_ratio > 1.1:
+                        logging.info(f"[{instId}] 盤口賣壓不足 ({ob_label})，空頭跳過")
                         time.sleep(0.2)
                         continue
 
@@ -625,7 +653,9 @@ def main():
                     msg += f"💎 幣種：#{coin_sym}\n"
                     msg += f"🎯 方向：{side_zh}\n"
                     msg += f"⏰ 週期：15m\n"
-                    msg += f"📊 數據：多空比 {ls_ratio} | 資費 {funding} | {setup['cvd_label']}\n"
+                    msg += f"📊 數據：多空比 {ls_ratio} | 資費 {funding}\n"
+                    msg += f"🧬 CVD：{setup['cvd_label']}\n"
+                    msg += f"📚 盤口：{ob_label}\n"
                     msg += f"\n"
                     msg += f"📍 進場位：{setup['entry']:.4f}\n"
                     msg += f"🚫 止損位：{setup['sl']:.4f}  (-1R)\n"
@@ -634,6 +664,7 @@ def main():
                     msg += f"💰 TP3 (3.0R)：{setup['tp3']:.4f}\n"
                     msg += f"\n"
                     msg += f"🏗️ 結構：{setup['structure']}\n"
+                    msg += f"🛡️ SNR：{setup['snr_status']}\n"
                     msg += f"📡 Supertrend：{setup['st_label']}\n"
                     msg += f"🕹️ 槓桿：{setup['leverage']} ({setup['leverage_note']})\n"
                     msg += f"📌 類型：{setup['trade_type']}\n"
@@ -668,9 +699,6 @@ def main():
                     time.sleep(0.2)
                     continue
 
-                # 進場觸發：同時檢查三層，避免漏單
-                # ① 最近 3 根已收盤 K 棒（防止 bot 上次執行時跳過某根）
-                # ② 當前未收盤 K 棒（防止進場位在本根 K 棒內被觸及但尚未確認）
                 n_check      = min(3, len(df))
                 cur_low, cur_high = fetch_current_candle_hl(instId)
                 check_low    = min(df['l'].iloc[-n_check:].min(), cur_low)
@@ -680,8 +708,6 @@ def main():
                     (t['side'] == "SHORT" and check_high >= t['entry'])
                 )
 
-                # 進場保護：若當前價已突破止損（價格直接穿過 entry+SL），
-                # 代表這是一根大陰/陽棒直接掃過去，不應進場，直接清除此單
                 already_sl = (
                     (t['side'] == "LONG"  and curr_p < t['sl']) or
                     (t['side'] == "SHORT" and curr_p > t['sl'])
@@ -689,11 +715,11 @@ def main():
                 if is_hit and already_sl:
                     logging.info(f"[{instId}] 進場位已觸及但當前價已穿破止損，放棄此單")
                     time.sleep(0.2)
-                    continue  # 不加入 updated_trades，直接清除
+                    continue
 
                 if is_hit:
                     t['status'] = "ACTIVE"
-                    fill_price  = t['entry']  # 以計劃進場位作為成交價
+                    fill_price  = t['entry']
                     side_zh     = "🟢 多單 (LONG)" if t['side'] == "LONG" else "🔴 空單 (SHORT)"
                     risk_r      = abs(t['entry'] - t['sl']) + 1e-10
                     send_tg(
@@ -714,10 +740,8 @@ def main():
 
             # ACTIVE 狀態
             elif t['status'] == "ACTIVE":
-
                 risk_r = abs(t['entry'] - t['sl']) + 1e-10
 
-                # 達到 TP1 → 通知（只發一次，用 tp1_hit 旗標防止重複）
                 if t['tp1_hit'] == 0 and (
                     (t['side'] == "LONG"  and curr_p >= t['tp1']) or
                     (t['side'] == "SHORT" and curr_p <= t['tp1'])
@@ -736,7 +760,6 @@ def main():
                         f"🚫 止損位：{t['sl']:.4f}  (-1R)"
                     )
 
-                # 達到 TP2 → 鎖利保護（止損移至 TP1）
                 if t['locked'] == 0 and (
                     (t['side'] == "LONG"  and curr_p >= t['tp2']) or
                     (t['side'] == "SHORT" and curr_p <= t['tp2'])
@@ -764,8 +787,8 @@ def main():
                 )
 
                 if is_sl or is_tp3:
-                    is_breakeven = is_sl and t['locked'] == 1  # 止損已移至保本位
-                    res          = "SL" if (is_sl and not is_breakeven) else "TP"  # 保本算 TP
+                    is_breakeven = is_sl and t['locked'] == 1
+                    res          = "SL" if (is_sl and not is_breakeven) else "TP"
                     if is_tp3:
                         result_label = "💰 止盈達標 (TP3)"
                     elif is_breakeven:
@@ -792,7 +815,7 @@ def main():
 
                 updated_trades.append(t)
 
-            time.sleep(0.2)  # rate limit 保護
+            time.sleep(0.2)
 
         pd.DataFrame(updated_trades).to_csv(LOG_FILE, index=False)
 
