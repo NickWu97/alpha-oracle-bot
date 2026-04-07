@@ -5,11 +5,12 @@ Alpha Oracle v2.0 - 高勝率 SMC+ICT 交易機器人
 核心功能：
   ✅ 1H 趨勢確認（多時間框架過濾）
   ✅ 成交量確認（避免假突破）
-  ✅ ICT SNR 支撐/阻力區
+  ✅ ICT SNR 支撐/阻力區（顯示支撐價格和壓力價格）
   ✅ 盤口不平衡度分析
+  ✅ 進場掛單優先使用 FVG/OB 區域
   ✅ 動態止盈（依市場結構調整）
   ✅ 移動止損（自動保護利潤）
-  ✅ 完整進場通知（含進場價/止損/止盈+風險%/R倍數）
+  ✅ 完整進場通知（含進場價/止損/止盈+風險%/R倍數+掛單來源+支撐壓力價格）
 預期勝率：70-78% | 訊號頻率：每日 3-5 個高品質訊號
 """
 
@@ -39,7 +40,9 @@ LOG_FILE            = "active_trades.csv"
 STATS_FILE          = "daily_stats.csv"
 WAITING_EXPIRY_BARS = 20  # WAITING 超過幾根 K 棒自動清除（15m × 20 = 5 小時）
 
-LOG_COLS   = ["instId", "side", "status", "entry", "sl", "tp1", "tp2", "tp3", "locked", "wait_since", "tp1_hit"]
+# 🆕 新增 entry_source, snr_display, snr_active 欄位
+LOG_COLS   = ["instId", "side", "status", "entry", "sl", "tp1", "tp2", "tp3", 
+              "locked", "wait_since", "tp1_hit", "entry_source", "snr_display", "snr_active"]
 STATS_COLS = ["instId", "result"]
 
 
@@ -56,19 +59,22 @@ def safe_int(val, fallback=0):
     except: return fallback
 
 def normalize_trade(t: dict) -> dict:
-    """確保從 CSV 讀回來的欄位型態正確"""
+    """確保從 CSV 讀回來的欄位型態正確 + 相容舊資料"""
     return {
-        "instId":     str(t.get("instId", "")),
-        "side":       str(t.get("side", "")),
-        "status":     str(t.get("status", "")),
-        "entry":      safe_float(t.get("entry")),
-        "sl":         safe_float(t.get("sl")),
-        "tp1":        safe_float(t.get("tp1")),
-        "tp2":        safe_float(t.get("tp2")),
-        "tp3":        safe_float(t.get("tp3")),
-        "locked":     safe_int(t.get("locked")),
-        "wait_since": safe_int(t.get("wait_since", 0)),
-        "tp1_hit":    safe_int(t.get("tp1_hit", 0)),
+        "instId":       str(t.get("instId", "")),
+        "side":         str(t.get("side", "")),
+        "status":       str(t.get("status", "")),
+        "entry":        safe_float(t.get("entry")),
+        "sl":           safe_float(t.get("sl")),
+        "tp1":          safe_float(t.get("tp1")),
+        "tp2":          safe_float(t.get("tp2")),
+        "tp3":          safe_float(t.get("tp3")),
+        "locked":       safe_int(t.get("locked")),
+        "wait_since":   safe_int(t.get("wait_since", 0)),
+        "tp1_hit":      safe_int(t.get("tp1_hit", 0)),
+        "entry_source": str(t.get("entry_source", "Breakout")),
+        "snr_display":  str(t.get("snr_display", "🟢 支撐 ─ | 🔴 壓力 ─")),
+        "snr_active":   str(t.get("snr_active", "⚠️ 無明顯關鍵位")),
     }
 
 
@@ -311,21 +317,46 @@ def find_ict_snr_zones(df: pd.DataFrame, side: str, lookback: int = 30) -> dict 
     """
     ICT SNR (Support/Resistance) 分析：
     尋找近期未被測試的關鍵支撐/阻力位。
+    🆕 回傳包含支撐價格、壓力價格、當前參考位
     """
     data = df.tail(lookback).reset_index(drop=True)
     
+    # 尋找所有擺動高低點作為潛在支撐/壓力
+    swing_highs, swing_lows = find_swing_points(df, n=2, lookback=lookback)
+    
+    # 預設值
+    support = None
+    resistance = None
+    active_level = None
+    level_type = None
+    
     if side == "LONG":
-        min_idx = data['l'].iloc[:-3].argmin()
-        min_val = data['l'].iloc[min_idx]
-        subsequent_closes = data['c'].iloc[min_idx+1:]
-        if all(c > min_val * 0.995 for c in subsequent_closes):
-            return {"level": min_val, "type": "Demand/SNR"}
-    else:
-        max_idx = data['h'].iloc[:-3].argmax()
-        max_val = data['h'].iloc[max_idx]
-        subsequent_closes = data['c'].iloc[max_idx+1:]
-        if all(c < max_val * 1.005 for c in subsequent_closes):
-            return {"level": max_val, "type": "Supply/SNR"}
+        # 多頭：尋找下方最近的未被跌破支撐
+        price = df['c'].iloc[-1]
+        valid_supports = [s for s in swing_lows if s < price * 0.995]  # 低於當前價 0.5% 以上
+        if valid_supports:
+            support = max(valid_supports)  # 取最近的支撐（最高的那個）
+            active_level = support
+            level_type = "support"
+    else:  # SHORT
+        # 空頭：尋找上方最近的未被突破壓力
+        price = df['c'].iloc[-1]
+        valid_resistances = [r for r in swing_highs if r > price * 1.005]  # 高於當前價 0.5% 以上
+        if valid_resistances:
+            resistance = min(valid_resistances)  # 取最近的壓力（最低的那個）
+            active_level = resistance
+            level_type = "resistance"
+    
+    # 如果找到任何關鍵位，回傳完整資訊
+    if support or resistance:
+        return {
+            "support": support,
+            "resistance": resistance,
+            "active_level": active_level,
+            "type": level_type,
+            "text": f"支撐 {support:.4f}" if level_type=="support" else f"壓力 {resistance:.4f}"
+        }
+    
     return None
 
 def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: float) -> float:
@@ -425,53 +456,104 @@ def classify_trade(side: str, structure: str, risk_pct: float) -> str:
 
 
 # ─────────────────────────────────────────────
-# 7. SMC 訊號掃描
+# 7. 🆕 SMC 訊號掃描（進場優先掛 FVG/OB + SNR 價格顯示）
 # ─────────────────────────────────────────────
 
 def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
-    """完整 SMC + ICT SNR + 盤口 掃描流程"""
+    """
+    完整 SMC + ICT SNR + 盤口 掃描流程
+    🆕 核心改進：進場掛單優先使用 FVG 或 OB 區域 + SNR 顯示支撐/壓力價格
+    """
     if df is None or len(df) < 40:
         return None
 
     atr  = calculate_atr(df)
     best = None
 
+    # 掃描最近 25 根 K 棒找 BOS 訊號
     for i in range(len(df) - 3, len(df) - 25, -1):
-        k0, k1, k2 = df.iloc[i - 1], df.iloc[i], df.iloc[i + 1]
-
-        if k2['c'] > k2['o'] and k2['c'] > df['h'].iloc[i - 15:i].max():
-            entry = k2['l'] if k2['l'] > k0['h'] else k1['c']
-            best  = {"side": "LONG", "entry": entry}
-        elif k2['c'] < k2['o'] and k2['c'] < df['l'].iloc[i - 15:i].min():
-            entry = k2['h'] if k2['h'] < k0['l'] else k1['c']
-            best  = {"side": "SHORT", "entry": entry}
-
+        if i < 2: continue
+        k0, k1, k2 = df.iloc[i-1], df.iloc[i], df.iloc[i+1]
+        
+        # 多頭 BOS：陽線突破前 15 根高點
+        if k2['c'] > k2['o'] and k2['c'] > df['h'].iloc[i-15:i].max():
+            best = {"side": "LONG", "breakout_idx": i+1, "k0": k0, "k1": k1, "k2": k2}
+            break
+        # 空頭 BOS：陰線跌破前 15 根低點
+        elif k2['c'] < k2['o'] and k2['c'] < df['l'].iloc[i-15:i].min():
+            best = {"side": "SHORT", "breakout_idx": i+1, "k0": k0, "k1": k1, "k2": k2}
+            break
+    
     if best is None:
         return None
-
-    side  = best['side']
-    entry = best['entry']
+    
+    side = best['side']
+    k0, k1, k2 = best['k0'], best['k1'], best['k2']
     price = df['c'].iloc[-1]
-
+    
+    # 🆕【核心改進】進場價優先掛在 FVG 或 OB 區域
+    fvg = find_recent_fvg(df, side)
+    ob = find_order_block(df, side)
+    
+    if side == "LONG":
+        # 多頭：優先使用 FVG 上緣 > OB 上緣 > 突破前收盤
+        if fvg and fvg['high'] > k1['c'] and fvg['high'] < price * 1.02:
+            entry = fvg['high']
+            entry_source = "FVG"
+        elif ob and ob['high'] > k1['c'] and ob['high'] < price * 1.02:
+            entry = ob['high']
+            entry_source = "OB"
+        else:
+            entry = k1['c']
+            entry_source = "Breakout"
+    else:  # SHORT
+        # 空頭：優先使用 FVG 下緣 > OB 下緣 > 突破前收盤
+        if fvg and fvg['low'] < k1['c'] and fvg['low'] > price * 0.98:
+            entry = fvg['low']
+            entry_source = "FVG"
+        elif ob and ob['low'] < k1['c'] and ob['low'] > price * 0.98:
+            entry = ob['low']
+            entry_source = "OB"
+        else:
+            entry = k1['c']
+            entry_source = "Breakout"
+    
+    # 🆕 進場價合理性檢查：不能離當前價太遠（避免無效掛單）
+    if abs(entry - price) / price > 0.03:
+        entry = k1['c']
+        entry_source = "Breakout (FVG/OB 過遠)"
+    
+    # 計算結構性止損
     sl = calculate_structural_sl(df, side, entry, atr)
     tp1, tp2, tp3 = get_fixed_r_tps(entry, sl, side)
-
+    
+    # 各項分析
     risk          = abs(entry - sl) + 1e-10
     risk_pct      = risk / (entry + 1e-10) * 100
     structure     = detect_market_structure(df)
     lev, lev_note = suggest_leverage(atr, price)
     trade_type    = classify_trade(side, structure, risk_pct)
     _, cvd_label  = calculate_cvd(df)
-
+    
     st_val   = calculate_supertrend(df)
     st_label = "📈 多頭" if st_val == 1 else ("📉 空頭" if st_val == -1 else "⚪ 未知")
     
+    # 🆕 SNR 處理：顯示支撐/壓力價格
     snr_zone = find_ict_snr_zones(df, side)
-    snr_status = "✅ 有 SNR 支撐/阻力" if snr_zone else "⚠️ 無明顯 SNR"
-
+    
+    if snr_zone:
+        support_txt = f"{snr_zone['support']:.4f}" if snr_zone['support'] else "─"
+        resistance_txt = f"{snr_zone['resistance']:.4f}" if snr_zone['resistance'] else "─"
+        snr_display = f"🟢 支撐 {support_txt} | 🔴 壓力 {resistance_txt}"
+        snr_active = f"✅ 參考 {snr_zone['text']}" if snr_zone['active_level'] else "⚠️ 無明確關鍵位"
+    else:
+        snr_display = "🟢 支撐 ─ | 🔴 壓力 ─"
+        snr_active = "⚠️ 無明顯關鍵位"
+    
     return {
         "side":          side,
         "entry":         entry,
+        "entry_source":  entry_source,
         "sl":            sl,
         "tp1":           tp1,
         "tp2":           tp2,
@@ -486,8 +568,11 @@ def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
         "cvd_label":     cvd_label,
         "st_val":        st_val,
         "st_label":      st_label,
-        "snr_status":    snr_status,
+        "snr_display":   snr_display,   # 🆕 支撐/壓力顯示文字
+        "snr_active":    snr_active,    # 🆕 當前參考位
         "snr_zone":      snr_zone,
+        "fvg":           fvg,
+        "ob":            ob,
     }
 
 
@@ -536,10 +621,17 @@ def main():
         # ── B. 核心監控邏輯 ─────────────────────────────────────────────
         try:
             trades_df = pd.read_csv(LOG_FILE)
-            if "wait_since" not in trades_df.columns:
-                trades_df["wait_since"] = 0
-            if "tp1_hit" not in trades_df.columns:
-                trades_df["tp1_hit"] = 0
+            # 相容舊版本：新增缺失欄位
+            for col in ["wait_since", "tp1_hit", "entry_source", "snr_display", "snr_active"]:
+                if col not in trades_df.columns:
+                    if col == "entry_source":
+                        trades_df[col] = "Breakout"
+                    elif col == "snr_display":
+                        trades_df[col] = "🟢 支撐 ─ | 🔴 壓力 ─"
+                    elif col == "snr_active":
+                        trades_df[col] = "⚠️ 無明顯關鍵位"
+                    else:
+                        trades_df[col] = 0
         except Exception:
             trades_df = pd.DataFrame(columns=LOG_COLS)
 
@@ -627,10 +719,12 @@ def main():
                         time.sleep(0.2)
                         continue
 
+                    # ✅ 所有過濾通過 → 發送訊號
                     funding, ls_ratio = get_funding_ls(instId)
                     side_emoji = "🟢" if setup['side']=="LONG" else "🔴"
                     side_zh = "多單 (LONG)" if setup['side']=="LONG" else "空單 (SHORT)"
                     
+                    # 動態止盈標籤
                     if "反轉" in setup['structure']:
                         tp_labels = ("1.0R", "2.5R", "4.0R")
                         style = "長單 (波段)"
@@ -641,8 +735,14 @@ def main():
                         tp_labels = ("1.0R", "2.0R", "3.0R")
                         style = "長單 (波段)"
                     
-                    snr_emoji = "✅" if setup['snr_zone'] else "❌"
-                    snr_text = "有 SNR 支撐/阻力" if setup['snr_zone'] else "無明顯 SNR"
+                    # 🆕 進場來源標籤
+                    entry_source_emoji = {"FVG": "🕳️", "OB": "🧱", "Breakout": "⚡"}.get(setup['entry_source'], "📍")
+                    entry_source_text = {
+                        "FVG": "FVG 缺口上緣", 
+                        "OB": "OB 訂單塊", 
+                        "Breakout": "突破點"
+                    }.get(setup['entry_source'], setup['entry_source'])
+                    
                     st_emoji = "📈" if setup['st_val']==1 else ("📉" if setup['st_val']==-1 else "⚪")
                     
                     msg = (
@@ -655,34 +755,38 @@ def main():
                         f"🧬 CVD：{setup['cvd_label']}\n"
                         f"📚 盤口：{ob_label}\n"
                         f"\n"
-                        f"💰 進場位：{setup['entry']:.4f}\n"
+                        f"💰 進場位：{setup['entry']:.4f} {entry_source_emoji}({entry_source_text})\n"
                         f"🛑 止損位：{setup['sl']:.4f}  (-1R)\n"
                         f"💰 TP1 ({tp_labels[0]}): {setup['tp1']:.4f}\n"
                         f"💰 TP2 ({tp_labels[1]}): {setup['tp2']:.4f}\n"
                         f"💰 TP3 ({tp_labels[2]}): {setup['tp3']:.4f}\n"
                         f"\n"
                         f"🏗️ 結構：{setup['structure']}\n"
-                        f"🛡️ SNR：{snr_emoji} {snr_text}\n"
+                        f"🛡️ SNR：{setup['snr_display']}\n"  # 🆕 顯示支撐/壓力價格
+                        f"    {setup['snr_active']}\n"        # 🆕 顯示當前參考位
                         f"📡 Supertrend：{st_emoji} {setup['st_label']}\n"
                         f"🕹️ 槓桿：{setup['leverage']} ({setup['leverage_note']})\n"
                         f"📌 類型：{style}\n"
                         f"\n"
-                        f"💡 *等待回踩成交...*"
+                        f"💡 *等待回踩 {entry_source_text} 成交...*"
                     )
                     send_tg(msg)
 
                     updated_trades.append({
-                        "instId":     instId,
-                        "side":       setup['side'],
-                        "status":     "WAITING",
-                        "entry":      setup['entry'],
-                        "sl":         setup['sl'],
-                        "tp1":        setup['tp1'],
-                        "tp2":        setup['tp2'],
-                        "tp3":        setup['tp3'],
-                        "locked":     0,
-                        "wait_since": current_bar,
-                        "tp1_hit":    0,
+                        "instId":       instId,
+                        "side":         setup['side'],
+                        "status":       "WAITING",
+                        "entry":        setup['entry'],
+                        "sl":           setup['sl'],
+                        "tp1":          setup['tp1'],
+                        "tp2":          setup['tp2'],
+                        "tp3":          setup['tp3'],
+                        "locked":       0,
+                        "wait_since":   current_bar,
+                        "tp1_hit":      0,
+                        "entry_source": setup['entry_source'],
+                        "snr_display":  setup['snr_display'],
+                        "snr_active":   setup['snr_active'],
                     })
                 time.sleep(0.2)
                 continue
@@ -728,6 +832,19 @@ def main():
                     r3 = abs(t['tp3'] - t['entry']) / risk
                     now_str   = datetime.utcnow().strftime('%Y-%m-%d %H:%M')
                     
+                    # 🆕 進場來源 + 支撐壓力標籤
+                    entry_source = t.get('entry_source', 'Breakout')
+                    entry_source_emoji = {"FVG": "🕳️", "OB": "🧱", "Breakout": "⚡"}.get(entry_source, "📍")
+                    entry_source_text = {
+                        "FVG": "FVG 缺口", 
+                        "OB": "OB 訂單塊", 
+                        "Breakout": "突破點"
+                    }.get(entry_source, entry_source)
+                    
+                    # 🆕 支撐/壓力顯示
+                    snr_display = t.get('snr_display', '🟢 支撐 ─ | 🔴 壓力 ─')
+                    snr_active = t.get('snr_active', '⚠️ 無明顯關鍵位')
+                    
                     send_tg(
                         f"🚀 *Alpha Oracle | 進場成交* 🚀\n"
                         f"──────────────────\n"
@@ -735,7 +852,7 @@ def main():
                         f"🎯 方向：{side_emoji} {side_zh}\n"
                         f"⏰ 時間：{now_str}\n"
                         f"\n"
-                        f"💰 *進場價格：{t['entry']:.4f}*\n"
+                        f"💰 *進場價格：{t['entry']:.4f}* {entry_source_emoji}({entry_source_text})\n"
                         f"🛑 *止損 SL：{t['sl']:.4f}*  (風險 {risk_pct:.2f}%)\n"
                         f"\n"
                         f"🎯 *止盈目標 TP：*\n"
@@ -743,6 +860,8 @@ def main():
                         f"💰 TP2 (+{r2:.1f}R)：{t['tp2']:.4f}\n"
                         f"💰 TP3 (+{r3:.1f}R)：{t['tp3']:.4f}\n"
                         f"\n"
+                        f"🛡️ 關鍵位：{snr_display}\n"  # 🆕 顯示支撐/壓力價格
+                        f"    {snr_active}\n"           # 🆕 顯示當前參考位
                         f"🛡️ 動態管理：移動止損已啟用｜TP2 自動鎖利\n"
                         f"📌 提示：嚴格執行風控，讓利潤奔跑"
                     )
