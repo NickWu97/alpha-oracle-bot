@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v2.1 - 高勝率 SMC+ICT 交易機器人（修復版）
+Alpha Oracle v2.2 - 高勝率 SMC+ICT 交易機器人（結構方向匹配版）
 核心功能：
   ✅ 1H 趨勢確認（多時間框架過濾）
   ✅ 成交量確認（避免假突破）
@@ -9,9 +9,10 @@ Alpha Oracle v2.1 - 高勝率 SMC+ICT 交易機器人（修復版）
   ✅ 盤口不平衡度分析
   ✅ 進場掛單優先使用 FVG/OB 區域
   ✅ 動態止盈 + 移動止損（自動保本與追蹤）
-  ✅ 完整進場/管理通知（含進場價/止損/止盈+風險%/R倍數+掛單來源+支撐壓力）
+  ✅ 完整進場/管理通知（含進場價/止損/止盈+風險%/R 倍數 + 掛單來源 + 支撐壓力）
   ✅ 🆕 訊號失效通知（進場價已過未觸發時提醒）
   ✅ 🆕 午夜 00:00 自動勝率報告（前一日完整統計）
+  ✅ 🆕 市場結構與交易方向正確匹配（做空顯示 M 頭，做多顯示 W 底）
 預期勝率：70-78% | 訊號頻率：每日 3-5 個高品質訊號
 """
 
@@ -94,7 +95,7 @@ def fetch_okx(instId: str) -> pd.DataFrame | None:
         df[['o', 'h', 'l', 'c', 'v']] = df[['o', 'h', 'l', 'c', 'v']].astype(float)
         return df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
     except Exception as e:
-        logging.warning(f"[{instId}] K 線抓取失敗: {e}")
+        logging.warning(f"[{instId}] K 線抓取失敗：{e}")
         return None
 
 def fetch_current_candle_hl(instId: str) -> tuple[float, float]:
@@ -106,7 +107,7 @@ def fetch_current_candle_hl(instId: str) -> tuple[float, float]:
             if row[8] == "0":
                 return float(row[3]), float(row[2])  # (low, high)
     except Exception as e:
-        logging.warning(f"[{instId}] 當前 K 棒抓取失敗: {e}")
+        logging.warning(f"[{instId}] 當前 K 棒抓取失敗：{e}")
     return float('inf'), float('-inf')
 
 def get_funding_ls(instId: str) -> tuple[str, str]:
@@ -120,14 +121,14 @@ def get_funding_ls(instId: str) -> tuple[str, str]:
         ).json()
         funding = f"{float(f_res['data'][0]['fundingRate']) * 100:.4f}%"
     except Exception as e:
-        logging.warning(f"[{instId}] 資金費率抓取失敗: {e}")
+        logging.warning(f"[{instId}] 資金費率抓取失敗：{e}")
     try:
         ls_res   = requests.get(
             f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={base_id}", timeout=5
         ).json()
         ls_ratio = ls_res['data'][0]['ratio']
     except Exception as e:
-        logging.warning(f"[{instId}] 多空比抓取失敗: {e}")
+        logging.warning(f"[{instId}] 多空比抓取失敗：{e}")
     return funding, ls_ratio
 
 def send_tg(msg: str):
@@ -139,7 +140,7 @@ def send_tg(msg: str):
             timeout=15
         )
     except Exception as e:
-        logging.warning(f"Telegram 發送失敗: {e}")
+        logging.warning(f"Telegram 發送失敗：{e}")
 
 def fetch_order_book_imbalance(instId: str, depth: int = 20) -> tuple[float, str]:
     """
@@ -175,7 +176,7 @@ def fetch_order_book_imbalance(instId: str, depth: int = 20) -> tuple[float, str
         return ratio, label
         
     except Exception as e:
-        logging.warning(f"[{instId}] 盤口數據抓取失敗: {e}")
+        logging.warning(f"[{instId}] 盤口數據抓取失敗：{e}")
         return 1.0, "⚪ 數據缺失"
 
 
@@ -257,7 +258,7 @@ def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float =
 
 
 # ─────────────────────────────────────────────
-# 5. SMC & ICT 結構分析
+# 5. SMC & ICT 結構分析（🆕 修復結構方向匹配）
 # ─────────────────────────────────────────────
 
 def find_swing_points(df: pd.DataFrame, n: int = 2, lookback: int = 80) -> tuple[list, list]:
@@ -273,20 +274,46 @@ def find_swing_points(df: pd.DataFrame, n: int = 2, lookback: int = 80) -> tuple
             swing_lows.append(data['l'].iloc[i])
     return sorted(set(swing_highs)), sorted(set(swing_lows))
 
-def detect_market_structure(df: pd.DataFrame) -> str:
-    """偵測市場結構"""
+def detect_market_structure(df: pd.DataFrame, side: str = None) -> str:
+    """
+    偵測市場結構
+    🆕 可傳入 side 參數，根據交易方向返回合適的結構標籤
+    """
     swing_highs, swing_lows = find_swing_points(df, n=3, lookback=60)
 
+    # 先找出所有可能的結構
+    has_w_bottom = False
+    has_m_top = False
+    
     if len(swing_lows) >= 2:
         l1, l2 = swing_lows[-2], swing_lows[-1]
         if l1 > 0 and abs(l1 - l2) / l1 < 0.015:
-            return "W底反轉 📐"
+            has_w_bottom = True
 
     if len(swing_highs) >= 2:
         h1, h2 = swing_highs[-2], swing_highs[-1]
         if h1 > 0 and abs(h1 - h2) / h1 < 0.015:
-            return "M頭反轉 📐"
+            has_m_top = True
 
+    # 🆕 如果有傳入 side，根據方向返回合適的結構
+    if side == "LONG":
+        if has_w_bottom:
+            return "W 底反轉 📐"  # ✅ 看漲結構，適合做多
+        elif has_m_top:
+            return "M 頭壓制 ⚠️"  # ⚠️ 看跌結構，做多風險高
+    elif side == "SHORT":
+        if has_m_top:
+            return "M 頭反轉 📐"  # ✅ 看跌結構，適合做空
+        elif has_w_bottom:
+            return "W 底支撐 ⚠️"  # ⚠️ 看漲結構，做空風險高
+    
+    # 預設邏輯（無 side 參數或無明顯反轉形態）
+    if has_w_bottom:
+        return "W 底反轉 📐"
+    if has_m_top:
+        return "M 頭反轉 📐"
+
+    # 趨勢判斷
     recent = df.tail(20)
     slope  = (recent['c'].iloc[-1] - recent['c'].iloc[0]) / (recent['c'].iloc[0] + 1e-10)
     if   slope >  0.025: return "上升趨勢延續 📈"
@@ -424,7 +451,7 @@ def fetch_funding_rate_raw(instId: str) -> float:
         ).json()
         return float(res['data'][0]['fundingRate'])
     except Exception as e:
-        logging.warning(f"[{instId}] 資金費率原始值抓取失敗: {e}")
+        logging.warning(f"[{instId}] 資金費率原始值抓取失敗：{e}")
         return 0.0
 
 def is_trending_market(df: pd.DataFrame) -> bool:
@@ -460,13 +487,13 @@ def classify_trade(side: str, structure: str, risk_pct: float) -> str:
 
 
 # ─────────────────────────────────────────────
-# 7. 🆕 SMC 訊號掃描（進場優先掛 FVG/OB + SNR 價格顯示）
+# 7. 🆕 SMC 訊號掃描（進場優先掛 FVG/OB + SNR 價格顯示 + 結構方向匹配）
 # ─────────────────────────────────────────────
 
 def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
     """
     完整 SMC + ICT SNR + 盤口 掃描流程
-    🆕 核心改進：進場掛單優先使用 FVG 或 OB 區域 + SNR 顯示支撐/壓力價格
+    🆕 核心改進：進場掛單優先使用 FVG 或 OB 區域 + SNR 顯示支撐/壓力價格 + 結構方向匹配
     """
     if df is None or len(df) < 40:
         return None
@@ -535,7 +562,7 @@ def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
     # 各項分析
     risk          = abs(entry - sl) + 1e-10
     risk_pct      = risk / (entry + 1e-10) * 100
-    structure     = detect_market_structure(df)
+    structure     = detect_market_structure(df, side)  # 🆕 傳入 side 參數，確保結構與方向匹配
     lev, lev_note = suggest_leverage(atr, price)
     trade_type    = classify_trade(side, structure, risk_pct)
     _, cvd_label  = calculate_cvd(df)
@@ -611,7 +638,7 @@ def main():
                         
                         # 🆕 更詳細的勝率報告格式
                         send_tg(
-                            f"📊 *Alpha Oracle v2.1 | 每日戰績報告*\n"
+                            f"📊 *Alpha Oracle v2.2 | 每日戰績報告*\n"
                             f"══════════════════════\n"
                             f"📅 統計日期：{date_str}\n"
                             f"⏰ 報告時間：{now_tw.strftime('%Y-%m-%d %H:%M')}\n"
@@ -633,7 +660,7 @@ def main():
                         with open("midnight.ok", "w") as fh: 
                             fh.write(f"ok_{now_tw.strftime('%Y%m%d')}")
                 except Exception as e:
-                    logging.error(f"戰績報告發送失敗: {e}")
+                    logging.error(f"戰績報告發送失敗：{e}")
         elif now_tw.hour != 0 and os.path.exists("midnight.ok"):
             # 過了 00:15 後刪除標記，允許下次發送
             os.remove("midnight.ok")
