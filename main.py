@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Alpha Oracle v2.0 - 高勝率 SMC+ICT 交易機器人
