@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v2.0 - 高勝率 SMC+ICT 交易機器人
+Alpha Oracle v2.1 - 高勝率 SMC+ICT 交易機器人（修復版）
 核心功能：
   ✅ 1H 趨勢確認（多時間框架過濾）
   ✅ 成交量確認（避免假突破）
@@ -10,6 +10,8 @@ Alpha Oracle v2.0 - 高勝率 SMC+ICT 交易機器人
   ✅ 進場掛單優先使用 FVG/OB 區域
   ✅ 動態止盈 + 移動止損（自動保本與追蹤）
   ✅ 完整進場/管理通知（含進場價/止損/止盈+風險%/R倍數+掛單來源+支撐壓力）
+  ✅ 🆕 訊號失效通知（進場價已過未觸發時提醒）
+  ✅ 🆕 午夜 00:00 自動勝率報告（前一日完整統計）
 預期勝率：70-78% | 訊號頻率：每日 3-5 個高品質訊號
 """
 
@@ -593,32 +595,47 @@ def main():
             if not os.path.exists(f) or os.stat(f).st_size == 0:
                 pd.DataFrame(columns=cols).to_csv(f, index=False)
 
-        # ── A. 戰績回報 ────────────────────────────────────────────────
+        # ── A. 午夜 00:00 勝率報告（確保在 00:00-00:15 之間只發一次）
         is_midnight = (now_tw.hour == 0 and 0 <= now_tw.minute < 15)
         if is_midnight or manual_report:
             if not os.path.exists("midnight.ok") or manual_report:
-                df_s = pd.read_csv(STATS_FILE)
-                if not df_s.empty:
-                    tp_c  = len(df_s[df_s['result'] == 'TP'])
-                    sl_c  = len(df_s[df_s['result'] == 'SL'])
-                    total = tp_c + sl_c
-                    wr    = (tp_c / total * 100) if total > 0 else 0
-                    date_str = (now_tw - timedelta(days=1)).strftime('%Y-%m-%d')
-                    send_tg(
-                        f"📊 *Alpha Oracle 每日戰績*\n"
-                        f"──────────────────\n"
-                        f"📅 日期：{date_str}\n"
-                        f"\n"
-                        f"✅ 盈利：{tp_c} 單\n"
-                        f"❌ 止損：{sl_c} 單\n"
-                        f"📊 總計：{total} 單\n"
-                        f"\n"
-                        f"🔥 勝率：*{wr:.1f}%*"
-                    )
+                try:
+                    # 讀取昨日統計
+                    df_s = pd.read_csv(STATS_FILE)
+                    if not df_s.empty:
+                        tp_c  = len(df_s[df_s['result'] == 'TP'])
+                        sl_c  = len(df_s[df_s['result'] == 'SL'])
+                        total = tp_c + sl_c
+                        wr    = (tp_c / total * 100) if total > 0 else 0
+                        date_str = (now_tw - timedelta(days=1)).strftime('%Y-%m-%d')
+                        
+                        # 🆕 更詳細的勝率報告格式
+                        send_tg(
+                            f"📊 *Alpha Oracle v2.1 | 每日戰績報告*\n"
+                            f"══════════════════════\n"
+                            f"📅 統計日期：{date_str}\n"
+                            f"⏰ 報告時間：{now_tw.strftime('%Y-%m-%d %H:%M')}\n"
+                            f"\n"
+                            f"📈 交易統計：\n"
+                            f"   ✅ 盈利：{tp_c} 單\n"
+                            f"   ❌ 止損：{sl_c} 單\n"
+                            f"   📊 總計：{total} 單\n"
+                            f"\n"
+                            f"🎯 勝率：*{wr:.1f}%*\n"
+                            f"💰 平均盈虧比：{(tp_c*2 + sl_c*(-1)) / total if total > 0 else 0:.2f}R\n"
+                            f"\n"
+                            f"══════════════════════\n"
+                            f"🔔 新的一天開始，繼續保持紀律！"
+                        )
+                    # 清空昨日統計並標記已發送
                     if is_midnight:
                         pd.DataFrame(columns=STATS_COLS).to_csv(STATS_FILE, index=False)
-                        with open("midnight.ok", "w") as fh: fh.write("ok")
+                        with open("midnight.ok", "w") as fh: 
+                            fh.write(f"ok_{now_tw.strftime('%Y%m%d')}")
+                except Exception as e:
+                    logging.error(f"戰績報告發送失敗: {e}")
         elif now_tw.hour != 0 and os.path.exists("midnight.ok"):
+            # 過了 00:15 後刪除標記，允許下次發送
             os.remove("midnight.ok")
 
         # ── B. 核心監控邏輯 ─────────────────────────────────────────────
@@ -771,7 +788,8 @@ def main():
                         f"🕹️ 槓桿：{setup['leverage']} ({setup['leverage_note']})\n"
                         f"📌 類型：{style}\n"
                         f"\n"
-                        f"💡 *等待回踩 {entry_source_text} 成交...*"
+                        f"💡 *等待回踩 {entry_source_text} 成交...*\n"
+                        f"⚠️ *若價格直接突破未回踩，將發送失效通知*"
                     )
                     send_tg(msg)
 
@@ -799,6 +817,40 @@ def main():
 
             if t['status'] == "WAITING":
                 bars_waited = current_bar - t['wait_since']
+                
+                # 🆕【訊號失效檢查】等待過久且價格已偏離
+                if bars_waited > 10:  # 等待超過 10 根 K 棒（2.5 小時）
+                    price_diff_pct = abs(curr_p - t['entry']) / t['entry'] * 100
+                    # 如果價格朝有利方向移動超過 2%，表示錯失進場
+                    missed_entry = False
+                    if t['side'] == "LONG" and curr_p > t['entry'] * 1.02:
+                        missed_entry = True
+                    elif t['side'] == "SHORT" and curr_p < t['entry'] * 0.98:
+                        missed_entry = True
+                    
+                    if missed_entry and price_diff_pct > 2.0:
+                        # 🆕 發送訊號失效/錯失進場通知
+                        direction_text = "上漲" if t['side']=="LONG" else "下跌"
+                        send_tg(
+                            f"⚠️ *Alpha Oracle | 訊號失效通知*\n"
+                            f"──────────────────\n"
+                            f"💎 幣種：#{coin_sym}\n"
+                            f"🎯 原方向：{'🟢 多單' if t['side']=='LONG' else '🔴 空單'}\n"
+                            f"⏰ 等待時間：{bars_waited} 根 K 棒 (~{bars_waited*15//60}小時)\n"
+                            f"\n"
+                            f"📍 原進場價：{t['entry']:.4f}\n"
+                            f"📍 當前價：{curr_p:.4f}\n"
+                            f"📊 偏離幅度：{price_diff_pct:.2f}%\n"
+                            f"\n"
+                            f"❌ 價格已直接{direction_text}，未回踩進場區\n"
+                            f"💡 *建議：此單已失效，請勿追單*\n"
+                            f"🔄 系統將自動清除，等待下一個高品質訊號"
+                        )
+                        # 從列表中移除，不加入 updated_trades
+                        time.sleep(0.2)
+                        continue
+                
+                # 原有的逾時清除
                 if bars_waited > WAITING_EXPIRY_BARS:
                     logging.info(f"[{instId}] WAITING 逾 {bars_waited} bars，自動清除")
                     time.sleep(0.2)
