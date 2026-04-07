@@ -5,12 +5,11 @@ Alpha Oracle v2.0 - 高勝率 SMC+ICT 交易機器人
 核心功能：
   ✅ 1H 趨勢確認（多時間框架過濾）
   ✅ 成交量確認（避免假突破）
-  ✅ ICT SNR 支撐/阻力區（顯示支撐價格和壓力價格）
+  ✅ ICT SNR 支撐/壓力區（明確顯示價格）
   ✅ 盤口不平衡度分析
   ✅ 進場掛單優先使用 FVG/OB 區域
-  ✅ 動態止盈（依市場結構調整）
-  ✅ 移動止損（自動保護利潤）
-  ✅ 完整進場通知（含進場價/止損/止盈+風險%/R倍數+掛單來源+支撐壓力價格）
+  ✅ 動態止盈 + 移動止損（自動保本與追蹤）
+  ✅ 完整進場/管理通知（含進場價/止損/止盈+風險%/R倍數+掛單來源+支撐壓力）
 預期勝率：70-78% | 訊號頻率：每日 3-5 個高品質訊號
 """
 
@@ -38,7 +37,7 @@ ALL_COINS = [
 
 LOG_FILE            = "active_trades.csv"
 STATS_FILE          = "daily_stats.csv"
-WAITING_EXPIRY_BARS = 20  # WAITING 超過幾根 K 棒自動清除（15m × 20 = 5 小時）
+WAITING_EXPIRY_BARS = 20  # 15m × 20 = 5 小時自動清除
 
 # 🆕 新增 entry_source, snr_display, snr_active 欄位
 LOG_COLS   = ["instId", "side", "status", "entry", "sl", "tp1", "tp2", "tp3", 
@@ -370,7 +369,9 @@ def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: floa
         candidates = []
         if ob  and ob['low']  < entry: candidates.append(ob['low']  - buffer)
         if fvg and fvg['low'] < entry: candidates.append(fvg['low'] - buffer)
-        if snr and snr['level'] < entry: candidates.append(snr['level'] - buffer)
+        # 🆕 修復：使用 active_level 而非 level
+        if snr and snr.get('active_level') and snr['active_level'] < entry: 
+            candidates.append(snr['active_level'] - buffer)
         
         if candidates:
             sl = max(candidates)
@@ -383,7 +384,8 @@ def calculate_structural_sl(df: pd.DataFrame, side: str, entry: float, atr: floa
         candidates = []
         if ob  and ob['high']  > entry: candidates.append(ob['high']  + buffer)
         if fvg and fvg['high'] > entry: candidates.append(fvg['high'] + buffer)
-        if snr and snr['level'] > entry: candidates.append(snr['level'] + buffer)
+        if snr and snr.get('active_level') and snr['active_level'] > entry: 
+            candidates.append(snr['active_level'] + buffer)
         
         if candidates:
             sl = min(candidates)
@@ -497,10 +499,11 @@ def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
     
     if side == "LONG":
         # 多頭：優先使用 FVG 上緣 > OB 上緣 > 突破前收盤
-        if fvg and fvg['high'] > k1['c'] and fvg['high'] < price * 1.02:
+        # 條件：必須在突破點之上，且距離當前價不超過 2%（回踩區）
+        if fvg and k1['c'] < fvg['high'] < price * 0.995:
             entry = fvg['high']
             entry_source = "FVG"
-        elif ob and ob['high'] > k1['c'] and ob['high'] < price * 1.02:
+        elif ob and k1['c'] < ob['high'] < price * 0.995:
             entry = ob['high']
             entry_source = "OB"
         else:
@@ -508,10 +511,10 @@ def find_smc_setup(df: pd.DataFrame, instId: str) -> dict | None:
             entry_source = "Breakout"
     else:  # SHORT
         # 空頭：優先使用 FVG 下緣 > OB 下緣 > 突破前收盤
-        if fvg and fvg['low'] < k1['c'] and fvg['low'] > price * 0.98:
+        if fvg and k1['c'] > fvg['low'] > price * 1.005:
             entry = fvg['low']
             entry_source = "FVG"
-        elif ob and ob['low'] < k1['c'] and ob['low'] > price * 0.98:
+        elif ob and k1['c'] > ob['low'] > price * 1.005:
             entry = ob['low']
             entry_source = "OB"
         else:
@@ -862,8 +865,7 @@ def main():
                         f"\n"
                         f"🛡️ 關鍵位：{snr_display}\n"  # 🆕 顯示支撐/壓力價格
                         f"    {snr_active}\n"           # 🆕 顯示當前參考位
-                        f"🛡️ 動態管理：移動止損已啟用｜TP2 自動鎖利\n"
-                        f"📌 提示：嚴格執行風控，讓利潤奔跑"
+                        f"🛡️ 動態管理：移動止損已啟用｜📌 嚴格風控"
                     )
                     t['wait_since'] = current_bar
                 updated_trades.append(t)
@@ -925,16 +927,13 @@ def main():
                     else:
                         result_label = "❌ 止損離場"
                     send_tg(
-                        f"🏁 *Alpha Oracle | 交易結算*\n"
+                        f"🏁 *Alpha Oracle | 交易結算* {result_label}\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
-                        f"🏆 結果：{result_label}\n"
-                        f"\n"
                         f"📍 離場價：{curr_p:.4f}\n"
                         f"🚫 止損位：{t['sl']:.4f}  (-1R)\n"
-                        f"💰 TP1 (+{abs(t['tp1']-t['entry'])/risk_r:.1f}R)：{t['tp1']:.4f}\n"
-                        f"💰 TP2 (+{abs(t['tp2']-t['entry'])/risk_r:.1f}R)：{t['tp2']:.4f}\n"
-                        f"💰 TP3 (+{abs(t['tp3']-t['entry'])/risk_r:.1f}R)：{t['tp3']:.4f}"
+                        f"💰 TP1/2/3: {t['tp1']:.4f}/{t['tp2']:.4f}/{t['tp3']:.4f}\n"
+                        f"📊 結果：{'✅ 盈利' if res=='TP' else '❌ 虧損'}"
                     )
                     pd.DataFrame([{"instId": instId, "result": res}]).to_csv(
                         STATS_FILE, mode='a', header=False, index=False
