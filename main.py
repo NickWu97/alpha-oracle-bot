@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v4.0 - 進階主力追蹤與動態優化版
+Alpha Oracle v4.1 - 進階主力追蹤與動態優化版（含信心進場建議）
 核心功能：
   ✅ 1H 趨勢確認（多時間框架過濾）
   ✅ 成交量確認（避免假突破）
@@ -18,6 +18,7 @@ Alpha Oracle v4.0 - 進階主力追蹤與動態優化版
   ✅ 🆕 主力動向通知（顯示主力方向與建議倉位）
   ✅ 🆕 動態信心閾值優化（根據歷史勝率自動調整過濾標準）
   ✅ 🆕 多數據源整合框架（Glassnode/CryptoQuant 鏈上數據接口）
+  ✅ 🆕 主力信心進場建議（根據信心%顯示預期勝率與建議倉位）
 預期勝率：78-85% | 訊號頻率：每日 1-3 個極高品質訊號
 """
 
@@ -142,6 +143,29 @@ def send_tg(msg: str):
         )
     except Exception as e:
         logging.warning(f"Telegram 發送失敗：{e}")
+
+# ─────────────────────────────────────────────
+# 🆕 主力信心進場建議輔助函數
+# ─────────────────────────────────────────────
+
+def get_whale_position_recommendation(whale_signal: str, whale_conf: float) -> tuple[str, str, str]:
+    """
+    🆕 根據主力信號與信心，返回 (建議倉位, 預期勝率, 顏色標籤)
+    """
+    if whale_signal == "✅ 主力一致":
+        if whale_conf >= 0.80:
+            return "✅ 正常 (100%)", "75-85%", "🟢"
+        elif whale_conf >= 0.65:
+            return "🟡 標準 (75%)", "70-78%", "🟡"
+        else:  # 0.5-0.64
+            return "🟠 保守 (50%)", "60-70%", "🟠"
+    elif whale_signal == "⚠️ 主力警示":
+        if whale_conf >= 0.60:
+            return "🟠 保守 (50%)", "60-70%", "🟠"
+        else:
+            return "🔴 觀望/極小", "<60%", "🔴"
+    else:  # 🔴 主力反向
+        return "⛔ 建議跳過", "<50%", "🔴"
 
 
 # ─────────────────────────────────────────────
@@ -1079,7 +1103,7 @@ def main():
                         
                         # 🆕 更詳細的勝率報告格式
                         send_tg(
-                            f"📊 *Alpha Oracle v4.0 | 每日戰績報告*\n"
+                            f"📊 *Alpha Oracle v4.1 | 每日戰績報告*\n"
                             f"══════════════════════\n"
                             f"📅 統計日期：{date_str}\n"
                             f"⏰ 報告時間：{now_tw.strftime('%Y-%m-%d %H:%M')}\n"
@@ -1249,10 +1273,10 @@ def main():
                     st_emoji = "📈" if setup['st_val']==1 else ("📉" if setup['st_val']==-1 else "⚪")
                     
                     # 🆕 主力信號標籤
-                    whale_emoji = {"✅ 主力一致": "🐋", "⚠️ 主力警示": "⚠️", "🔴 主力反向": "🚫"}.get(setup['whale_signal'], "❓")
+                    whale_emoji = {"✅ 主力一致": "🐋", "️ 主力警示": "⚠️", "🔴 主力反向": "🚫"}.get(setup['whale_signal'], "❓")
                     
                     msg = (
-                        f"🔥 *Alpha Oracle v4.0 訊號發射* 🔥\n"
+                        f"🔥 *Alpha Oracle v4.1 訊號發射* 🔥\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
                         f"🎯 方向：{side_emoji} {side_zh}\n"
@@ -1401,10 +1425,18 @@ def main():
                     snr_active = t.get('snr_active', '⚠️ 無明顯關鍵位')
                     
                     # 🆕 主力信號
-                    whale_emoji = {"✅ 主力一致": "🐋", "⚠️ 主力警示": "⚠️", "🔴 主力反向": "🚫"}.get(t['whale_signal'], "❓")
+                    whale_emoji = {"✅ 主力一致": "🐋", "️ 主力警示": "⚠️", "🔴 主力反向": "🚫"}.get(t['whale_signal'], "❓")
+                    
+                    # 🆕 加入主力信心進場建議分析
+                    position_rec, wr_range, conf_color = get_whale_position_recommendation(t['whale_signal'], t['whale_confidence'])
+                    
+                    # 🆕 若主力信心低或反向，加入額外警示
+                    extra_warning = ""
+                    if "跳過" in position_rec or "觀望" in position_rec:
+                        extra_warning = f"\n⚠️ *主力動向不明，建議謹慎或跳過此訊號*"
                     
                     send_tg(
-                        f"🚀 *Alpha Oracle v4.0 | 進場成交* 🚀\n"
+                        f"🚀 *Alpha Oracle v4.1 | 進場成交* 🚀\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
                         f"🎯 方向：{side_emoji} {side_zh}\n"
@@ -1413,6 +1445,11 @@ def main():
                         f"💰 *進場價格：{t['entry']:.4f}* {entry_source_emoji}({entry_source_text})\n"
                         f"🛑 *止損 SL：{t['sl']:.4f}*  (風險 {risk_pct:.2f}%)\n"
                         f"\n"
+                        f"🐋 主力分析：\n"
+                        f"   {conf_color} 信心：{t['whale_confidence']*100:.0f}%｜{t['whale_signal']}\n"
+                        f"   📊 預期勝率：{wr_range}\n"
+                        f"   💡 建議倉位：{position_rec}{extra_warning}\n"
+                        f"\n"
                         f"🎯 *止盈目標 TP：*\n"
                         f"💰 TP1 (+{r1:.1f}R)：{t['tp1']:.4f}\n"
                         f"💰 TP2 (+{r2:.1f}R)：{t['tp2']:.4f}\n"
@@ -1420,7 +1457,6 @@ def main():
                         f"\n"
                         f"🛡️ 關鍵位：{snr_display}\n"
                         f"    {snr_active}\n"
-                        f"🐋 主力：{whale_emoji} {t['whale_signal']} ({t['whale_confidence']*100:.0f}%)\n"
                         f"🛡️ 動態管理：移動止損已啟用｜📌 嚴格風控"
                     )
                     t['wait_since'] = current_bar
