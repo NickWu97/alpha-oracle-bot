@@ -21,7 +21,7 @@ Alpha Oracle v4.3 - 進階主力追蹤 + 評分制過濾 + API 重試 + 紙交�
   🆕 API 重試機制 + 數據降級方案（減少單點故障）
   🆕 紙交易模式開關（先模擬驗證，再實盤執行）
   🔧 修復：WAITING 進場判斷邏輯 BUG
-預期勝率：78-85% | 訊號頻率：每日 2-5 個高品質訊號
+  🔧 修復：SyntaxError at oi_data check
 """
 
 import requests
@@ -46,7 +46,7 @@ GLASSNODE_API_KEY   = os.getenv("GLASSNODE_API_KEY", "")
 CRYPTOQUANT_API_KEY = os.getenv("CRYPTOQUANT_API_KEY", "")
 OPTIMIZATION_FILE   = "whale_optimization.json"
 
-# 🆕 紙交易模式開關（預設關閉）
+# 🆕 紙交易模式開關（預設關閉，設為 "true" 開啟模擬）
 PAPER_TRADING = os.getenv("PAPER_TRADING", "false").lower() == "true"
 
 ALL_COINS = [
@@ -305,6 +305,9 @@ def calculate_technical_confidence(df: pd.DataFrame, side: str) -> float:
     return min(1.0, score)
 
 def analyze_whale_direction(instId: str, side: str, opt_params: dict, df: pd.DataFrame = None) -> tuple[str, float, str, str]:
+    """
+    🆕 主力方向分析（支援降級方案）
+    """
     symbol = instId.split('-')[0]
     spot_cvd    = fetch_coinank_spot_cvd(symbol)
     whale_flow  = fetch_glassnode_whale_flow(symbol)
@@ -327,7 +330,6 @@ def analyze_whale_direction(instId: str, side: str, opt_params: dict, df: pd.Dat
             return "🔴 技術面弱", tech_conf, "主力數據缺失，建議跳過", "Skip"
     
     # 正常流程：使用主力數據分析
-    fr_raw      = fetch_funding_rate_raw(instId)
     _, ls_str   = get_funding_ls(instId)
     ls_ratio    = float(ls_str) if ls_str != "N/A" else 1.0
 
@@ -347,9 +349,10 @@ def analyze_whale_direction(instId: str, side: str, opt_params: dict, df: pd.Dat
         if   side == "LONG"  and whale_flow['signal'] == "inflow":
             signals.append("🔴 巨鯨大量流入交易所"); confidence += 0.25
         elif side == "SHORT" and whale_flow['signal'] == "outflow":
-            signals.append("🟢 巨鯨提幣鎖倉");       confidence += 0.25
+            signals.append("🟢 巨提幣鎖倉");       confidence += 0.25
 
-    if oi_
+    # 🔧 修復語法錯誤：確保這裡是 if oi_data:
+    if oi_data:
         if   side == "SHORT" and oi_data['signal'] == "rising":
             signals.append("🔴 空頭持倉激增（主力壓制）"); confidence += 0.20
         elif side == "LONG"  and oi_data['signal'] == "falling":
@@ -843,7 +846,7 @@ def find_smc_setup(df: pd.DataFrame, instId: str, opt_params: dict) -> dict | No
         snr_display = f"🟢 支撐 {s_txt} | 🔴 壓力 {r_txt}"
         snr_active  = f"✅ 參考 {snr_zone['text']}" if snr_zone.get('active_level') else "⚠️ 無明確關鍵位"
     else:
-        snr_display = "🟢 支撐 ─ | 🔴 壓力 ─"
+        snr_display = "🟢 支撐  | 🔴 壓力 ─"
         snr_active  = "⚠️ 無明顯關鍵位"
 
     whale_zones_text = " | ".join([z['desc'] for z in whale_zones[:2]]) if whale_zones else "─"
@@ -985,7 +988,7 @@ def main():
                 if col not in trades_df.columns:
                     defaults = {
                         "entry_source":    "Breakout",
-                        "snr_display":     "🟢 支撐 ─ | 🔴 壓力 ─",
+                        "snr_display":     "🟢 支撐  | 🔴 壓力 ─",
                         "snr_active":      "⚠️ 無明顯關鍵位",
                         "whale_signal":    "─",
                         "whale_confidence": 0.5,
@@ -1094,7 +1097,7 @@ def main():
                         f"    {setup['whale_desc']}\n"
                         f"🎯 主力區：{setup['whale_zones']}\n"
                         f"📡 Supertrend：{st_emoji} {setup['st_label']}\n"
-                        f"🕹️ 槓桿：{setup['leverage']} ({setup['leverage_note']})\n"
+                        f"🕹️ 桿：{setup['leverage']} ({setup['leverage_note']})\n"
                         f"📌 類型：{style}\n"
                         f"📊 綜合評分：{setup['setup_score']*100:.0f}分 (閾值:{SETUP_SCORE_THRESHOLD*100:.0f}分)\n"
                         f"\n"
