@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v4.2 - 進階主力追蹤 + 價格行為學 + 進場通知修復版
+Alpha Oracle v4.3 - 進階主力追蹤 + 評分制過濾 + API 重試 + 紙交易模式
 核心功能：
   ✅ 1H 趨勢確認（多時間框架過濾）
   ✅ 成交量確認（避免假突破）
@@ -15,11 +15,15 @@ Alpha Oracle v4.2 - 進階主力追蹤 + 價格行為學 + 進場通知修復版
   ✅ 市場結構與交易方向正確匹配
   ✅ CoinAnk 主力數據整合框架
   ✅ 動態信心閾值優化
-  🆕 價格行為學分析（Pin Bar / 吞噬 / 內包棒 / 動量棒 / 拒絕棒）
-  🆕 PA 評分系統（0-100 分，整合進訊號品質判斷）
-  🔧 修復：WAITING 進場判斷邏輯 BUG（is_hit 永遠先於 missed_entry 檢查）
-預期勝率：78-85% | 訊號頻率：每日 1-3 個極高品質訊號
+  ✅ 價格行為學分析（Pin Bar / 吞噬 / 內包棒 / 動量棒 / 拒絕棒）
+  ✅ PA 評分系統（0-100 分，整合進訊號品質判斷）
+  🆕 評分制過濾系統（取代一票否決，提升訊號靈活性）
+  🆕 API 重試機制 + 數據降級方案（減少單點故障）
+  🆕 紙交易模式開關（先模擬驗證，再實盤執行）
+  🔧 修復：WAITING 進場判斷邏輯 BUG
+預期勝率：78-85% | 訊號頻率：每日 2-5 個高品質訊號
 """
+
 import requests
 import os
 import pandas as pd
@@ -28,6 +32,7 @@ import logging
 import traceback
 import time
 import json
+import functools
 from datetime import datetime, timedelta
 
 # ─────────────────────────────────────────────
@@ -40,6 +45,9 @@ COINANK_API_KEY     = os.getenv("COINANK_API_KEY", "")
 GLASSNODE_API_KEY   = os.getenv("GLASSNODE_API_KEY", "")
 CRYPTOQUANT_API_KEY = os.getenv("CRYPTOQUANT_API_KEY", "")
 OPTIMIZATION_FILE   = "whale_optimization.json"
+
+# 🆕 紙交易模式開關（預設關閉）
+PAPER_TRADING = os.getenv("PAPER_TRADING", "false").lower() == "true"
 
 ALL_COINS = [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
@@ -55,13 +63,36 @@ LOG_COLS = [
     "locked", "wait_since", "tp1_hit", "entry_source",
     "snr_display", "snr_active",
     "whale_signal", "whale_confidence", "whale_category",
-    "pa_score", "pa_signals",                  # 🆕 PA 欄位
+    "pa_score", "pa_signals", "setup_score",
 ]
-STATS_COLS = ["instId", "result", "whale_signal", "whale_confidence", "whale_category", "pa_score"]
+STATS_COLS = ["instId", "result", "whale_signal", "whale_confidence", "whale_category", "pa_score", "setup_score"]
 
 # ─────────────────────────────────────────────
 # 2. 工具函數 & 動態優化模組
 # ─────────────────────────────────────────────
+
+# 🆕 API 重試裝飾器（指數退避）
+def retry_on_failure(max_retries: int = 3, delay: float = 1.0):
+    """🆕 通用重試裝飾器 - 用於所有外部 API 呼叫"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    if attempt < max_retries - 1:
+                        wait_time = delay * (2 ** attempt)
+                        logging.warning(f"{func.__name__} 失敗 (嘗試 {attempt+1}/{max_retries})，{wait_time}s 後重試")
+                        time.sleep(wait_time)
+                    else:
+                        logging.warning(f"{func.__name__} 失敗 {max_retries} 次，使用降級方案")
+            return None
+        return wrapper
+    return decorator
+
 def safe_float(val, fallback=0.0):
     try:    return float(val)
     except: return fallback
@@ -116,6 +147,7 @@ def normalize_trade(t: dict) -> dict:
         "whale_category":   str(t.get("whale_category", "Unknown")),
         "pa_score":         safe_float(t.get("pa_score", 0)),
         "pa_signals":       str(t.get("pa_signals", "─")),
+        "setup_score":      safe_float(t.get("setup_score", 0)),
     }
 
 def send_tg(msg: str):
@@ -141,35 +173,33 @@ def get_whale_position_recommendation(whale_signal: str, whale_conf: float) -> t
         return "⛔ 建議跳過", "<50%", "🔴"
 
 # ─────────────────────────────────────────────
-# 3. 數據抓取
+# 3. 數據抓取（🆕 加入重試機制）
 # ─────────────────────────────────────────────
+
+@retry_on_failure(max_retries=3, delay=1.0)
 def fetch_okx(instId: str, tf: str = "15m", limit: int = 100) -> pd.DataFrame | None:
-    try:
-        url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}"
-        res = requests.get(url, timeout=10).json()
-        if res.get('code') != '0' or not res.get('data'): return None
-        df = pd.DataFrame(
-            res['data'],
-            columns=['ts', 'o', 'h', 'l', 'c', 'v', 'volCcy', 'volCcyQuote', 'confirm']
-        )
-        df[['o', 'h', 'l', 'c', 'v']] = df[['o', 'h', 'l', 'c', 'v']].astype(float)
-        return df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
-    except Exception as e:
-        logging.warning(f"[{instId}] {tf} K 線抓取失敗：{e}")
-        return None
+    url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}"
+    res = requests.get(url, timeout=10).json()
+    if res.get('code') != '0' or not res.get('data'): return None
+    df = pd.DataFrame(
+        res['data'],
+        columns=['ts', 'o', 'h', 'l', 'c', 'v', 'volCcy', 'volCcyQuote', 'confirm']
+    )
+    df[['o', 'h', 'l', 'c', 'v']] = df[['o', 'h', 'l', 'c', 'v']].astype(float)
+    return df[df['confirm'] == "1"].iloc[::-1].reset_index(drop=True)
 
 def fetch_current_candle_hl(instId: str) -> tuple[float, float]:
-    """抓取當前「未收盤」K 棒的最高/最低價"""
     try:
         url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar=15m&limit=3"
         res = requests.get(url, timeout=5).json()
         for row in res['data']:
             if row[8] == "0":
-                return float(row[3]), float(row[2])   # (low, high)
+                return float(row[3]), float(row[2])
     except Exception as e:
         logging.warning(f"[{instId}] 當前 K 棒抓取失敗：{e}")
     return float('inf'), float('-inf')
 
+@retry_on_failure(max_retries=3, delay=1.0)
 def get_funding_ls(instId: str) -> tuple[str, str]:
     base_id  = instId.replace("-SWAP", "").split("-")[0]
     funding  = "N/A"
@@ -190,85 +220,113 @@ def get_funding_ls(instId: str) -> tuple[str, str]:
         logging.warning(f"[{instId}] 多空比抓取失敗：{e}")
     return funding, ls_ratio
 
+@retry_on_failure(max_retries=3, delay=1.0)
 def fetch_order_book_imbalance(instId: str, depth: int = 20) -> tuple[float, str]:
-    try:
-        url = f"https://www.okx.com/api/v5/market/books?instId={instId}&sz={depth}"
-        res = requests.get(url, timeout=5).json()
-        if res['code'] != '0' or not res['data']:
-            return 1.0, "⚪ 盤口均衡"
-        data = res['data'][0]
-        bid_vol = sum(float(b[1]) for b in data['bids'])
-        ask_vol = sum(float(a[1]) for a in data['asks'])
-        if ask_vol == 0: return 1.0, "⚪ 盤口均衡"
-        ratio = bid_vol / ask_vol
-        if   ratio > 1.2: label = f"🟢 買盤強勢 ({ratio:.2f})"
-        elif ratio < 0.8: label = f"🔴 賣盤強勢 ({ratio:.2f})"
-        else:             label = f"⚪ 盤口均衡 ({ratio:.2f})"
-        return ratio, label
-    except Exception as e:
-        logging.warning(f"[{instId}] 盤口數據抓取失敗：{e}")
-        return 1.0, "⚪ 數據缺失"
+    url = f"https://www.okx.com/api/v5/market/books?instId={instId}&sz={depth}"
+    res = requests.get(url, timeout=5).json()
+    if res['code'] != '0' or not res['data']:
+        return 1.0, "⚪ 盤口均衡"
+    data = res['data'][0]
+    bid_vol = sum(float(b[1]) for b in data['bids'])
+    ask_vol = sum(float(a[1]) for a in data['asks'])
+    if ask_vol == 0: return 1.0, "⚪ 盤口均衡"
+    ratio = bid_vol / ask_vol
+    if   ratio > 1.2: label = f"🟢 買盤強勢 ({ratio:.2f})"
+    elif ratio < 0.8: label = f"🔴 賣盤強勢 ({ratio:.2f})"
+    else:             label = f"⚪ 盤口均衡 ({ratio:.2f})"
+    return ratio, label
 
+@retry_on_failure(max_retries=3, delay=1.0)
 def fetch_funding_rate_raw(instId: str) -> float:
-    try:
-        res = requests.get(
-            f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5
-        ).json()
-        return float(res['data'][0]['fundingRate'])
-    except Exception as e:
-        logging.warning(f"[{instId}] 資金費率原始值抓取失敗：{e}")
-        return 0.0
+    res = requests.get(
+        f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5
+    ).json()
+    return float(res['data'][0]['fundingRate'])
 
 # ─────────────────────────────────────────────
 # 🆕 CoinAnk / Glassnode / CryptoQuant 主力數據框架
 # ─────────────────────────────────────────────
+
+@retry_on_failure(max_retries=3, delay=1.0)
 def fetch_coinank_spot_cvd(symbol: str) -> dict | None:
     if not COINANK_API_KEY:
-        return {"cvd_24h": 0.0, "trend": "neutral"}
-    try:
-        url     = "https://api.coinank.com/api/indicators/spot-cvd"
-        headers = {"Authorization": f"Bearer {COINANK_API_KEY}"}
-        res     = requests.get(url, params={"symbol": symbol, "period": "24h"},
-                               headers=headers, timeout=10).json()
-        if res.get('code') == 200 and res.get('data'):
-            v = float(res['data']['cvd_value'])
-            return {"cvd_24h": v, "trend": "bullish" if v > 0 else "bearish"}
-    except Exception as e:
-        logging.warning(f"[{symbol}] CoinAnk CVD 失敗：{e}")
+        return None
+    url     = "https://api.coinank.com/api/indicators/spot-cvd"
+    headers = {"Authorization": f"Bearer {COINANK_API_KEY}"}
+    res     = requests.get(url, params={"symbol": symbol, "period": "24h"},
+                           headers=headers, timeout=10).json()
+    if res.get('code') == 200 and res.get('data'):
+        v = float(res['data']['cvd_value'])
+        return {"cvd_24h": v, "trend": "bullish" if v > 0 else "bearish"}
     return None
 
+@retry_on_failure(max_retries=3, delay=1.0)
 def fetch_glassnode_whale_flow(symbol: str) -> dict | None:
-    if not GLASSNODE_API_KEY: return {"net_flow": 0, "signal": "neutral"}
-    try:
-        url = (f"https://rest.glassnode.com/v1/metrics/transfers/exchange_net_flow"
-               f"?asset={symbol}&resolution=24h&api_key={GLASSNODE_API_KEY}")
-        res = requests.get(url, timeout=10).json()
-        if res and len(res) > 0:
-            flow = res[-1]['value']
-            return {"net_flow": flow, "signal": "inflow" if flow > 0 else "outflow"}
-    except: pass
+    if not GLASSNODE_API_KEY: return None
+    url = (f"https://rest.glassnode.com/v1/metrics/transfers/exchange_net_flow"
+           f"?asset={symbol}&resolution=24h&api_key={GLASSNODE_API_KEY}")
+    res = requests.get(url, timeout=10).json()
+    if res and len(res) > 0:
+        flow = res[-1]['value']
+        return {"net_flow": flow, "signal": "inflow" if flow > 0 else "outflow"}
     return None
 
+@retry_on_failure(max_retries=3, delay=1.0)
 def fetch_cryptoquant_open_interest(symbol: str) -> dict | None:
-    if not CRYPTOQUANT_API_KEY: return {"oi_change": 0, "signal": "neutral"}
-    try:
-        url = (f"https://api.cryptoquant.com/v1/data/bitcoin/metrics/open-interest"
-               f"?api_key={CRYPTOQUANT_API_KEY}")
-        res = requests.get(url, timeout=10).json()
-        if res and 'data' in res:
-            data = res['data']
-            if len(data) >= 2:
-                change = (data[-1]['value'] - data[-2]['value']) / (abs(data[-2]['value']) + 1e-10)
-                sig = "rising" if change > 0.05 else ("falling" if change < -0.05 else "stable")
-                return {"oi_change": change, "signal": sig}
-    except: pass
+    if not CRYPTOQUANT_API_KEY: return None
+    url = (f"https://api.cryptoquant.com/v1/data/bitcoin/metrics/open-interest"
+           f"?api_key={CRYPTOQUANT_API_KEY}")
+    res = requests.get(url, timeout=10).json()
+    if res and 'data' in res:
+        data = res['data']
+        if len(data) >= 2:
+            change = (data[-1]['value'] - data[-2]['value']) / (abs(data[-2]['value']) + 1e-10)
+            sig = "rising" if change > 0.05 else ("falling" if change < -0.05 else "stable")
+            return {"oi_change": change, "signal": sig}
     return None
 
-def analyze_whale_direction(instId: str, side: str, opt_params: dict) -> tuple[str, float, str, str]:
-    symbol      = instId.split('-')[0]
+# 🆕 技術面信心計算（降級方案用）
+def calculate_technical_confidence(df: pd.DataFrame, side: str) -> float:
+    score = 0.0
+    st = calculate_supertrend(df)
+    if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1):
+        score += 0.30
+    structure = detect_market_structure(df, side)
+    if ("反轉" in structure and 
+        ((side == "LONG" and "W 底" in structure) or (side == "SHORT" and "M 頭" in structure))):
+        score += 0.25
+    elif "趨勢延續" in structure:
+        score += 0.15
+    cvd_val, cvd_label = calculate_cvd(df)
+    if (side == "LONG" and cvd_label.startswith("🟢")) or (side == "SHORT" and cvd_label.startswith("🔴")):
+        score += 0.20
+    pa_score, _ = calculate_pa_score(df, side)
+    score += 0.15 * pa_score
+    return min(1.0, score)
+
+def analyze_whale_direction(instId: str, side: str, opt_params: dict, df: pd.DataFrame = None) -> tuple[str, float, str, str]:
+    symbol = instId.split('-')[0]
     spot_cvd    = fetch_coinank_spot_cvd(symbol)
     whale_flow  = fetch_glassnode_whale_flow(symbol)
     oi_data     = fetch_cryptoquant_open_interest(symbol)
+    
+    data_sources_available = sum([
+        spot_cvd is not None,
+        whale_flow is not None,
+        oi_data is not None
+    ])
+    
+    # 🆕 降級方案：如果 3 個數據源都缺失，用技術面替代
+    if data_sources_available == 0 and df is not None:
+        tech_conf = calculate_technical_confidence(df, side)
+        if tech_conf >= 0.65:
+            return "✅ 技術面主導", tech_conf, "主力數據缺失，技術面極強", "Technical"
+        elif tech_conf >= 0.45:
+            return "⚠️ 技術面中等", tech_conf, "主力數據缺失，建議降低倉位", "LowConf"
+        else:
+            return "🔴 技術面弱", tech_conf, "主力數據缺失，建議跳過", "Skip"
+    
+    # 正常流程：使用主力數據分析
     fr_raw      = fetch_funding_rate_raw(instId)
     _, ls_str   = get_funding_ls(instId)
     ls_ratio    = float(ls_str) if ls_str != "N/A" else 1.0
@@ -291,7 +349,7 @@ def analyze_whale_direction(instId: str, side: str, opt_params: dict) -> tuple[s
         elif side == "SHORT" and whale_flow['signal'] == "outflow":
             signals.append("🟢 巨鯨提幣鎖倉");       confidence += 0.25
 
-    if oi_data:
+    if oi_
         if   side == "SHORT" and oi_data['signal'] == "rising":
             signals.append("🔴 空頭持倉激增（主力壓制）"); confidence += 0.20
         elif side == "LONG"  and oi_data['signal'] == "falling":
@@ -391,322 +449,163 @@ def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float =
 # ─────────────────────────────────────────────
 
 def detect_pin_bar(df: pd.DataFrame, lookback: int = 3) -> dict:
-    """
-    釘形棒偵測 (Pin Bar / Hammer / Shooting Star)
-    ──────────────────────────────────────────────
-    多頭釘形棒 (Hammer / Bullish Pin):
-      - 下影線 >= 實體 × 2
-      - 上影線 <= 實體 × 0.5
-      - 出現在支撐位附近 = 強力反彈信號
-    空頭釘形棒 (Shooting Star / Bearish Pin):
-      - 上影線 >= 實體 × 2
-      - 下影線 <= 實體 × 0.5
-      - 出現在壓力位附近 = 強力壓制信號
-    強度計算：影線 / 實體 的比值，越高越強
-    """
     for i in range(len(df) - 1, max(len(df) - lookback - 1, 0), -1):
-        k           = df.iloc[i]
-        body        = abs(k['c'] - k['o'])
+        k = df.iloc[i]
+        body = abs(k['c'] - k['o'])
         total_range = k['h'] - k['l'] + 1e-10
-        if body < total_range * 0.05:   # 極小實體（十字星）跳過
-            continue
+        if body < total_range * 0.05: continue
         upper_wick = k['h'] - max(k['c'], k['o'])
         lower_wick = min(k['c'], k['o']) - k['l']
-
-        # 多頭釘形棒
         if lower_wick >= body * 2.0 and upper_wick <= body * 0.5:
             strength = min(lower_wick / (body + 1e-10) / 5.0, 1.0)
-            return {
-                "detected": True,
-                "type":     "bullish_pin",
-                "strength": strength,
-                "bar_idx":  i,
-                "price":    k['l'],
-                "desc":     f"📌 多頭錘子線 ({lower_wick/body:.1f}R影) @ {k['c']:.4f}",
-            }
-        # 空頭釘形棒
+            return {"detected": True, "type": "bullish_pin", "strength": strength,
+                    "bar_idx": i, "price": k['l'], "desc": f"📌 多頭錘子線 ({lower_wick/body:.1f}R 影) @ {k['c']:.4f}"}
         if upper_wick >= body * 2.0 and lower_wick <= body * 0.5:
             strength = min(upper_wick / (body + 1e-10) / 5.0, 1.0)
-            return {
-                "detected": True,
-                "type":     "bearish_pin",
-                "strength": strength,
-                "bar_idx":  i,
-                "price":    k['h'],
-                "desc":     f"📌 空頭流星線 ({upper_wick/body:.1f}R影) @ {k['c']:.4f}",
-            }
+            return {"detected": True, "type": "bearish_pin", "strength": strength,
+                    "bar_idx": i, "price": k['h'], "desc": f"📌 空頭流星線 ({upper_wick/body:.1f}R 影) @ {k['c']:.4f}"}
     return {"detected": False, "type": None, "strength": 0, "desc": ""}
 
-
 def detect_engulfing(df: pd.DataFrame, lookback: int = 3) -> dict:
-    """
-    吞噬形態偵測 (Engulfing Pattern)
-    ─────────────────────────────────
-    多頭吞噬 (Bullish Engulfing):
-      - 前一根為陰線，當前為陽線
-      - 當前 K 棒實體完全覆蓋前一根 K 棒實體
-      - 代表買力突然大量湧入，反轉信號
-    空頭吞噬 (Bearish Engulfing):
-      - 前一根為陽線，當前為陰線
-      - 當前 K 棒實體完全覆蓋前一根 K 棒實體
-      - 代表賣力突然大量湧現
-    強度 = 當前實體 / 前一根實體（越大越強，上限 3 倍正規化）
-    """
     for i in range(len(df) - 1, max(len(df) - lookback - 1, 1), -1):
-        curr      = df.iloc[i]
-        prev      = df.iloc[i - 1]
-        curr_body = abs(curr['c'] - curr['o'])
-        prev_body = abs(prev['c'] - prev['o'])
+        curr, prev = df.iloc[i], df.iloc[i-1]
+        curr_body, prev_body = abs(curr['c']-curr['o']), abs(prev['c']-prev['o'])
         if prev_body < 1e-10: continue
-
-        # 多頭吞噬
         if (curr['c'] > curr['o'] and prev['c'] < prev['o'] and
                 curr['o'] <= prev['c'] and curr['c'] >= prev['o']):
             strength = min(curr_body / (prev_body + 1e-10) / 3.0, 1.0)
-            return {
-                "detected": True,
-                "type":     "bullish_engulfing",
-                "strength": strength,
-                "bar_idx":  i,
-                "desc":     f"🕯️ 多頭吞噬 ({curr_body/prev_body:.1f}x) @ {curr['c']:.4f}",
-            }
-        # 空頭吞噬
+            return {"detected": True, "type": "bullish_engulfing", "strength": strength,
+                    "bar_idx": i, "desc": f"🕯️ 多頭吞噬 ({curr_body/prev_body:.1f}x) @ {curr['c']:.4f}"}
         if (curr['c'] < curr['o'] and prev['c'] > prev['o'] and
                 curr['o'] >= prev['c'] and curr['c'] <= prev['o']):
             strength = min(curr_body / (prev_body + 1e-10) / 3.0, 1.0)
-            return {
-                "detected": True,
-                "type":     "bearish_engulfing",
-                "strength": strength,
-                "bar_idx":  i,
-                "desc":     f"🕯️ 空頭吞噬 ({curr_body/prev_body:.1f}x) @ {curr['c']:.4f}",
-            }
+            return {"detected": True, "type": "bearish_engulfing", "strength": strength,
+                    "bar_idx": i, "desc": f"🕯️ 空頭吞噬 ({curr_body/prev_body:.1f}x) @ {curr['c']:.4f}"}
     return {"detected": False, "type": None, "strength": 0, "desc": ""}
 
-
 def detect_inside_bar(df: pd.DataFrame) -> dict:
-    """
-    內包棒偵測 (Inside Bar / NR4 / NR7)
-    ─────────────────────────────────────
-    當前 K 棒的高低完全在前一根 K 棒高低範圍內：
-      - 代表市場在盤整壓縮，能量積累中
-      - 突破方向確認後，產生強烈動能釋放
-    壓縮率 = 1 - (內包棒範圍 / 母棒範圍)，越高代表壓縮越嚴重
-    """
-    if len(df) < 2:
-        return {"detected": False}
-    curr = df.iloc[-1]
-    prev = df.iloc[-2]
+    if len(df) < 2: return {"detected": False}
+    curr, prev = df.iloc[-1], df.iloc[-2]
     if curr['h'] <= prev['h'] and curr['l'] >= prev['l']:
         mother_range = prev['h'] - prev['l'] + 1e-10
         inner_range  = curr['h'] - curr['l']
         compression  = 1.0 - inner_range / mother_range
-        return {
-            "detected":      True,
-            "type":          "inside_bar",
-            "compression":   compression,
-            "breakout_high": prev['h'],
-            "breakout_low":  prev['l'],
-            "desc":          f"📦 內包棒壓縮 ({compression*100:.0f}%) 母棒:{prev['h']:.4f}/{prev['l']:.4f}",
-        }
+        return {"detected": True, "type": "inside_bar", "compression": compression,
+                "breakout_high": prev['h'], "breakout_low": prev['l'],
+                "desc": f"📦 內包棒壓縮 ({compression*100:.0f}%) 母棒:{prev['h']:.4f}/{prev['l']:.4f}"}
     return {"detected": False}
 
-
 def detect_rejection_candle(df: pd.DataFrame, side: str) -> dict:
-    """
-    關鍵位拒絕 K 棒偵測 (Rejection Candle at Key Level)
-    ─────────────────────────────────────────────────────
-    多頭拒絕（支撐位反彈）:
-      - 下影線 > 整根 K 棒 40%
-      - 陽線收盤 (c > o)
-      - 代表空頭推低被強力承接
-    空頭拒絕（壓力位壓制）:
-      - 上影線 > 整根 K 棒 40%
-      - 陰線收盤 (c < o)
-      - 代表多頭推高被強力賣出
-    """
-    if len(df) < 1:
-        return {"detected": False, "type": None, "strength": 0, "desc": ""}
-    k           = df.iloc[-1]
+    if len(df) < 1: return {"detected": False, "type": None, "strength": 0, "desc": ""}
+    k = df.iloc[-1]
     total_range = k['h'] - k['l'] + 1e-10
-    upper_wick  = k['h'] - max(k['c'], k['o'])
-    lower_wick  = min(k['c'], k['o']) - k['l']
-    upper_pct   = upper_wick / total_range
-    lower_pct   = lower_wick / total_range
-
+    upper_wick, lower_wick = k['h'] - max(k['c'], k['o']), min(k['c'], k['o']) - k['l']
+    upper_pct, lower_pct = upper_wick / total_range, lower_wick / total_range
     if side == "LONG" and lower_pct > 0.40 and k['c'] > k['o']:
-        return {
-            "detected": True,
-            "type":     "support_rejection",
-            "strength": lower_pct,
-            "desc":     f"🔄 支撐位拒絕 (下影 {lower_pct*100:.0f}%) @ {k['c']:.4f}",
-        }
+        return {"detected": True, "type": "support_rejection", "strength": lower_pct,
+                "desc": f"🔄 支撐位拒絕 (下影 {lower_pct*100:.0f}%) @ {k['c']:.4f}"}
     if side == "SHORT" and upper_pct > 0.40 and k['c'] < k['o']:
-        return {
-            "detected": True,
-            "type":     "resistance_rejection",
-            "strength": upper_pct,
-            "desc":     f"🔄 壓力位拒絕 (上影 {upper_pct*100:.0f}%) @ {k['c']:.4f}",
-        }
+        return {"detected": True, "type": "resistance_rejection", "strength": upper_pct,
+                "desc": f"🔄 壓力位拒絕 (上影 {upper_pct*100:.0f}%) @ {k['c']:.4f}"}
     return {"detected": False, "type": None, "strength": 0, "desc": ""}
 
-
 def detect_momentum_bar(df: pd.DataFrame, side: str, lookback: int = 5) -> dict:
-    """
-    動量 K 棒偵測 (Momentum / Marubozu-like)
-    ──────────────────────────────────────────
-    強勢實體 K 棒：
-      - 實體佔 K 棒總範圍 ≥ 70%（接近光頭光腳）
-      - 實體大小 ≥ ATR × 0.8（確保是大 K 棒）
-      - 方向與訊號一致 → 動能加強確認
-    代表主力方向性推進，後續延伸機率高
-    """
     atr = calculate_atr(df)
     for i in range(len(df) - 1, max(len(df) - lookback - 1, 0), -1):
-        k           = df.iloc[i]
-        body        = abs(k['c'] - k['o'])
-        total_range = k['h'] - k['l'] + 1e-10
-        body_pct    = body / total_range
+        k = df.iloc[i]
+        body, total_range = abs(k['c'] - k['o']), k['h'] - k['l'] + 1e-10
+        body_pct = body / total_range
         if body_pct >= 0.70 and body >= atr * 0.8:
             is_bullish = k['c'] > k['o']
             if (side == "LONG" and is_bullish) or (side == "SHORT" and not is_bullish):
-                return {
-                    "detected":  True,
-                    "type":      "momentum_bar",
-                    "direction": "bullish" if is_bullish else "bearish",
-                    "strength":  body_pct,
-                    "bar_idx":   i,
-                    "desc":      f"⚡ {'多頭' if is_bullish else '空頭'}動量棒 ({body_pct*100:.0f}%實體) @ {k['c']:.4f}",
-                }
+                return {"detected": True, "type": "momentum_bar", "direction": "bullish" if is_bullish else "bearish",
+                        "strength": body_pct, "bar_idx": i,
+                        "desc": f"⚡ {'多頭' if is_bullish else '空頭'}動量棒 ({body_pct*100:.0f}%實體) @ {k['c']:.4f}"}
     return {"detected": False, "type": None, "strength": 0, "desc": ""}
 
-
 def detect_false_breakout(df: pd.DataFrame, side: str, lookback: int = 10) -> dict:
-    """
-    假突破偵測 (False Breakout / Fake-out)
-    ─────────────────────────────────────────
-    識別已發生的假突破，用於確認真實訊號：
-    空頭假突破 (做多信號):
-      - 某根 K 棒突破近期高點 → 但最終收盤回到高點下方
-      - 代表多頭陷阱，後續做空機率高
-    多頭假突破 (做空信號):
-      - 某根 K 棒跌破近期低點 → 但最終收盤回到低點上方
-      - 代表空頭陷阱，後續做多機率高
-    """
-    if len(df) < lookback + 2:
-        return {"detected": False}
+    if len(df) < lookback + 2: return {"detected": False}
     recent = df.tail(lookback)
-    recent_high = recent['h'].iloc[:-1].max()
-    recent_low  = recent['l'].iloc[:-1].min()
-    last = df.iloc[-1]
-
+    recent_high, recent_low = recent['h'].iloc[:-1].max(), recent['l'].iloc[:-1].min()
     if side == "LONG":
-        # 空頭假突破：前幾根跌破低點但收盤回來
         for i in range(len(df) - 3, max(len(df) - lookback - 1, 1), -1):
             k = df.iloc[i]
             if k['l'] < recent_low and k['c'] > recent_low:
-                return {
-                    "detected":   True,
-                    "type":       "bearish_fakeout",
-                    "fakeout_low": k['l'],
-                    "recovery":   k['c'],
-                    "desc":       f"🪤 空頭假突破獵殺 ({k['l']:.4f}→{k['c']:.4f})",
-                }
+                return {"detected": True, "type": "bearish_fakeout", "fakeout_low": k['l'],
+                        "recovery": k['c'], "desc": f"🪤 空頭假突破獵殺 ({k['l']:.4f}→{k['c']:.4f})"}
     elif side == "SHORT":
-        # 多頭假突破：前幾根突破高點但收盤回來
         for i in range(len(df) - 3, max(len(df) - lookback - 1, 1), -1):
             k = df.iloc[i]
             if k['h'] > recent_high and k['c'] < recent_high:
-                return {
-                    "detected":    True,
-                    "type":        "bullish_fakeout",
-                    "fakeout_high": k['h'],
-                    "recovery":    k['c'],
-                    "desc":        f"🪤 多頭假突破獵殺 ({k['h']:.4f}→{k['c']:.4f})",
-                }
+                return {"detected": True, "type": "bullish_fakeout", "fakeout_high": k['h'],
+                        "recovery": k['c'], "desc": f"🪤 多頭假突破獵殺 ({k['h']:.4f}→{k['c']:.4f})"}
     return {"detected": False}
 
-
 def calculate_pa_score(df: pd.DataFrame, side: str) -> tuple[float, list[str]]:
-    """
-    🆕 價格行為學綜合評分 (PA Score)
-    ──────────────────────────────────
-    整合五種 PA 訊號，回傳 (評分 0.0~1.0, 訊號描述列表)
-
-    評分加權：
-      釘形棒 (Pin Bar)         → 最高 +0.25
-      吞噬形態 (Engulfing)     → 最高 +0.20
-      關鍵位拒絕 (Rejection)   → 最高 +0.20
-      動量 K 棒 (Momentum)     → 最高 +0.15
-      假突破確認 (FakeOut)      → 最高 +0.15
-      內包棒 (Inside Bar)      → 最高 +0.10
-      多訊號加成                → 最高 +0.10
-      反向訊號懲罰              → 最多 -0.15
-
-    分數等級：
-      ≥ 0.65 → 強勢 PA 確認 ✅
-      0.40-0.64 → 中等 PA 確認 ⚠️
-      < 0.40 → PA 訊號弱 ⛔
-    """
-    score   = 0.0
-    signals = []
-
-    # 1. 釘形棒（最重要的 PA 訊號）
+    score, signals = 0.0, []
     pin = detect_pin_bar(df)
     if pin['detected']:
-        aligned = (side == "LONG" and pin['type'] == "bullish_pin") or \
-                  (side == "SHORT" and pin['type'] == "bearish_pin")
-        if aligned:
-            score += 0.25 * pin['strength']
-            signals.append(pin['desc'])
-        elif pin['strength'] > 0.6:   # 反向強釘形棒 = 警示
-            score -= 0.10
-            signals.append(f"⚠️ 反向 {pin['desc']}")
-
-    # 2. 吞噬形態
+        aligned = (side == "LONG" and pin['type'] == "bullish_pin") or (side == "SHORT" and pin['type'] == "bearish_pin")
+        if aligned: score += 0.25 * pin['strength']; signals.append(pin['desc'])
+        elif pin['strength'] > 0.6: score -= 0.10; signals.append(f"⚠️ 反向 {pin['desc']}")
     eng = detect_engulfing(df)
     if eng['detected']:
-        aligned = (side == "LONG" and eng['type'] == "bullish_engulfing") or \
-                  (side == "SHORT" and eng['type'] == "bearish_engulfing")
-        if aligned:
-            score += 0.20 * eng['strength']
-            signals.append(eng['desc'])
-        else:
-            score -= 0.05
-            signals.append(f"⚠️ 反向 {eng['desc']}")
-
-    # 3. 關鍵位拒絕
+        aligned = (side == "LONG" and eng['type'] == "bullish_engulfing") or (side == "SHORT" and eng['type'] == "bearish_engulfing")
+        if aligned: score += 0.20 * eng['strength']; signals.append(eng['desc'])
+        else: score -= 0.05; signals.append(f"⚠️ 反向 {eng['desc']}")
     rej = detect_rejection_candle(df, side)
-    if rej['detected']:
-        score += 0.20 * rej['strength']
-        signals.append(rej['desc'])
-
-    # 4. 動量 K 棒確認
+    if rej['detected']: score += 0.20 * rej['strength']; signals.append(rej['desc'])
     mom = detect_momentum_bar(df, side)
-    if mom['detected']:
-        score += 0.15 * mom['strength']
-        signals.append(mom['desc'])
-
-    # 5. 假突破確認（高可信度信號）
+    if mom['detected']: score += 0.15 * mom['strength']; signals.append(mom['desc'])
     fbo = detect_false_breakout(df, side)
-    if fbo['detected']:
-        score += 0.15
-        signals.append(fbo['desc'])
-
-    # 6. 內包棒（壓縮後即將爆發）
+    if fbo['detected']: score += 0.15; signals.append(fbo['desc'])
     ib = detect_inside_bar(df)
-    if ib['detected']:
-        score += 0.10 * ib['compression']
-        signals.append(ib['desc'])
-
-    # 多訊號加成（≥ 2 個正向信號）
+    if ib['detected']: score += 0.10 * ib['compression']; signals.append(ib['desc'])
     positive_count = len([s for s in signals if not s.startswith("⚠️")])
-    if positive_count >= 3:   score += 0.10
+    if positive_count >= 3: score += 0.10
     elif positive_count >= 2: score += 0.05
+    return max(0.0, min(1.0, score)), signals
 
-    # 正規化到 [0, 1]
-    score = max(0.0, min(1.0, score))
-    return score, signals
+# ─────────────────────────────────────────────
+# 🆕 評分制過濾系統（取代一票否決）
+# ─────────────────────────────────────────────
+
+def calculate_setup_score(setup: dict, df: pd.DataFrame, instId: str) -> float:
+    """🆕 計算訊號綜合評分 (0.0-1.0)"""
+    score = 0.0
+    
+    # 1. 主力信號（權重 30%）
+    if setup['whale_signal'] == "✅ 主力一致":
+        score += 0.30 * setup['whale_confidence']
+    elif setup['whale_signal'] == "⚠️ 主力警示":
+        score += 0.15 * setup['whale_confidence']
+    
+    # 2. 價格行為（權重 25%）
+    score += 0.25 * setup['pa_score']
+    
+    # 3. 技術指標（權重 20%）
+    if setup['st_label'] == "📈 多頭" and setup['side'] == "LONG":
+        score += 0.20
+    elif setup['st_label'] == "📉 空頭" and setup['side'] == "SHORT":
+        score += 0.20
+    
+    # 4. 盤口 + CVD（權重 15%）
+    if setup['cvd_label'].startswith("🟢") and setup['side'] == "LONG":
+        score += 0.15
+    elif setup['cvd_label'].startswith("🔴") and setup['side'] == "SHORT":
+        score += 0.15
+    
+    # 5. 資金費率（權重 10%）
+    try:
+        fr = fetch_funding_rate_raw(instId)
+        if setup['side'] == "LONG" and fr < 0.0003:
+            score += 0.10
+        elif setup['side'] == "SHORT" and fr > -0.0003:
+            score += 0.10
+    except:
+        pass
+    
+    return min(1.0, score)
 
 # ─────────────────────────────────────────────
 # 5. SMC & ICT 結構分析
@@ -839,10 +738,11 @@ def classify_trade(side: str, structure: str, risk_pct: float) -> str:
     return "📊 長單 (波段)"
 
 # ─────────────────────────────────────────────
-# 7. SMC 訊號掃描（主力追蹤 + PA 評分版）
+# 7. SMC 訊號掃描（🆕 評分制過濾版）
 # ─────────────────────────────────────────────
-# 🆕 PA 最低評分要求（低於此分不發訊）
-PA_MIN_SCORE = 0.30   # 可調整：0.30 = 至少 1 個中等 PA 訊號
+
+SETUP_SCORE_THRESHOLD = 0.40
+PA_MIN_SCORE = 0.30
 
 def find_smc_setup(df: pd.DataFrame, instId: str, opt_params: dict) -> dict | None:
     if df is None or len(df) < 40: return None
@@ -865,13 +765,27 @@ def find_smc_setup(df: pd.DataFrame, instId: str, opt_params: dict) -> dict | No
     price = df['c'].iloc[-1]
 
     # ── 主力方向 ─────────────────────────────
-    whale_signal, whale_conf, whale_desc, whale_cat = analyze_whale_direction(instId, side, opt_params)
-    if whale_signal == "🔴 主力反向" and whale_conf >= get_dynamic_threshold(opt_params):
-        logging.info(f"[{instId}] 主力反向（{whale_conf*100:.0f}%），跳過 {side}")
-        return None
-
-    # ── 🆕 PA 評分（放在進場判斷前）────────────────
+    whale_signal, whale_conf, whale_desc, whale_cat = analyze_whale_direction(instId, side, opt_params, df)
+    
+    # ── PA 評分 ────────────────────────────────
     pa_score, pa_signals = calculate_pa_score(df, side)
+    
+    # ── 評分制過濾 ─────────────────────────────
+    temp_setup = {
+        'whale_signal': whale_signal,
+        'whale_confidence': whale_conf,
+        'pa_score': pa_score,
+        'side': side,
+        'cvd_label': calculate_cvd(df)[1],
+        'st_label': "📈 多頭" if calculate_supertrend(df) == 1 else ("📉 空頭" if calculate_supertrend(df) == -1 else "⚪ 未知"),
+    }
+    
+    setup_score = calculate_setup_score(temp_setup, df, instId)
+    
+    if setup_score < SETUP_SCORE_THRESHOLD:
+        logging.info(f"[{instId}] 綜合評分不足 ({setup_score:.2f} < {SETUP_SCORE_THRESHOLD})，跳過")
+        return None
+    
     if pa_score < PA_MIN_SCORE:
         logging.info(f"[{instId}] PA 評分不足 ({pa_score:.2f} < {PA_MIN_SCORE})，跳過")
         return None
@@ -934,7 +848,6 @@ def find_smc_setup(df: pd.DataFrame, instId: str, opt_params: dict) -> dict | No
 
     whale_zones_text = " | ".join([z['desc'] for z in whale_zones[:2]]) if whale_zones else "─"
 
-    # 🆕 PA 評級標籤
     pa_label = ("✅ 強勢PA" if pa_score >= 0.65
                 else ("⚠️ 中等PA" if pa_score >= 0.40
                       else "⛔ 弱PA"))
@@ -955,9 +868,10 @@ def find_smc_setup(df: pd.DataFrame, instId: str, opt_params: dict) -> dict | No
         "whale_signal":     whale_signal, "whale_confidence": whale_conf,
         "whale_desc":       whale_desc, "whale_zones": whale_zones_text,
         "whale_category":   whale_cat,
-        "pa_score":         pa_score,        # 🆕
-        "pa_label":         pa_label,         # 🆕
-        "pa_signals":       " | ".join(pa_signals) if pa_signals else "─",  # 🆕
+        "pa_score":         pa_score,
+        "pa_label":         pa_label,
+        "pa_signals":       " | ".join(pa_signals) if pa_signals else "─",
+        "setup_score":      setup_score,
     }
 
 # ─────────────────────────────────────────────
@@ -986,9 +900,9 @@ def generate_midnight_report(opt_params: dict) -> str:
     os.remove(f)
     return (
         f"\n🐋 *主力績效統計 (近 {len(df)} 單)*\n"
-        f"   ✅ 主力一致勝率: {awr:.1f}%\n"
-        f"   ⚠️ 主力警示勝率: {wwr:.1f}%\n"
-        f"   🚫 主力反向勝率: {rwr:.1f}%\n"
+        f"   ✅ 主力一致勝率：{awr:.1f}%\n"
+        f"   ⚠️ 主力警示勝率：{wwr:.1f}%\n"
+        f"   🚫 主力反向勝率：{rwr:.1f}%\n"
         f"   🔄 動態閾值：{get_dynamic_threshold(opt_params):.2f}"
     )
 
@@ -1037,8 +951,11 @@ def main():
                         wr    = (tp_c / total * 100) if total > 0 else 0
                         date_str = (now_tw - timedelta(days=1)).strftime('%Y-%m-%d')
                         whale_rpt = generate_midnight_report(opt_params)
+                        
+                        paper_tag = "\n🧪 *紙交易模式*：此為模擬統計" if PAPER_TRADING else ""
+                        
                         send_tg(
-                            f"📊 *Alpha Oracle v4.2 | 每日戰績報告*\n"
+                            f"📊 *Alpha Oracle v4.3 | 每日戰績報告*{paper_tag}\n"
                             f"══════════════════════\n"
                             f"📅 {date_str}  ⏰ {now_tw.strftime('%H:%M')}\n"
                             f"\n"
@@ -1049,7 +966,7 @@ def main():
                             f"💰 平均盈虧比：{(tp_c*2+sl_c*(-1))/total if total > 0 else 0:.2f}R\n"
                             f"{whale_rpt}\n"
                             f"══════════════════════\n"
-                            f"🐋 主力追蹤 + PA 分析已啟用"
+                            f"🐋 主力追蹤 + PA 分析 + 評分制過濾已啟用"
                         )
                     if is_midnight:
                         pd.DataFrame(columns=STATS_COLS).to_csv(STATS_FILE, index=False)
@@ -1064,7 +981,7 @@ def main():
         try:
             trades_df = pd.read_csv(LOG_FILE)
             for col in ["wait_since", "tp1_hit", "entry_source", "snr_display", "snr_active",
-                        "whale_signal", "whale_confidence", "whale_category", "pa_score", "pa_signals"]:
+                        "whale_signal", "whale_confidence", "whale_category", "pa_score", "pa_signals", "setup_score"]:
                 if col not in trades_df.columns:
                     defaults = {
                         "entry_source":    "Breakout",
@@ -1075,6 +992,7 @@ def main():
                         "whale_category":  "Unknown",
                         "pa_score":        0.0,
                         "pa_signals":      "─",
+                        "setup_score":     0.0,
                     }
                     trades_df[col] = defaults.get(col, 0)
         except Exception:
@@ -1104,6 +1022,8 @@ def main():
 
                 setup = find_smc_setup(df, instId, opt_params)
                 if setup:
+                    paper_tag = "🧪 紙交易 | " if PAPER_TRADING else ""
+                    
                     cvd_val, _ = calculate_cvd(df)
                     if setup['side'] == "LONG"  and cvd_val < 0: time.sleep(0.2); continue
                     if setup['side'] == "SHORT" and cvd_val > 0: time.sleep(0.2); continue
@@ -1141,7 +1061,6 @@ def main():
                     st_emoji  = "📈" if setup['st_val'] == 1 else ("📉" if setup['st_val'] == -1 else "⚪")
                     w_emoji   = WHALE_EMOJI.get(setup['whale_signal'], "❓")
 
-                    # 🆕 PA 訊號文字
                     pa_lines = ""
                     if setup['pa_signals'] and setup['pa_signals'] != "─":
                         for sig in setup['pa_signals'].split(" | ")[:3]:
@@ -1150,7 +1069,7 @@ def main():
                         pa_lines = "   ─ 無明顯 PA 訊號\n"
 
                     send_tg(
-                        f"🔥 *Alpha Oracle v4.2 訊號發射* 🔥\n"
+                        f"🔥 *{paper_tag}Alpha Oracle v4.3 訊號發射* 🔥\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
                         f"🎯 方向：{side_emoji} {side_zh}\n"
@@ -1177,6 +1096,7 @@ def main():
                         f"📡 Supertrend：{st_emoji} {setup['st_label']}\n"
                         f"🕹️ 槓桿：{setup['leverage']} ({setup['leverage_note']})\n"
                         f"📌 類型：{style}\n"
+                        f"📊 綜合評分：{setup['setup_score']*100:.0f}分 (閾值:{SETUP_SCORE_THRESHOLD*100:.0f}分)\n"
                         f"\n"
                         f"💡 *等待回踩 {src_text} 成交...*"
                     )
@@ -1200,6 +1120,7 @@ def main():
                         "whale_category":   setup['whale_category'],
                         "pa_score":         setup['pa_score'],
                         "pa_signals":       setup['pa_signals'],
+                        "setup_score":      setup['setup_score'],
                     })
                 time.sleep(0.2); continue
 
@@ -1207,13 +1128,6 @@ def main():
             t = normalize_trade(trades_df[trades_df['instId'] == instId].iloc[0].to_dict())
 
             if t['status'] == "WAITING":
-                # ════════════════════════════════════════════════════
-                # 🔧 BUG FIX：is_hit 必須最先判斷，
-                #    原版本：missed_entry 的 continue 導致 is_hit 被跳過
-                #    修正後：先確認進場，再判斷是否失效/逾時
-                # ════════════════════════════════════════════════════
-
-                # ① 優先：確認進場觸發
                 n_check         = min(3, len(df))
                 cur_low, cur_high = fetch_current_candle_hl(instId)
                 check_low       = min(df['l'].iloc[-n_check:].min(), cur_low)
@@ -1229,12 +1143,10 @@ def main():
                 )
 
                 if is_hit and already_sl:
-                    # 觸及進場位後立即穿破止損 → 放棄
                     logging.info(f"[{instId}] 進場觸及但已穿破止損，放棄")
                     time.sleep(0.2); continue
 
                 if is_hit:
-                    # ✅ 進場確認 → 發送進場通知
                     t['status'] = "ACTIVE"
                     side_emoji  = "🟢" if t['side'] == "LONG" else "🔴"
                     side_zh     = "多單 (LONG)" if t['side'] == "LONG" else "空單 (SHORT)"
@@ -1252,14 +1164,15 @@ def main():
                     )
                     extra_warn = "\n⚠️ *主力動向不明，建議謹慎*" if "跳過" in pos_rec or "觀望" in pos_rec else ""
 
-                    # 🆕 PA 摘要（進場通知版）
                     pa_summary = ""
                     if t['pa_signals'] and t['pa_signals'] != "─":
                         pa_top = t['pa_signals'].split(" | ")[0]
                         pa_summary = f"\n🕯️ PA：{pa_top} ({t['pa_score']*100:.0f}分)"
+                    
+                    paper_tag = "🧪 紙交易 | " if PAPER_TRADING else ""
 
                     send_tg(
-                        f"🚀 *Alpha Oracle v4.2 | 進場成交* 🚀\n"
+                        f"🚀 *{paper_tag}Alpha Oracle v4.3 | 進場成交* 🚀\n"
                         f"──────────────────\n"
                         f"💎 幣種：#{coin_sym}\n"
                         f"🎯 方向：{side_emoji} {side_zh}\n"
@@ -1281,21 +1194,20 @@ def main():
                         f"\n"
                         f"🛡️ {t['snr_display']}\n"
                         f"    {t['snr_active']}\n"
+                        f"📊 綜合評分：{t['setup_score']*100:.0f}分\n"
                         f"🛡️ 移動止損已啟用｜嚴格風控"
                     )
                     t['wait_since'] = current_bar
                     updated_trades.append(t)
                     time.sleep(0.2)
-                    continue  # ← 進場後直接 continue，避免後續判斷
+                    continue
 
-                # ② 進場未觸及：檢查逾時與失效
                 bars_waited = current_bar - t['wait_since']
 
                 if bars_waited > WAITING_EXPIRY_BARS:
                     logging.info(f"[{instId}] WAITING 逾 {bars_waited} bars，自動清除")
                     time.sleep(0.2); continue
 
-                # ③ 訊號失效：價格已偏離超過 2% 且等待超過 10 根 K 棒
                 if bars_waited > 10:
                     price_diff_pct = abs(curr_p - t['entry']) / t['entry'] * 100
                     missed = (
@@ -1320,19 +1232,17 @@ def main():
                         )
                         time.sleep(0.2); continue
 
-                # ④ 繼續等待
                 updated_trades.append(t)
 
             elif t['status'] == "ACTIVE":
                 risk_r = abs(t['entry'] - t['sl']) + 1e-10
 
-                # TP1 通知 + 🆕 立即移止損至成本
                 if t['tp1_hit'] == 0 and (
                     (t['side'] == "LONG"  and curr_p >= t['tp1']) or
                     (t['side'] == "SHORT" and curr_p <= t['tp1'])
                 ):
                     t['tp1_hit'] = 1
-                    t['sl']      = t['entry']   # 🆕 TP1 即保本
+                    t['sl']      = t['entry']
                     send_tg(
                         f"🎯 *Alpha Oracle | 達到 TP1 · 止損已移至成本*\n"
                         f"──────────────────\n"
@@ -1347,7 +1257,6 @@ def main():
                         f"💡 *建議手動平倉 50% 鎖定 +1R*"
                     )
 
-                # TP2 → 移止損至 TP1
                 if t['locked'] == 0 and (
                     (t['side'] == "LONG"  and curr_p >= t['tp2']) or
                     (t['side'] == "SHORT" and curr_p <= t['tp2'])
@@ -1384,17 +1293,21 @@ def main():
                         f"🚫 止損位：{t['sl']:.4f}\n"
                         f"💰 TP1/2/3: {t['tp1']:.4f}/{t['tp2']:.4f}/{t['tp3']:.4f}\n"
                         f"📊 結果：{'✅ 盈利' if res == 'TP' else '❌ 虧損'}\n"
-                        f"🕯️ PA評分：{t['pa_score']*100:.0f}分"
+                        f"🕯️ PA 評分：{t['pa_score']*100:.0f}分 | 綜合評分：{t['setup_score']*100:.0f}分"
                     )
-                    update_whale_stats(t.get('whale_category', 'Unknown'), res)
-                    pd.DataFrame([{
-                        "instId":           instId,
-                        "result":           res,
-                        "whale_signal":     t['whale_signal'],
-                        "whale_confidence": t['whale_confidence'],
-                        "whale_category":   t.get('whale_category', 'Unknown'),
-                        "pa_score":         t['pa_score'],
-                    }]).to_csv(STATS_FILE, mode='a', header=False, index=False)
+                    
+                    if not PAPER_TRADING:
+                        update_whale_stats(t.get('whale_category', 'Unknown'), res)
+                        pd.DataFrame([{
+                            "instId":           instId,
+                            "result":           res,
+                            "whale_signal":     t['whale_signal'],
+                            "whale_confidence": t['whale_confidence'],
+                            "whale_category":   t.get('whale_category', 'Unknown'),
+                            "pa_score":         t['pa_score'],
+                            "setup_score":      t['setup_score'],
+                        }]).to_csv(STATS_FILE, mode='a', header=False, index=False)
+                    
                     time.sleep(0.2); continue
 
                 updated_trades.append(t)
