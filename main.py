@@ -1627,6 +1627,22 @@ def main():
 
     opt = load_optimization_params()
 
+    # 讀取執行模式：single = GitHub Actions 單次模式；continuous = 本地持續模式
+    run_mode = os.getenv("RUN_MODE", "continuous").lower()
+
+    if run_mode == "single":
+        # ── GitHub Actions 模式：執行一次掃描後直接退出 ──────────────────
+        logging.info("⚡ 單次掃描模式（GitHub Actions）")
+        try:
+            run_one_cycle(opt)
+        except Exception as e:
+            logging.error(f"單次掃描異常：{e}")
+            traceback.print_exc()
+            send_tg(f"⚠️ *Alpha Oracle 單次掃描異常*\n`{str(e)[:200]}`")
+        logging.info("✅ 單次掃描完成，退出")
+        return
+
+    # ── 持續監控模式：本地 / VPS 部署用 ──────────────────────────────────
     # 啟動通知
     send_tg(
         f"🟢 *Alpha Oracle v5.1 已啟動*\n"
