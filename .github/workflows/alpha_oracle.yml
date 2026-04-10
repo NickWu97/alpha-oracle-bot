@@ -1,31 +1,52 @@
-name: Alpha Oracle v6.1
+name: Alpha Oracle Bot
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: '*/5 * * * *'  # 每 5 分鐘執行一次（監控進場）
+    - cron: '*/15 * * * *'   # 每 15 分鐘執行一次（正常掃描）
+    - cron: '0 16 * * *'     # 每天 UTC 16:00 = 台灣時間 00:00（午夜戰績回報）
+  workflow_dispatch:
+    inputs:
+      manual_report:
+        description: '手動觸發戰績回報'
+        required: false
+        default: 'false'
 
 jobs:
-  scan:
+  run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      # 1. 拉取 repo（含最新 CSV state）
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 安裝 Python 依賴
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      
-      - run: pip install requests pandas numpy
-      
-      - uses: actions/cache@v3
-        with:
-          path: pending_signals.json
-          key: ${{ runner.os }}-pending-signals
-      
-      - run: python alpha_oracle_v6.py
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests pandas numpy
+
+      # 3. 執行 bot
+      - name: Run Alpha Oracle
         env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          COINANK_API_KEY: ${{ secrets.COINANK_API_KEY }}
-          MAX_SIGNALS: ${{ vars.MAX_SIGNALS || 5 }}
+          TG_TOKEN:      ${{ secrets.TG_TOKEN }}
+          CHAT_ID:       ${{ secrets.CHAT_ID }}
+          MANUAL_REPORT: ${{ github.event.inputs.manual_report || 'false' }}
+        run: python main.py
+
+      # 4. ⭐ 關鍵：把更新後的 CSV 狀態 commit 回 repo
+      #    這樣下一次執行才能讀到上次的 trade 狀態
+      #    必須在 repo Settings > Actions > General >
+      #    Workflow permissions 選 "Read and write permissions"
+      - name: Save state back to repo
+        run: |
+          git config user.name  "alpha-oracle-bot"
+          git config user.email "bot@alpha-oracle"
+          git add -f active_trades.csv daily_stats.csv midnight.ok 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore: update trade state [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
