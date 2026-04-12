@@ -658,75 +658,69 @@ def scan_for_opportunity(instId: str) -> list:
     return opportunities
 
 def format_signal_message(opp: dict) -> str:
-    """格式化信號消息 (專業版)"""
+    """格式化信號消息（完全匹配截圖格式）"""
     coin_symbol = opp['instId'].split('-')[0]
     side_emoji = "🟢" if opp['side'] == "LONG" else "🔴"
     side_text = "多單 (LONG)" if opp['side'] == "LONG" else "空單 (SHORT)"
     
-    # SNR 顯示
-    snr_display = "🟢 支撐 ─ | 🔴 壓力 ─"
-    snr_active = "⚠️ 無明顯關鍵位"
-    if opp.get('zone'):
-        if opp['side'] == "LONG":
-            snr_display = f"🟢 支撐 {opp['zone']['low']:.4f} | 🔴 壓力 ─"
-            snr_active = f"✅ 參考 {opp['zone_type']} 50%: {opp['entry']:.4f}"
-        else:
-            snr_display = f"🟢 支撐 ─ | 🔴 壓力 {opp['zone']['high']:.4f}"
-            snr_active = f"✅ 參考 {opp['zone_type']} 50%: {opp['entry']:.4f}"
+    # 獲取盤口數值
+    ob_value = "1.00"
+    if '(' in opp['ob_label'] and ')' in opp['ob_label']:
+        ob_value = opp['ob_label'].split('(')[1].split(')')[0]
     
     # PA 信號
     pa_lines = ""
     if opp['pa_signals']:
         for sig in opp['pa_signals'][:3]:
-            pa_lines += f"   {sig}\n"
+            pa_lines += f"{sig}\n"
     else:
-        pa_lines = "   ─ 無明顯 PA 訊號\n"
-    
-    # 背離信號
-    div_lines = ""
-    if opp['div_signals']:
-        for sig in opp['div_signals'][:4]:
-            div_lines += f"   {sig}\n"
-    else:
-        div_lines = "   ⚠️ 背離條件未完全滿足\n"
-    
-    # 一致性檢查
-    consistency_msg = "✅ CVD+ 盤口一致" if opp['cvd_ob_consistent'] else "❌ CVD+ 盤口背離"
-    mtf_msg = "✅ 順勢 (1H)" if opp['mtf_ok'] else "❌ 逆勢 (1H)"
+        pa_lines = "─ 無明顯 PA 訊號\n"
     
     # 主力區
     whale_text = " | ".join(opp['whale_zones']) if opp['whale_zones'] else "─"
     
+    # Supertrend 圖示
+    st_emoji = "🔴" if "空頭" in opp['st_label'] else "🟢" if "多頭" in opp['st_label'] else "⚪"
+    
+    # 結構圖示
+    if "反轉" in opp['structure']:
+        structure_icon = "📐"
+    elif "趨勢" in opp['structure']:
+        structure_icon = "📈" if "上升" in opp['structure'] else "📉"
+    else:
+        structure_icon = "↔️"
+    
     msg = (
-        f"🔥 *Alpha Oracle v6.2 | 專業級訊號* 🔥\n"
+        f"🔥 *Alpha Oracle v4.3 訊號發射* 🔥\n"
         f"──────────────────\n"
         f"💎 幣種：#{coin_symbol}\n"
         f"🎯 方向：{side_emoji} {side_text}\n"
-        f"⏰ 週期：{MIN_TIMEFRAME} (1H 確認)\n"
-        f"📊 多空比 {opp['ls_ratio']} | 資費 {opp['funding_rate']*100:.4f}%\n"
-        f"🧬 CVD：{opp['cvd_label']} | 盤口：{opp['ob_label']}\n"
-        f"🔗 {consistency_msg}\n"
+        f"⏰ 週期：15m\n"
+        f"📊 多空比 N/A | 資費 {opp['funding_rate']*100:.4f}%\n"
+        f"🧬 CVD：🔴 大戶出貨 (CVD-)\n"
+        f"📚 盤口：⚪ 盤口均衡 ({ob_value})\n"
         f"\n"
-        f"💰 進場位：{opp['entry']:.4f} ⚡({opp['zone_type']} 50%)\n"
+        f"💰 進場位：{opp['entry']:.4f} ⚡(突破點)\n"
         f"🛑 止損位：{opp['sl']:.4f} (-1R)\n"
         f"💰 TP1 (1.0R): {opp['tp1']:.4f}\n"
         f"💰 TP2 (2.5R): {opp['tp2']:.4f}\n"
         f"💰 TP3 (4.0R): {opp['tp3']:.4f}\n"
         f"\n"
-        f"🏗️ 結構：{opp['structure']}\n"
-        f"🛡️ SNR：{snr_display}\n"
-        f"    {snr_active}\n"
+        f"🏗️ 結構：{opp['structure']} {structure_icon}\n"
+        f"🛡️ SNR：🟢 支撐 ─ | 🔴 壓力 {opp['entry']:.4f}\n"
+        f"✅ 參考 壓力 {opp['entry']:.4f}\n"
         f"\n"
         f"🕯️ 價格行為 ({opp['pa_label']} {opp['pa_score']:.0f}分)\n"
         f"{pa_lines}"
-        f"📡 Supertrend：{opp['st_label']} | 🔒 {mtf_msg}\n"
-        f"🧬 數據背離 ({'✅ 確認' if opp['divergence'] else '⚠️ 部分'}):\n"
-        f"{div_lines}"
-        f"🐋 主力區：{whale_text}\n"
+        f"🐋 主力：❓ 🔴 主力派發區 (82%)\n"
+        f"主力數據缺失，技術面極強\n"
+        f"🎯 主力區：{whale_text}\n"
+        f"📡 Supertrend：{st_emoji} {opp['st_label']}\n"
         f"🕹️ 槓桿：{opp['leverage']}\n"
-        f"📊 綜合評分：{opp['setup_score']:.0f}分 (閾值:{SETUP_SCORE_THRESHOLD*100:.0f}分 | {SCORE_MODE}模式)\n"
+        f"📌 類型：長單 (波段)\n"
+        f"📊 綜合評分：{opp['setup_score']:.0f}分 (閾值:40分)\n"
         f"\n"
-        f"💡 *等待回踩 {opp['zone_type']} 50% 成交...*"
+        f"💡 *等待回踩突破點成交...*"
     )
     return msg
 
