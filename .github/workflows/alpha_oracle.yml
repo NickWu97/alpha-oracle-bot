@@ -2,9 +2,12 @@
 name: 🤖 Alpha Oracle Bot
 
 on:
+  # 🔄 定時執行
   schedule:
-    - cron: '*/15 * * * *'        # 每 15 分鐘執行一次
+    - cron: '*/15 * * * *'        # 每 15 分鐘執行一次（正常掃描 + 進場監控）
     - cron: '0 16 * * *'          # 每天 UTC 16:00 = 台灣時間 00:00（午夜戰績回報）
+  
+  # 🎮 手動觸發
   workflow_dispatch:
     inputs:
       manual_report:
@@ -27,30 +30,36 @@ on:
         default: '5'
         type: string
 
+# 🔐 權限設定 (必須開啟 Read and write permissions)
 permissions:
-  contents: write
-  actions: read
+  contents: write    # 用於 commit 狀態文件
+  actions: read      # 用於讀取工作流狀態
 
+# ⚙️ 全局設定
 env:
   PYTHON_VERSION: '3.11'
   LOG_LEVEL: INFO
 
 jobs:
+  # ─────────────────────────────────────────────
+  # 🎯 主任務：執行 Alpha Oracle Bot
+  # ─────────────────────────────────────────────
   run-alpha-oracle:
     name: 🤖 Run Alpha Oracle v6.2
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 10  # ⏱️ 超時保護：10 分鐘
     
+    # 🔄 避免並發執行導致狀態衝突
     concurrency:
       group: alpha-oracle-${{ github.ref }}
       cancel-in-progress: false
     
     steps:
-      # 1️⃣ 拉取程式碼
+      # 1️⃣ 拉取程式碼 (含最新狀態文件)
       - name: 📦 Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 1  # 只拉取最新 commit，加速
       
       # 2️⃣ 設定 Python 環境（✅ 已修正：移除 cache 配置）
       - name: 🐍 Set up Python ${{ env.PYTHON_VERSION }}
@@ -81,33 +90,54 @@ jobs:
       # 5️⃣ 執行 Alpha Oracle Bot
       - name: 🚀 Run Alpha Oracle v6.2
         env:
+          # 🔐 敏感資訊 (從 Secrets 讀取)
           TG_TOKEN:           ${{ secrets.TG_TOKEN }}
           CHAT_ID:            ${{ secrets.CHAT_ID }}
           COINANK_API_KEY:    ${{ secrets.COINANK_API_KEY }}
+          GLASSNODE_API_KEY:  ${{ secrets.GLASSNODE_API_KEY }}
+          CRYPTOQUANT_API_KEY: ${{ secrets.CRYPTOQUANT_API_KEY }}
+          
+          # ⚙️ 運行參數
           SCORE_MODE:         ${{ env.SCORE_MODE }}
           MAX_SIGNALS:        ${{ env.MAX_SIGNALS }}
           MANUAL_REPORT:      ${{ env.MANUAL_REPORT }}
           LOG_LEVEL:          ${{ env.LOG_LEVEL }}
+          
+          # 🌐 時區設定
           TZ: Asia/Taipei
         run: |
           echo "🎯 Starting Alpha Oracle v6.2 scan..."
           echo "⏰ Start Time: $(date '+%Y-%m-%d %H:%M:%S %Z')"
+          
+          # 執行主程式
           python main.py
+          
           EXIT_CODE=$?
           echo "⏰ End Time: $(date '+%Y-%m-%d %H:%M:%S %Z')"
           echo "🏁 Exit Code: $EXIT_CODE"
           exit $EXIT_CODE
       
-      # 6️⃣ 保存狀態文件回 Repo
+      # 6️⃣ 📁 保存狀態文件回 Repo (關鍵步驟！)
       - name: 💾 Save State to Repository
-        if: always()
+        if: always()  # 無論成功失敗都執行
         run: |
           echo "💾 Saving state files..."
+          
+          # 配置 Git
           git config --global user.name "alpha-oracle-bot"
           git config --global user.email "bot@alpha-oracle.local"
           
-          STATE_FILES=("active_trades.csv" "daily_stats.csv" "pending_signals.json" "whale_optimization.json" "midnight.ok")
+          # 準備要保存的文件
+          STATE_FILES=(
+            "active_trades.csv"
+            "daily_stats.csv" 
+            "pending_signals.json"
+            "whale_optimization.json"
+            "midnight.ok"
+            "last_heartbeat.txt"
+          )
           
+          # 添加文件 (忽略不存在的)
           for file in "${STATE_FILES[@]}"; do
             if [ -f "$file" ]; then
               git add -f "$file"
@@ -115,43 +145,54 @@ jobs:
             fi
           done
           
+          # 如果有變更則 commit
           if ! git diff --staged --quiet; then
             TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
-            git commit -m "chore: update trade state [skip ci] - $TIMESTAMP"
+            COMMIT_MSG="chore: update trade state [skip ci] - $TIMESTAMP"
+            
+            git commit -m "$COMMIT_MSG"
+            echo "  ✓ Committed: $COMMIT_MSG"
+            
+            # 推送回 repo (使用 GITHUB_TOKEN)
             git push origin ${{ github.ref }}
             echo "  ✓ Pushed state to repository"
           else
             echo "  ℹ️  No state changes to save"
           fi
       
-      # 7️⃣ 上傳日誌（失敗時）
+      # 7️⃣ 📤 上傳日誌 (用於除錯)
       - name: 📤 Upload Logs (if failed)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: alpha-oracle-logs-${{ github.run_id }}
           path: |
-            *.log
+            alpha_oracle_v6.log
             *.csv
             *.json
           retention-days: 7
+          compression-level: 6
       
-      # 8️⃣ 執行摘要
+      # 8️⃣ 📊 執行摘要 (可選)
       - name: 📋 Execution Summary
         if: always()
         run: |
           echo "📊 === Alpha Oracle Execution Summary ==="
+          echo "• Workflow: ${{ github.workflow }}"
           echo "• Run ID: ${{ github.run_id }}"
           echo "• Trigger: ${{ github.event_name }}"
           echo "• Score Mode: ${{ env.SCORE_MODE }}"
           echo "• Max Signals: ${{ env.MAX_SIGNALS }}"
+          
+          # 顯示狀態文件資訊
           echo ""
           echo "📁 State Files:"
           for file in active_trades.csv daily_stats.csv pending_signals.json; do
             if [ -f "$file" ]; then
-              SIZE=$(stat -c%s "$file" 2>/dev/null || echo "N/A")
+              SIZE=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo "N/A")
               echo "  • $file ($SIZE bytes)"
             fi
           done
+          
           echo ""
           echo "✅ Alpha Oracle workflow completed"
