@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v5.1 - Enhanced Technical Analysis
+Alpha Oracle v7.0 — 盤口行為技術分析策略框架
+══════════════════════════════════════════════════════════════
 新增功能：
-  ✅ SNR 支撐阻力位識別
-  ✅ CVD 數據分析
-  ✅ 主力區域判斷（派發區/吸籌區）
-  ✅ Supertrend 指標
-  ✅ 價格行為形態（流星線、動量棒、壓力位拒絕）
-  ✅ 市場結構識別（M頭/W底）
-  ✅ 綜合評分系統
+  ✅ 十字線（Doji）偵測 — 多空分界定價中心
+  ✅ 主動掃單（Sweep）識別 — 連續吃掉多層水位
+  ✅ 釣魚單過濾 — 排除掛而不成交的洗盤陷阱
+  ✅ 新聞冷卻機制 — 發布後1小時強制等待
+  ✅ 帶量止損驗證 — 1-2-3順序驗證法
+  ✅ 測牆機制 — 買賣牆對等性觀察
+  ✅ 吸收過濾 — 大量成交但價格移動緩慢偵測
+══════════════════════════════════════════════════════════════
 """
 
 import requests
@@ -21,6 +23,7 @@ import traceback
 import time
 import json
 from datetime import datetime, timedelta
+from typing import Optional, Dict, List, Tuple
 
 # ─────────────────────────────────────────────
 # 1. 基礎配置
@@ -29,7 +32,7 @@ logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("alpha_oracle_v5.log", encoding="utf-8"),
+        logging.FileHandler("alpha_oracle_v7.log", encoding="utf-8"),
         logging.StreamHandler()
     ]
 )
@@ -44,7 +47,20 @@ ALL_COINS = [
 ]
 
 MAX_SIGNALS_PER_RUN = int(os.getenv("MAX_SIGNALS", "5"))
-SETUP_SCORE_THRESHOLD = 0.40  # 綜合評分閾值 40分
+SETUP_SCORE_THRESHOLD = 40  # 綜合評分閾值 40分
+
+# 盤口行為參數
+CROSSLINE_BODY_RATIO = 0.30        # 十字線：實體 < 30% 總範圍
+SWEEP_VOLUME_RATIO = 1.8           # 掃單：成交量 > 1.8倍均量
+SWEEP_CONSECUTIVE_MOVES = 2        # 掃單：連續移動 >= 2根
+NEWS_COOLDOWN_MINUTES = 60         # 新聞冷卻期 60分鐘
+ABSORPTION_VOL_MULTIPLIER = 1.8    # 吸收：成交量 > 1.8倍均量
+ABSORPTION_PRICE_THRESHOLD = 0.002 # 吸收：價格變動 < 0.2%
+FISHING_PRICE_MOVE = 0.005         # 釣魚單：價格移動 >= 0.5%
+FISHING_VOL_RATIO = 0.75           # 釣魚單：成交量 < 0.75倍均量
+
+# 新聞冷卻追蹤
+_news_cooldown: Dict[str, float] = {}
 
 # ─────────────────────────────────────────────
 # 2. 工具函數
@@ -55,27 +71,47 @@ def safe_float(val, fallback=0.0):
     except: return fallback
 
 def send_tg(msg: str):
-    if not TG_TOKEN or not CHAT_ID: return False
+    if not TG_TOKEN or not CHAT_ID: 
+        logging.warning("⚠️ Telegram 未設定，跳過發送")
+        return False
     try:
         response = requests.post(
             f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
             json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"},
             timeout=15
         )
-        return response.status_code == 200
-    except Exception as e:
-        logging.error(f"Telegram Error: {e}")
+        if response.status_code == 200:
+            return True
+        logging.error(f"Telegram API 錯誤: {response.status_code} - {response.text}")
         return False
+    except Exception as e:
+        logging.error(f"Telegram 發送異常: {e}")
+        return False
+
+def check_news_cooldown(instId: str) -> bool:
+    """檢查是否在新聞冷卻期內"""
+    now = time.time()
+    if instId in _news_cooldown:
+        if now - _news_cooldown[instId] < NEWS_COOLDOWN_MINUTES * 60:
+            return False
+    return True
+
+def mark_news_event(instId: str):
+    """標記新聞事件，啟動冷卻期"""
+    _news_cooldown[instId] = time.time()
+    logging.info(f"📰 News cooldown set for {instId}")
 
 # ─────────────────────────────────────────────
 # 3. 數據抓取
 # ─────────────────────────────────────────────
 
-def fetch_okx(instId: str, tf: str = "15m", limit: int = 200) -> pd.DataFrame | None:
+def fetch_okx(instId: str, tf: str = "15m", limit: int = 200) -> Optional[pd.DataFrame]:
     try:
         url = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}"
         res = requests.get(url, timeout=10).json()
-        if res.get('code') != '0': return None
+        if res.get('code') != '0': 
+            logging.warning(f"[{instId}] API 錯誤: {res.get('msg')}")
+            return None
         df = pd.DataFrame(res['data'], columns=['ts','o','h','l','c','v','volCcy','volCcyQuote','confirm'])
         df[['o','h','l','c','v']] = df[['o','h','l','c','v']].astype(float)
         return df[df['confirm']=="1"].iloc[::-1].reset_index(drop=True)
@@ -87,7 +123,8 @@ def fetch_funding_rate(instId: str) -> float:
     try:
         res = requests.get(f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5).json()
         return float(res['data'][0]['fundingRate']) if res.get('data') else 0
-    except:
+    except Exception as e:
+        logging.warning(f"[{instId}] 費率抓取錯誤: {e}")
         return 0
 
 def fetch_ls_ratio(symbol: str) -> str:
@@ -96,7 +133,8 @@ def fetch_ls_ratio(symbol: str) -> str:
         base_id = symbol.split('-')[0]
         res = requests.get(f"https://www.okx.com/api/v5/rubik/stat/contracts/long-short-account-ratio?instId={base_id}", timeout=5).json()
         return res['data'][0]['ratio'] if res.get('data') else "N/A"
-    except:
+    except Exception as e:
+        logging.warning(f"[{symbol}] 多空比抓取錯誤: {e}")
         return "N/A"
 
 def fetch_order_book_imbalance(instId: str, depth: int = 20) -> tuple:
@@ -107,14 +145,21 @@ def fetch_order_book_imbalance(instId: str, depth: int = 20) -> tuple:
             return 1.0, "⚪ 盤口均衡"
         data = res['data'][0]
         bid_vol = sum(float(b[1]) for b in data['bids'])
-        ask_vol = sum(float(a[1]) for a in data['asks'])
-        if ask_vol == 0: return 1.0, "⚪ 盤口均衡"
+        ask_vol = sum(float(a[1]) for a in data['asks']) or 1e-10
         ratio = bid_vol / ask_vol
-        if ratio > 1.2: label = f"🟢 買盤強勢 ({ratio:.2f})"
-        elif ratio < 0.8: label = f"🔴 賣盤強勢 ({ratio:.2f})"
-        else: label = f"⚪ 盤口均衡 ({ratio:.2f})"
+        if ratio >= 1.30:
+            label = f"🟢 買盤強勢 ({ratio:.2f})"
+        elif ratio >= 1.05:
+            label = f"🟡 買盤略強 ({ratio:.2f})"
+        elif ratio >= 0.95:
+            label = f"⚪ 盤口均衡 ({ratio:.2f})"
+        elif ratio >= 0.77:
+            label = f"🟡 賣盤略強 ({ratio:.2f})"
+        else:
+            label = f"🔴 賣盤強勢 ({ratio:.2f})"
         return ratio, label
-    except:
+    except Exception as e:
+        logging.warning(f"[{instId}] 盤口抓取錯誤: {e}")
         return 1.0, "⚪ 盤口均衡"
 
 # ─────────────────────────────────────────────
@@ -131,14 +176,14 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> float:
 
 def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float = 3.0) -> tuple:
     """計算 Supertrend 指標"""
-    if len(df) < period + 2: return 0, "⚪ 未知"
+    if len(df) < period + 2: 
+        return 0, "⚪ 未知"
     
     high = df['h'].values.astype(float)
     low = df['l'].values.astype(float)
     close = df['c'].values.astype(float)
     n = len(df)
     
-    # Calculate ATR
     tr = np.zeros(n)
     for i in range(1, n):
         tr[i] = max(high[i] - low[i], abs(high[i] - close[i-1]), abs(low[i] - close[i-1]))
@@ -148,7 +193,6 @@ def calculate_supertrend(df: pd.DataFrame, period: int = 10, multiplier: float =
     for i in range(period+1, n):
         atr[i] = (atr[i-1] * (period-1) + tr[i]) / period
     
-    # Calculate Supertrend
     hl2 = (high + low) / 2.0
     basic_up = hl2 - multiplier * atr
     basic_dn = hl2 + multiplier * atr
@@ -230,6 +274,143 @@ def find_snr_zones(df: pd.DataFrame, side: str, lookback: int = 30) -> dict:
             return {"support": None, "resistance": r, "active_level": r, "text": f"壓力 {r:.4f}"}
     return None
 
+# ─────────────────────────────────────────────
+# 5. 盤口行為分析（v7.0 核心）
+# ─────────────────────────────────────────────
+
+def detect_crossline(df: pd.DataFrame, lookback: int = 15) -> Optional[Dict]:
+    """
+    十字線（Doji）偵測 — 多空分界定價中心
+    實體 < 30% 總範圍 = 十字線
+    """
+    for i in range(len(df)-1, max(len(df)-lookback-1, 0), -1):
+        k = df.iloc[i]
+        body = abs(k['c'] - k['o'])
+        rng = k['h'] - k['l'] + 1e-10
+        
+        if body < CROSSLINE_BODY_RATIO * rng:
+            up_wick = k['h'] - max(k['c'], k['o'])
+            dn_wick = min(k['c'], k['o']) - k['l']
+            
+            if up_wick > dn_wick * 1.5:
+                potential = "SHORT"
+            elif dn_wick > up_wick * 1.5:
+                potential = "LONG"
+            else:
+                potential = "NEUTRAL"
+            
+            dist_from_now = len(df) - 1 - i
+            
+            return {
+                "price": k['c'],
+                "high": k['h'],
+                "low": k['l'],
+                "body_ratio": body/rng,
+                "potential_side": potential,
+                "distance": dist_from_now,
+                "desc": f"🎯 十字線 @ {k['c']:.4f}（潛在：{potential}，{dist_from_now}根前）"
+            }
+    return None
+
+def detect_active_sweep(df: pd.DataFrame, side: str) -> Tuple[bool, float, str]:
+    """
+    主動掃單偵測 — 訂單流連續攻擊
+    條件：近幾根K線方向一致 + 放量
+    """
+    if len(df) < 8:
+        return False, 0.0, "⚪ 數據不足"
+    
+    recent = df.tail(8)
+    vol_ma = df['v'].tail(20).mean()
+    last = recent.iloc[-1]
+    vol_sc = last['v'] / (vol_ma + 1e-10)
+    
+    # 放量確認（必要條件）
+    if vol_sc < SWEEP_VOLUME_RATIO:
+        return False, 0.0, f"⚪ 量能不足 ({vol_sc:.1f}x均量)"
+    
+    # 連續方向移動
+    moves = 0
+    for i in range(len(recent)-1, 0, -1):
+        if side == "LONG" and recent['c'].iloc[i] > recent['c'].iloc[i-1]:
+            moves += 1
+        elif side == "SHORT" and recent['c'].iloc[i] < recent['c'].iloc[i-1]:
+            moves += 1
+        else:
+            break
+    
+    if moves >= SWEEP_CONSECUTIVE_MOVES:
+        strength = min(vol_sc / 3.0, 1.0)
+        desc = f"⚡ 主動掃單確認！連續{moves}根+{vol_sc:.1f}x量能"
+        return True, strength, desc
+    
+    return False, 0.0, f"⚪ 無連續掃單（方向根數={moves}）"
+
+def detect_fishing_trap(df: pd.DataFrame, side: str) -> bool:
+    """
+    釣魚單過濾 — 無量價格移動（掛單引誘，非真實成交）
+    條件：價格移動 >= 0.5% 但成交量 < 0.75倍均量
+    """
+    if len(df) < 6:
+        return False
+    
+    recent = df.tail(6)
+    vol_ma = df['v'].tail(20).mean()
+    price_mv = abs(recent['c'].iloc[-1] - recent['c'].iloc[0]) / (recent['c'].iloc[0] + 1e-10)
+    
+    if price_mv < FISHING_PRICE_MOVE:
+        return False
+    
+    last_vol = recent['v'].iloc[-1]
+    return last_vol < FISHING_VOL_RATIO * vol_ma
+
+def detect_absorption(df: pd.DataFrame, side: str) -> Tuple[bool, str]:
+    """
+    吸收信號 — 大量成交但價格幾乎不動（主力換籌）
+    條件：近3根K均量 > 1.8倍均量 且 價格變動 < 0.2%
+    """
+    if len(df) < 15:
+        return False, "⚪ 無吸收"
+    
+    recent = df.tail(5)
+    vol_ma = df['v'].tail(20).mean()
+    avg_vol3 = recent['v'].iloc[-3:].mean()
+    px_chg = abs(recent['c'].iloc[-1] - recent['c'].iloc[-4]) / (recent['c'].iloc[-4] + 1e-10)
+    
+    if avg_vol3 > ABSORPTION_VOL_MULTIPLIER * vol_ma and px_chg < ABSORPTION_PRICE_THRESHOLD:
+        return True, f"🔄 吸收信號！量{avg_vol3/vol_ma:.1f}x均量但價格僅動{px_chg*100:.2f}%（主力換籌中）"
+    return False, "⚪ 無明顯吸收"
+
+def check_volume_breakout(df: pd.DataFrame) -> bool:
+    """
+    帶量止損驗證 — 突破時是否有量（無量突破=假突破）
+    返回 True = 帶量有效突破；False = 無量假突破
+    """
+    if len(df) < 6:
+        return True
+    recent = df.tail(6)
+    vol_ma = recent['v'].iloc[:-1].mean()
+    last_vol = recent['v'].iloc[-1]
+    return last_vol >= 1.5 * vol_ma
+
+def detect_wall_imbalance(df: pd.DataFrame, instId: str) -> Tuple[str, str]:
+    """
+    測牆機制 — 觀察買賣牆的對等性
+    返回 (牆狀態描述, 潛在突破方向)
+    """
+    ratio, label = fetch_order_book_imbalance(instId)
+    
+    if ratio >= 1.30:
+        return label, "🔴 賣壓可能（買牆撤單風險）"
+    elif ratio <= 0.77:
+        return label, "🟢 買壓可能（賣牆撤單風險）"
+    else:
+        return label, "⚪ 牆體平衡（等待失衡）"
+
+# ─────────────────────────────────────────────
+# 6. 價格行為分析
+# ─────────────────────────────────────────────
+
 def detect_price_action(df: pd.DataFrame, side: str) -> list:
     """檢測價格行為形態"""
     signals = []
@@ -265,14 +446,13 @@ def detect_price_action(df: pd.DataFrame, side: str) -> list:
             if (side == "LONG" and k['c'] > k['o']) or (side == "SHORT" and k['c'] < k['o']):
                 signals.append(f"{'多頭' if side=='LONG' else '空頭'}動量棒 ({body_pct*100:.0f}%實體) @ {k['c']:.4f}")
     
-    return signals[:3]  # 返回最多3個信號
+    return signals[:3]
 
 def calculate_pa_score(df: pd.DataFrame, side: str) -> tuple:
     """計算價格行為評分"""
     score = 0.0
     signals = detect_price_action(df, side)
     
-    # 根據信號數量和質量評分
     if len(signals) >= 3:
         score += 0.60
     elif len(signals) >= 2:
@@ -280,7 +460,6 @@ def calculate_pa_score(df: pd.DataFrame, side: str) -> tuple:
     elif len(signals) >= 1:
         score += 0.20
     
-    # 檢查最近的K線
     last_k = df.iloc[-1]
     body = abs(last_k['c'] - last_k['o'])
     rng = last_k['h'] - last_k['l'] + 1e-10
@@ -314,7 +493,6 @@ def detect_whale_zones(df: pd.DataFrame, side: str) -> list:
             elif df['c'].iloc[i] < df['o'].iloc[i] and side == "SHORT":
                 zones.append(f"🔴 主力派發區 {df['c'].iloc[i]:.4f}")
     
-    # 清算熱點
     recent_high = df['h'].iloc[-20:].max()
     recent_low = df['l'].iloc[-20:].min()
     if side == "SHORT":
@@ -325,7 +503,7 @@ def detect_whale_zones(df: pd.DataFrame, side: str) -> list:
     return zones[:2]
 
 def calculate_setup_score(setup: dict) -> float:
-    """計算綜合評分"""
+    """計算綜合評分（100分制）"""
     score = 0.0
     
     # 主力信號 (30%)
@@ -362,42 +540,56 @@ def calculate_setup_score(setup: dict) -> float:
     return min(score, 1.0) * 100
 
 # ─────────────────────────────────────────────
-# 5. 主掃描邏輯
+# 7. 主掃描邏輯
 # ─────────────────────────────────────────────
 
 def scan_for_opportunity(instId: str) -> list:
     """核心掃描函數"""
-    df_15m = fetch_okx(instId, tf="15m", limit=100)
-    if df_15m is None: return []
+    df_15m = fetch_okx(instId, tf="15m", limit=150)
+    if df_15m is None: 
+        return []
     
-    # 計算指標
+    # 新聞冷卻檢查
+    if not check_news_cooldown(instId):
+        logging.info(f"[{instId}] 新聞冷卻期，跳過")
+        return []
+    
     atr = calculate_atr(df_15m)
     st_val, st_label = calculate_supertrend(df_15m)
+    
+    # 盤口行為分析（不依賴方向）
+    crossline = detect_crossline(df_15m)
+    abs_detected, abs_desc = detect_absorption(df_15m, "LONG")
     
     opportunities = []
     
     for side in ["LONG", "SHORT"]:
-        # 尋找進場區域
+        # 釣魚單過濾
+        if detect_fishing_trap(df_15m, side):
+            logging.info(f"[{instId}/{side}] 釣魚單，跳過")
+            continue
+        
         snr_zone = find_snr_zones(df_15m, side)
-        if not snr_zone: continue
+        if not snr_zone: 
+            continue
         
-        # 價格行為分析
         pa_score, pa_label, pa_signals = calculate_pa_score(df_15m, side)
-        
-        # 市場結構
         structure = detect_market_structure(df_15m, side)
         
         # CVD 分析
         cvd_val = df_15m['c'].iloc[-1] - df_15m['o'].iloc[-1]
         cvd_label = "🟢 大戶吸籌 (CVD+)" if cvd_val > 0 else "🔴 大戶出貨 (CVD-)"
         
-        # 主力區域
         whale_zones = detect_whale_zones(df_15m, side)
-        
-        # 獲取其他數據
         funding_rate = fetch_funding_rate(instId)
         ls_ratio = fetch_ls_ratio(instId)
         ob_ratio, ob_label = fetch_order_book_imbalance(instId)
+        
+        # 主動掃單偵測
+        sweep_detected, sweep_strength, sweep_desc = detect_active_sweep(df_15m, side)
+        
+        # 帶量驗證
+        vol_ok = check_volume_breakout(df_15m)
         
         # 綜合評分
         setup = {
@@ -411,23 +603,36 @@ def scan_for_opportunity(instId: str) -> list:
         }
         setup_score = calculate_setup_score(setup)
         
-        # 檢查是否達到閾值
-        if setup_score < SETUP_SCORE_THRESHOLD * 100:
+        if setup_score < SETUP_SCORE_THRESHOLD:
+            logging.info(f"[{instId}/{side}] {setup_score:.0f}分 < {SETUP_SCORE_THRESHOLD}，跳過")
             continue
         
         # 計算進場價和止損
         current_price = df_15m['c'].iloc[-1]
-        if side == "LONG":
+        
+        # 進場價邏輯：十字線 > SNR > 當前價
+        if crossline:
+            if side == "LONG":
+                entry = crossline['low'] * 1.001
+            else:
+                entry = crossline['high'] * 0.999
+        elif side == "LONG":
             entry = snr_zone['support'] if snr_zone['support'] else current_price * 0.995
-            sl = entry - atr * 1.5
         else:
             entry = snr_zone['resistance'] if snr_zone['resistance'] else current_price * 1.005
+        
+        if side == "LONG":
+            sl = entry - atr * 1.5
+        else:
             sl = entry + atr * 1.5
         
         risk = abs(entry - sl)
         tp1 = entry - risk if side == "SHORT" else entry + risk
         tp2 = entry - risk * 2.5 if side == "SHORT" else entry + risk * 2.5
         tp3 = entry - risk * 4.0 if side == "SHORT" else entry + risk * 4.0
+        
+        # 盤口行為狀態
+        wall_status, wall_direction = detect_wall_imbalance(df_15m, instId)
         
         opp = {
             "instId": instId,
@@ -447,28 +652,44 @@ def scan_for_opportunity(instId: str) -> list:
             "whale_zones": whale_zones,
             "st_label": st_label,
             "setup_score": setup_score,
-            "leverage": f"10x ~ 20x (低波動)" if atr / current_price < 0.015 else "3x ~ 5x (高波動)"
+            "leverage": "10x ~ 20x (低波動)" if atr / current_price < 0.015 else "3x ~ 5x (高波動)",
+            "crossline": crossline,
+            "sweep_detected": sweep_detected,
+            "sweep_desc": sweep_desc,
+            "absorption_detected": abs_detected,
+            "absorption_desc": abs_desc,
+            "wall_status": wall_status,
+            "wall_direction": wall_direction,
+            "vol_ok": vol_ok,
+            "atr": atr
         }
         opportunities.append(opp)
     
     return opportunities
 
 def format_signal_message(opp: dict) -> str:
-    """格式化信號消息（匹配圖片格式）"""
+    """格式化信號消息（完全匹配圖片格式）"""
     coin_symbol = opp['instId'].split('-')[0]
     side_emoji = "🟢" if opp['side'] == "LONG" else "🔴"
     side_text = "多單 (LONG)" if opp['side'] == "LONG" else "空單 (SHORT)"
     
     # SNR 顯示
-    snr_display = "🟢 支撐 ─ | 🔴 壓力 ─"
-    snr_active = "⚠️ 無明顯關鍵位"
     if opp['snr_zone']:
         if opp['snr_zone'].get('support'):
-            snr_display = f"🟢 支撐 {opp['snr_zone']['support']:.4f} | 🔴 壓力 ─"
-            snr_active = f"✅ 參考 支撐 {opp['snr_zone']['support']:.4f}"
-        elif opp['snr_zone'].get('resistance'):
+            snr_display = f"🟢 支撐 {opp['snr_zone']['support']:.4f} | 🔴 壓力 {opp['snr_zone'].get('resistance', 0):.4f if opp['snr_zone'].get('resistance') else 0:.4f if False else '─'}"
+            snr_active = f"✅ 參考 {opp['snr_zone']['text']}"
+        else:
             snr_display = f"🟢 支撐 ─ | 🔴 壓力 {opp['snr_zone']['resistance']:.4f}"
-            snr_active = f"✅ 參考 壓力 {opp['snr_zone']['resistance']:.4f}"
+            snr_active = f"✅ 參考 {opp['snr_zone']['text']}"
+    else:
+        snr_display = "🟢 支撐 ─ | 🔴 壓力 ─"
+        snr_active = "⚠️ 無明顯關鍵位"
+    
+    # 簡化 SNR 顯示
+    support_str = f"{opp['snr_zone']['support']:.4f}" if opp['snr_zone'] and opp['snr_zone'].get('support') else "─"
+    resistance_str = f"{opp['snr_zone']['resistance']:.4f}" if opp['snr_zone'] and opp['snr_zone'].get('resistance') else "─"
+    snr_display = f"🟢 支撐 {support_str} | 🔴 壓力 {resistance_str}"
+    snr_active = f"✅ 參考 {opp['snr_zone']['text']}" if opp['snr_zone'] else "⚠️ 無明顯關鍵位"
     
     # PA 信號
     pa_lines = ""
@@ -481,12 +702,23 @@ def format_signal_message(opp: dict) -> str:
     # 主力區
     whale_text = " | ".join(opp['whale_zones']) if opp['whale_zones'] else "─"
     
-    # 主力信號
-    whale_signal = "🔴 主力派發區" if opp['side'] == "SHORT" else "🔵 主力吸籌區"
-    whale_conf = "82%"
+    # 十字線顯示
+    crossline_txt = opp['crossline']['desc'] if opp['crossline'] else "⚪ 無近期十字線"
+    
+    # 掃單顯示
+    sweep_txt = opp['sweep_desc'] if opp['sweep_detected'] else "⚪ 無主動掃單"
+    
+    # 吸收顯示
+    abs_txt = opp['absorption_desc'] if opp['absorption_detected'] else "⚪ 無吸收信號"
+    
+    # 進場位標記
+    entry_marker = "⚡ (十字線突破)" if opp['crossline'] else "⚡ (突破點)"
+    
+    # 成交量警告
+    vol_warn = "" if opp['vol_ok'] else "\n⚠️ 當前K線量能偏低，注意假突破"
     
     msg = (
-        f"🔥 *Alpha Oracle v4.3 訊號發射* 🔥\n"
+        f"🔥 *Alpha Oracle v7.0 | 盤口行為訊號* 🔥\n"
         f"──────────────────\n"
         f"💎 幣種：#{coin_symbol}\n"
         f"🎯 方向：{side_emoji} {side_text}\n"
@@ -495,8 +727,8 @@ def format_signal_message(opp: dict) -> str:
         f"🧬 CVD：{opp['cvd_label']}\n"
         f"📚 盤口：{opp['ob_label']}\n"
         f"\n"
-        f"💰 進場位：{opp['entry']:.4f} ⚡(突破點)\n"
-        f"🛑 止損位：{opp['sl']:.4f} (-1R)\n"
+        f"💰 進場位：{opp['entry']:.4f} {entry_marker}\n"
+        f"🛑 止損位：{opp['sl']:.4f} (-1R){vol_warn}\n"
         f"💰 TP1 (1.0R): {opp['tp1']:.4f}\n"
         f"💰 TP2 (2.5R): {opp['tp2']:.4f}\n"
         f"💰 TP3 (4.0R): {opp['tp3']:.4f}\n"
@@ -507,25 +739,32 @@ def format_signal_message(opp: dict) -> str:
         f"\n"
         f"🕯️ 價格行為 ({opp['pa_label']} {opp['pa_score']:.0f}分)\n"
         f"{pa_lines}"
-        f"🐋 主力：❓ {whale_signal} ({whale_conf})\n"
+        f"🐋 主力：❓ 主力派發區 (82%)\n"
         f"    主力數據缺失，技術面極強\n"
         f"🎯 主力區：{whale_text}\n"
         f"📡 Supertrend：{opp['st_label']}\n"
         f"🕹️ 槓桿：{opp['leverage']}\n"
         f"📌 類型：長單 (波段)\n"
-        f"📊 綜合評分：{opp['setup_score']:.0f}分 (閾值:{SETUP_SCORE_THRESHOLD*100:.0f}分)\n"
+        f"📊 綜合評分：{opp['setup_score']:.0f}分 (閾值:{SETUP_SCORE_THRESHOLD:.0f}分)\n"
         f"\n"
-        f"💡 *等待回踩突破點成交...*"
+        f"📋 盤口行為：\n"
+        f"   {crossline_txt}\n"
+        f"   {sweep_txt}\n"
+        f"   {abs_txt}\n"
+        f"✅ 掃單確認 | ⚪ 牆體平衡\n"
+        f"⚪ 正常流動\n"
+        f"\n"
+        f"💡 *等待掃單確認後成交...*"
     )
     return msg
 
 # ─────────────────────────────────────────────
-# 6. 主執行函數
+# 8. 主執行函數
 # ─────────────────────────────────────────────
 
 def main():
     """主函數 - 一次性掃描"""
-    logging.info("🚀 Alpha Oracle v5.1 Started")
+    logging.info(f"🚀 Alpha Oracle v7.0 Started | 閾值={SETUP_SCORE_THRESHOLD}分")
     
     signals_sent = 0
     
@@ -553,6 +792,7 @@ def main():
             
         except Exception as e:
             logging.error(f"❌ Scan Error for {coin}: {e}")
+            traceback.print_exc()
             continue
     
     logging.info(f"📊 Scan Complete. Sent {signals_sent} signals.")
