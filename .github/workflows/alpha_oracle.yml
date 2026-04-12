@@ -2,12 +2,9 @@
 name: 🤖 Alpha Oracle Bot
 
 on:
-  # 🔄 定時執行
   schedule:
-    - cron: '*/15 * * * *'        # 每 15 分鐘執行一次（正常掃描 + 進場監控）
+    - cron: '*/15 * * * *'        # 每 15 分鐘執行一次
     - cron: '0 16 * * *'          # 每天 UTC 16:00 = 台灣時間 00:00（午夜戰績回報）
-  
-  # 🎮 手動觸發
   workflow_dispatch:
     inputs:
       manual_report:
@@ -30,52 +27,44 @@ on:
         default: '5'
         type: string
 
-# 🔐 權限設定 (必須開啟 Read and write permissions)
 permissions:
-  contents: write    # 用於 commit 狀態文件
-  actions: read      # 用於讀取工作流狀態
+  contents: write
+  actions: read
 
-# ⚙️ 全局設定
 env:
   PYTHON_VERSION: '3.11'
-  PIP_CACHE_DIR: ~/.cache/pip
   LOG_LEVEL: INFO
 
 jobs:
-  # ─────────────────────────────────────────────
-  # 🎯 主任務：執行 Alpha Oracle Bot
-  # ─────────────────────────────────────────────
   run-alpha-oracle:
     name: 🤖 Run Alpha Oracle v6.2
     runs-on: ubuntu-latest
-    timeout-minutes: 10  # ⏱️ 超時保護：10 分鐘
+    timeout-minutes: 10
     
-    # 🔄 避免並發執行導致狀態衝突
     concurrency:
       group: alpha-oracle-${{ github.ref }}
       cancel-in-progress: false
     
     steps:
-      # 1️⃣ 拉取程式碼 (含最新狀態文件)
+      # 1️⃣ 拉取程式碼
       - name: 📦 Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1  # 只拉取最新 commit，加速
+          fetch-depth: 1
       
-      # 2️⃣ 設定 Python 環境
+      # 2️⃣ 設定 Python 環境（✅ 已修正：移除 cache 配置）
       - name: 🐍 Set up Python ${{ env.PYTHON_VERSION }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-          cache-dependency-path: '**/requirements.txt'
+          # ✅ 移除 cache 配置，避免找不到 requirements.txt 的錯誤
       
-      # 3️⃣ 安裝依賴 (使用 cache 加速)
+      # 3️⃣ 安裝依賴（直接安裝，不依賴 cache）
       - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests pandas numpy --quiet
-          echo "✅ Dependencies installed"
+          echo "✅ Dependencies installed: requests, pandas, numpy"
       
       # 4️⃣ 準備環境變數
       - name: ⚙️ Prepare Environment
@@ -84,65 +73,41 @@ jobs:
           echo "SCORE_MODE=${{ github.event.inputs.score_mode || 'balanced' }}" >> $GITHUB_ENV
           echo "MAX_SIGNALS=${{ github.event.inputs.max_signals || 5 }}" >> $GITHUB_ENV
           echo "MANUAL_REPORT=${{ github.event.inputs.manual_report || 'false' }}" >> $GITHUB_ENV
-          
-          # 顯示配置 (隱藏敏感資訊)
           echo "📋 Configuration:"
           echo "  • Score Mode: $SCORE_MODE"
           echo "  • Max Signals: $MAX_SIGNALS"
           echo "  • Manual Report: $MANUAL_REPORT"
-          echo "  • Timezone: Asia/Taipei (UTC+8)"
       
       # 5️⃣ 執行 Alpha Oracle Bot
       - name: 🚀 Run Alpha Oracle v6.2
         env:
-          # 🔐 敏感資訊 (從 Secrets 讀取)
           TG_TOKEN:           ${{ secrets.TG_TOKEN }}
           CHAT_ID:            ${{ secrets.CHAT_ID }}
           COINANK_API_KEY:    ${{ secrets.COINANK_API_KEY }}
-          GLASSNODE_API_KEY:  ${{ secrets.GLASSNODE_API_KEY }}
-          CRYPTOQUANT_API_KEY: ${{ secrets.CRYPTOQUANT_API_KEY }}
-          
-          # ⚙️ 運行參數
           SCORE_MODE:         ${{ env.SCORE_MODE }}
           MAX_SIGNALS:        ${{ env.MAX_SIGNALS }}
           MANUAL_REPORT:      ${{ env.MANUAL_REPORT }}
           LOG_LEVEL:          ${{ env.LOG_LEVEL }}
-          
-          # 🌐 時區設定
           TZ: Asia/Taipei
         run: |
           echo "🎯 Starting Alpha Oracle v6.2 scan..."
           echo "⏰ Start Time: $(date '+%Y-%m-%d %H:%M:%S %Z')"
-          
-          # 執行主程式
           python main.py
-          
           EXIT_CODE=$?
           echo "⏰ End Time: $(date '+%Y-%m-%d %H:%M:%S %Z')"
           echo "🏁 Exit Code: $EXIT_CODE"
           exit $EXIT_CODE
       
-      # 6️⃣ 📁 保存狀態文件回 Repo (關鍵步驟！)
+      # 6️⃣ 保存狀態文件回 Repo
       - name: 💾 Save State to Repository
-        if: always()  # 無論成功失敗都執行
+        if: always()
         run: |
           echo "💾 Saving state files..."
-          
-          # 配置 Git
           git config --global user.name "alpha-oracle-bot"
           git config --global user.email "bot@alpha-oracle.local"
           
-          # 準備要保存的文件
-          STATE_FILES=(
-            "active_trades.csv"
-            "daily_stats.csv" 
-            "pending_signals.json"
-            "whale_optimization.json"
-            "midnight.ok"
-            "last_heartbeat.txt"
-          )
+          STATE_FILES=("active_trades.csv" "daily_stats.csv" "pending_signals.json" "whale_optimization.json" "midnight.ok")
           
-          # 添加文件 (忽略不存在的)
           for file in "${STATE_FILES[@]}"; do
             if [ -f "$file" ]; then
               git add -f "$file"
@@ -150,141 +115,43 @@ jobs:
             fi
           done
           
-          # 如果有變更則 commit
           if ! git diff --staged --quiet; then
             TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
-            COMMIT_MSG="chore: update trade state [skip ci] - $TIMESTAMP"
-            
-            git commit -m "$COMMIT_MSG"
-            echo "  ✓ Committed: $COMMIT_MSG"
-            
-            # 推送回 repo (使用 GITHUB_TOKEN)
+            git commit -m "chore: update trade state [skip ci] - $TIMESTAMP"
             git push origin ${{ github.ref }}
             echo "  ✓ Pushed state to repository"
           else
             echo "  ℹ️  No state changes to save"
           fi
       
-      # 7️⃣ 📤 上傳日誌 (用於除錯)
+      # 7️⃣ 上傳日誌（失敗時）
       - name: 📤 Upload Logs (if failed)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: alpha-oracle-logs-${{ github.run_id }}
           path: |
-            alpha_oracle_v6.log
+            *.log
             *.csv
             *.json
           retention-days: 7
-          compression-level: 6
       
-      # 8️⃣ 📊 執行摘要 (可選)
+      # 8️⃣ 執行摘要
       - name: 📋 Execution Summary
         if: always()
         run: |
           echo "📊 === Alpha Oracle Execution Summary ==="
-          echo "• Workflow: ${{ github.workflow }}"
           echo "• Run ID: ${{ github.run_id }}"
           echo "• Trigger: ${{ github.event_name }}"
           echo "• Score Mode: ${{ env.SCORE_MODE }}"
           echo "• Max Signals: ${{ env.MAX_SIGNALS }}"
-          
-          # 顯示狀態文件資訊
           echo ""
           echo "📁 State Files:"
           for file in active_trades.csv daily_stats.csv pending_signals.json; do
             if [ -f "$file" ]; then
-              SIZE=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null || echo "N/A")
+              SIZE=$(stat -c%s "$file" 2>/dev/null || echo "N/A")
               echo "  • $file ($SIZE bytes)"
             fi
           done
-          
           echo ""
           echo "✅ Alpha Oracle workflow completed"
-
-  # ─────────────────────────────────────────────
-  # 🔔 可選：通知任務 (執行完成後發送摘要)
-  # ─────────────────────────────────────────────
-  # 如果需要執行完成後發送 Telegram 摘要，可取消註釋以下任務
-  # notify-summary:
-  #   name: 🔔 Send Summary Notification
-  #   runs-on: ubuntu-latest
-  #   needs: run-alpha-oracle
-  #   if: always()
-  #   
-  #   steps:
-  #     - name: 📦 Checkout (for log access)
-  #       uses: actions/checkout@v4
-  #     
-  #     - name: 📤 Send Telegram Summary
-  #       env:
-  #         TG_TOKEN: ${{ secrets.TG_TOKEN }}
-  #         CHAT_ID: ${{ secrets.CHAT_ID }}
-  #       run: |
-  #         # 解析日誌並發送摘要
-  #         if [ -f "alpha_oracle_v6.log" ]; then
-  #           SIGNALS_SENT=$(grep -c "Signal.*sent" alpha_oracle_v6.log || echo "0")
-  #           ERRORS=$(grep -c "ERROR" alpha_oracle_v6.log || echo "0")
-  #           
-  #           MSG="📊 *Alpha Oracle 執行摘要*\n"
-  #           MSG+="──────────────────\n"
-  #           MSG+="⏰ 時間: $(date '+%Y-%m-%d %H:%M')\n"
-  #           MSG+="🎯 模式: ${{ env.SCORE_MODE }}\n"
-  #           MSG+="📡 發送訊號: $SIGNALS_SENT 個\n"
-  #           MSG+="❌ 錯誤數量: $ERRORS 個\n"
-  #           MSG+="\n🔗 [查看詳細日誌](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
-  #           
-  #           curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" \
-  #             -H "Content-Type: application/json" \
-  #             -d "{\"chat_id\": \"$CHAT_ID\", \"text\": \"$MSG\", \"parse_mode\": \"Markdown\"}"
-  #         fi
-
-# ─────────────────────────────────────────────
-# 📋 使用說明
-# ─────────────────────────────────────────────
-# 1️⃣ 前置準備：
-#    • 在 Repo Settings → Actions → General → Workflow permissions
-#      選擇 "Read and write permissions" ✅
-#    • 在 Settings → Secrets and variables → Actions → Secrets
-#      添加以下 Secrets:
-#      - TG_TOKEN: 您的 Telegram Bot Token
-#      - CHAT_ID: 您的 Chat ID  
-#      - COINANK_API_KEY: (可選) CoinAnk API Key
-#      - GLASSNODE_API_KEY: (可選) Glassnode API Key
-#      - CRYPTOQUANT_API_KEY: (可選) CryptoQuant API Key
-#
-# 2️⃣ 手動觸發方式：
-#    • 進入 Actions → 🤖 Alpha Oracle Bot → Run workflow
-#    • 可選擇:
-#      - 📊 手動戰績回報: 立即發送午夜報告
-#      - 🎯 評分模式: conservative(70 分)/balanced(55 分)/aggressive(40 分)
-#      - 🔢 最大信號數: 限制本次運行的信號數量
-#
-# 3️⃣ 狀態文件說明：
-#    • active_trades.csv: 追蹤中的持倉狀態
-#    • daily_stats.csv: 每日戰績統計
-#    • pending_signals.json: 待進場信號監控
-#    • whale_optimization.json: 動態閾值優化參數
-#    • midnight.ok: 午夜報告發送標記
-#    • 這些文件會自動 commit 回 repo，確保狀態持續
-#
-# 4️⃣ 除錯技巧：
-#    • 查看失敗日誌：Actions → 失敗的 run → 📤 Upload Logs artifact
-#    • 本地測試：複製環境變數後運行 `python main.py`
-#    • 開啟 DEBUG：添加 env: LOG_LEVEL: DEBUG
-#
-# 5️⃣ 常見問題：
-#    ❓ Q: 狀態文件沒更新？
-#    ✅ A: 檢查 Workflow permissions 是否為 "Read and write"
-#
-#    ❓ Q: Telegram 沒收到通知？
-#    ✅ A: 檢查 TG_TOKEN/CHAT_ID 是否正確，Bot 是否已加入群組
-#
-#    ❓ Q: 訊號太多/太少？
-#    ✅ A: 調整 SCORE_MODE 環境變數或 SETUP_SCORE_THRESHOLD 程式碼
-#
-# 🎯 專業建議：
-# • 預設使用 balanced 模式 (55 分)，勝率/頻率最佳平衡
-# • 大資金建議 conservative 模式 (70 分)，寧缺勿濫
-# • 監控日誌觀察背離條件命中情況，持續優化策略
-# • 定期檢查 whale_optimization.json 的動態閾值調整
