@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v7.1 - MTF Zone Confluence Engine
+Alpha Oracle v7.0 - Order Flow & Tape Reading Engine
 核心改進：
-  ✅ 保留 v7.0 所有盤口行為邏輯（十字線/掃單/釣魚單/新聞冷卻/帶量止損）
-  ✅ 新增：1H/30M/15M 多時區 OB/FVG 共振過濾（≥2 時區價格重疊才觸發）
-  ✅ 動態容忍度：max(ATR×0.5, 價格×0.3%) 允許合理誤差
-  ✅ 進場點自動對齊共振區邊緣，提升結構勝率
+  ✅ 保留 v5.1 所有功能：SNR/CVD/主力區域/Supertrend/PA/市場結構/綜合評分
+  ✅ 新增：十字線多空分界（15m 以下 Doji 作為定價中心）
+  ✅ 新增：掃單偵測引擎（連續吃掉多層水位 = 主動單攻擊）
+  ✅ 新增：釣魚單過濾（無量上漲/下跌 = 洗盤陷阱，不追）
+  ✅ 新增：新聞冷卻機制（新聞後強制等待 1 小時）
+  ✅ 新增：1-2-3 帶量止損驗證（突破需帶量，無量=假突破）
+  ✅ 新增：測牆 + 吸收過濾（識別主力掛牆控盤與吸收換籌）
 """
 
 import requests
@@ -26,7 +29,7 @@ logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("alpha_oracle_v7.1.log", encoding="utf-8"),
+        logging.FileHandler("alpha_oracle_v7.log", encoding="utf-8"),
         logging.StreamHandler()
     ]
 )
@@ -37,24 +40,23 @@ COINANK_API_KEY     = os.getenv("COINANK_API_KEY", "")
 
 ALL_COINS = [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
-    "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP",
-    "BCH-USDT-SWAP", "DOGE-USDT-SWAP", "ADA-USDT-SWAP"
+    "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP"
 ]
 
 MAX_SIGNALS_PER_RUN = int(os.getenv("MAX_SIGNALS", "5"))
 SETUP_SCORE_THRESHOLD = 0.40  # 綜合評分閾值 40 分
 
 # 🆕 盤口行為策略參數
-CROSSLINE_BODY_RATIO = 0.3
-SWEEP_VOLUME_RATIO = 2.0
-SWEEP_PRICE_STEPS = 3
-NEWS_COOLDOWN_MINUTES = 60
-VOLUME_CONFIRMATION_RATIO = 1.5
-WALL_IMBALANCE_THRESHOLD = 0.3
-ABSORPTION_PRICE_CHANGE_THRESHOLD = 0.002
+CROSSLINE_BODY_RATIO = 0.3      # 十字線：實體 < 30% 總範圍
+SWEEP_VOLUME_RATIO = 2.0        # 掃單：成交量 > 2 倍均量
+SWEEP_PRICE_STEPS = 3           # 掃單：連續移動 >= 3 個價格檔位
+NEWS_COOLDOWN_MINUTES = 60      # 新聞冷卻：60 分鐘
+VOLUME_CONFIRMATION_RATIO = 1.5 # 止損驗證：突破量 > 1.5 倍均量
+WALL_IMBALANCE_THRESHOLD = 0.3  # 測牆：買賣牆失衡 > 30% 視為突破信號
+ABSORPTION_PRICE_CHANGE_THRESHOLD = 0.002  # 吸收：價格變動 < 0.2% 但成交量大
 
-# 新聞冷卻追蹤
-last_news_time = {}
+# 新聞冷卻追蹤（簡化版，實際可接新聞 API）
+last_news_time = {}  # {instId: timestamp}
 
 # ─────────────────────────────────────────────
 # 2. 工具函數
@@ -308,32 +310,54 @@ def calculate_setup_score(setup: dict) -> float:
 # ─────────────────────────────────────────────
 
 def detect_crossline(df: pd.DataFrame, lookback: int = 20) -> dict | None:
+    """
+    🎯 十字線（Doji）偵測 - 多空分界線
+    條件：實體 < CROSSLINE_BODY_RATIO * 總範圍
+    返回：十字線位置、價格、方向潛力
+    """
     for i in range(len(df) - 1, max(len(df) - lookback - 1, 0), -1):
         k = df.iloc[i]
         body = abs(k['c'] - k['o'])
         total_range = k['h'] - k['l'] + 1e-10
         if body < CROSSLINE_BODY_RATIO * total_range:
+            # 判斷潛在方向：透過上下影線比例
             upper_wick = k['h'] - max(k['c'], k['o'])
             lower_wick = min(k['c'], k['o']) - k['l']
             if upper_wick > lower_wick * 1.5:
-                potential_side = "SHORT"
+                potential_side = "SHORT"  # 上影長，可能反轉向下
             elif lower_wick > upper_wick * 1.5:
-                potential_side = "LONG"
+                potential_side = "LONG"   # 下影長，可能反轉向上
             else:
                 potential_side = "NEUTRAL"
             return {
-                "index": i, "price": k['c'], "high": k['h'], "low": k['l'],
-                "body": body, "range": total_range, "potential_side": potential_side,
+                "index": i,
+                "price": k['c'],
+                "high": k['h'],
+                "low": k['l'],
+                "body": body,
+                "range": total_range,
+                "potential_side": potential_side,
                 "desc": f"🎯 十字線定價中心 @ {k['c']:.4f} (潛在：{potential_side})"
             }
     return None
 
 def detect_sweep_behavior(df: pd.DataFrame, side: str, lookback: int = 10) -> bool:
+    """
+    ⚡ 掃單行為偵測 - 主動單攻擊
+    條件：
+    1. 成交量 > SWEEP_VOLUME_RATIO 倍均量
+    2. 價格連續移動 >= SWEEP_PRICE_STEPS 個檔位
+    3. 方向與 side 一致
+    """
     if len(df) < lookback + 1: return False
     recent = df.tail(lookback + 1)
     vol_ma = recent['v'].iloc[:-1].mean()
+    
+    # 檢查最後一根是否放量
     if recent['v'].iloc[-1] < SWEEP_VOLUME_RATIO * vol_ma:
         return False
+    
+    # 檢查價格連續移動
     price_changes = recent['c'].diff().abs()
     consecutive_moves = 0
     for i in range(len(price_changes) - 1, 0, -1):
@@ -348,39 +372,69 @@ def detect_sweep_behavior(df: pd.DataFrame, side: str, lookback: int = 10) -> bo
     return False
 
 def detect_fishing_trap(df: pd.DataFrame, side: str) -> bool:
+    """
+    🎣 釣魚單偵測 - 無量上漲/下跌（洗盤陷阱）
+    條件：價格移動明顯但成交量未放大（< 0.8 倍均量）
+    """
     if len(df) < 5: return False
     recent = df.tail(5)
     vol_ma = recent['v'].mean()
+    
+    # 檢查價格移動
     price_move = abs(recent['c'].iloc[-1] - recent['c'].iloc[0]) / recent['c'].iloc[0]
-    if price_move < 0.005: return False
+    if price_move < 0.005:  # 移動 < 0.5% 不算
+        return False
+    
+    # 檢查成交量
     if recent['v'].iloc[-1] < 0.8 * vol_ma:
-        return True
+        return True  # 無量移動 = 釣魚單
     return False
 
 def check_news_cooldown(instId: str) -> bool:
+    """
+    ⏱️ 新聞冷卻檢查 - 新聞後 1 小時內不發訊號
+    簡化版：手動記錄最後新聞時間，實際可接新聞 API
+    """
     now = time.time()
     if instId in last_news_time:
         if now - last_news_time[instId] < NEWS_COOLDOWN_MINUTES * 60:
-            return False
+            return False  # 仍在冷卻期
     return True
 
 def mark_news_event(instId: str):
+    """標記新聞事件時間"""
     last_news_time[instId] = time.time()
     logging.info(f"📰 News event marked for {instId}")
 
 def validate_stop_loss_with_volume(df: pd.DataFrame, sl_price: float, side: str) -> bool:
-    if len(df) < 5: return True
+    """
+    🔍 1-2-3 帶量止損驗證
+    條件：止損位被突破時，該根 K 線成交量 > VOLUME_CONFIRMATION_RATIO 倍前幾根均量
+    """
+    if len(df) < 5: return True  # 數據不足時預設通過
     recent = df.tail(5)
+    
+    # 檢查是否突破止損
     if side == "LONG":
-        if recent['l'].iloc[-1] > sl_price: return True
+        if recent['l'].iloc[-1] > sl_price:  # 未突破
+            return True
         breakout_vol = recent['v'].iloc[-1]
     else:
-        if recent['h'].iloc[-1] < sl_price: return True
+        if recent['h'].iloc[-1] < sl_price:  # 未突破
+            return True
         breakout_vol = recent['v'].iloc[-1]
+    
+    # 計算前幾根均量
     prev_vol_ma = recent['v'].iloc[:-1].mean()
+    
+    # 帶量突破 = 有效止損
     return breakout_vol >= VOLUME_CONFIRMATION_RATIO * prev_vol_ma
 
 def detect_wall_imbalance(instId: str, depth: int = 20) -> tuple[bool, str]:
+    """
+    🧱 測牆機制 - 買賣牆對等性檢查
+    條件：買賣牆失衡 > WALL_IMBALANCE_THRESHOLD 視為潛在突破
+    """
     ratio, label = fetch_order_book_imbalance(instId, depth)
     imbalance = abs(ratio - 1.0)
     if imbalance > WALL_IMBALANCE_THRESHOLD:
@@ -389,193 +443,146 @@ def detect_wall_imbalance(instId: str, depth: int = 20) -> tuple[bool, str]:
     return False, "⚪ 牆體平衡"
 
 def detect_absorption(df: pd.DataFrame, side: str) -> bool:
+    """
+    🔄 吸收過濾 - 大量成交但價格移動緩慢（主力換籌）
+    條件：成交量 > 2 倍均量 且 價格變動 < ABSORPTION_PRICE_CHANGE_THRESHOLD
+    """
     if len(df) < 10: return False
     recent = df.tail(10)
     vol_ma = recent['v'].mean()
     price_change = abs(recent['c'].iloc[-1] - recent['c'].iloc[0]) / recent['c'].iloc[0]
+    
     if recent['v'].iloc[-1] > 2.0 * vol_ma and price_change < ABSORPTION_PRICE_CHANGE_THRESHOLD:
-        return True
+        return True  # 吸收行為
     return False
 
 # ─────────────────────────────────────────────
-# 🆕 多時區共振過濾引擎 (MTF Confluence)
-# ─────────────────────────────────────────────
-
-def check_mtf_zone_confluence(instId: str, side: str, current_price: float, atr_15m: float) -> tuple[bool, dict | None]:
-    """
-    檢查 1H, 30M, 15M 三個時區中，是否有至少兩個時區的 OB/FVG 落在相同價格區間
-    容忍度：max(ATR*0.5, 價格*0.3%)
-    返回：(是否共振, 共振區間資訊)
-    """
-    tfs = ["1H", "30m", "15m"]
-    tf_zones = {}
-    
-    for tf in tfs:
-        df = fetch_okx(instId, tf=tf, limit=150)
-        if df is not None:
-            zones = []
-            # OB 掃描
-            for i in range(len(df)-2, 0, -1):
-                k, kn = df.iloc[i], df.iloc[i+1]
-                if side == "LONG" and k['c'] < k['o'] and kn['c'] > kn['o']:
-                    zones.append({'type': 'OB', 'high': k['o'], 'low': k['l']})
-                if side == "SHORT" and k['c'] > k['o'] and kn['c'] < kn['o']:
-                    zones.append({'type': 'OB', 'high': k['h'], 'low': k['c']})
-            # FVG 掃描
-            for i in range(len(df)-3, max(len(df)-30, 0), -1):
-                k0, k2 = df.iloc[i-1], df.iloc[i+1]
-                if side == "LONG" and k2['l'] > k0['h']:
-                    zones.append({'type': 'FVG', 'high': k2['l'], 'low': k0['h']})
-                if side == "SHORT" and k2['h'] < k0['l']:
-                    zones.append({'type': 'FVG', 'high': k0['l'], 'low': k2['h']})
-            tf_zones[tf] = zones[:2]  # 每個時區只取最近 2 個有效區間
-
-    # 設定價格容忍度 (ATR 的 0.5 倍 或 價格的 0.3%，取較大者)
-    tolerance = max(atr_15m * 0.5, current_price * 0.003)
-    confluence_count = 0
-    best_zone = None
-    best_overlap_score = -1
-
-    # 兩兩比較時區，尋找重疊或鄰近的區間
-    tf_keys = list(tf_zones.keys())
-    for i in range(len(tf_keys)):
-        for j in range(i + 1, len(tf_keys)):
-            tf_a, tf_b = tf_keys[i], tf_keys[j]
-            for z_a in tf_zones.get(tf_a, []):
-                for z_b in tf_zones.get(tf_b, []):
-                    # 計算區間距離（重疊時 distance <= 0）
-                    dist = max(0, z_a['low'] - z_b['high'], z_b['low'] - z_a['high'])
-                    
-                    if dist <= tolerance:
-                        # 計算合併後的有效區間
-                        merged_low = min(z_a['low'], z_b['low'])
-                        merged_high = max(z_a['high'], z_b['high'])
-                        
-                        # 評分：重疊面積越大、涉及時區越多，分數越高
-                        overlap = max(0, min(z_a['high'], z_b['high']) - max(z_a['low'], z_b['low']))
-                        score = overlap + (1.0 if dist == 0 else 0.5)
-                        
-                        if score > best_overlap_score:
-                            best_overlap_score = score
-                            best_zone = {
-                                'high': merged_high, 
-                                'low': merged_low, 
-                                'tfs': [tf_a, tf_b], 
-                                'overlap': overlap,
-                                'desc': f"🔗 {tf_a}+{tf_b} 共振區 @ {merged_low:.4f}-{merged_high:.4f}"
-                            }
-                            confluence_count += 1
-
-    # 要求至少 2 個時區共振
-    if confluence_count >= 1 and best_zone:
-        return True, best_zone
-    return False, None
-
-# ─────────────────────────────────────────────
-# 5. 主掃描邏輯（整合盤口行為 + 多時區共振）
+# 5. 主掃描邏輯（整合盤口行為策略）
 # ─────────────────────────────────────────────
 
 def scan_for_opportunity(instId: str) -> list:
-    """核心掃描函數 - 整合盤口行為策略 + 多時區共振"""
+    """核心掃描函數 - 整合盤口行為策略"""
     df_15m = fetch_okx(instId, tf="15m", limit=100)
     if df_15m is None: return []
     
     # 計算指標
     atr = calculate_atr(df_15m)
     st_val, st_label = calculate_supertrend(df_15m)
-    current_price = df_15m['c'].iloc[-1]
     
-    # 🆕 1. MTF 共振檢查（硬性過濾：不共振直接跳過）
-    mtf_ok, mtf_zone = check_mtf_zone_confluence(instId, "LONG", current_price, atr)
-    if not mtf_ok:
-        mtf_ok, mtf_zone = check_mtf_zone_confluence(instId, "SHORT", current_price, atr)
-    
-    if not mtf_ok:
-        logging.info(f"[{instId}] No MTF confluence found, skipping")
+    # 🆕 盤口行為檢查
+    crossline = detect_crossline(df_15m)
+    if not crossline:
+        # 無十字線 = 市場混亂穩定，不交易
         return []
     
-    # 使用共振區作為核心參考區間
-    zone_ref = mtf_zone
-    side = "LONG" if current_price > zone_ref['high'] else "SHORT"  # 簡化方向判斷，可替換為其他邏輯
+    # 🆕 新聞冷卻檢查
+    if not check_news_cooldown(instId):
+        logging.info(f"[{instId}] In news cooldown period, skipping")
+        return []
     
-    # 🆕 2. 盤口行為檢查
-    crossline = detect_crossline(df_15m)
-    if not crossline: return []
-    if not check_news_cooldown(instId): return []
-    
-    # 🆕 3. 掃單確認（進場必要條件）
-    if not detect_sweep_behavior(df_15m, side): return []
-    
-    # 🆕 4. 釣魚單過濾
-    if detect_fishing_trap(df_15m, side): return []
-    
-    # 🆕 5. 進場價與止損設定（基於共振區邊緣）
-    if side == "LONG":
-        entry = zone_ref['low'] * 0.9995  # 略低於共振區下緣
-        sl = zone_ref['low'] - atr * 1.2
-    else:
-        entry = zone_ref['high'] * 1.0005  # 略高於共振區上緣
-        sl = zone_ref['high'] + atr * 1.2
-        
-    # 🆕 6. 帶量止損驗證
-    if not validate_stop_loss_with_volume(df_15m, sl, side): return []
-    
-    risk = abs(entry - sl)
-    tp1 = entry + risk if side == "LONG" else entry - risk
-    tp2 = entry + risk * 2.5 if side == "LONG" else entry - risk * 2.5
-    tp3 = entry + risk * 4.0 if side == "LONG" else entry - risk * 4.0
-    
-    # 其他分析數據
-    pa_score, pa_label, pa_signals = calculate_pa_score(df_15m, side)
-    structure = detect_market_structure(df_15m, side)
-    cvd_val = df_15m['c'].iloc[-1] - df_15m['o'].iloc[-1]
-    cvd_label = "🟢 大戶吸籌 (CVD+)" if cvd_val > 0 else "🔴 大戶出貨 (CVD-)"
-    whale_zones = detect_whale_zones(df_15m, side)
-    funding_rate = fetch_funding_rate(instId)
-    ls_ratio = fetch_ls_ratio(instId)
-    ob_ratio, ob_label = fetch_order_book_imbalance(instId)
+    # 🆕 測牆 + 吸收檢查
     wall_break, wall_msg = detect_wall_imbalance(instId)
-    absorption = detect_absorption(df_15m, side)
+    absorption = detect_absorption(df_15m, "LONG") or detect_absorption(df_15m, "SHORT")
     
-    # 綜合評分
-    setup = {
-        'side': side, 'pa_score': pa_score, 'st_label': st_label,
-        'cvd_label': cvd_label, 'funding_rate': funding_rate,
-        'whale_signal': "✅ 主力一致" if whale_zones else "❓ 技術面主導",
-        'whale_confidence': 0.85
-    }
-    setup_score = calculate_setup_score(setup)
-    if setup_score < SETUP_SCORE_THRESHOLD * 100: return []
+    opportunities = []
     
-    opp = {
-        "instId": instId, "side": side, "entry": entry, "sl": sl,
-        "tp1": tp1, "tp2": tp2, "tp3": tp3,
-        "structure": structure,
-        "snr_zone": {"support": zone_ref['low'], "resistance": zone_ref['high'], "active_level": current_price, "text": zone_ref['desc']},
-        "pa_score": pa_score, "pa_label": pa_label, "pa_signals": pa_signals,
-        "cvd_label": cvd_label, "ls_ratio": ls_ratio, "funding_rate": funding_rate,
-        "ob_label": ob_label, "whale_zones": whale_zones, "st_label": st_label,
-        "setup_score": setup_score,
-        "leverage": f"10x ~ 20x (低波動)" if atr / current_price < 0.015 else "3x ~ 5x (高波動)",
-        "crossline": crossline, "sweep_confirmed": True, "fishing_trap_filtered": False,
-        "wall_msg": wall_msg, "absorption": absorption, "mtf_zone": zone_ref
-    }
-    return [opp]
+    for side in ["LONG", "SHORT"]:
+        # 🆕 釣魚單過濾
+        if detect_fishing_trap(df_15m, side):
+            logging.info(f"[{instId}] Fishing trap detected for {side}, skipping")
+            continue
+        
+        # 🆕 掃單確認（進場必要條件）
+        if not detect_sweep_behavior(df_15m, side):
+            continue
+        
+        # 尋找進場區域（以十字線為中心）
+        if side == "LONG":
+            entry = crossline['low'] * 0.999  # 略低於十字線低點
+            sl = crossline['low'] - atr * 1.5
+        else:
+            entry = crossline['high'] * 1.001  # 略高於十字線高點
+            sl = crossline['high'] + atr * 1.5
+        
+        # 🆕 帶量止損驗證
+        if not validate_stop_loss_with_volume(df_15m, sl, side):
+            logging.info(f"[{instId}] Stop loss not volume-confirmed for {side}, skipping")
+            continue
+        
+        risk = abs(entry - sl)
+        tp1 = entry + risk if side == "LONG" else entry - risk
+        tp2 = entry + risk * 2.5 if side == "LONG" else entry - risk * 2.5
+        tp3 = entry + risk * 4.0 if side == "LONG" else entry - risk * 4.0
+        
+        # 其他分析數據（保持 v5.1 原有）
+        pa_score, pa_label, pa_signals = calculate_pa_score(df_15m, side)
+        structure = detect_market_structure(df_15m, side)
+        cvd_val = df_15m['c'].iloc[-1] - df_15m['o'].iloc[-1]
+        cvd_label = "🟢 大戶吸籌 (CVD+)" if cvd_val > 0 else "🔴 大戶出貨 (CVD-)"
+        whale_zones = detect_whale_zones(df_15m, side)
+        funding_rate = fetch_funding_rate(instId)
+        ls_ratio = fetch_ls_ratio(instId)
+        ob_ratio, ob_label = fetch_order_book_imbalance(instId)
+        
+        # 綜合評分
+        setup = {
+            'side': side,
+            'pa_score': pa_score,
+            'st_label': st_label,
+            'cvd_label': cvd_label,
+            'funding_rate': funding_rate,
+            'whale_signal': "✅ 主力一致" if len(whale_zones) > 0 else "❓ 技術面主導",
+            'whale_confidence': 0.82
+        }
+        setup_score = calculate_setup_score(setup)
+        
+        if setup_score < SETUP_SCORE_THRESHOLD * 100:
+            continue
+        
+        opp = {
+            "instId": instId,
+            "side": side,
+            "entry": entry,
+            "sl": sl,
+            "tp1": tp1, "tp2": tp2, "tp3": tp3,
+            "structure": structure,
+            "snr_zone": {"support": crossline['low'], "resistance": crossline['high'], "active_level": crossline['price'], "text": f"十字線 {crossline['price']:.4f}"},
+            "pa_score": pa_score,
+            "pa_label": pa_label,
+            "pa_signals": pa_signals,
+            "cvd_label": cvd_label,
+            "ls_ratio": ls_ratio,
+            "funding_rate": funding_rate,
+            "ob_label": ob_label,
+            "whale_zones": whale_zones,
+            "st_label": st_label,
+            "setup_score": setup_score,
+            "leverage": f"10x ~ 20x (低波動)" if atr / df_15m['c'].iloc[-1] < 0.015 else "3x ~ 5x (高波動)",
+            # 🆕 盤口行為標記
+            "crossline": crossline,
+            "sweep_confirmed": True,
+            "fishing_trap_filtered": False,
+            "wall_msg": wall_msg,
+            "absorption": absorption
+        }
+        opportunities.append(opp)
+    
+    return opportunities
 
 # ─────────────────────────────────────────────
-# 🆕 Telegram 通知格式（整合盤口行為 + 多時區共振資訊）
+# 🆕 Telegram 通知格式（整合盤口行為資訊）
 # ─────────────────────────────────────────────
 
 def format_signal_message(opp: dict) -> str:
-    """格式化信號消息（整合盤口行為 + 多時區共振資訊）"""
+    """格式化信號消息（整合盤口行為資訊）"""
     coin_symbol = opp['instId'].split('-')[0]
     side_emoji = "🟢" if opp['side'] == "LONG" else "🔴"
     side_text = "多單 (LONG)" if opp['side'] == "LONG" else "空單 (SHORT)"
     
-    # MTF 共振顯示
-    mtf = opp.get('mtf_zone', {})
-    snr_display = f"🟢 支撐 {mtf.get('low', 0):.4f} | 🔴 壓力 {mtf.get('high', 0):.4f}" if mtf else "🟢 支撐 ─ | 🔴 壓力 ─"
-    snr_active = f"✅ {mtf.get('desc', '無共振區')}" if mtf else "⚠️ 無明顯關鍵位"
+    # SNR 顯示（十字線作為關鍵位）
+    cl = opp.get('crossline', {})
+    snr_display = f"🟢 支撐 {cl.get('low', 0):.4f} | 🔴 壓力 {cl.get('high', 0):.4f}" if cl else "🟢 支撐 ─ | 🔴 壓力 ─"
+    snr_active = f"✅ 參考 十字線 {cl.get('price', 0):.4f}" if cl else "⚠️ 無明顯關鍵位"
     
     # PA 信號
     pa_lines = "".join(f"   {sig}\n" for sig in opp['pa_signals'][:3]) if opp['pa_signals'] else "   ─ 無明顯 PA 訊號\n"
@@ -589,7 +596,7 @@ def format_signal_message(opp: dict) -> str:
     absorption_tag = "🔄 吸收中" if opp.get('absorption') else ""
     
     msg = (
-        f"🔥 *Alpha Oracle v7.1 | MTF 共振訊號* 🔥\n"
+        f"🔥 *Alpha Oracle v7.0 | 盤口行為訊號* 🔥\n"
         f"──────────────────\n"
         f"💎 幣種：#{coin_symbol}\n"
         f"🎯 方向：{side_emoji} {side_text}\n"
@@ -598,14 +605,14 @@ def format_signal_message(opp: dict) -> str:
         f"🧬 CVD：{opp['cvd_label']}\n"
         f"📚 盤口：{opp['ob_label']}\n"
         f"\n"
-        f"💰 進場位：{opp['entry']:.4f} ⚡(共振區邊緣)\n"
+        f"💰 進場位：{opp['entry']:.4f} ⚡(十字線突破)\n"
         f"🛑 止損位：{opp['sl']:.4f} (-1R)\n"
         f"💰 TP1 (1.0R): {opp['tp1']:.4f}\n"
         f"💰 TP2 (2.5R): {opp['tp2']:.4f}\n"
         f"💰 TP3 (4.0R): {opp['tp3']:.4f}\n"
         f"\n"
         f"🏗️ 結構：{opp['structure']}\n"
-        f"🛡️ MTF 共振：{snr_display}\n"
+        f"🛡️ SNR：{snr_display}\n"
         f"    {snr_active}\n"
         f"\n"
         f"🕯️ 價格行為 ({opp['pa_label']} {opp['pa_score']:.0f}分)\n"
@@ -631,8 +638,8 @@ def format_signal_message(opp: dict) -> str:
 # ─────────────────────────────────────────────
 
 def main():
-    """主函數 - 盤口行為策略掃描 + 多時區共振"""
-    logging.info("🚀 Alpha Oracle v7.1 Started - MTF Confluence Mode")
+    """主函數 - 盤口行為策略掃描"""
+    logging.info("🚀 Alpha Oracle v7.0 Started - Order Flow Mode")
     
     signals_sent = 0
     
