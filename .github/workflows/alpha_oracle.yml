@@ -1,52 +1,35 @@
 name: Alpha Oracle Bot
 
 on:
+  # ── 定時自動掃描（每15分鐘一次）──────────────
   schedule:
-    - cron: '*/15 * * * *'   # 每 15 分鐘執行一次（正常掃描）
-    - cron: '0 16 * * *'     # 每天 UTC 16:00 = 台灣時間 00:00（午夜戰績回報）
+    - cron: "0,15,30,45 * * * *"   # 每小時的 0/15/30/45 分執行
+
+  # ── 手動觸發（測試用）────────────────────────
   workflow_dispatch:
-    inputs:
-      manual_report:
-        description: '手動觸發戰績回報'
-        required: false
-        default: 'false'
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 10   # ← 硬性限制：10分鐘內必須結束，防止卡死
 
     steps:
-      # 1. 拉取 repo（含最新 CSV state）
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. 安裝 Python 依賴
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: pip install requests pandas numpy
 
-      # 3. 執行 bot
-      - name: Run Alpha Oracle
+      - name: Run Alpha Oracle (scan only)
         env:
-          TG_TOKEN:      ${{ secrets.TG_TOKEN }}
-          CHAT_ID:       ${{ secrets.CHAT_ID }}
-          MANUAL_REPORT: ${{ github.event.inputs.manual_report || 'false' }}
-        run: python main.py
-
-      # 4. ⭐ 關鍵：把更新後的 CSV 狀態 commit 回 repo
-      #    這樣下一次執行才能讀到上次的 trade 狀態
-      #    必須在 repo Settings > Actions > General >
-      #    Workflow permissions 選 "Read and write permissions"
-      - name: Save state back to repo
-        run: |
-          git config user.name  "alpha-oracle-bot"
-          git config user.email "bot@alpha-oracle"
-          git add -f active_trades.csv daily_stats.csv midnight.ok 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "chore: update trade state [skip ci]"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID:  ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS: "8"
+        # --mode scan = 掃描完立即退出，不進入監控迴圈
+        run: python alpha_oracle_v8.1.py --mode scan
