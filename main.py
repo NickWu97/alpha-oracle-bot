@@ -1248,8 +1248,45 @@ def monitor_loop(tracker: SignalTracker, interval: int = 30, stop_event=None):
 # ─────────────────────────────────────────────────────────
 # 16. 主執行
 # ─────────────────────────────────────────────────────────
+def _check_entry_zone(opp: dict) -> tuple:
+    """
+    掃描完成後立即取得即時價格，判斷是否已進入進場區。
+    適用於 GitHub Actions（無狀態環境），每次掃描就地確認。
+    回傳 (in_zone: bool, live_price: float, status_str: str)
+    """
+    live = fetch_ticker_price(opp["instId"])
+    if live <= 0:
+        return False, 0.0, "⚪ 無法取得即時價"
+    entry = opp["entry"]
+    side  = opp["side"]
+    tol   = ENTRY_TOLERANCE  # ±0.2%
+    in_zone = (
+        (side=="LONG"  and live <= entry * (1 + tol) and live >= entry * (1 - tol * 3)) or
+        (side=="SHORT" and live >= entry * (1 - tol) and live <= entry * (1 + tol * 3))
+    )
+    dist_pct = (live - entry) / entry * 100
+    if in_zone:
+        return True, live, f"✅ 已在進場區！即時價 {live:.4f}（距進場 {dist_pct:+.2f}%）"
+    elif (side=="LONG" and live > entry):
+        return False, live, f"⚠️ 價格高於進場區 {dist_pct:+.2f}%，等待回踩"
+    elif (side=="SHORT" and live < entry):
+        return False, live, f"⚠️ 價格低於進場區 {dist_pct:+.2f}%，等待回升"
+    else:
+        return False, live, f"⏳ 等待接近進場區（距離 {abs(dist_pct):.2f}%）"
+
+
 def run_scan(tracker: SignalTracker) -> int:
-    """執行一次掃描，訊號加入 tracker，返回發送數量"""
+    """
+    執行一次掃描。
+    ── GitHub Actions 模式（--mode scan）──
+      掃描完成後立即比對即時價格：
+      • 若已在進場區 → 額外發「進場提醒」通知
+      • 若止損已被突破 → 警告並跳過
+      • 完成後直接退出，不啟動任何迴圈
+
+    ── 本地 all/loop 模式 ──
+      訊號加入 SignalTracker 持久化追蹤
+    """
     logging.info(f"🚀 Alpha Oracle v8.1 掃描  閾值={SETUP_SCORE_THRESHOLD}分  "
                  f"時框={SCAN_TIMEFRAMES}  上限={MAX_SIGNALS_PER_RUN}")
     sent = 0
@@ -1267,21 +1304,40 @@ def run_scan(tracker: SignalTracker) -> int:
                 for opp in opps:
                     if sent >= MAX_SIGNALS_PER_RUN:
                         break
+                    # 發送主訊號
                     if send_tg(format_signal(opp)):
-                        tracker.add(opp)   # 加入價格監控
                         sent += 1
                         logging.info(f"  📤 #{sent} [{opp['tf']}]{opp['side']} "
                                      f"{opp['score']}分 {opp['grade']}")
+                        # ── 即時進場區判斷（GitHub Actions 友好）────
+                        in_zone, live, zone_msg = _check_entry_zone(opp)
+                        logging.info(f"     即時價格: {zone_msg}")
+                        if in_zone and live > 0:
+                            # 已在進場區 → 補發「立即進場提醒」
+                            time.sleep(0.5)
+                            send_tg(format_alert(
+                                coin      = opp["instId"].split("-")[0],
+                                side      = opp["side"],
+                                alert_type= "ENTRY",
+                                price     = live,
+                                entry     = opp["entry"],
+                                sl        = opp["sl"],
+                                tp1       = opp["tp1"],
+                                tp2       = opp["tp2"],
+                                tp3       = opp["tp3"],
+                                score     = opp["score"],
+                            ))
+                            logging.info(f"     ✅ 進場提醒已發送")
+                        # ── 加入持久化追蹤（本地 monitor 模式用）──
+                        tracker.add(opp)
                     time.sleep(1)
             time.sleep(0.5)
         except Exception as e:
             logging.error(f"❌ {coin}: {e}"); traceback.print_exc()
 
-    logging.info(f"📊 掃描完成，共發送 {sent} 訊號，開始監控追蹤...")
-    # 傳送追蹤摘要
-    summary = tracker.status_summary()
+    logging.info(f"📊 掃描完成，共發送 {sent} 訊號")
     if sent > 0:
-        send_tg(summary)
+        send_tg(tracker.status_summary())
     return sent
 
 
