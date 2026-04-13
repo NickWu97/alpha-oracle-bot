@@ -1,36 +1,122 @@
 name: Alpha Oracle Bot
 
 on:
-  # ── 定時自動掃描（每15分鐘一次）──────────────
   schedule:
-    - cron: "0,15,30,45 * * * *"   # 每小時的 0/15/30/45 分執行
-
-  # ── 手動觸發（測試用）────────────────────────
+    - cron: '*/15 * * * *'   # 每 15 分鐘執行一次（正常掃描）
+    - cron: '0 16 * * *'     # 每天 UTC 16:00 = 台灣時間 00:00（午夜戰績回報）
   workflow_dispatch:
+    inputs:
+      run_mode:
+        description: '執行模式：scan(掃描) / monitor(監控) / all(掃描+監控)'
+        required: false
+        default: 'scan'
+        type: choice
+        options: [scan, monitor, all]
+      max_duration:
+        description: '最大運行時間（秒），預設 300'
+        required: false
+        default: '300'
+        type: string
+
+# ⭐ 防止定時任務重疊執行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10   # ← 硬性限制：10分鐘內必須結束，防止卡死
+    # 設定 10 分鐘超時（防止卡住）
+    timeout-minutes: 10
 
     steps:
+      # 1. 拉取 repo（含最新 CSV state）
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 獲取完整歷史，用於狀態文件
 
+      # 2. 安裝 Python 依賴
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-          cache: "pip"
-          cache-dependency-path: "requirements.txt"
+          python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pandas numpy
 
-      - name: Run Alpha Oracle (scan only)
+      # 3. 執行 bot（帶超時機制）
+      - name: Run Alpha Oracle
         env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID:  ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "8"
-        # --mode scan = 掃描完立即退出，不進入監控迴圈
-        run: python alpha_oracle_v8.1.py --mode scan
+          TG_TOKEN:      ${{ secrets.TG_TOKEN }}
+          CHAT_ID:       ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS:   ${{ vars.MAX_SIGNALS || '8' }}
+        run: |
+          # 決定執行模式
+          MODE="${{ github.event.inputs.run_mode || 'scan' }}"
+          DURATION="${{ github.event.inputs.max_duration || '300' }}"
+          
+          echo "🚀 執行模式: $MODE"
+          echo "⏱️  最大運行時間: ${DURATION}s"
+          
+          # 執行程式
+          python alpha_oracle_v8.1.py \
+            --mode "$MODE" \
+            --max-duration "$DURATION" \
+            --interval 30 \
+            --loop-interval 900
+
+      # 4. ⭐ 關鍵：把更新後的 CSV 狀態 commit 回 repo
+      - name: Save state back to repo
+        if: success()
+        run: |
+          # 配置 git
+          git config user.name  "alpha-oracle-bot"
+          git config user.email "bot@alpha-oracle"
+          
+          # 添加狀態文件
+          git add -f active_signals.json alpha_oracle_v8.log 2>/dev/null || true
+          
+          # 檢查是否有變更
+          if git diff --staged --quiet; then
+            echo "📦 無狀態變更，跳過提交"
+          else
+            echo "📤 提交狀態檔..."
+            git commit -m "chore: update trade state [skip ci] $(date '+%Y-%m-%d %H:%M:%S')"
+            
+            # 防止並行執行導致 push 衝突
+            git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
+            git push
+          fi
+
+      # 5. 上傳日誌作為 artifacts（方便除錯）
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-oracle-logs-${{ github.run_number }}
+          path: |
+            alpha_oracle_v8.log
+            active_signals.json
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # 健康檢查 job（可選）
+  health-check:
+    runs-on: ubuntu-latest
+    needs: run-bot
+    if: always()
+    steps:
+      - name: Check job status
+        run: |
+          if [ "${{ needs.run-bot.result }}" == "success" ]; then
+            echo "✅ Alpha Oracle Bot 運行成功"
+          elif [ "${{ needs.run-bot.result }}" == "cancelled" ]; then
+            echo "⚠️ 任務被取消（可能超時或手動取消）"
+          else
+            echo "❌ 任務失敗：${{ needs.run-bot.result }}"
+            exit 1
+          fi
