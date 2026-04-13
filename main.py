@@ -48,6 +48,7 @@ import logging
 import traceback
 import time
 import threading
+import signal
 from datetime import datetime
 
 # ─────────────────────────────────────────────────────────
@@ -93,6 +94,9 @@ ENTRY_TOLERANCE         = 0.002   # 進場區容差 ±0.2%
 ACTIVE_SIGNALS_FILE     = "active_signals.json"
 SIGNAL_EXPIRE_HOURS     = 24      # 超過 24h 未進場自動失效
 
+# 全局停止標誌
+stop_requested = False
+
 _news_cooldown: dict = {}
 
 # ─────────────────────────────────────────────────────────
@@ -123,6 +127,17 @@ def check_news_cooldown(instId: str) -> bool:
 def mark_news_event(instId: str):
     _news_cooldown[instId] = time.time()
     logging.info(f"📰 News cooldown set: {instId}")
+
+def signal_handler(signum, frame):
+    """處理中斷信號"""
+    global stop_requested
+    logging.info("🛑 收到停止信號，正在退出...")
+    stop_requested = True
+    sys.exit(0)
+
+# 註冊信號處理器
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
 
 # ─────────────────────────────────────────────────────────
 # 3. 數據抓取（含 per-call 快取）
@@ -1222,17 +1237,29 @@ class SignalTracker:
 
 
 # ─────────────────────────────────────────────────────────
-# 15. 監控主迴圈
+# 15. 監控主迴圈（帶超時機制）
 # ─────────────────────────────────────────────────────────
-def monitor_loop(tracker: SignalTracker, interval: int = 30, stop_event=None):
+def monitor_loop(tracker: SignalTracker, interval: int = 30, max_duration: int = None, stop_event=None):
     """
     持續監控迴圈，每 interval 秒檢查一次所有活躍訊號。
+    max_duration: 最大運行時間（秒），None = 無限
     stop_event: threading.Event，用於外部停止。
     """
-    logging.info(f"👀 監控迴圈啟動，間隔 {interval}s")
+    global stop_requested
+    start_time = time.time()
+    logging.info(f"👀 監控迴圈啟動，間隔 {interval}s" + (f", 最長 {max_duration}s" if max_duration else ""))
+    
     while True:
-        if stop_event and stop_event.is_set():
+        # 檢查全局停止標誌
+        if stop_requested or (stop_event and stop_event.is_set()):
+            logging.info("🛑 監控收到停止信號，退出迴圈")
             break
+        
+        # 檢查超時
+        if max_duration and (time.time() - start_time) > max_duration:
+            logging.info(f"⏰ 監控達到最大運行時間 {max_duration}s，退出")
+            break
+        
         try:
             active = tracker.list_active()
             if active:
@@ -1242,7 +1269,12 @@ def monitor_loop(tracker: SignalTracker, interval: int = 30, stop_event=None):
                 logging.info("📭 無追蹤訊號，等待掃描...")
         except Exception as e:
             logging.error(f"monitor_loop error: {e}")
-        time.sleep(interval)
+        
+        # 分間隔睡眠，以便更快響應停止信號
+        for _ in range(min(interval, 5)):
+            if stop_requested or (stop_event and stop_event.is_set()):
+                break
+            time.sleep(1)
 
 
 # ─────────────────────────────────────────────────────────
@@ -1342,6 +1374,7 @@ def run_scan(tracker: SignalTracker) -> int:
 
 
 def main():
+    global stop_requested
     parser = argparse.ArgumentParser(description="Alpha Oracle v8.1")
     parser.add_argument("--mode", default="all",
                         choices=["scan", "monitor", "loop", "all"],
@@ -1350,6 +1383,8 @@ def main():
                         help="監控輪詢間隔（秒），預設30")
     parser.add_argument("--loop-interval", type=int, default=900,
                         help="loop模式掃描間隔（秒），預設900=15分鐘")
+    parser.add_argument("--max-duration", type=int, default=None,
+                        help="最大運行時間（秒），預設無限制（GitHub Actions 建議設 300-600）")
     parser.add_argument("--status", action="store_true",
                         help="印出目前追蹤中訊號並傳送 TG 摘要")
     args = parser.parse_args()
@@ -1371,7 +1406,7 @@ def main():
     # ── monitor：只監控（不掃描）────────────────
     if args.mode == "monitor":
         try:
-            monitor_loop(tracker, interval=args.interval)
+            monitor_loop(tracker, interval=args.interval, max_duration=args.max_duration)
         except KeyboardInterrupt:
             logging.info("👋 監控停止")
         return
@@ -1381,23 +1416,28 @@ def main():
         stop_ev = threading.Event()
         # 背景監控執行緒
         t = threading.Thread(target=monitor_loop,
-                             args=(tracker, args.interval, stop_ev),
+                             args=(tracker, args.interval, args.max_duration, stop_ev),
                              daemon=True)
         t.start()
         try:
-            while True:
+            while not stop_requested and not stop_ev.is_set():
                 run_scan(tracker)
                 logging.info(f"⏱️  下次掃描：{args.loop_interval}s 後")
-                time.sleep(args.loop_interval)
+                # 分間隔睡眠以響應停止信號
+                for _ in range(min(args.loop_interval, 5)):
+                    if stop_requested or stop_ev.is_set():
+                        break
+                    time.sleep(1)
         except KeyboardInterrupt:
             logging.info("👋 迴圈停止")
             stop_ev.set()
+            stop_requested = True
         return
 
     # ── all（預設）：掃描一次 + 持續監控 ─────────
     run_scan(tracker)
     try:
-        monitor_loop(tracker, interval=args.interval)
+        monitor_loop(tracker, interval=args.interval, max_duration=args.max_duration)
     except KeyboardInterrupt:
         logging.info("👋 停止")
 
