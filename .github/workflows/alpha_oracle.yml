@@ -30,18 +30,19 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      # 1. 拉取 repo（含最新 CSV state）
+      # 1. 拉取 repo（含最新狀態文件）
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 獲取完整歷史，用於狀態文件
+          fetch-depth: 0
 
-      # 2. 安裝 Python 依賴
+      # 2. 安裝 Python 依賴（✅ 修正：移除 cache 或提供 requirements.txt）
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
+          # ✅ 選項 A: 移除 cache（簡單，每次重新安裝）
+          # ✅ 選項 B: 如果要有 cache，請先建立 requirements.txt（見下方說明）
 
       - name: Install dependencies
         run: |
@@ -69,7 +70,7 @@ jobs:
             --interval 30 \
             --loop-interval 900
 
-      # 4. ⭐ 關鍵：把更新後的 CSV 狀態 commit 回 repo
+      # 4. ⭐ 關鍵：把更新後的狀態文件 commit 回 repo
       - name: Save state back to repo
         if: success()
         run: |
@@ -77,15 +78,19 @@ jobs:
           git config user.name  "alpha-oracle-bot"
           git config user.email "bot@alpha-oracle"
           
-          # 添加狀態文件
-          git add -f active_signals.json alpha_oracle_v8.log 2>/dev/null || true
+          # 添加狀態文件（忽略不存在的文件）
+          for file in active_signals.json alpha_oracle_v8.log; do
+            if [ -f "$file" ]; then
+              git add -f "$file"
+            fi
+          done
           
           # 檢查是否有變更
           if git diff --staged --quiet; then
             echo "📦 無狀態變更，跳過提交"
           else
             echo "📤 提交狀態檔..."
-            git commit -m "chore: update trade state [skip ci] $(date '+%Y-%m-%d %H:%M:%S')"
+            git commit -m "chore: update state [skip ci] $(date '+%Y-%m-%d %H:%M')"
             
             # 防止並行執行導致 push 衝突
             git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
@@ -103,20 +108,3 @@ jobs:
             active_signals.json
           retention-days: 7
           if-no-files-found: ignore
-
-  # 健康檢查 job（可選）
-  health-check:
-    runs-on: ubuntu-latest
-    needs: run-bot
-    if: always()
-    steps:
-      - name: Check job status
-        run: |
-          if [ "${{ needs.run-bot.result }}" == "success" ]; then
-            echo "✅ Alpha Oracle Bot 運行成功"
-          elif [ "${{ needs.run-bot.result }}" == "cancelled" ]; then
-            echo "⚠️ 任務被取消（可能超時或手動取消）"
-          else
-            echo "❌ 任務失敗：${{ needs.run-bot.result }}"
-            exit 1
-          fi
