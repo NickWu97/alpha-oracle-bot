@@ -1,66 +1,36 @@
 name: Alpha Oracle Bot
 
 on:
+  # ── 定時自動掃描（每15分鐘一次）──────────────
   schedule:
-    - cron: '*/15 * * * *'        # 每 15 分钟扫描
-    - cron: '0 16 * * *'          # 每天 UTC 16:00 = 台湾 00:00（午夜战报）
-  workflow_dispatch:
-    inputs:
-      run_mode:
-        description: '执行模式'
-        required: false
-        default: 'scan'
-        type: choice
-        options: [scan, report]
-      max_duration:
-        description: '最大运行时间（秒）'
-        required: false
-        default: '300'
+    - cron: "0,15,30,45 * * * *"   # 每小時的 0/15/30/45 分執行
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  # ── 手動觸發（測試用）────────────────────────
+  workflow_dispatch:
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    
+    timeout-minutes: 10   # ← 硬性限制：10分鐘內必須結束，防止卡死
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: "requirements.txt"
+
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests pandas numpy
-      
-      - name: Run Alpha Oracle
+        run: pip install -r requirements.txt
+
+      - name: Run Alpha Oracle (scan only)
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID:  ${{ secrets.CHAT_ID }}
-        run: |
-          MODE="${{ github.event.inputs.run_mode || 'scan' }}"
-          
-          if [ "$MODE" == "report" ]; then
-            echo "📊 发送每日战报..."
-            python alpha_oracle_v8.2.py --report
-          else
-            echo "🚀 执行扫描..."
-            python alpha_oracle_v8.2.py --mode scan --max-duration 300
-          fi
-      
-      - name: Upload logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs-${{ github.run_number }}
-          path: |
-            *.log
-            *.json
-          retention-days: 7
+          MAX_SIGNALS: "8"
+        # --mode scan = 掃描完立即退出，不進入監控迴圈
+        run: python alpha_oracle_v8.1.py --mode scan
