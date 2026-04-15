@@ -1,17 +1,39 @@
 name: Alpha Oracle Bot
 
-on:
-  # ── 定時自動掃描（每15分鐘一次）──────────────
-  schedule:
-    - cron: "0,15,30,45 * * * *"   # 每小時的 0/15/30/45 分執行
+# ══════════════════════════════════════════════════
+# 用量計算（private repo 每月 2,000 分鐘免費額度）
+# 掃描時間 ~2 min/次
+# 活躍時段 15min 間隔 = 4次/h × 12h × 2min = 96 min/day
+# 非活躍時段 60min 間隔 = 1次/h × 12h × 2min = 24 min/day
+# 合計 ~120 min/day × 30天 = ~3,600 min → 超出！
+#
+# ✅ 解法：只在主要波動時段掃描
+# 亞洲盤 01-05 UTC + 歐美盤 13-17 UTC = 8h 活躍
+# 8h × 4次 × 2min + 16h × 1次 × 2min = 96 min/day × 30 = 2,880 min
+#
+# 如果是 public repo → 完全免費無限制，直接改每15分鐘
+# ══════════════════════════════════════════════════
 
-  # ── 手動觸發（測試用）────────────────────────
+on:
+  schedule:
+    # ── 亞洲盤（UTC 01:00~05:00 = 台灣 09:00~13:00）每15分鐘 ──
+    - cron: "*/15 1-5 * * *"
+    # ── 歐美盤（UTC 13:00~17:00 = 台灣 21:00~01:00）每15分鐘 ──
+    - cron: "*/15 13-17 * * *"
+    # ── 其他時段每60分鐘掃一次（保底）──
+    - cron: "0 0,6,7,8,9,10,11,12,18,19,20,21,22,23 * * *"
+
+  # 手動觸發（測試 / 強制立即掃描）
   workflow_dispatch:
+
+# ✅ 修復 403：給予寫入權限（儲存狀態用）
+permissions:
+  contents: write
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10   # ← 硬性限制：10分鐘內必須結束，防止卡死
+    timeout-minutes: 8    # 硬限制：8分鐘內必須結束
 
     steps:
       - name: Checkout
@@ -27,10 +49,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Alpha Oracle (scan only)
+      - name: Run Alpha Oracle (scan only, stateless)
         env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID:  ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "8"
-        # --mode scan = 掃描完立即退出，不進入監控迴圈
+          TG_TOKEN:   ${{ secrets.TG_TOKEN }}
+          CHAT_ID:    ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS: "6"
+        # --mode scan = 掃描完立即退出，不跑任何迴圈
         run: python alpha_oracle_v8.1.py --mode scan
