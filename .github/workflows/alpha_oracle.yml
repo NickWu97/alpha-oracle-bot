@@ -1,21 +1,16 @@
 name: Alpha Oracle Bot
 
-# ══════════════════════════════════════════════════
-# 排程邏輯（UTC）：
-# 亞洲盤 01-05 / 歐美盤 13-17 → 每15分鐘
-# 其餘時段 → 每60分鐘（整點）
-# 符合 Private Repo 每月 2,000 分鐘免費額度限制
-# ══════════════════════════════════════════════════
-
 on:
   schedule:
-    - cron: "*/15 1-5 * * *"      # 亞洲盤
-    - cron: "*/15 13-17 * * *"    # 歐美盤
-    - cron: "0 0,6,7,8,9,10,11,12,18,19,20,21,22,23 * * *"  # 非活躍保底
+    # ── 亞洲盤（UTC 01:00~05:00）每15分鐘 ──
+    - cron: "*/15 1-5 * * *"
+    # ── 歐美盤（UTC 13:00~17:00）每15分鐘 ──
+    - cron: "*/15 13-17 * * *"
+    # ── 其他時段每60分鐘掃一次（保底）──
+    - cron: "0 0,6,7,8,9,10,11,12,18,19,20,21,22,23 * * *"
 
-  workflow_dispatch:  # 手動觸發
+  workflow_dispatch:
 
-# 若只需讀取程式碼與環境變數，改為 read 即可；僅在需要 commit/push 狀態檔時才用 write
 permissions:
   contents: read
 
@@ -36,18 +31,10 @@ jobs:
       - name: Install dependencies
         run: pip install requests pandas numpy
 
-      - name: 🔍 檢查 Python 腳本是否存在
-        run: |
-          echo "📁 目前目錄結構："
-          find . -maxdepth 2 -type f -name "*.py"
-          if [ ! -f "alpha_oracle_v8.1.py" ]; then
-            echo "❌ 找不到 alpha_oracle_v8.1.py！請確認檔名、大小寫或是否放在子資料夾。"
-            exit 1
-          fi
-
-      - name: 🚀 Run Alpha Oracle (scan only, stateless)
+      - name: 🚀 Run Alpha Oracle (using main.py)
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "6"
-        run: python alpha_oracle_v8.1.py --mode scan
+        # ✅ 修正點：將檔名改為實際存在的 main.py
+        run: python main.py --mode scan
