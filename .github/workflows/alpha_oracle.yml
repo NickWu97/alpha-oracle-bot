@@ -2,17 +2,13 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    # ── 亞洲盤（UTC 01:00~05:00）每15分鐘 ──
-    - cron: "*/15 1-5 * * *"
-    # ── 歐美盤（UTC 13:00~17:00）每15分鐘 ──
-    - cron: "*/15 13-17 * * *"
-    # ── 其他時段每60分鐘掃一次（保底）──
-    - cron: "0 0,6,7,8,9,10,11,12,18,19,20,21,22,23 * * *"
-
-  workflow_dispatch:
+    - cron: "*/15 1-5 * * *"      # 亞洲盤 UTC 01~05（台灣 09~13）每15分鐘
+    - cron: "*/15 13-17 * * *"    # 歐美盤 UTC 13~17（台灣 21~01）每15分鐘
+    - cron: "0 * * * *"           # 其他時段每小時一次
+  workflow_dispatch:               # 手動觸發
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   run-bot:
@@ -20,7 +16,7 @@ jobs:
     timeout-minutes: 8
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -31,10 +27,9 @@ jobs:
       - name: Install dependencies
         run: pip install requests pandas numpy
 
-      - name: 🚀 Run Alpha Oracle (using main.py)
+      - name: Run Alpha Oracle
         env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TG_TOKEN:    ${{ secrets.TG_TOKEN }}
+          CHAT_ID:     ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "6"
-        # ✅ 修正點：將檔名改為實際存在的 main.py
-        run: python main.py --mode scan
+        run: python alpha_oracle_v8.1.py --mode scan
