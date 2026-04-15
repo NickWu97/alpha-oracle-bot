@@ -32,4 +32,4 @@ jobs:
           TG_TOKEN:    ${{ secrets.TG_TOKEN }}
           CHAT_ID:     ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "6"
-        run: python alpha_oracle_v8.1.py --mode scan
+        run: python main.py --mode scan
