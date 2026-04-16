@@ -1081,3 +1081,329 @@ if __name__ == "__main__":
         logging.error(f"💥 Crash: {e}")
         traceback.print_exc()
         exit(1)
+# ─────────────────────────────────────────────────────────
+# 16. 信号跟踪与监控模块（新增）
+# ─────────────────────────────────────────────────────────
+import json
+import os
+from typing import Dict, List, Optional
+
+# 信号存储文件
+SIGNALS_FILE = "active_signals.json"
+
+class SignalTracker:
+    """信号跟踪器 - 监控TP到达和止损调整"""
+    
+    def __init__(self):
+        self.active_signals: Dict[str, dict] = {}
+        self.load_signals()
+    
+    def load_signals(self):
+        """从文件加载活跃信号"""
+        if os.path.exists(SIGNALS_FILE):
+            try:
+                with open(SIGNALS_FILE, 'r', encoding='utf-8') as f:
+                    self.active_signals = json.load(f)
+                logging.info(f"📂 加载了 {len(self.active_signals)} 个活跃信号")
+            except Exception as e:
+                logging.error(f"加载信号文件失败: {e}")
+                self.active_signals = {}
+    
+    def save_signals(self):
+        """保存活跃信号到文件"""
+        try:
+            with open(SIGNALS_FILE, 'w', encoding='utf-8') as f:
+                json.dump(self.active_signals, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logging.error(f"保存信号文件失败: {e}")
+    
+    def add_signal(self, opp: dict):
+        """添加新信号到跟踪列表"""
+        signal_id = f"{opp['instId']}_{opp['side']}_{opp['tf']}"
+        
+        self.active_signals[signal_id] = {
+            'instId': opp['instId'],
+            'side': opp['side'],
+            'tf': opp['tf'],
+            'entry': opp['entry'],
+            'sl': opp['sl'],
+            'tp1': opp['tp1'],
+            'tp2': opp['tp2'],
+            'tp3': opp['tp3'],
+            'current_sl': opp['sl'],  # 当前止损价（会动态调整）
+            'tp1_reached': False,
+            'tp2_reached': False,
+            'tp3_reached': False,
+            'sl_adjusted_to_entry': False,  # 是否已移至保本
+            'sl_adjusted_to_tp1': False,    # 是否已移至TP1
+            'created_at': datetime.now().isoformat(),
+            'score': opp['score']
+        }
+        self.save_signals()
+        logging.info(f"✅ 新增跟踪信号: {signal_id}")
+    
+    def remove_signal(self, signal_id: str):
+        """移除已结束的信号"""
+        if signal_id in self.active_signals:
+            del self.active_signals[signal_id]
+            self.save_signals()
+            logging.info(f"❌ 移除信号: {signal_id}")
+    
+    def get_signal(self, instId: str, side: str, tf: str) -> Optional[dict]:
+        """获取指定信号"""
+        signal_id = f"{instId}_{side}_{tf}"
+        return self.active_signals.get(signal_id)
+
+
+# 全局信号跟踪器实例
+signal_tracker = SignalTracker()
+
+
+def format_tp_notification(opp: dict, tp_level: str, current_price: float) -> str:
+    """格式化TP到达通知"""
+    coin = opp['instId'].split('-')[0]
+    e = "🟢" if opp['side'] == "LONG" else "🔴"
+    st = "多單 (LONG)" if opp['side'] == "LONG" else "空單 (SHORT)"
+    
+    # 计算涨跌幅
+    entry = opp['entry']
+    pct_change = ((current_price - entry) / entry) * 100 if opp['side'] == "LONG" else ((entry - current_price) / entry) * 100
+    
+    # 获取TP价格
+    tp_prices = {
+        'TP1': opp['tp1'],
+        'TP2': opp['tp2'],
+        'TP3': opp['tp3']
+    }
+    
+    # 确定止损调整信息
+    sl_info = ""
+    if tp_level == "TP1":
+        new_sl = opp['entry']  # 移至保本
+        sl_info = f"\n🛑 止损已移至成本 {new_sl:.4f}"
+    elif tp_level == "TP2":
+        new_sl = opp['tp1']  # 移至TP1
+        sl_info = f"\n🛑 止损已移至 TP1 {new_sl:.4f}（锁利）"
+    
+    # 下一个目标
+    next_tp = ""
+    if tp_level == "TP1":
+        next_tp = f"\n🎯 继续等 TP2：{opp['tp2']:.4f}\n🎯 最终 TP3：{opp['tp3']:.4f}"
+    elif tp_level == "TP2":
+        next_tp = f"\n🎯 继续持有等 TP3：{opp['tp3']:.4f}"
+    
+    return (
+        f"🎯 *TP{tp_level[-1]} 到达！* 保本移损\n"
+        f"══════════════════════\n"
+        f"💎 #{coin}  {e} {st}\n"
+        f"📊 评分 {opp['score']}分\n"
+        f"──────────────────────\n"
+        f"💰 进場：`{opp['entry']:.4f}`\n"
+        f"📈 当前价：`{current_price:.4f}`  ({pct_change:+.2f}%)\n"
+        f"✅ TP{tp_level[-1]}：`{tp_prices[tp_level]:.4f}`  已到\n"
+        f"{sl_info}"
+        f"{next_tp}"
+        f"\n══════════════════════\n"
+        f"💡 *继续持有，让利润奔跑！*"
+    )
+
+
+async def check_price_levels():
+    """检查价格是否到达TP或SL水平"""
+    if not signal_tracker.active_signals:
+        return
+    
+    logging.info(f"🔍 检查 {len(signal_tracker.active_signals)} 个活跃信号...")
+    
+    for signal_id, signal in list(signal_tracker.active_signals.items()):
+        try:
+            # 获取最新价格
+            df = fetch_okx(signal['instId'], tf="1m", limit=5)
+            if df is None or len(df) == 0:
+                continue
+            
+            current_price = df['c'].iloc[-1]
+            side = signal['side']
+            
+            # 检查TP1
+            if not signal['tp1_reached']:
+                if (side == "LONG" and current_price >= signal['tp1']) or \
+                   (side == "SHORT" and current_price <= signal['tp1']):
+                    
+                    signal['tp1_reached'] = True
+                    signal['sl_adjusted_to_entry'] = True
+                    signal['current_sl'] = signal['entry']  # 移至保本
+                    
+                    # 发送通知
+                    opp_template = {
+                        'instId': signal['instId'],
+                        'side': signal['side'],
+                        'tf': signal['tf'],
+                        'entry': signal['entry'],
+                        'tp1': signal['tp1'],
+                        'tp2': signal['tp2'],
+                        'tp3': signal['tp3'],
+                        'score': signal['score']
+                    }
+                    msg = format_tp_notification(opp_template, "TP1", current_price)
+                    send_tg(msg)
+                    logging.info(f"✅ {signal['instId']} TP1到达！")
+            
+            # 检查TP2
+            if not signal['tp2_reached'] and signal['tp1_reached']:
+                if (side == "LONG" and current_price >= signal['tp2']) or \
+                   (side == "SHORT" and current_price <= signal['tp2']):
+                    
+                    signal['tp2_reached'] = True
+                    signal['sl_adjusted_to_tp1'] = True
+                    signal['current_sl'] = signal['tp1']  # 移至TP1
+                    
+                    opp_template = {
+                        'instId': signal['instId'],
+                        'side': signal['side'],
+                        'tf': signal['tf'],
+                        'entry': signal['entry'],
+                        'tp1': signal['tp1'],
+                        'tp2': signal['tp2'],
+                        'tp3': signal['tp3'],
+                        'score': signal['score']
+                    }
+                    msg = format_tp_notification(opp_template, "TP2", current_price)
+                    send_tg(msg)
+                    logging.info(f"✅ {signal['instId']} TP2到达！")
+            
+            # 检查TP3
+            if not signal['tp3_reached'] and signal['tp2_reached']:
+                if (side == "LONG" and current_price >= signal['tp3']) or \
+                   (side == "SHORT" and current_price <= signal['tp3']):
+                    
+                    signal['tp3_reached'] = True
+                    
+                    # TP3到达通知
+                    coin = signal['instId'].split('-')[0]
+                    e = "🟢" if side == "LONG" else "🔴"
+                    msg = (
+                        f"🎉 *TP3 到达！目标达成！*\n"
+                        f"══════════════════════\n"
+                        f"💎 #{coin}  {e} {signal['side']}\n"
+                        f"📈 当前价：`{current_price:.4f}`\n"
+                        f"✅ TP3：`{signal['tp3']:.4f}`  已到\n"
+                        f"\n══════════════════════\n"
+                        f"🏆 *全目标达成！建议平仓获利！*"
+                    )
+                    send_tg(msg)
+                    logging.info(f"🎉 {signal['instId']} TP3到达！全目标达成！")
+                    
+                    # 移除信号（已完成）
+                    signal_tracker.remove_signal(signal_id)
+                    continue
+            
+            # 检查止损
+            if current_price <= signal['current_sl'] if side == "LONG" else current_price >= signal['current_sl']:
+                # 止损触发
+                coin = signal['instId'].split('-')[0]
+                msg = (
+                    f"🛑 *止损触发*\n"
+                    f"══════════════════════\n"
+                    f"💎 #{coin}  {signal['side']}\n"
+                    f"📉 当前价：`{current_price:.4f}`\n"
+                    f"🛑 止损：`{signal['current_sl']:.4f}`\n"
+                    f"\n══════════════════════\n"
+                    f"⚠️ *已止损，注意风险控制！*"
+                )
+                send_tg(msg)
+                signal_tracker.remove_signal(signal_id)
+            
+            # 保存更新
+            signal_tracker.save_signals()
+            
+        except Exception as e:
+            logging.error(f"检查信号 {signal_id} 失败: {e}")
+            continue
+
+
+async def monitor_signals_interval(minutes: int = 1):
+    """定时监控信号（每分钟检查一次）"""
+    while True:
+        try:
+            await check_price_levels()
+            await asyncio.sleep(minutes * 60)
+        except Exception as e:
+            logging.error(f"监控循环错误: {e}")
+            await asyncio.sleep(60)
+
+
+# ─────────────────────────────────────────────────────────
+# 17. 修改主函数以支持监控模式
+# ─────────────────────────────────────────────────────────
+async def main_with_monitoring():
+    """主函数 - 包含信号监控"""
+    import asyncio
+    
+    logging.info(f"🚀 Alpha Oracle v7.0 启动（含监控模式）")
+    
+    # 启动监控任务
+    monitor_task = asyncio.create_task(monitor_signals_interval(minutes=1))
+    
+    try:
+        while True:
+            # 执行扫描
+            sent = 0
+            logging.info(f"\n{'='*50}")
+            logging.info(f" 开始扫描...")
+            
+            for i, coin in enumerate(ALL_COINS, 1):
+                if sent >= MAX_SIGNALS_PER_RUN:
+                    break
+                
+                # 新闻冷却检查
+                if not check_news_cooldown(coin):
+                    continue
+                
+                try:
+                    opps = scan_for_opportunity(coin)
+                    if opps:
+                        opps.sort(key=lambda x: x['score'], reverse=True)
+                        for opp in opps:
+                            if sent >= MAX_SIGNALS_PER_RUN:
+                                break
+                            
+                            msg = format_signal(opp)
+                            if send_tg(msg):
+                                # 添加到跟踪列表
+                                signal_tracker.add_signal(opp)
+                                sent += 1
+                                logging.info(f"📤 发送信号: {opp['instId']} {opp['side']}")
+                            time.sleep(1)
+                    
+                    time.sleep(0.5)
+                except Exception as e:
+                    logging.error(f"❌ {coin}: {e}")
+            
+            logging.info(f"✅ 扫描完成，发送 {sent} 个信号")
+            
+            # 等待下一轮扫描（例如每5分钟扫描一次）
+            await asyncio.sleep(300)
+    
+    except KeyboardInterrupt:
+        logging.info("⛔ 用户中断，关闭程序...")
+        monitor_task.cancel()
+    except Exception as e:
+        logging.error(f"💥 主循环错误: {e}")
+        monitor_task.cancel()
+
+
+# ─────────────────────────────────────────────────────────
+# 主执行入口
+# ─────────────────────────────────────────────────────────
+if __name__ == "__main__":
+    import asyncio
+    
+    try:
+        # 使用异步监控模式
+        asyncio.run(main_with_monitoring())
+        exit(0)
+    except Exception as e:
+        logging.error(f"💥 Crash: {e}")
+        traceback.print_exc()
+        exit(1)
