@@ -2,9 +2,9 @@ name: Alpha Oracle Bot
 
 on:
   schedule:
-    - cron: "*/15 1-5 * * *"      # 亞洲盤 UTC 01~05（台灣 09~13）每15分鐘
-    - cron: "*/15 13-17 * * *"    # 歐美盤 UTC 13~17（台灣 21~01）每15分鐘
-    - cron: "0 * * * *"           # 其他時段每小時一次
+    - cron: "*/15 1-5 * * *"      # 亞洲盤（台灣 09~13）
+    - cron: "*/15 13-17 * * *"    # 歐美盤（台灣 21~01）
+    - cron: "0 * * * *"           # 整點執行
   workflow_dispatch:               # 手動觸發
 
 permissions:
@@ -23,13 +23,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: pip install requests pandas numpy
 
-      - name: Run Alpha Oracle
+      - name: Run Alpha Oracle (Scan Mode)
         env:
           TG_TOKEN:    ${{ secrets.TG_TOKEN }}
           CHAT_ID:     ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "6"
         run: python main.py --mode scan
+
+      - name: Upload logs (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bot-logs
+          path: alpha_oracle_v7.log
+          retention-days: 3
