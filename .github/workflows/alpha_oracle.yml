@@ -1,26 +1,15 @@
 name: Alpha Oracle v9.0
 
-# ════════════════════════════════════════════════════════
-# 觸發排程（2000分鐘/月預算規劃）
-#
-# 亞洲盤 UTC 01-05（台灣09-13）每15分鐘：620 runs/月
-# 歐美盤 UTC 13-17（台灣21-01）每15分鐘：620 runs/月
-# 每日戰報 UTC 00:05：31 runs/月
-# 月度戰報 UTC 00:10 每月1日：1 run/月
-# ─────────────────────────────────────────────────────
-# 合計 ≈ 1272 runs × 1.5分鐘 ≈ 1908分鐘 < 2000分鐘 ✓
-# ════════════════════════════════════════════════════════
-
 on:
   schedule:
     - cron: "*/15 1-5 * * *"    # 亞洲盤 每15分鐘
     - cron: "*/15 13-17 * * *"  # 歐美盤 每15分鐘
     - cron: "5 0 * * *"         # 每日戰報 00:05 UTC
     - cron: "10 0 1 * *"        # 月度戰報 每月1日 00:10 UTC
-  workflow_dispatch:            # 手動觸發
+  workflow_dispatch:
 
 permissions:
-  contents: write               # 允許 git push 更新狀態檔案
+  contents: write
 
 jobs:
   alpha-oracle:
@@ -28,42 +17,34 @@ jobs:
     timeout-minutes: 8
 
     steps:
-      # ── 1. 取得最新程式碼（含狀態檔案）
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      # ── 2. Python 環境 🔧 已移除 cache 設定避免報錯
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          # ✅ 已移除 cache 設定，避免找不到 requirements.txt 報錯
 
-      # ── 3. 安裝依賴
       - name: Install dependencies
         run: pip install requests pandas numpy
 
-      # ── 4. 判斷執行模式（依當前 UTC 時間）
       - name: Determine mode
         id: mode
         run: |
           HOUR=$(date -u +%H)
           MIN=$(date -u +%M)
           DAY=$(date -u +%d)
-          # 每月1日 00:10 UTC → 月度戰報
           if [ "$DAY" = "01" ] && [ "$HOUR" = "00" ] && [ "$MIN" -ge "10" ] && [ "$MIN" -lt "20" ]; then
             echo "mode=monthly_report" >> $GITHUB_OUTPUT
-          # 每日 00:05 UTC → 每日戰報
           elif [ "$HOUR" = "00" ] && [ "$MIN" -ge "05" ] && [ "$MIN" -lt "15" ]; then
             echo "mode=daily_report" >> $GITHUB_OUTPUT
-          # 其他時間 → 正常掃描
           else
             echo "mode=scan" >> $GITHUB_OUTPUT
           fi
-          echo "Determined mode: $(cat $GITHUB_OUTPUT | grep mode)"
 
-      # ── 5. 執行機器人
       - name: Run Alpha Oracle
         env:
           TG_TOKEN:    ${{ secrets.TG_TOKEN }}
@@ -71,7 +52,6 @@ jobs:
           MAX_SIGNALS: "6"
         run: python main.py --mode ${{ steps.mode.outputs.mode }}
 
-      # ── 6. 提交狀態檔案（持久化訊號追蹤 & 交易歷史）
       - name: Commit state files
         if: always()
         run: |
@@ -79,6 +59,6 @@ jobs:
           git config user.email "alpha-oracle[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
-          git diff --staged --quiet && echo "No changes to commit" || \
+          git diff --staged --quiet && echo "No changes" || \
             git commit -m "bot: update state [skip ci]" && git push
         continue-on-error: true
