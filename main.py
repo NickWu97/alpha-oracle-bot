@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v7.0 — SMC + Order Flow 全整合版
+Alpha Oracle v7.1 — SMC + Order Flow + 進場監控 + 勝率統計
 ══════════════════════════════════════════════════════════════
+🆕 v7.1 新增功能：
+  ✅ 進場檢測：價格到達進場價時自動通知
+  ✅ TP/SL監控：自動追蹤止盈止損並發送通知
+  ✅ 保本移損：TP1到達自動移至成本，TP2到達移至TP1
+  ✅ 每日報告：00:00 自動發送當日勝率統計
+  ✅ 每月報告：每月1號 00:00 發送月度勝率統計
+  ✅ 數據持久化：自動保存交易歷史與統計數據
+
 機會倍增設計：
   ✅ 雙時框掃描（15m + 30m）→ 每幣最多產生 2x 信號機會
   ✅ 兩條進場路徑（SMC路徑 / 訂單流路徑）達到 75 分即觸發
@@ -36,6 +44,9 @@ Alpha Oracle v7.0 — SMC + Order Flow 全整合版
 ══════════════════════════════════════════════════════════════
 """
 
+# ─────────────────────────────────────────────────────────
+# 1. 導入模組
+# ─────────────────────────────────────────────────────────
 import requests
 import os
 import pandas as pd
@@ -43,10 +54,13 @@ import numpy as np
 import logging
 import traceback
 import time
-from datetime import datetime
+import json
+import asyncio
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
 
 # ─────────────────────────────────────────────────────────
-# 1. 基礎配置
+# 2. 基礎配置
 # ─────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
@@ -68,22 +82,27 @@ ALL_COINS = [
 # 雙時框掃描（≥15m，機會倍增）
 SCAN_TIMEFRAMES = ["15m", "30m"]
 
-MAX_SIGNALS_PER_RUN   = int(os.getenv("MAX_SIGNALS", "8"))   # 提高上限配合多時框
-SETUP_SCORE_THRESHOLD = 75                                     # 75 分進場
+MAX_SIGNALS_PER_RUN   = int(os.getenv("MAX_SIGNALS", "8"))
+SETUP_SCORE_THRESHOLD = 75
 
 # 訂單流參數
-CROSSLINE_BODY_RATIO         = 0.30   # 十字線：實體 < 30% 總範圍
-SWEEP_VOLUME_RATIO           = 1.8    # 掃單：成交量 > 1.8 倍均量（從2.0放寬）
-SWEEP_CONSECUTIVE_MOVES      = 2      # 掃單：連續移動 >= 2 根（從3放寬）
-NEWS_COOLDOWN_MINUTES        = 60     # 新聞冷卻
-ABSORPTION_VOL_MULTIPLIER    = 1.8    # 吸收：成交量 > 1.8 倍均量
-ABSORPTION_PRICE_THRESHOLD   = 0.002  # 吸收：價格變動 < 0.2%
+CROSSLINE_BODY_RATIO         = 0.30
+SWEEP_VOLUME_RATIO           = 1.8
+SWEEP_CONSECUTIVE_MOVES      = 2
+NEWS_COOLDOWN_MINUTES        = 60
+ABSORPTION_VOL_MULTIPLIER    = 1.8
+ABSORPTION_PRICE_THRESHOLD   = 0.002
+
+# 數據文件路徑
+ACTIVE_SIGNALS_FILE = "active_signals.json"
+TRADE_HISTORY_FILE  = "trade_history.json"
+STATS_FILE          = "trading_stats.json"
 
 # 新聞冷卻追蹤
-_news_cooldown: dict = {}   # {instId: timestamp}
+_news_cooldown: dict = {}
 
 # ─────────────────────────────────────────────────────────
-# 2. 工具函數
+# 3. 工具函數
 # ─────────────────────────────────────────────────────────
 def safe_float(val, fallback=0.0):
     try:    return float(val)
@@ -104,7 +123,7 @@ def send_tg(msg: str) -> bool:
         return False
 
 # ─────────────────────────────────────────────────────────
-# 3. 數據抓取
+# 4. 數據抓取
 # ─────────────────────────────────────────────────────────
 def fetch_okx(instId: str, tf: str = "15m", limit: int = 150):
     try:
@@ -170,7 +189,7 @@ def fetch_order_book(instId: str, depth: int = 20) -> tuple:
         return 1.0, "⚪ 盤口均衡"
 
 # ─────────────────────────────────────────────────────────
-# 4. 基礎技術指標
+# 5. 基礎技術指標
 # ─────────────────────────────────────────────────────────
 def calculate_atr(df: pd.DataFrame, period: int = 14) -> float:
     hl = df["h"] - df["l"]
@@ -239,7 +258,7 @@ def get_ema_bias(df: pd.DataFrame, side: str) -> tuple:
         else:                     return 0.0, f"❌ 價格在EMA21上方"
 
 # ─────────────────────────────────────────────────────────
-# 5. 擺動點 & 結構
+# 6. 擺動點 & 結構
 # ─────────────────────────────────────────────────────────
 def find_swing_points(df: pd.DataFrame, n: int = 2, lookback: int = 80) -> tuple:
     data = df.tail(lookback).reset_index(drop=True)
@@ -299,13 +318,9 @@ def detect_market_structure(df: pd.DataFrame, side: str) -> str:
     return "區間盤整 ↔️"
 
 # ─────────────────────────────────────────────────────────
-# 6. 流動性獵取（v6.0 Smart Money）
+# 7. 流動性獵取（v6.0 Smart Money）
 # ─────────────────────────────────────────────────────────
 def find_liquidity_pools(df: pd.DataFrame, side: str, lookback: int = 60) -> dict:
-    """
-    BSL / SSL 止損池 + EQH / EQL 等高低點
-    掃除 = 刺穿後收回（主力引爆止損後逆轉）
-    """
     sh, sl, _, _ = find_swing_points(df, n=2, lookback=lookback)
     price = df["c"].iloc[-1]
     atr   = calculate_atr(df)
@@ -363,7 +378,7 @@ def find_liquidity_pools(df: pd.DataFrame, side: str, lookback: int = 60) -> dic
     return res
 
 # ─────────────────────────────────────────────────────────
-# 7. Order Block & FVG
+# 8. Order Block & FVG
 # ─────────────────────────────────────────────────────────
 def find_order_blocks(df: pd.DataFrame, side: str, lookback: int = 60) -> list:
     data  = df.tail(lookback).reset_index(drop=True)
@@ -431,7 +446,7 @@ def check_ob_fvg_entry(df: pd.DataFrame, side: str, atr: float) -> tuple:
     return at_ob, at_fvg, ob_desc, fvg_desc, entry_z
 
 # ─────────────────────────────────────────────────────────
-# 8. Premium / Discount Zone
+# 9. Premium / Discount Zone
 # ─────────────────────────────────────────────────────────
 def detect_premium_discount(df: pd.DataFrame, side: str) -> tuple:
     sh, sl, _, _ = find_swing_points(df, n=3, lookback=50)
@@ -454,13 +469,9 @@ def detect_premium_discount(df: pd.DataFrame, side: str) -> tuple:
         else:            return f"❌ Discount {fib*100:.0f}%（做空不利）", 0.0
 
 # ─────────────────────────────────────────────────────────
-# 9. 訂單流模組（v7.0 新增）
+# 10. 訂單流模組（v7.0 新增）
 # ─────────────────────────────────────────────────────────
 def detect_crossline(df: pd.DataFrame, lookback: int = 15) -> dict | None:
-    """
-    十字線（Doji）偵測 — 多空分界定價中心
-    實體 < 30% 總範圍 = 十字線
-    """
     for i in range(len(df)-1, max(len(df)-lookback-1, 0), -1):
         k   = df.iloc[i]
         body = abs(k["c"] - k["o"])
@@ -482,69 +493,44 @@ def detect_crossline(df: pd.DataFrame, lookback: int = 15) -> dict | None:
     return None
 
 def detect_active_sweep(df: pd.DataFrame, side: str) -> tuple:
-    """
-    主動掃單偵測 — 訂單流連續攻擊
-    條件：近幾根K線方向一致 + 放量（非掛單，是真實成交）
-    返回 (是否偵測, 強度分 0~1, 描述)
-    """
     if len(df) < 8: return False, 0.0, "⚪ 數據不足"
     recent  = df.tail(8)
     vol_ma  = df["v"].tail(20).mean()
     last    = recent.iloc[-1]
     vol_sc  = last["v"] / (vol_ma + 1e-10)
-
-    # 放量確認（必要條件）
     if vol_sc < SWEEP_VOLUME_RATIO:
         return False, 0.0, f"⚪ 量能不足 ({vol_sc:.1f}x均量)"
-
-    # 連續方向移動
     moves = 0
     for i in range(len(recent)-1, 0, -1):
         if side=="LONG"  and recent["c"].iloc[i] > recent["c"].iloc[i-1]: moves += 1
         elif side=="SHORT" and recent["c"].iloc[i] < recent["c"].iloc[i-1]: moves += 1
         else: break
-
     if moves >= SWEEP_CONSECUTIVE_MOVES:
-        strength = min(vol_sc / 3.0, 1.0)  # 量越大越強
+        strength = min(vol_sc / 3.0, 1.0)
         desc = f"⚡ 主動掃單確認！連續{moves}根+{vol_sc:.1f}x量能"
         return True, strength, desc
-
     return False, 0.0, f"⚪ 無連續掃單（方向根數={moves}）"
 
 def detect_fishing_trap(df: pd.DataFrame, side: str) -> bool:
-    """
-    釣魚單過濾 — 無量價格移動（掛單引誘，非真實成交）
-    條件：價格移動 ≥ 0.5% 但成交量 < 0.75倍均量
-    """
     if len(df) < 6: return False
     recent    = df.tail(6)
     vol_ma    = df["v"].tail(20).mean()
     price_mv  = abs(recent["c"].iloc[-1] - recent["c"].iloc[0]) / (recent["c"].iloc[0]+1e-10)
     if price_mv < 0.005: return False
     last_vol  = recent["v"].iloc[-1]
-    return last_vol < 0.75 * vol_ma   # 無量 = 釣魚單
+    return last_vol < 0.75 * vol_ma
 
 def detect_absorption(df: pd.DataFrame, side: str) -> tuple:
-    """
-    吸收信號 — 大量成交但價格幾乎不動（主力換籌）
-    條件：近3根K均量 > 1.8倍均量 且 價格變動 < 0.2%
-    吸收後的掃單方向 = 主力累積的方向
-    """
     if len(df) < 15: return False, "⚪ 無吸收"
     recent   = df.tail(5)
     vol_ma   = df["v"].tail(20).mean()
     avg_vol3 = recent["v"].iloc[-3:].mean()
     px_chg   = abs(recent["c"].iloc[-1] - recent["c"].iloc[-4]) / (recent["c"].iloc[-4]+1e-10)
-
     if avg_vol3 > ABSORPTION_VOL_MULTIPLIER*vol_ma and px_chg < ABSORPTION_PRICE_THRESHOLD:
         return True, f"🔄 吸收信號！量{avg_vol3/vol_ma:.1f}x均量但價格僅動{px_chg*100:.2f}%（主力換籌中）"
     return False, "⚪ 無明顯吸收"
 
 def check_volume_breakout(df: pd.DataFrame) -> bool:
-    """
-    帶量止損驗證 — 突破時是否有量（無量突破=假突破）
-    返回 True = 帶量有效突破；False = 無量假突破
-    """
     if len(df) < 6: return True
     recent   = df.tail(6)
     vol_ma   = recent["v"].iloc[:-1].mean()
@@ -552,7 +538,6 @@ def check_volume_breakout(df: pd.DataFrame) -> bool:
     return last_vol >= 1.5 * vol_ma
 
 def check_news_cooldown(instId: str) -> bool:
-    """新聞冷卻期檢查（True = 可交易，False = 冷卻中）"""
     now = time.time()
     if instId in _news_cooldown:
         if now - _news_cooldown[instId] < NEWS_COOLDOWN_MINUTES * 60:
@@ -560,12 +545,11 @@ def check_news_cooldown(instId: str) -> bool:
     return True
 
 def mark_news_event(instId: str):
-    """標記新聞事件（呼叫此函數後60分鐘內不發訊號）"""
     _news_cooldown[instId] = time.time()
     logging.info(f"📰 News cooldown set for {instId}")
 
 # ─────────────────────────────────────────────────────────
-# 10. CVD / 多空比 / 資費 / 盤口解讀
+# 11. CVD / 多空比 / 資費 / 盤口解讀
 # ─────────────────────────────────────────────────────────
 def calculate_cvd(df: pd.DataFrame, periods: int = 50) -> tuple:
     data  = df.tail(periods).copy()
@@ -622,7 +606,7 @@ def check_ob_direction(side: str, ob_ratio: float) -> tuple:
         else:                return 0.0, f"❌ 盤口偏多，做空風險！({ob_ratio:.2f})"
 
 # ─────────────────────────────────────────────────────────
-# 11. 價格行為
+# 12. 價格行為
 # ─────────────────────────────────────────────────────────
 def detect_price_action(df: pd.DataFrame, side: str) -> list:
     sigs = []
@@ -673,40 +657,18 @@ def detect_whale_zones(df: pd.DataFrame, side: str) -> list:
     return zones[:2]
 
 # ─────────────────────────────────────────────────────────
-# 12. 核心評分（兩條達 75 分路徑）
+# 13. 核心評分
 # ─────────────────────────────────────────────────────────
 def calculate_score(params: dict) -> tuple:
-    """
-    ══ 評分權重 ══
-    HTF         20 分
-    OB/FVG      18 分（最高）
-    流動性掃除  18 分（最高）
-    主動掃單    12 分（v7 新增）
-    十字線       8 分（v7 新增）
-    吸收信號     7 分（v7 新增）
-    CVD         12 分
-    多空比       8 分
-    資費         5 分
-    盤口         5 分
-    + BOS獎勵   +5 分
-    + PD Zone   +5 分
-    ──────────────
-    上限 100 分  │ 進場門檻 75 分
-
-    路徑A（SMC）  : HTF20+OB18+掃除18+CVD12+多空比8 = 76 ✅
-    路徑B（訂單流）: HTF20+掃單12+十字8+吸收7+CVD12+多空比8+費率5+盤口5 = 77 ✅
-    """
     sc = 0.0
     bd = []
     side = params["side"]
 
-    # 1. HTF（20分）
     htf = params.get("htf_trend", "UNKNOWN")
     if htf == side:       sc+=20; bd.append("📈 HTF一致 +20")
     elif htf in ("NEUTRAL","UNKNOWN"): sc+=8; bd.append("⚪ HTF不明 +8")
     else:                 sc+=0;  bd.append("❌ HTF反向 +0")
 
-    # 2. OB/FVG（0~18分）
     at_ob  = params.get("at_ob",  False)
     at_fvg = params.get("at_fvg", False)
     if at_ob and at_fvg: sc+=18; bd.append("🎯 OB+FVG +18")
@@ -714,59 +676,48 @@ def calculate_score(params: dict) -> tuple:
     elif at_fvg:         sc+=12; bd.append("🎯 在FVG +12")
     else:                sc+=0;  bd.append("⚪ 不在OB/FVG +0")
 
-    # 3. 流動性掃除（0~18分）
     sw_sc = params.get("sweep_score", 0)
     p = round(sw_sc * 18)
     sc += p
     bd.append(f"💧 流動性掃除 +{p}" if sw_sc>0 else "⚪ 無掃除 +0")
 
-    # 4. 主動掃單（0~13分）—— v7.0 新增（13分使路徑B純訂單流也能達75）
     as_sc = params.get("active_sweep_score", 0)
     p = round(as_sc * 13)
     sc += p
     bd.append(f"⚡ 主動掃單 +{p}" if as_sc>0 else "⚪ 無掃單 +0")
 
-    # 5. 十字線（0~8分）—— v7.0 新增
     cl_sc = params.get("crossline_score", 0)
     p = round(cl_sc * 8)
     sc += p
     if cl_sc > 0: bd.append(f"🎯 十字線 +{p}")
 
-    # 6. 吸收信號（0~7分）—— v7.0 新增
     ab_sc = params.get("absorption_score", 0)
     p = round(ab_sc * 7)
     sc += p
     if ab_sc > 0: bd.append(f"🔄 吸收 +{p}")
 
-    # 7. CVD（0~12分）
     cvd_sc = params.get("cvd_score", 0)
     p = round(cvd_sc * 12)
     sc += p; bd.append(f"📊 CVD +{p}")
 
-    # 8. 多空比（0~8分）
     ls_sc = params.get("ls_score", 0)
     p = round(ls_sc * 8)
     sc += p; bd.append(f"👥 多空比 +{p}")
 
-    # 9. 資費（0~5分）
     fr_sc = params.get("fr_score", 0)
     p = round(fr_sc * 5)
     sc += p; bd.append(f"💸 資費 +{p}")
 
-    # 10. 盤口（0~5分）
     ob_sc = params.get("ob_dir_score", 0)
     p = round(ob_sc * 5)
     sc += p; bd.append(f"📚 盤口 +{p}")
 
-    # 獎勵分：BOS/CHoCH（+5）
     if params.get("bos_score", 0) >= 0.75:
         sc += 5; bd.append("🏗️ BOS/CHoCH +5")
 
-    # 獎勵分：Premium/Discount（+5）
     if params.get("pd_score", 0) >= 0.7:
         sc += 5; bd.append("📍 P/D Zone +5")
 
-    # ── 硬性扣分 ──────────────────────────────
     if htf not in (side, "NEUTRAL", "UNKNOWN"):
         sc -= 15; bd.append("🚫 HTF逆勢 -15")
     if params.get("fr_score", 1) == 0.0:
@@ -785,49 +736,39 @@ def calculate_score(params: dict) -> tuple:
     return sc, grade, bd
 
 # ─────────────────────────────────────────────────────────
-# 13. 主掃描邏輯（雙時框）
+# 14. 主掃描邏輯（雙時框）
 # ─────────────────────────────────────────────────────────
 def scan_timeframe(instId: str, tf: str,
                    htf_trend: str, fr: float, ls_f: float, ls_str: str,
                    ob_r: float, ob_raw_lb: str) -> list:
-    """單一時框掃描（供雙時框呼叫）"""
-
     df = fetch_okx(instId, tf=tf, limit=150)
     if df is None or len(df) < 50:
         return []
 
     atr        = calculate_atr(df)
     _, st_lb   = calculate_supertrend(df)
-    ema_sc, ema_lb = get_ema_bias(df, "LONG")   # 佔位，按 side 重新算
 
-    # 訂單流模組（不依賴 side，先算好）
     crossline  = detect_crossline(df)
-    abs_bool, abs_desc = detect_absorption(df, "LONG")   # 方向無關先計算
+    abs_bool, abs_desc = detect_absorption(df, "LONG")
 
     opportunities = []
 
     for side in ["LONG", "SHORT"]:
-
-        # ── 硬性過濾 1：HTF ────────────────────
         if htf_trend not in ("UNKNOWN","NEUTRAL") and htf_trend != side:
             continue
 
-        # ── 硬性過濾 2：盤口 ───────────────────
         ob_dir_sc, ob_dir_lb = check_ob_direction(side, ob_r)
         if ob_dir_sc == 0.0:
             continue
 
-        # ── 硬性過濾 3：資費 ───────────────────
         fr_sc, fr_lb = interpret_funding_rate(fr, side)
         if fr_sc == 0.0:
             continue
 
-        # ── 硬性過濾 4：釣魚單 ─────────────────
         if detect_fishing_trap(df, side):
             logging.info(f"  [{instId}/{tf}/{side}] 釣魚單，跳過")
             continue
 
-        # ── 分析模組 ────────────────────────────
         cvd_cur, cvd_sl, cvd_lb, cvd_sc_raw = calculate_cvd(df)
         cvd_aligned = (side=="LONG" and cvd_sl>0) or (side=="SHORT" and cvd_sl<0)
         eff_cvd_sc  = cvd_sc_raw if cvd_aligned else cvd_sc_raw * 0.25
@@ -842,25 +783,19 @@ def scan_timeframe(instId: str, tf: str,
         ls_sc, ls_lb     = interpret_ls_ratio(ls_f, side)
         _, ema_lb2       = get_ema_bias(df, side)
 
-        # 主動掃單
         as_bool, as_sc, as_desc = detect_active_sweep(df, side)
 
-        # 十字線評分
         cl_sc = 0.0
         if crossline:
             pot = crossline["potential_side"]
             if pot == side or pot == "NEUTRAL":
-                # 越近越分高；0根前=最高，10根前=較低
                 dist_factor = max(0.0, 1.0 - crossline["distance"] / 10)
                 cl_sc = 0.6 + 0.4 * dist_factor
 
-        # 吸收評分
         ab_sc = 0.0
         if abs_bool:
-            # 吸收後掃單方向 = 主力方向
             ab_sc = 0.8
 
-        # ── 評分 ─────────────────────────────────
         params = dict(
             side=side, htf_trend=htf_trend,
             at_ob=at_ob, at_fvg=at_fvg,
@@ -881,8 +816,6 @@ def scan_timeframe(instId: str, tf: str,
             logging.info(f"  [{instId}/{tf}/{side}] {score}分 < {SETUP_SCORE_THRESHOLD}，跳過")
             continue
 
-        # ── 進場價邏輯 ───────────────────────────
-        # 優先順序：流動性掃除後立即 → OB/FVG中點 → 十字線 → 流動性池邊緣 → 當前價
         price = df["c"].iloc[-1]
         if liq["sweep_detected"]:
             entry = price
@@ -903,7 +836,6 @@ def scan_timeframe(instId: str, tf: str,
         tp2  = entry + risk*2.5   if side=="LONG" else entry - risk*2.5
         tp3  = entry + risk*4.0   if side=="LONG" else entry - risk*4.0
 
-        # 帶量突破驗證（無量突破降低信心但不強制跳過）
         vol_ok   = check_volume_breakout(df)
         vol_warn = "" if vol_ok else "⚠️ 當前K線量能偏低，注意假突破"
 
@@ -936,11 +868,6 @@ def scan_timeframe(instId: str, tf: str,
     return opportunities
 
 def scan_for_opportunity(instId: str) -> list:
-    """
-    雙時框掃描（15m + 30m）
-    共用數據抓取避免重複請求
-    """
-    # 共用行情（不依賴時框）
     htf_trend      = get_htf_trend(instId)
     fr             = fetch_funding_rate(instId)
     ls_f, ls_str   = fetch_ls_ratio(instId)
@@ -954,7 +881,6 @@ def scan_for_opportunity(instId: str) -> list:
         except Exception as e:
             logging.error(f"  [{instId}/{tf}] Error: {e}")
 
-    # 去重：同 side 同時框只保留最高分
     seen = {}
     for opp in all_opps:
         key = f"{opp['side']}_{opp['tf']}"
@@ -963,7 +889,7 @@ def scan_for_opportunity(instId: str) -> list:
     return list(seen.values())
 
 # ─────────────────────────────────────────────────────────
-# 14. 訊號格式化
+# 15. 訊號格式化
 # ─────────────────────────────────────────────────────────
 def format_signal(opp: dict) -> str:
     coin   = opp["instId"].split("-")[0]
@@ -989,7 +915,7 @@ def format_signal(opp: dict) -> str:
     vol_warn = f"\n⚠️ {opp['vol_warn']}" if opp.get("vol_warn") else ""
 
     return (
-        f"🔥 *Alpha Oracle v7.0* 🔥\n"
+        f"🔥 *Alpha Oracle v7.1* 🔥\n"
         f"══════════════════════\n"
         f"💎 #{coin}  {e} {st}\n"
         f"⏰ {opp['tf']}  │  1H HTF: {htf_e} {opp['htf_trend']}\n"
@@ -1034,94 +960,56 @@ def format_signal(opp: dict) -> str:
         f"💡 *{'流動性掃除後進場' if liq['sweep_detected'] else ('主動掃單確認' if opp['as_bool'] else '等待進場區回踩')}*"
     )
 
-# ─────────────────────────────────────────────────────────
-# 15. 主執行
-# ─────────────────────────────────────────────────────────
-def main():
-    logging.info(f"🚀 Alpha Oracle v7.0  閾值={SETUP_SCORE_THRESHOLD}分  "
-                 f"時框={SCAN_TIMEFRAMES}  上限={MAX_SIGNALS_PER_RUN}訊號")
-    sent = 0
+# ═══════════════════════════════════════════════════════════════
+# 16. 進場監控與勝率統計模組（v7.1 新增）
+# ═══════════════════════════════════════════════════════════════
 
-    for i, coin in enumerate(ALL_COINS, 1):
-        if sent >= MAX_SIGNALS_PER_RUN:
-            break
-        logging.info(f"[{i}/{len(ALL_COINS)}] {coin} ...")
-
-        # 新聞冷卻檢查
-        if not check_news_cooldown(coin):
-            logging.info(f"  [{coin}] 新聞冷卻期，跳過")
-            continue
-
-        try:
-            opps = scan_for_opportunity(coin)
-            if opps:
-                # 按分數排序，優先發高分訊號
-                opps.sort(key=lambda x: x["score"], reverse=True)
-                logging.info(f"  ✅ {len(opps)} signal(s)")
-                for opp in opps:
-                    if sent >= MAX_SIGNALS_PER_RUN: break
-                    msg = format_signal(opp)
-                    if send_tg(msg):
-                        sent += 1
-                        logging.info(f"  📤 #{sent} [{opp['tf']}]{opp['side']} {opp['score']}分 {opp['grade']}")
-                    time.sleep(1)
-            time.sleep(0.5)
-        except Exception as e:
-            logging.error(f"❌ {coin}: {e}")
-            traceback.print_exc()
-
-    logging.info(f"📊 完成，共發送 {sent} 訊號")
-    return sent
-
-
-if __name__ == "__main__":
-    try:
-        main(); exit(0)
-    except Exception as e:
-        logging.error(f"💥 Crash: {e}")
-        traceback.print_exc()
-        exit(1)
-# ─────────────────────────────────────────────────────────
-# 16. 信号跟踪与监控模块（新增）
-# ─────────────────────────────────────────────────────────
-import json
-import os
-from typing import Dict, List, Optional
-
-# 信号存储文件
-SIGNALS_FILE = "active_signals.json"
-
-class SignalTracker:
-    """信号跟踪器 - 监控TP到达和止损调整"""
+class TradingTracker:
+    """交易跟踪器 - 進場檢測/TP監控/勝率統計"""
     
     def __init__(self):
         self.active_signals: Dict[str, dict] = {}
-        self.load_signals()
+        self.trade_history: List[dict] = []
+        self.stats = {
+            'daily': {},
+            'monthly': {}
+        }
+        self.load_data()
     
-    def load_signals(self):
-        """从文件加载活跃信号"""
-        if os.path.exists(SIGNALS_FILE):
+    def load_data(self):
+        """加載所有數據"""
+        for fname, attr in [
+            (ACTIVE_SIGNALS_FILE, 'active_signals'),
+            (TRADE_HISTORY_FILE, 'trade_history'),
+            (STATS_FILE, 'stats')
+        ]:
+            if os.path.exists(fname):
+                try:
+                    with open(fname, 'r', encoding='utf-8') as f:
+                        setattr(self, attr, json.load(f))
+                    logging.info(f"📂 已加載 {fname}")
+                except Exception as e:
+                    logging.error(f"加載 {fname} 失敗: {e}")
+    
+    def save_data(self):
+        """保存所有數據"""
+        for fname, attr in [
+            (ACTIVE_SIGNALS_FILE, 'active_signals'),
+            (TRADE_HISTORY_FILE, 'trade_history'),
+            (STATS_FILE, 'stats')
+        ]:
             try:
-                with open(SIGNALS_FILE, 'r', encoding='utf-8') as f:
-                    self.active_signals = json.load(f)
-                logging.info(f"📂 加载了 {len(self.active_signals)} 个活跃信号")
+                with open(fname, 'w', encoding='utf-8') as f:
+                    json.dump(getattr(self, attr), f, ensure_ascii=False, indent=2)
             except Exception as e:
-                logging.error(f"加载信号文件失败: {e}")
-                self.active_signals = {}
-    
-    def save_signals(self):
-        """保存活跃信号到文件"""
-        try:
-            with open(SIGNALS_FILE, 'w', encoding='utf-8') as f:
-                json.dump(self.active_signals, f, ensure_ascii=False, indent=2)
-        except Exception as e:
-            logging.error(f"保存信号文件失败: {e}")
+                logging.error(f"保存 {fname} 失敗: {e}")
     
     def add_signal(self, opp: dict):
-        """添加新信号到跟踪列表"""
-        signal_id = f"{opp['instId']}_{opp['side']}_{opp['tf']}"
+        """添加新信號（等待進場）"""
+        signal_id = f"{opp['instId']}_{opp['side']}_{opp['tf']}_{datetime.now().strftime('%Y%m%d_%H%M')}"
         
         self.active_signals[signal_id] = {
+            'signal_id': signal_id,
             'instId': opp['instId'],
             'side': opp['side'],
             'tf': opp['tf'],
@@ -1130,233 +1018,484 @@ class SignalTracker:
             'tp1': opp['tp1'],
             'tp2': opp['tp2'],
             'tp3': opp['tp3'],
-            'current_sl': opp['sl'],  # 当前止损价（会动态调整）
+            'score': opp['score'],
+            'grade': opp['grade'],
+            'status': 'WAITING_ENTRY',
+            'entry_price': None,
+            'entry_time': None,
             'tp1_reached': False,
             'tp2_reached': False,
             'tp3_reached': False,
-            'sl_adjusted_to_entry': False,  # 是否已移至保本
-            'sl_adjusted_to_tp1': False,    # 是否已移至TP1
+            'current_sl': opp['sl'],
+            'sl_adjusted_to_entry': False,
+            'sl_adjusted_to_tp1': False,
+            'exit_price': None,
+            'exit_time': None,
+            'exit_reason': None,
+            'pnl_pct': None,
             'created_at': datetime.now().isoformat(),
-            'score': opp['score']
         }
-        self.save_signals()
-        logging.info(f"✅ 新增跟踪信号: {signal_id}")
+        self.save_data()
+        logging.info(f"✅ 新增等待進場信號: {signal_id} @ {opp['entry']:.4f}")
     
-    def remove_signal(self, signal_id: str):
-        """移除已结束的信号"""
-        if signal_id in self.active_signals:
-            del self.active_signals[signal_id]
-            self.save_signals()
-            logging.info(f"❌ 移除信号: {signal_id}")
-    
-    def get_signal(self, instId: str, side: str, tf: str) -> Optional[dict]:
-        """获取指定信号"""
-        signal_id = f"{instId}_{side}_{tf}"
-        return self.active_signals.get(signal_id)
-
-
-# 全局信号跟踪器实例
-signal_tracker = SignalTracker()
-
-
-def format_tp_notification(opp: dict, tp_level: str, current_price: float) -> str:
-    """格式化TP到达通知"""
-    coin = opp['instId'].split('-')[0]
-    e = "🟢" if opp['side'] == "LONG" else "🔴"
-    st = "多單 (LONG)" if opp['side'] == "LONG" else "空單 (SHORT)"
-    
-    # 计算涨跌幅
-    entry = opp['entry']
-    pct_change = ((current_price - entry) / entry) * 100 if opp['side'] == "LONG" else ((entry - current_price) / entry) * 100
-    
-    # 获取TP价格
-    tp_prices = {
-        'TP1': opp['tp1'],
-        'TP2': opp['tp2'],
-        'TP3': opp['tp3']
-    }
-    
-    # 确定止损调整信息
-    sl_info = ""
-    if tp_level == "TP1":
-        new_sl = opp['entry']  # 移至保本
-        sl_info = f"\n🛑 止损已移至成本 {new_sl:.4f}"
-    elif tp_level == "TP2":
-        new_sl = opp['tp1']  # 移至TP1
-        sl_info = f"\n🛑 止损已移至 TP1 {new_sl:.4f}（锁利）"
-    
-    # 下一个目标
-    next_tp = ""
-    if tp_level == "TP1":
-        next_tp = f"\n🎯 继续等 TP2：{opp['tp2']:.4f}\n🎯 最终 TP3：{opp['tp3']:.4f}"
-    elif tp_level == "TP2":
-        next_tp = f"\n🎯 继续持有等 TP3：{opp['tp3']:.4f}"
-    
-    return (
-        f"🎯 *TP{tp_level[-1]} 到达！* 保本移损\n"
-        f"══════════════════════\n"
-        f"💎 #{coin}  {e} {st}\n"
-        f"📊 评分 {opp['score']}分\n"
-        f"──────────────────────\n"
-        f"💰 进場：`{opp['entry']:.4f}`\n"
-        f"📈 当前价：`{current_price:.4f}`  ({pct_change:+.2f}%)\n"
-        f"✅ TP{tp_level[-1]}：`{tp_prices[tp_level]:.4f}`  已到\n"
-        f"{sl_info}"
-        f"{next_tp}"
-        f"\n══════════════════════\n"
-        f"💡 *继续持有，让利润奔跑！*"
-    )
-
-
-async def check_price_levels():
-    """检查价格是否到达TP或SL水平"""
-    if not signal_tracker.active_signals:
-        return
-    
-    logging.info(f"🔍 检查 {len(signal_tracker.active_signals)} 个活跃信号...")
-    
-    for signal_id, signal in list(signal_tracker.active_signals.items()):
-        try:
-            # 获取最新价格
-            df = fetch_okx(signal['instId'], tf="1m", limit=5)
-            if df is None or len(df) == 0:
-                continue
+    def check_entry_filled(self, signal_id: str, current_price: float) -> bool:
+        """檢查是否已進場"""
+        if signal_id not in self.active_signals:
+            return False
+        
+        signal = self.active_signals[signal_id]
+        if signal['status'] != 'WAITING_ENTRY':
+            return False
+        
+        side = signal['side']
+        entry_price = signal['entry']
+        
+        is_filled = False
+        if side == "LONG" and current_price <= entry_price:
+            is_filled = True
+        elif side == "SHORT" and current_price >= entry_price:
+            is_filled = True
+        
+        if is_filled:
+            signal['status'] = 'ACTIVE'
+            signal['entry_price'] = current_price
+            signal['entry_time'] = datetime.now().isoformat()
             
-            current_price = df['c'].iloc[-1]
-            side = signal['side']
+            self.send_entry_notification(signal, current_price)
+            self.record_trade_start(signal)
             
-            # 检查TP1
-            if not signal['tp1_reached']:
-                if (side == "LONG" and current_price >= signal['tp1']) or \
-                   (side == "SHORT" and current_price <= signal['tp1']):
-                    
-                    signal['tp1_reached'] = True
-                    signal['sl_adjusted_to_entry'] = True
-                    signal['current_sl'] = signal['entry']  # 移至保本
-                    
-                    # 发送通知
-                    opp_template = {
-                        'instId': signal['instId'],
-                        'side': signal['side'],
-                        'tf': signal['tf'],
-                        'entry': signal['entry'],
-                        'tp1': signal['tp1'],
-                        'tp2': signal['tp2'],
-                        'tp3': signal['tp3'],
-                        'score': signal['score']
-                    }
-                    msg = format_tp_notification(opp_template, "TP1", current_price)
-                    send_tg(msg)
-                    logging.info(f"✅ {signal['instId']} TP1到达！")
-            
-            # 检查TP2
-            if not signal['tp2_reached'] and signal['tp1_reached']:
-                if (side == "LONG" and current_price >= signal['tp2']) or \
-                   (side == "SHORT" and current_price <= signal['tp2']):
-                    
-                    signal['tp2_reached'] = True
-                    signal['sl_adjusted_to_tp1'] = True
-                    signal['current_sl'] = signal['tp1']  # 移至TP1
-                    
-                    opp_template = {
-                        'instId': signal['instId'],
-                        'side': signal['side'],
-                        'tf': signal['tf'],
-                        'entry': signal['entry'],
-                        'tp1': signal['tp1'],
-                        'tp2': signal['tp2'],
-                        'tp3': signal['tp3'],
-                        'score': signal['score']
-                    }
-                    msg = format_tp_notification(opp_template, "TP2", current_price)
-                    send_tg(msg)
-                    logging.info(f"✅ {signal['instId']} TP2到达！")
-            
-            # 检查TP3
-            if not signal['tp3_reached'] and signal['tp2_reached']:
-                if (side == "LONG" and current_price >= signal['tp3']) or \
-                   (side == "SHORT" and current_price <= signal['tp3']):
-                    
-                    signal['tp3_reached'] = True
-                    
-                    # TP3到达通知
-                    coin = signal['instId'].split('-')[0]
-                    e = "🟢" if side == "LONG" else "🔴"
-                    msg = (
-                        f"🎉 *TP3 到达！目标达成！*\n"
-                        f"══════════════════════\n"
-                        f"💎 #{coin}  {e} {signal['side']}\n"
-                        f"📈 当前价：`{current_price:.4f}`\n"
-                        f"✅ TP3：`{signal['tp3']:.4f}`  已到\n"
-                        f"\n══════════════════════\n"
-                        f"🏆 *全目标达成！建议平仓获利！*"
-                    )
-                    send_tg(msg)
-                    logging.info(f"🎉 {signal['instId']} TP3到达！全目标达成！")
-                    
-                    # 移除信号（已完成）
-                    signal_tracker.remove_signal(signal_id)
-                    continue
-            
-            # 检查止损
-            if current_price <= signal['current_sl'] if side == "LONG" else current_price >= signal['current_sl']:
-                # 止损触发
-                coin = signal['instId'].split('-')[0]
-                msg = (
-                    f"🛑 *止损触发*\n"
-                    f"══════════════════════\n"
-                    f"💎 #{coin}  {signal['side']}\n"
-                    f"📉 当前价：`{current_price:.4f}`\n"
-                    f"🛑 止损：`{signal['current_sl']:.4f}`\n"
-                    f"\n══════════════════════\n"
-                    f"⚠️ *已止损，注意风险控制！*"
-                )
-                send_tg(msg)
-                signal_tracker.remove_signal(signal_id)
-            
-            # 保存更新
-            signal_tracker.save_signals()
-            
-        except Exception as e:
-            logging.error(f"检查信号 {signal_id} 失败: {e}")
-            continue
+            self.save_data()
+            logging.info(f"✅ {signal_id} 已進場 @ {current_price:.4f}")
+            return True
+        
+        return False
+    
+    def send_entry_notification(self, signal: dict, current_price: float):
+        """發送進場提醒通知"""
+        coin = signal['instId'].split('-')[0]
+        e = "🟢" if signal['side'] == "LONG" else "🔴"
+        st = "多" if signal['side'] == "LONG" else "空"
+        
+        entry = signal['entry']
+        pct_change = ((current_price - entry) / entry) * 100 if signal['side'] == "LONG" else ((entry - current_price) / entry) * 100
+        
+        msg = (
+            f"✅ *進場提醒 - #{coin}* {e} {st}\n"
+            f"══════════════════════\n"
+            f"📊 評分：{signal['score']}分 {signal['grade']}\n"
+            f"⏰ 時框：{signal['tf']}\n"
+            f"──────────────────────\n"
+            f"💰 進場價：`{current_price:.4f}`\n"
+            f"📋 計劃價：`{entry:.4f}` ({pct_change:+.2f}%)\n"
+            f"🛑 止損：`{signal['sl']:.4f}`\n"
+            f"🎯 TP1：`{signal['tp1']:.4f}`\n"
+            f"🎯 TP2：`{signal['tp2']:.4f}`\n"
+            f"🎯 TP3：`{signal['tp3']:.4f}`\n"
+            f"══════════════════════\n"
+            f"⏱️ 時間：{datetime.now().strftime('%H:%M:%S')}\n"
+            f"💡 *已進場，祝你好運！*"
+        )
+        send_tg(msg)
+    
+    def check_price_levels(self, signal_id: str, current_price: float):
+        """檢查TP/SL水平"""
+        if signal_id not in self.active_signals:
+            return
+        
+        signal = self.active_signals[signal_id]
+        if signal['status'] != 'ACTIVE':
+            return
+        
+        side = signal['side']
+        entry_price = signal['entry_price'] or signal['entry']
+        current_sl = signal['current_sl']
+        
+        # 檢查止損
+        if (side == "LONG" and current_price <= current_sl) or \
+           (side == "SHORT" and current_price >= current_sl):
+            self.close_position(signal_id, current_price, "SL")
+            return
+        
+        # 檢查TP1
+        if not signal['tp1_reached']:
+            if (side == "LONG" and current_price >= signal['tp1']) or \
+               (side == "SHORT" and current_price <= signal['tp1']):
+                
+                signal['tp1_reached'] = True
+                signal['sl_adjusted_to_entry'] = True
+                signal['current_sl'] = entry_price
+                
+                self.send_tp_notification(signal, "TP1", current_price)
+                self.save_data()
+                return
+        
+        # 檢查TP2
+        if not signal['tp2_reached'] and signal['tp1_reached']:
+            if (side == "LONG" and current_price >= signal['tp2']) or \
+               (side == "SHORT" and current_price <= signal['tp2']):
+                
+                signal['tp2_reached'] = True
+                signal['sl_adjusted_to_tp1'] = True
+                signal['current_sl'] = signal['tp1']
+                
+                self.send_tp_notification(signal, "TP2", current_price)
+                self.save_data()
+                return
+        
+        # 檢查TP3
+        if not signal['tp3_reached'] and signal['tp2_reached']:
+            if (side == "LONG" and current_price >= signal['tp3']) or \
+               (side == "SHORT" and current_price <= signal['tp3']):
+                
+                signal['tp3_reached'] = True
+                self.send_tp_notification(signal, "TP3", current_price)
+                self.close_position(signal_id, current_price, "TP3")
+                return
+    
+    def send_tp_notification(self, signal: dict, tp_level: str, current_price: float):
+        """發送TP到達通知"""
+        coin = signal['instId'].split('-')[0]
+        e = "🟢" if signal['side'] == "LONG" else "🔴"
+        st = "多" if signal['side'] == "LONG" else "空"
+        
+        entry = signal['entry_price'] or signal['entry']
+        pct_change = ((current_price - entry) / entry) * 100 if signal['side'] == "LONG" else ((entry - current_price) / entry) * 100
+        
+        tp_prices = {'TP1': signal['tp1'], 'TP2': signal['tp2'], 'TP3': signal['tp3']}
+        
+        sl_info = ""
+        if tp_level == "TP1":
+            sl_info = f"\n🛑 止損已移至成本 {entry:.4f}"
+        elif tp_level == "TP2":
+            sl_info = f"\n🛑 止損已移至 TP1 {signal['tp1']:.4f}（鎖利）"
+        
+        next_tp = ""
+        if tp_level == "TP1":
+            next_tp = f"\n🎯 繼續等 TP2：{signal['tp2']:.4f}\n🏆 最終 TP3：{signal['tp3']:.4f}"
+        elif tp_level == "TP2":
+            next_tp = f"\n🎯 繼續持有等 TP3：{signal['tp3']:.4f}"
+        
+        msg = (
+            f"🎯 *{tp_level} 到達！保本移損 - #{coin}*\n"
+            f"══════════════════════\n"
+            f"💎 {e} {st}單\n"
+            f"📊 評分 {signal['score']}分\n"
+            f"──────────────────────\n"
+            f"💰 進場：`{entry:.4f}`\n"
+            f"📈 當前價：`{current_price:.4f}`  ({pct_change:+.2f}%)\n"
+            f"✅ {tp_level}：`{tp_prices[tp_level]:.4f}`  ✔️ 已到\n"
+            f"{sl_info}"
+            f"{next_tp}"
+            f"\n══════════════════════\n"
+            f"⏱️ 時間：{datetime.now().strftime('%H:%M')}\n"
+            f"💡 *繼續持有，讓利潤奔跑！*"
+        )
+        send_tg(msg)
+    
+    def close_position(self, signal_id: str, exit_price: float, reason: str):
+        """平倉並記錄結果"""
+        if signal_id not in self.active_signals:
+            return
+        
+        signal = self.active_signals[signal_id]
+        entry_price = signal['entry_price'] or signal['entry']
+        
+        if signal['side'] == "LONG":
+            pnl_pct = ((exit_price - entry_price) / entry_price) * 100
+        else:
+            pnl_pct = ((entry_price - exit_price) / entry_price) * 100
+        
+        signal['status'] = 'COMPLETED'
+        signal['exit_price'] = exit_price
+        signal['exit_time'] = datetime.now().isoformat()
+        signal['exit_reason'] = reason
+        signal['pnl_pct'] = pnl_pct
+        
+        if pnl_pct > 0.1:
+            result = 'win'
+        elif pnl_pct < -0.1:
+            result = 'loss'
+        else:
+            result = 'breakeven'
+        
+        trade_record = {
+            'signal_id': signal_id,
+            'instId': signal['instId'],
+            'side': signal['side'],
+            'tf': signal['tf'],
+            'entry_price': entry_price,
+            'exit_price': exit_price,
+            'exit_reason': reason,
+            'pnl_pct': pnl_pct,
+            'result': result,
+            'entry_time': signal['entry_time'],
+            'exit_time': signal['exit_time'],
+            'score': signal['score']
+        }
+        self.trade_history.append(trade_record)
+        
+        self.record_trade_result(signal, result)
+        self.send_exit_notification(signal, exit_price, reason, pnl_pct, result)
+        
+        del self.active_signals[signal_id]
+        self.save_data()
+        logging.info(f"✅ {signal_id} 已平倉 @ {exit_price:.4f} ({pnl_pct:+.2f}%)")
+    
+    def send_exit_notification(self, signal: dict, exit_price: float, reason: str, pnl_pct: float, result: str):
+        """發送平倉通知"""
+        coin = signal['instId'].split('-')[0]
+        e = "🟢" if signal['side'] == "LONG" else "🔴"
+        st = "多" if signal['side'] == "LONG" else "空"
+        
+        emoji = "🎉" if result == 'win' else ("💀" if result == 'loss' else "😐")
+        reason_text = {
+            'TP1': 'TP1止盈',
+            'TP2': 'TP2止盈',
+            'TP3': 'TP3止盈',
+            'SL': '止損',
+            'MANUAL': '手動平倉'
+        }.get(reason, reason)
+        
+        msg = (
+            f"{emoji} *平倉通知 - #{coin}* {e} {st}\n"
+            f"══════════════════════\n"
+            f"📊 評分：{signal['score']}分\n"
+            f"💰 進場：`{signal['entry_price']:.4f}`\n"
+            f"💵 出場：`{exit_price:.4f}`\n"
+            f"📈 盈虧：`{pnl_pct:+.2f}%`\n"
+            f"🎯 原因：{reason_text}\n"
+            f"══════════════════════\n"
+            f"⏱️ {datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+            f"{'💡 繼續保持！' if result == 'win' else '💪 下次會更好！'}"
+        )
+        send_tg(msg)
+    
+    def record_trade_start(self, signal: dict):
+        """記錄交易開始"""
+        now = datetime.now()
+        date_str = now.strftime('%Y-%m-%d')
+        month_str = now.strftime('%Y-%m')
+        
+        if date_str not in self.stats['daily']:
+            self.stats['daily'][date_str] = {'total': 0, 'win': 0, 'loss': 0, 'breakeven': 0}
+        if month_str not in self.stats['monthly']:
+            self.stats['monthly'][month_str] = {'total': 0, 'win': 0, 'loss': 0, 'breakeven': 0}
+        
+        self.stats['daily'][date_str]['total'] += 1
+        self.stats['monthly'][month_str]['total'] += 1
+        self.save_data()
+    
+    def record_trade_result(self, signal: dict, result: str):
+        """記錄交易結果"""
+        now = datetime.now()
+        date_str = now.strftime('%Y-%m-%d')
+        month_str = now.strftime('%Y-%m')
+        
+        if date_str in self.stats['daily']:
+            self.stats['daily'][date_str][result] += 1
+        if month_str in self.stats['monthly']:
+            self.stats['monthly'][month_str][result] += 1
+        self.save_data()
+    
+    def get_daily_stats(self, date_str: str = None) -> dict:
+        if date_str is None:
+            date_str = datetime.now().strftime('%Y-%m-%d')
+        return self.stats['daily'].get(date_str, {'total': 0, 'win': 0, 'loss': 0, 'breakeven': 0})
+    
+    def get_monthly_stats(self, month_str: str = None) -> dict:
+        if month_str is None:
+            month_str = datetime.now().strftime('%Y-%m')
+        return self.stats['monthly'].get(month_str, {'total': 0, 'win': 0, 'loss': 0, 'breakeven': 0})
+    
+    def send_daily_report(self):
+        """發送每日勝率報告"""
+        today = datetime.now().strftime('%Y-%m-%d')
+        stats = self.get_daily_stats(today)
+        
+        if stats['total'] == 0:
+            msg = (
+                f"📊 *每日交易報告*\n"
+                f"══════════════════════\n"
+                f"📅 日期：{today}\n"
+                f"──────────────────────\n"
+                f"😴 今日無交易\n"
+                f"══════════════════════\n"
+                f"💡 明天繼續努力！"
+            )
+            send_tg(msg)
+            return
+        
+        win_rate = (stats['win'] / stats['total']) * 100
+        
+        today_trades = [t for t in self.trade_history if t['entry_time'] and t['entry_time'].startswith(today)]
+        total_pnl = sum(t['pnl_pct'] or 0 for t in today_trades)
+        
+        msg = (
+            f"📊 *每日交易報告*\n"
+            f"══════════════════════\n"
+            f"📅 日期：{today}\n"
+            f"──────────────────────\n"
+            f"📈 總交易：{stats['total']} 筆\n"
+            f"✅ 盈利：{stats['win']} 筆\n"
+            f"❌ 虧損：{stats['loss']} 筆\n"
+            f"😐 保本：{stats['breakeven']} 筆\n"
+            f"──────────────────────\n"
+            f"🎯 勝率：`{win_rate:.1f}%`\n"
+            f"💰 總盈虧：`{total_pnl:+.2f}%`\n"
+            f"══════════════════════\n"
+            f"{'🎉 表現優秀！' if win_rate >= 60 else ('💪 繼續努力！' if win_rate >= 40 else '📚 需要調整策略')}"
+        )
+        send_tg(msg)
+        logging.info(f"📊 已發送每日報告: {today}")
+    
+    def send_monthly_report(self):
+        """發送每月勝率報告"""
+        this_month = datetime.now().strftime('%Y-%m')
+        stats = self.get_monthly_stats(this_month)
+        
+        if stats['total'] == 0:
+            msg = (
+                f"📊 *每月交易報告*\n"
+                f"══════════════════════\n"
+                f"📅 月份：{this_month}\n"
+                f"──────────────────────\n"
+                f"😴 本月無交易\n"
+                f"══════════════════════\n"
+                f"💡 下月加油！"
+            )
+            send_tg(msg)
+            return
+        
+        win_rate = (stats['win'] / stats['total']) * 100
+        
+        month_trades = [t for t in self.trade_history if t['entry_time'] and t['entry_time'].startswith(this_month)]
+        total_pnl = sum(t['pnl_pct'] or 0 for t in month_trades)
+        avg_pnl = total_pnl / len(month_trades) if month_trades else 0
+        
+        best_trade = max(month_trades, key=lambda x: x['pnl_pct']) if month_trades else None
+        worst_trade = min(month_trades, key=lambda x: x['pnl_pct']) if month_trades else None
+        
+        msg = (
+            f"📊 *每月交易報告*\n"
+            f"══════════════════════\n"
+            f"📅 月份：{this_month}\n"
+            f"──────────────────────\n"
+            f"📈 總交易：{stats['total']} 筆\n"
+            f"✅ 盈利：{stats['win']} 筆\n"
+            f"❌ 虧損：{stats['loss']} 筆\n"
+            f"😐 保本：{stats['breakeven']} 筆\n"
+            f"──────────────────────\n"
+            f"🎯 勝率：`{win_rate:.1f}%`\n"
+            f"💰 總盈虧：`{total_pnl:+.2f}%`\n"
+            f"📊 平均盈虧：`{avg_pnl:+.2f}%`\n"
+        )
+        
+        if best_trade:
+            msg += f"\n🏆 最佳：#{best_trade['instId'].split('-')[0]} {best_trade['pnl_pct']:+.2f}%\n"
+        if worst_trade:
+            msg += f"💀 最差：#{worst_trade['instId'].split('-')[0]} {worst_trade['pnl_pct']:+.2f}%\n"
+        
+        msg += (
+            f"══════════════════════\n"
+            f"{'🎉 本月表現優秀！' if win_rate >= 60 else ('💪 繼續努力！' if win_rate >= 40 else '📚 需要調整策略')}"
+        )
+        send_tg(msg)
+        logging.info(f"📊 已發送每月報告: {this_month}")
 
 
-async def monitor_signals_interval(minutes: int = 1):
-    """定时监控信号（每分钟检查一次）"""
+# 全局交易跟踪器實例
+trading_tracker = TradingTracker()
+
+
+async def monitor_prices():
+    """持續監控價格（每分鐘檢查）"""
+    logging.info("🔍 啟動價格監控...")
+    
     while True:
         try:
-            await check_price_levels()
-            await asyncio.sleep(minutes * 60)
+            for signal_id, signal in list(trading_tracker.active_signals.items()):
+                try:
+                    df = fetch_okx(signal['instId'], tf="1m", limit=3)
+                    if df is None or len(df) == 0:
+                        continue
+                    
+                    current_price = df['c'].iloc[-1]
+                    
+                    if signal['status'] == 'WAITING_ENTRY':
+                        trading_tracker.check_entry_filled(signal_id, current_price)
+                    elif signal['status'] == 'ACTIVE':
+                        trading_tracker.check_price_levels(signal_id, current_price)
+                
+                except Exception as e:
+                    logging.error(f"監控信號 {signal_id} 錯誤: {e}")
+                    continue
+            
+            await asyncio.sleep(60)
+        
         except Exception as e:
-            logging.error(f"监控循环错误: {e}")
+            logging.error(f"價格監控循環錯誤: {e}")
             await asyncio.sleep(60)
 
 
-# ─────────────────────────────────────────────────────────
-# 17. 修改主函数以支持监控模式
-# ─────────────────────────────────────────────────────────
-async def main_with_monitoring():
-    """主函数 - 包含信号监控"""
-    import asyncio
+async def daily_report_scheduler():
+    """每日報告調度器（00:00發送）"""
+    logging.info("⏰ 啟動每日報告調度器...")
     
-    logging.info(f"🚀 Alpha Oracle v7.0 启动（含监控模式）")
+    while True:
+        try:
+            now = datetime.now()
+            if now.hour == 0 and now.minute == 0:
+                trading_tracker.send_daily_report()
+                await asyncio.sleep(300)
+            else:
+                await asyncio.sleep(60)
+        
+        except Exception as e:
+            logging.error(f"每日報告調度錯誤: {e}")
+            await asyncio.sleep(60)
+
+
+async def monthly_report_scheduler():
+    """每月報告調度器（每月1號00:00發送）"""
+    logging.info("⏰ 啟動每月報告調度器...")
     
-    # 启动监控任务
-    monitor_task = asyncio.create_task(monitor_signals_interval(minutes=1))
+    while True:
+        try:
+            now = datetime.now()
+            if now.day == 1 and now.hour == 0 and now.minute == 0:
+                trading_tracker.send_monthly_report()
+                await asyncio.sleep(300)
+            else:
+                await asyncio.sleep(3600)
+        
+        except Exception as e:
+            logging.error(f"每月報告調度錯誤: {e}")
+            await asyncio.sleep(3600)
+
+
+# ─────────────────────────────────────────────────────────
+# 17. 主函數（完整版）
+# ─────────────────────────────────────────────────────────
+async def main_with_full_monitoring():
+    """主函數 - 包含完整監控和報告系統"""
+    
+    logging.info(f"🚀 Alpha Oracle v7.1 啟動（完整版）")
+    logging.info(f"📊 閾值={SETUP_SCORE_THRESHOLD}分  時框={SCAN_TIMEFRAMES}")
+    
+    monitor_task = asyncio.create_task(monitor_prices())
+    daily_task = asyncio.create_task(daily_report_scheduler())
+    monthly_task = asyncio.create_task(monthly_report_scheduler())
     
     try:
         while True:
-            # 执行扫描
             sent = 0
             logging.info(f"\n{'='*50}")
-            logging.info(f" 开始扫描...")
+            logging.info(f"開始掃描新信號...")
             
             for i, coin in enumerate(ALL_COINS, 1):
                 if sent >= MAX_SIGNALS_PER_RUN:
                     break
                 
-                # 新闻冷却检查
                 if not check_news_cooldown(coin):
                     continue
                 
@@ -1364,44 +1503,44 @@ async def main_with_monitoring():
                     opps = scan_for_opportunity(coin)
                     if opps:
                         opps.sort(key=lambda x: x['score'], reverse=True)
+                        logging.info(f"  ✅ {coin}: {len(opps)} 個機會")
+                        
                         for opp in opps:
                             if sent >= MAX_SIGNALS_PER_RUN:
                                 break
                             
                             msg = format_signal(opp)
                             if send_tg(msg):
-                                # 添加到跟踪列表
-                                signal_tracker.add_signal(opp)
+                                trading_tracker.add_signal(opp)
                                 sent += 1
-                                logging.info(f"📤 发送信号: {opp['instId']} {opp['side']}")
+                                logging.info(f"  📤 發送信號: {opp['instId']} {opp['side']} {opp['score']}分")
                             time.sleep(1)
                     
                     time.sleep(0.5)
+                
                 except Exception as e:
-                    logging.error(f"❌ {coin}: {e}")
+                    logging.error(f"❌ {coin} 掃描錯誤: {e}")
+                    continue
             
-            logging.info(f"✅ 扫描完成，发送 {sent} 个信号")
-            
-            # 等待下一轮扫描（例如每5分钟扫描一次）
+            logging.info(f"✅ 掃描完成，發送 {sent} 個信號")
             await asyncio.sleep(300)
     
     except KeyboardInterrupt:
-        logging.info("⛔ 用户中断，关闭程序...")
-        monitor_task.cancel()
+        logging.info("⛔ 用戶中斷，關閉程序...")
     except Exception as e:
-        logging.error(f"💥 主循环错误: {e}")
+        logging.error(f"💥 主循環錯誤: {e}")
+    finally:
         monitor_task.cancel()
+        daily_task.cancel()
+        monthly_task.cancel()
 
 
 # ─────────────────────────────────────────────────────────
-# 主执行入口
+# 主執行入口
 # ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    import asyncio
-    
     try:
-        # 使用异步监控模式
-        asyncio.run(main_with_monitoring())
+        asyncio.run(main_with_full_monitoring())
         exit(0)
     except Exception as e:
         logging.error(f"💥 Crash: {e}")
