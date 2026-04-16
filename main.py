@@ -908,25 +908,32 @@ def format_alert(coin: str, side: str, alert_type: str,
                  price: float, entry: float, sl: float,
                  tp1: float, tp2: float, tp3: float,
                  new_sl: float = None, score: int = 0) -> str:
+    """
+    格式化警報訊息（完全匹配圖片格式）
+    """
     arrow = "🟢" if side=="LONG" else "🔴"
     st    = "多" if side=="LONG" else "空"
+    
     if alert_type == "ENTRY":
+        # ✅ 圖片格式進場提醒
         sl_pct  = abs(entry - sl) / entry * 100
         tp1_pct = abs(tp1 - entry) / entry * 100
-        sign    = "+" if side=="LONG" else "-"
         sl_sign = "-" if side=="LONG" else "+"
+        sign    = "+" if side=="LONG" else "-"
+        
         return (
-            f"✅ *進場提醒* — #{coin} {arrow}{st}\n"
+            f"🟢 *進場提醒 — #{coin}* {arrow} {st}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"📌 進場價  `{entry:.4f}`\n"
-            f"🛑 止損    `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)\n"
-            f"🥇 TP1     `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
-            f"🥈 TP2     `{tp2:.4f}`\n"
-            f"🏆 TP3     `{tp3:.4f}`\n"
+            f"📌 進場價    `{entry:.4f}`\n"
+            f"🔴 止損      `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)\n"
+            f"🥇 TP1       `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
+            f"🥈 TP2       `{tp2:.4f}`\n"
+            f"🏆 TP3       `{tp3:.4f}`\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"📊 評分 {score}分  |  當前 `{price:.4f}`\n"
-            f"💡 價格已到達進場區，請確認進場！"
+            f"💡 *價格已到達進場區，請確認進場！*"
         )
+        
     elif alert_type == "TP1":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
@@ -939,6 +946,7 @@ def format_alert(coin: str, side: str, alert_type: str,
             f"🎯 繼續等 TP2  `{tp2:.4f}`\n"
             f"🏆 最終 TP3    `{tp3:.4f}`"
         )
+        
     elif alert_type == "TP2":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
@@ -950,6 +958,7 @@ def format_alert(coin: str, side: str, alert_type: str,
             f"🛡 止損已移至 TP1 `{new_sl:.4f}`（鎖利）\n"
             f"🏆 繼續持有等 TP3  `{tp3:.4f}` 🎉"
         )
+        
     elif alert_type == "TP3":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
@@ -959,6 +968,7 @@ def format_alert(coin: str, side: str, alert_type: str,
             f"🏆 TP3  `{tp3:.4f}`  完美收割！\n"
             f"建議全部平倉，恭喜獲利 🎉🎉🎉"
         )
+        
     elif alert_type == "SL":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         is_be = new_sl is not None and abs(new_sl - entry) < entry * 0.0001
