@@ -908,28 +908,24 @@ def format_alert(coin: str, side: str, alert_type: str,
                  price: float, entry: float, sl: float,
                  tp1: float, tp2: float, tp3: float,
                  new_sl: float = None, score: int = 0) -> str:
-    """
-    格式化警報訊息（完全匹配圖片格式）
-    """
+    """格式化警報訊息（匹配圖片簡潔風格）"""
     arrow = "🟢" if side=="LONG" else "🔴"
     st    = "多" if side=="LONG" else "空"
     
     if alert_type == "ENTRY":
-        # ✅ 圖片格式進場提醒
         sl_pct  = abs(entry - sl) / entry * 100
         tp1_pct = abs(tp1 - entry) / entry * 100
         sl_sign = "-" if side=="LONG" else "+"
         sign    = "+" if side=="LONG" else "-"
-        
         return (
             f"🟢 *進場提醒 — #{coin}* {arrow} {st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"📌 進場價    `{entry:.4f}`\n"
             f"🔴 止損      `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)\n"
             f"🥇 TP1       `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
             f"🥈 TP2       `{tp2:.4f}`\n"
             f"🏆 TP3       `{tp3:.4f}`\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"📊 評分 {score}分  |  當前 `{price:.4f}`\n"
             f"💡 *價格已到達進場區，請確認進場！*"
         )
@@ -938,10 +934,10 @@ def format_alert(coin: str, side: str, alert_type: str,
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🎯 *TP1 到達！保本移損* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
-            f"🎯 TP1  `{tp1:.4f}`  已到\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
+            f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
+            f"🎯 TP1  `{tp1:.4f}`  ✅\n"
+            f"{'━' * 30}\n"
             f"🛡 止損已移至成本 `{new_sl:.4f}`\n"
             f"🎯 繼續等 TP2  `{tp2:.4f}`\n"
             f"🏆 最終 TP3    `{tp3:.4f}`"
@@ -951,10 +947,10 @@ def format_alert(coin: str, side: str, alert_type: str,
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🎯 *TP2 到達！移損至TP1* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
-            f"🥈 TP2  `{tp2:.4f}`  已到\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
+            f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
+            f"🥈 TP2  `{tp2:.4f}`  ✅\n"
+            f"{'━' * 30}\n"
             f"🛡 止損已移至 TP1 `{new_sl:.4f}`（鎖利）\n"
             f"🏆 繼續持有等 TP3  `{tp3:.4f}` 🎉"
         )
@@ -963,10 +959,11 @@ def format_alert(coin: str, side: str, alert_type: str,
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🏆 *TP3 全部到達！* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
-            f"🏆 TP3  `{tp3:.4f}`  完美收割！\n"
-            f"建議全部平倉，恭喜獲利 🎉🎉🎉"
+            f"{'━' * 30}\n"
+            f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
+            f"🏆 TP3  `{tp3:.4f}`  ✅ 完美收割！\n"
+            f"{'━' * 30}\n"
+            f"🎉 建議全部平倉，恭喜獲利！"
         )
         
     elif alert_type == "SL":
@@ -975,9 +972,10 @@ def format_alert(coin: str, side: str, alert_type: str,
         label = "🛡 保本止損" if is_be else "🛑 止損"
         return (
             f"{label} 觸發 — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
             f"🛑 止損  `{sl:.4f}`  已觸發\n"
+            f"{'━' * 30}\n"
             f"{'✅ 保本出場，不虧！' if is_be else '⚠️ 請確認平倉'}"
         )
     return ""
@@ -1057,7 +1055,7 @@ class WinRateTracker:
         s = self._stats(trades)
         if not s:
             return (f"📊 *今日戰報 {date_str}*\n"
-                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"{'━' * 30}\n"
                     f"😴 今日暫無已結算訊號\n"
                     f"💡 持續掃描中...")
         grade = ("🏆 優秀" if s["win_rate"]>=70 else
@@ -1065,16 +1063,16 @@ class WinRateTracker:
                  "⚠️ 一般" if s["win_rate"]>=40 else "❌ 待改善")
         return (
             f"📊 *今日戰報 {date_str}*\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"🎯 訊號總數：{s['total']} 筆  {grade}\n"
             f"✅ 勝：{s['wins']}  ❌ 敗：{s['losses']}  ⚖️ 保本：{s['be']}\n"
             f"📈 *勝率：{s['win_rate']:.1f}%*\n"
             f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
             f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
             f"⚡ 期望值：{s['expectancy']:+.2f}%/筆\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"{self._trade_lines(trades)}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"🤖 Alpha Oracle v9.0 明日繼續！"
         )
 
@@ -1084,7 +1082,7 @@ class WinRateTracker:
         s = self._stats(trades)
         if not s:
             return (f"📅 *月度戰報 {month_str}*\n"
-                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"{'━' * 30}\n"
                     f"😴 本月暫無已結算訊號")
         coin_stats: dict = {}
         for t in trades:
@@ -1100,22 +1098,22 @@ class WinRateTracker:
                  "⚠️ 普通" if s["win_rate"]>=40 else "❌ 需優化")
         return (
             f"📅 *月度戰報 {month_str}*\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"🎯 本月訊號：{s['total']} 筆  {grade}\n"
             f"✅ 勝：{s['wins']}  ❌ 敗：{s['losses']}  ⚖️ 保本：{s['be']}\n"
             f"📈 *月勝率：{s['win_rate']:.1f}%*\n"
             f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
             f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
             f"⚡ 月期望值：{s['expectancy']:+.2f}%/筆\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{'━' * 30}\n"
             f"🏅 各幣種：\n" + "\n".join(coin_lines) +
-            f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"\n{'━' * 30}\n"
             f"🤖 Alpha Oracle v9.0 下月繼續！"
         )
 
 
 # ─────────────────────────────────────────────────────────
-# 15. SignalTracker — 進場/TP/SL 監控（核心修正）
+# 15. SignalTracker — 進場/TP/SL 監控（核心修復版）
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     """
@@ -1205,7 +1203,13 @@ class SignalTracker:
         if status == "PENDING":
             age_h = (time.time() - sig["created"]) / 3600
             if age_h > SIGNAL_EXPIRE_HOURS:
-                send_tg(f"⏰ *訊號過期* #{coin} {side}\n進場 `{entry:.4f}` 超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
+                arrow = "🟢" if side=="LONG" else "🔴"
+                msg = (f"⏰ *訊號過期*  #{coin}\n"
+                       f"{'━' * 25}\n"
+                       f"{arrow} {side} {sig['tf']}\n"
+                       f"進場 `{entry:.4f}`\n"
+                       f"超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
+                send_tg(msg)
                 return True
 
         # ── PENDING → 進場 ──────────────────
@@ -1214,7 +1218,19 @@ class SignalTracker:
                        (side=="SHORT" and price >= entry*(1-ENTRY_TOLERANCE)))
             if entered:
                 self.update(key, status="ACTIVE")
-                send_tg(format_alert(coin, side, "ENTRY", price, entry, sl, tp1, tp2, tp3, score=sig["score"]))
+                arrow = "🟢" if side=="LONG" else "🔴"
+                msg = (f"✅ *已進場*  #{coin}\n"
+                       f"{'━' * 25}\n"
+                       f"{arrow} {side} {sig['tf']}  [{sig['score']}分]\n"
+                       f"{'━' * 25}\n"
+                       f"📌 進場  `{entry:.4f}`\n"
+                       f"🛑 SL    `{sl:.4f}`\n"
+                       f"🥇 TP1   `{tp1:.4f}`\n"
+                       f"🥈 TP2   `{tp2:.4f}`\n"
+                       f"🏆 TP3   `{tp3:.4f}`\n"
+                       f"{'━' * 25}\n"
+                       f"💡 *開始追蹤止損/獲利*")
+                send_tg(msg)
                 logging.info(f"  ✅ 進場: {key} @ {price:.4f}")
             return False
 
@@ -1225,9 +1241,19 @@ class SignalTracker:
         if sl_hit:
             is_be = (status == "BE")  # 判斷是否為保本止損
             ct    = "BE" if is_be else "SL"
+            arrow = "🟢" if side=="LONG" else "🔴"
+            
             # 發送止損通知（顯示保本/原損）
-            send_tg(format_alert(coin, side, "SL", price, entry, sl, tp1, tp2, tp3,
-                                 new_sl=entry if is_be else None))
+            msg = (f"{'🛡 *保本止損*' if is_be else '🛑 *止損觸發*'}  #{coin}\n"
+                   f"{'━' * 25}\n"
+                   f"{arrow} {side} {sig['tf']}\n"
+                   f"{'━' * 25}\n"
+                   f"📉 當前價  `{price:.4f}`\n"
+                   f"{'🛑 SL' if not is_be else '🛡 SL'}    `{sl:.4f}`\n"
+                   f"{'━' * 25}\n"
+                   f"{'✅ 保本出場，不虧！' if is_be else '⚠️ 已平倉，等待下次機會'}")
+            send_tg(msg)
+            
             # 記錄交易結果
             self._close(sig, price, ct)
             logging.info(f"  🛑 止損({ct}): {key} @ {price:.4f}")
@@ -1235,7 +1261,20 @@ class SignalTracker:
 
         # ── TP3 到達（全部平倉）──────────────
         if ((side=="LONG" and price>=tp3) or (side=="SHORT" and price<=tp3)):
-            send_tg(format_alert(coin, side, "TP3", price, entry, sl, tp1, tp2, tp3))
+            pnl = ((price - entry) / entry * 100) if side=="LONG" else ((entry - price) / entry * 100)
+            arrow = "🟢" if side=="LONG" else "🔴"
+            msg = (f"🏆 *TP3 全部到達！*  #{coin}\n"
+                   f"{'━' * 25}\n"
+                   f"{arrow} {side} {sig['tf']}  [{sig['score']}分]\n"
+                   f"{'━' * 25}\n"
+                   f"📈 當前價  `{price:.4f}`\n"
+                   f"💰 獲利   `{pnl:+.2f}%`\n"
+                   f"{'━' * 25}\n"
+                   f"🏆 TP3   `{tp3:.4f}`\n"
+                   f"{'━' * 25}\n"
+                   f"🎉 *完美收割！建議全部平倉*")
+            send_tg(msg)
+            
             self._close(sig, tp3, "TP3")
             logging.info(f"  🏆 TP3: {key} @ {price:.4f}")
             return True  # ✅ 訊號結束，移除
@@ -1243,10 +1282,26 @@ class SignalTracker:
         # ── TP2 到達（移損至TP1，繼續追蹤）────
         if ((side=="LONG" and price>=tp2) or (side=="SHORT" and price<=tp2)):
             if not sig.get("hit_tp2"):
+                pnl = ((price - entry) / entry * 100) if side=="LONG" else ((entry - price) / entry * 100)
+                arrow = "🟢" if side=="LONG" else "🔴"
+                
                 # 更新：標記TP2已達 + 止損移至TP1 + 狀態改為TRAIL
                 self.update(key, hit_tp2=True, sl=tp1, status="TRAIL")
+                
                 # 發送通知（包含新止損價）
-                send_tg(format_alert(coin, side, "TP2", price, entry, sl, tp1, tp2, tp3, new_sl=tp1))
+                msg = (f"🎯 *TP2 到達！*  #{coin}\n"
+                       f"{'━' * 25}\n"
+                       f"{arrow} {side} {sig['tf']}\n"
+                       f"{'━' * 25}\n"
+                       f"📈 當前價  `{price:.4f}`\n"
+                       f"💰 獲利   `{pnl:+.2f}%`\n"
+                       f"{'━' * 25}\n"
+                       f"🥈 TP2   `{tp2:.4f}`  ✅\n"
+                       f"🛡 新SL   `{tp1:.4f}`  (鎖利)\n"
+                       f"{'━' * 25}\n"
+                       f"🏆 繼續持有等 TP3  `{tp3:.4f}`")
+                send_tg(msg)
+                
                 # 記錄TP2獲利（但不關閉訊號）
                 self._close(sig, tp2, "TP2")
                 logging.info(f"  🥈 TP2: {key} @ {price:.4f} | SL移至 {tp1:.4f}")
@@ -1255,10 +1310,27 @@ class SignalTracker:
         # ── TP1 到達（移損至保本，繼續追蹤）──
         if ((side=="LONG" and price>=tp1) or (side=="SHORT" and price<=tp1)):
             if not sig.get("hit_tp1"):
+                pnl = ((price - entry) / entry * 100) if side=="LONG" else ((entry - price) / entry * 100)
+                arrow = "🟢" if side=="LONG" else "🔴"
+                
                 # 更新：標記TP1已達 + 止損移至開倉價 + 狀態改為BE
                 self.update(key, hit_tp1=True, sl=entry, status="BE")
+                
                 # 發送通知（包含新止損價=保本）
-                send_tg(format_alert(coin, side, "TP1", price, entry, sl, tp1, tp2, tp3, new_sl=entry))
+                msg = (f"🎯 *TP1 到達！*  #{coin}\n"
+                       f"{'━' * 25}\n"
+                       f"{arrow} {side} {sig['tf']}\n"
+                       f"{'━' * 25}\n"
+                       f"📈 當前價  `{price:.4f}`\n"
+                       f"💰 獲利   `{pnl:+.2f}%`\n"
+                       f"{'━' * 25}\n"
+                       f"🥇 TP1   `{tp1:.4f}`  ✅\n"
+                       f"🛡 SL移至 `{entry:.4f}`  (保本)\n"
+                       f"{'━' * 25}\n"
+                       f"🥈 繼續等 TP2  `{tp2:.4f}`\n"
+                       f"🏆 最終 TP3    `{tp3:.4f}`")
+                send_tg(msg)
+                
                 # 記錄TP1獲利（但不關閉訊號）
                 self._close(sig, tp1, "TP1")
                 logging.info(f"  🥇 TP1: {key} @ {price:.4f} | SL移至保本 {entry:.4f}")
@@ -1277,16 +1349,37 @@ class SignalTracker:
         if to_remove: logging.info(f"  移除 {len(to_remove)} 筆已關閉訊號")
 
     def status_summary(self) -> str:
+        """格式化追蹤中訊號（匹配圖片簡潔風格）"""
         items = self.list_active()
-        if not items: return "📭 目前無追蹤中訊號"
-        lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*\n━━━━━━━━━━━━━━"]
+        if not items: 
+            return "📭 目前無追蹤中訊號"
+        
+        lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*\n{'━' * 30}"]
+        
         for key, s in items:
             coin  = s["instId"].split("-")[0]
             arrow = "🟢" if s["side"]=="LONG" else "🔴"
-            em    = {"PENDING":"⏳","ACTIVE":"🔵","BE":"🛡","TRAIL":"🔁"}.get(s["status"],"❓")
-            lines.append(f"{em} #{coin} {arrow}{s['side']} {s['tf']}  "
-                         f"E:`{s['entry']:.4f}`  SL:`{s['sl']:.4f}`  "
-                         f"TP1:`{s['tp1']:.4f}`  [{s['score']}分]")
+            status_emoji = {"PENDING":"⏳","ACTIVE":"🔵","BE":"🛡","TRAIL":"🔁"}.get(s["status"],"❓")
+            
+            # 第一行：狀態 + 幣種 + 方向 + 時間框架
+            line1 = f"{status_emoji} #{coin} {arrow} {s['side']} {s['tf']}"
+            
+            # 第二行：Entry + SL
+            line2 = f"E:{s['entry']:.4f}  SL:{s['sl']:.4f}"
+            
+            # 第三行：TP1 + 分數
+            line3 = f"TP1:{s['tp1']:.4f}  {s['score']}分"
+            
+            # 如果有達成目標，加上標記
+            if s.get("hit_tp1") and s.get("hit_tp2"):
+                lines.append(f"{line1}\n{line2}\n{line3} ✅🥈🏆\nTP2:{s['tp2']:.4f}  TP3:{s['tp3']:.4f}")
+            elif s.get("hit_tp1"):
+                lines.append(f"{line1}\n{line2}\n{line3} ✅\nTP2:{s['tp2']:.4f}  TP3:{s['tp3']:.4f}")
+            else:
+                lines.append(f"{line1}\n{line2}\n{line3}")
+            
+            lines.append("━" * 30)
+        
         return "\n".join(lines)
 
 
