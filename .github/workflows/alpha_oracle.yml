@@ -1,64 +1,35 @@
-name: Alpha Oracle v9.0
+# config.yaml — Alpha Oracle v10.0 配置檔案
+scan:
+  timeframes: ["15m", "30m"]
+  max_signals_per_run: 20
+  score_threshold: 75
+  parallel_workers: 12
+  cache_ttl_seconds: 30
 
-on:
-  schedule:
-    - cron: "*/15 1-5 * * *"    # 亞洲盤 每15分鐘
-    - cron: "*/15 13-17 * * *"  # 歐美盤 每15分鐘
-    - cron: "5 0 * * *"         # 每日戰報 00:05 UTC
-    - cron: "10 0 1 * *"        # 月度戰報 每月1日 00:10 UTC
-  workflow_dispatch:
+risk:
+  risk_per_trade_pct: 1.0
+  max_correlation_exposure: 3
+  volatility_adjustment: true
+  max_total_exposure_pct: 12.0
 
-permissions:
-  contents: write
+orderflow:
+  crossline_body_ratio: 0.30
+  sweep_volume_ratio: 1.8
+  sweep_consecutive_moves: 2
+  absorption_vol_multiplier: 1.8
+  absorption_price_threshold: 0.002
 
-jobs:
-  alpha-oracle:
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
+precision:
+  volatility_hard_limit: 0.035
+  atr_sl_mult: 1.5
+  rsi_period: 14
+  adx_period: 14
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+monitor:
+  entry_tolerance: 0.002
+  signal_expire_hours: 24
+  check_interval_seconds: 30
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          # ✅ 已移除 cache 設定，避免找不到 requirements.txt 報錯
-
-      - name: Install dependencies
-        run: pip install requests pandas numpy
-
-      - name: Determine mode
-        id: mode
-        run: |
-          HOUR=$(date -u +%H)
-          MIN=$(date -u +%M)
-          DAY=$(date -u +%d)
-          if [ "$DAY" = "01" ] && [ "$HOUR" = "00" ] && [ "$MIN" -ge "10" ] && [ "$MIN" -lt "20" ]; then
-            echo "mode=monthly_report" >> $GITHUB_OUTPUT
-          elif [ "$HOUR" = "00" ] && [ "$MIN" -ge "05" ] && [ "$MIN" -lt "15" ]; then
-            echo "mode=daily_report" >> $GITHUB_OUTPUT
-          else
-            echo "mode=scan" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Run Alpha Oracle
-        env:
-          TG_TOKEN:    ${{ secrets.TG_TOKEN }}
-          CHAT_ID:     ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "6"
-        run: python main.py --mode ${{ steps.mode.outputs.mode }}
-
-      - name: Commit state files
-        if: always()
-        run: |
-          git config user.name  "alpha-oracle[bot]"
-          git config user.email "alpha-oracle[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
-          git diff --staged --quiet && echo "No changes" || \
-            git commit -m "bot: update state [skip ci]" && git push
-        continue-on-error: true
+telegram:
+  enable_commands: true
+  stats_chart_enabled: true
