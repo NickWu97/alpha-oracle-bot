@@ -40,7 +40,6 @@ on:
     paths:
       - 'main.py'
       - 'config.yaml'
-      - 'requirements.txt'
       - '.github/workflows/alpha_oracle.yml'
 
 # ═══════════════════════════════════════════════════════════════
@@ -69,15 +68,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+          # ❌ 已移除 cache: 'pip' 以避免找不到 requirements.txt 時報錯
+          # 如果需要快取，請確保專案根目錄有 requirements.txt 檔案
 
       # 3. 安裝依賴
       - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt || true
-          # 安裝 v10.0 新增的選配套件
-          pip install pyyaml matplotlib requests pandas numpy
+          
+          # 嘗試安裝 requirements.txt，如果不存在則忽略錯誤並安裝基礎庫
+          if [ -f requirements.txt ]; then
+            echo "📄 發現 requirements.txt，正在安裝..."
+            pip install -r requirements.txt
+          else
+            echo "⚠️ 未發現 requirements.txt，安裝基礎依賴庫..."
+            pip install requests pandas numpy pyyaml matplotlib
+          fi
 
       # 4. 自動生成配置檔（若不存在）
       - name: 📂 Prepare Config & Directories
