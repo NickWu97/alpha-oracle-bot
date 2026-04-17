@@ -1,420 +1,166 @@
+name: Alpha Oracle Bot
+
 # ═══════════════════════════════════════════════════════════════
-# Alpha Oracle v10.0 — 配置檔案
-# 說明：所有參數修改後無需重啟，支援熱重載（loop 模式每輪掃描自動讀取）
-# 使用：python main.py --config config.yaml --mode loop
+# 觸發條件
 # ═══════════════════════════════════════════════════════════════
+on:
+  # ✅ 手動觸發（點擊 Run workflow 按鈕）
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '執行模式 (scan=掃描一次 / stats=發送績效)'
+        required: true
+        default: 'scan'
+        type: choice
+        options:
+          - scan
+          - stats
+          - daily_report
+      all_coins:
+        description: '掃描所有 OKX 合約（預設僅主流幣）'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      max_signals:
+        description: '本輪最大發送訊號數'
+        required: false
+        default: '15'
+        type: number
 
-# ─────────────────────────────────────────────────────────
-# 🔍 掃描設定
-# ─────────────────────────────────────────────────────────
-scan:
-  # 掃描時間框架（支援多時框同時掃描）
-  timeframes:
-    - "15m"
-    - "30m"
-  
-  # 每輪掃描最大發送訊號數（避免訊息轟炸）
-  max_signals_per_run: 15
-  
-  # 進場評分門檻（75 分以上才發送）
-  score_threshold: 75
-  
-  # 並行請求工作數（建議：幣種數/10，最大不超過 20）
-  parallel_workers: 12
-  
-  # API 快取存活時間（秒）— 相同請求在時間內直接回傳快取
-  cache_ttl_seconds: 30
-  
-  # 是否自動抓取所有 OKX 合約（true=全市場，false=只用 ALL_COINS 列表）
-  auto_fetch_all_coins: false
-  
-  # 最小 24h 成交量過濾（USDT，避免低流動性幣種）
-  min_volume_24h_usdt: 1000000
-  
-  # 幣種黑名單（不會掃描這些幣）
-  blacklist_coins:
-    - "3L-USDT-SWAP"
-    - "3S-USDT-SWAP"
-    - "5L-USDT-SWAP"
-    - "5S-USDT-SWAP"
-    - "BTC-UP-USDT-SWAP"
-    - "BTC-DOWN-USDT-SWAP"
-  
-  # 幣種白名單（如果設定，則只掃描這些幣，忽略其他）
-  # whitelist_coins:
-  #   - "BTC-USDT-SWAP"
-  #   - "ETH-USDT-SWAP"
-  #   - "SOL-USDT-SWAP"
+  # ⏰ 定時觸發（每 10 分鐘執行一次掃描）
+  schedule:
+    - cron: '*/10 * * * *'
 
-# ─────────────────────────────────────────────────────────
-# 🛡️ 風險管理設定
-# ─────────────────────────────────────────────────────────
-risk:
-  # 每筆交易風險佔帳戶百分比（建議 0.5-2.0%）
-  risk_per_trade_pct: 1.0
-  
-  # 相關幣種最大同時持倉數（避免過度曝險於單一板塊）
-  # 例如：BTC/ETH/ARB 相關性>0.7，最多同時持倉 3 個
-  max_correlation_exposure: 3
-  
-  # 相關性閾值（>此值視為高度相關）
-  correlation_threshold: 0.7
-  
-  # 是否啟用波動率動態倉位調整
-  volatility_adjustment: true
-  
-  # 基準波動率（ATR/價格），超過則開始降倉
-  base_volatility: 0.015
-  
-  # 波動率調整係數（每超過基準 1%，倉位減少此百分比）
-  volatility_adjust_factor: 20.0
-  
-  # 最小倉位限制（USDT），避免計算出過小倉位
-  min_position_size_usdt: 10.0
-  
-  # 總曝險上限（所有持倉風險總和不超過帳戶的此百分比）
-  max_total_exposure_pct: 12.0
-  
-  # 連續虧損停損（連續虧損此次數後暫停掃描 1 小時）
-  max_consecutive_losses: 5
-  
-  # 單日最大虧損上限（%），觸發後暫停掃描至次日
-  daily_loss_limit_pct: 5.0
+  # 📦 Push 觸發（程式碼更新時自動測試）
+  push:
+    branches: [main]
+    paths:
+      - 'main.py'
+      - 'config.yaml'
+      - 'requirements.txt'
+      - '.github/workflows/alpha_oracle.yml'
 
-# ─────────────────────────────────────────────────────────
-# 📊 訂單流參數
-# ─────────────────────────────────────────────────────────
-orderflow:
-  # 十字線：實體/總範圍比例（越小越像十字線）
-  crossline_body_ratio: 0.30
-  
-  # 主動掃單：成交量需大於均量的倍數
-  sweep_volume_ratio: 1.8
-  
-  # 主動掃單：連續同方向移動的 K 線數
-  sweep_consecutive_moves: 2
-  
-  # 吸收信號：成交量需大於均量的倍數
-  absorption_vol_multiplier: 1.8
-  
-  # 吸收信號：價格變動上限（%）
-  absorption_price_threshold: 0.002
-  
-  # 釣魚單過濾：價格移動下限（%）
-  fishing_price_move_threshold: 0.005
-  
-  # 釣魚單過濾：成交量低於均量的比例
-  fishing_vol_ratio_threshold: 0.75
+# ═══════════════════════════════════════════════════════════════
+# 環境變數
+# ═══════════════════════════════════════════════════════════════
+env:
+  PYTHON_VERSION: '3.11'
+  TZ: 'Asia/Taipei'
+  PIP_DISABLE_PIP_VERSION_CHECK: 1
 
-# ─────────────────────────────────────────────────────────
-# 🎯 精度分析參數
-# ─────────────────────────────────────────────────────────
-precision:
-  # 極端波動上限（ATR/價格），超過則跳過該幣
-  volatility_hard_limit: 0.035
-  
-  # 止損 ATR 倍數（SL = Entry ± ATR × 此值）
-  atr_sl_mult: 1.5
-  
-  # RSI 計算週期
-  rsi_period: 14
-  
-  # RSI 背離確認閾值（差值需大於此值）
-  rsi_divergence_threshold: 3.0
-  
-  # ADX 計算週期
-  adx_period: 14
-  
-  # ADX 趨勢強度分界
-  adx_trend_threshold: 25
-  adx_strong_threshold: 40
-  
-  # 擺動點檢測參數
-  swing_lookback: 80
-  swing_n: 3
-  
-  # 流動性池檢測參數
-  liquidity_lookback: 60
-  liquidity_sweep_atr_mult: 0.05
-  
-  # OB/FVG 檢測參數
-  ob_fvg_lookback: 60
-  ob_min_strength_atr: 1.5
-  fvg_tolerance_atr: 0.3
+# ═══════════════════════════════════════════════════════════════
+# 工作定義
+# ═══════════════════════════════════════════════════════════════
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12  # 防止無限循環佔用額度
 
-# ─────────────────────────────────────────────────────────
-# ⏱️ 監控設定
-# ─────────────────────────────────────────────────────────
-monitor:
-  # 進場容許誤差（價格在 Entry ± 此範圍內視為可進場）
-  entry_tolerance: 0.002
-  
-  # 訊號過期時間（小時），超過未進場則自動移除
-  signal_expire_hours: 24
-  
-  # 監控檢查間隔（秒），多久檢查一次 TP/SL
-  check_interval_seconds: 30
-  
-  # 價格抓取超時（秒）
-  price_fetch_timeout: 5
-  
-  # 是否啟用保本移損（TP1 到達後 SL 移至 Entry）
-  enable_break_even: true
-  
-  # 是否啟用鎖利移損（TP2 到達後 SL 移至 TP1）
-  enable_trailing_lock: true
-  
-  # 部分平倉比例（碰到反向區塊時平倉此比例）
-  partial_close_ratio: 0.5
+    steps:
+      # 1. 下載程式碼
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
 
-# ─────────────────────────────────────────────────────────
-# 💬 Telegram 設定
-# ─────────────────────────────────────────────────────────
-telegram:
-  # 是否啟用指令互動（/status, /stats 等）
-  enable_commands: true
-  
-  # 是否發送績效圖表（需要 matplotlib）
-  stats_chart_enabled: true
-  
-  # 圖表顯示天數
-  stats_chart_days: 30
-  
-  # 通知解析模式（Markdown 或 HTML）
-  parse_mode: "Markdown"
-  
-  # 發送超時（秒）
-  send_timeout: 15
-  
-  # 是否發送掃描完成摘要
-  send_scan_summary: true
-  
-  # 是否發送每日戰報（UTC 00:05）
-  enable_daily_report: true
-  daily_report_time_utc: "00:05"
-  
-  # 是否發送月度戰報（每月 1 日 UTC 00:10）
-  enable_monthly_report: true
-  monthly_report_time_utc: "00:10"
-  
-  # 戰報等級閾值
-  report_grade_thresholds:
-    excellent: 70    # 勝率>=70% 顯示🏆優秀
-    good: 55         # 勝率>=55% 顯示✅良好
-    average: 40      # 勝率>=40% 顯示⚠️一般
+      # 2. 設定 Python 環境
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
 
-# ─────────────────────────────────────────────────────────
-# 📁 檔案與日誌設定
-# ─────────────────────────────────────────────────────────
-files:
-  # 活躍訊號儲存路徑
-  active_signals_file: "active_signals.json"
-  
-  # 交易歷史儲存路徑
-  trade_history_file: "trade_history.json"
-  
-  # 日誌檔案路徑
-  log_file: "alpha_oracle.log"
-  
-  # 日誌級別（DEBUG/INFO/WARNING/ERROR/CRITICAL）
-  log_level: "INFO"
-  
-  # 是否同時輸出到控制台
-  log_to_console: true
-  
-  # 日誌輪轉設定（避免檔案過大）
-  log_rotation:
-    enable: true
-    max_bytes: 10485760    # 10MB
-    backup_count: 5        # 保留 5 個備份
-  
-  # 績效圖表輸出路徑
-  stats_chart_path: "stats_chart.png"
+      # 3. 安裝依賴
+      - name: 📦 Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || true
+          # 安裝 v10.0 新增的選配套件
+          pip install pyyaml matplotlib requests pandas numpy
 
-# ─────────────────────────────────────────────────────────
-# 🔗 OKX API 設定
-# ─────────────────────────────────────────────────────────
-okx:
-  # API 基礎網址（一般不用改）
-  base_url: "https://www.okx.com"
-  
-  # 請求超時（秒）
-  request_timeout: 10
-  
-  # 重試設定
-  retry:
-    enable: true
-    max_attempts: 3
-    backoff_base: 1.0      # 指數退避基數（秒）
-    backoff_max: 10.0      # 最大等待時間（秒）
-  
-  # 速率限制（避免 429 錯誤）
-  rate_limit:
-    enable: true
-    requests_per_second: 5
-    burst: 10
+      # 4. 自動生成配置檔（若不存在）
+      - name: 📂 Prepare Config & Directories
+        run: |
+          mkdir -p logs
+          if [ ! -f config.yaml ]; then
+            echo "⚙️ 自動生成 config.yaml..."
+            cat > config.yaml << 'EOF'
+            scan:
+              timeframes: ["15m", "30m"]
+              max_signals_per_run: 15
+              score_threshold: 75
+              parallel_workers: 8
+              cache_ttl_seconds: 30
+            risk:
+              risk_per_trade_pct: 1.0
+              max_correlation_exposure: 3
+              volatility_adjustment: true
+              max_total_exposure_pct: 10.0
+            monitor:
+              entry_tolerance: 0.002
+              signal_expire_hours: 24
+              check_interval_seconds: 30
+            telegram:
+              enable_commands: false
+              stats_chart_enabled: true
+            EOF
+          fi
+          echo "✅ 環境準備完成"
 
-# ─────────────────────────────────────────────────────────
-# 🧠 策略邏輯開關
-# ─────────────────────────────────────────────────────────
-strategy:
-  # 是否要求進場需有流動性獵取動作（優質 OB 條件）
-  require_liquidity_sweep_for_ob: true
-  
-  # 是否要求進場需有 NSS 確認
-  require_nss_confirmation: true
-  
-  # NSS 判斷模式（短期/中期/長期）
-  nss_mode: "中期"
-  
-  # 是否啟用 4H 趨勢獎勵分
-  enable_4h_trend_bonus: true
-  
-  # 是否啟用 RSI 背離獎勵分
-  enable_rsi_divergence_bonus: true
-  
-  # 是否啟用 BTC 大盤偏向獎勵分
-  enable_btc_bias_bonus: true
-  
-  # 是否啟用 ADX 市場狀態獎勵分
-  enable_adx_bonus: true
-  
-  # 是否啟用 BOS/CHoCH 獎勵分
-  enable_bos_choch_bonus: true
-  
-  # 是否啟用 Premium/Discount 獎勵分
-  enable_pd_bonus: true
-  
-  # 硬過濾：反向盤口是否跳過
-  filter_reverse_orderbook: true
-  
-  # 硬過濾：反向資金費率是否跳過
-  filter_reverse_funding_rate: true
-  
-  # 硬過濾：反向 1H HTF 是否跳過
-  filter_reverse_htf: true
+      # 5. 執行機器人
+      - name: 🤖 Run Alpha Oracle
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS: ${{ github.event.inputs.max_signals || '15' }}
+        run: |
+          MODE="${{ github.event.inputs.mode || 'scan' }}"
+          ALL_COINS="${{ github.event.inputs.all_coins || 'false' }}"
+          
+          echo "🚀 啟動 Alpha Oracle v10.0"
+          echo "📊 模式: $MODE"
+          echo "🌍 全市場掃描: $ALL_COINS"
+          echo " 最大訊號數: $MAX_SIGNALS"
+          echo "━━━━━━━━━━━━━━━━━━━━━━"
+          
+          # 組合執行指令
+          CMD="python main.py --mode $MODE --config config.yaml"
+          
+          if [ "$ALL_COINS" = "true" ]; then
+            CMD="$CMD --all-coins"
+          fi
+          
+          # 執行並即時輸出日誌
+          $CMD 2>&1 | tee logs/runtime.log
+          
+          echo "━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ 執行完畢"
 
-# ─────────────────────────────────────────────────────────
-# 🎨 顯示與格式化設定
-# ─────────────────────────────────────────────────────────
-display:
-  # 是否顯示進場標籤
-  show_entry_labels: true
-  
-  # 是否顯示止盈止損線（僅限支援的介面）
-  show_tp_sl_lines: true
-  
-  # 是否顯示數學期望值面板
-  show_math_panel: true
-  
-  # 顏色設定（Telegram Markdown 不支援自訂顏色，此處預留）
-  colors:
-    ob_long: "green"
-    pb_short: "red"
-    nss_bullish: "green"
-    nss_bearish: "red"
-    tp1: "yellow"
-    tp2: "orange"
-    tp3: "green"
-    sl: "red"
-  
-  # 數字格式
-  format:
-    price_decimals: 4
-    pct_decimals: 2
-    pnl_decimals: 2
+      # 6. 上傳日誌與狀態檔（無論成功失敗都上傳）
+      - name: 📤 Upload Logs & State
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-oracle-artifacts-${{ github.run_id }}
+          path: |
+            logs/
+            alpha_oracle.log
+            trade_history.json
+            active_signals.json
+            stats_chart.png
+            config.yaml
+          retention-days: 3
+          overwrite: true
 
-# ─────────────────────────────────────────────────────────
-# ⚙️ 進階/開發設定
-# ─────────────────────────────────────────────────────────
-advanced:
-  # 是否啟用詳細日誌（會記錄每個評分項目）
-  verbose_logging: false
-  
-  # 是否模擬模式（不實際發送 Telegram，只寫日誌）
-  dry_run: false
-  
-  # 模擬模式下的虛擬帳戶餘額（用於倉位計算）
-  dry_run_equity: 10000.0
-  
-  # 是否啟用記憶體快取統計
-  enable_cache_stats: true
-  
-  # 快取統計輸出間隔（秒）
-  cache_stats_interval: 300
-  
-  # 是否自動清理過期快取
-  auto_cleanup_cache: true
-  
-  # 記憶體使用上限（MB），超過則清理部分快取
-  memory_limit_mb: 512
-
-# ─────────────────────────────────────────────────────────
-# 🔔 通知模板自訂（可選）
-# ─────────────────────────────────────────────────────────
-templates:
-  # 進場通知模板
-  entry: |
-    🟢 *進場提醒 — #{coin}* {arrow} {side}
-    {'━' * 30}
-    📌 進場價    `{entry:.4f}`
-    🔴 止損      `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)
-    🥇 TP1       `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)
-    🥈 TP2       `{tp2:.4f}`
-    🏆 TP3       `{tp3:.4f}`
-    {'━' * 30}
-    📊 評分 {score}分  |  當前 `{price:.4f}`
-    💡 *價格已到達進場區，請確認進場！*
-  
-  # TP1 通知模板
-  tp1: |
-    🎯 *TP1 到達！保本移損* — #{coin} {arrow}{side}
-    {'━' * 30}
-    當前價  `{price:.4f}`  ({pnl:+.2f}%)
-    🎯 TP1  `{tp1:.4f}`  已到
-    {'━' * 30}
-    🛡 止損已移至成本 `{new_sl:.4f}`
-    🎯 繼續等 TP2  `{tp2:.4f}`
-    🏆 最終 TP3    `{tp3:.4f}`
-  
-  # 止損通知模板
-  sl: |
-    {label} 觸發 — #{coin} {arrow}{side}
-    {'━' * 30}
-    當前價  `{price:.4f}`  ({pnl:+.2f}%)
-    🛑 止損  `{sl:.4f}`  已觸發
-    {'━' * 30}
-    {message}
-
-# ─────────────────────────────────────────────────────────
-# 📋 預設主流幣列表（當 auto_fetch_all_coins=false 時使用）
-# ─────────────────────────────────────────────────────────
-coins:
-  all_coins:
-    - "BTC-USDT-SWAP"
-    - "ETH-USDT-SWAP"
-    - "SOL-USDT-SWAP"
-    - "BNB-USDT-SWAP"
-    - "XRP-USDT-SWAP"
-    - "SUI-USDT-SWAP"
-    - "AVAX-USDT-SWAP"
-    - "LINK-USDT-SWAP"
-    - "APT-USDT-SWAP"
-    - "DOGE-USDT-SWAP"
-    - "ADA-USDT-SWAP"
-    - "DOT-USDT-SWAP"
-    - "MATIC-USDT-SWAP"
-    - "ARB-USDT-SWAP"
-    - "OP-USDT-SWAP"
-
-# ─────────────────────────────────────────────────────────
-# 🔐 安全提示（不要在此檔案儲存敏感資訊！）
-# ─────────────────────────────────────────────────────────
-# ⚠️ 重要：
-# 1. TG_TOKEN 和 CHAT_ID 請透過環境變數設定，不要寫在此檔案
-# 2. 此檔案可放心納入版本控制（.gitignore 已排除 .env）
-# 3. 生產環境建議設定檔案權限：chmod 600 config.yaml
-# 
-# 環境變數設定範例（.env 檔案）：
-# TG_TOKEN=123456789:AAHxxx...
-# CHAT_ID=-1001234567890
+      # 7. 失敗時發送 Telegram 通知
+      - name: 📢 Notify Failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "chat_id": "'"${{ secrets.CHAT_ID }}"'",
+              "text": "❌ *Alpha Oracle 執行失敗*\n\n請查看 GitHub Actions 日誌下載詳細錯誤。",
+              "parse_mode": "Markdown"
+            }'
