@@ -1,172 +1,167 @@
-name: Alpha Oracle Bot
+name: Alpha Oracle v9.0
 
-# ═══════════════════════════════════════════════════════════════
-# 觸發條件
-# ═══════════════════════════════════════════════════════════════
+# ════════════════════════════════════════════════════════════════
+# GitHub Actions 2000分鐘/月 預算規劃
+# ────────────────────────────────────────────────────────────────
+# 亞洲盤 UTC 01-05（台灣09-13）每15分鐘 → 4×5×31 = 620 runs
+# 歐美盤 UTC 13-17（台灣21-01）每15分鐘 → 4×5×31 = 620 runs
+# 每日戰報 UTC 00:05                     → 31 runs/月
+# 月度戰報 UTC 00:10 每月1日             → 1 run/月
+# ────────────────────────────────────────────────────────────────
+# 合計 ≈ 1272 runs × 1.5 分鐘 ≈ 1908 分鐘 < 2000 分鐘 ✓
+#
+# ⚠️  注意：private repo 每分鐘計 1 點，超過 2000 分鐘/月需付費
+#     如不想超額，請勿改回 */10 * * * * 的全天掃描！
+# ════════════════════════════════════════════════════════════════
 on:
-  # ✅ 手動觸發（點擊 Run workflow 按鈕）
-  workflow_dispatch:
+  schedule:
+    - cron: "*/15 1-5 * * *"    # 亞洲盤 UTC 01:00-05:59 每15分鐘
+    - cron: "*/15 13-17 * * *"  # 歐美盤 UTC 13:00-17:59 每15分鐘
+    - cron: "5 0 * * *"         # 每日戰報 UTC 00:05（台灣 08:05）
+    - cron: "10 0 1 * *"        # 月度戰報 每月1日 UTC 00:10
+
+  workflow_dispatch:             # 手動觸發（測試 / 緊急用）
     inputs:
       mode:
-        description: '執行模式 (scan=掃描一次 / stats=發送績效)'
+        description: "執行模式"
         required: true
-        default: 'scan'
+        default: "scan"
         type: choice
         options:
           - scan
-          - stats
           - daily_report
-      all_coins:
-        description: '掃描所有 OKX 合約（預設僅主流幣）'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
+          - monthly_report
+          - status
       max_signals:
-        description: '本輪最大發送訊號數'
+        description: "本輪最大訊號數（預設 6）"
         required: false
-        default: '15'
-        type: number
+        default: "6"
+        type: string
 
-  # ⏰ 定時觸發（每 10 分鐘執行一次掃描）
-  schedule:
-    - cron: '*/10 * * * *'
+permissions:
+  contents: write                # 允許 git push 寫入狀態檔案
 
-  # 📦 Push 觸發（程式碼更新時自動測試）
-  push:
-    branches: [main]
-    paths:
-      - 'main.py'
-      - 'config.yaml'
-      - '.github/workflows/alpha_oracle.yml'
-
-# ═══════════════════════════════════════════════════════════════
-# 環境變數
-# ═══════════════════════════════════════════════════════════════
-env:
-  PYTHON_VERSION: '3.11'
-  TZ: 'Asia/Taipei'
-  PIP_DISABLE_PIP_VERSION_CHECK: 1
-
-# ═══════════════════════════════════════════════════════════════
-# 工作定義
-# ═══════════════════════════════════════════════════════════════
 jobs:
-  run-bot:
+  alpha-oracle:
     runs-on: ubuntu-latest
-    timeout-minutes: 12  # 防止無限循環佔用額度
+    timeout-minutes: 8           # 防止意外無限循環，最多跑 8 分鐘
 
     steps:
-      # 1. 下載程式碼
-      - name: 📥 Checkout Repository
+      # ── 1. 取得最新程式碼（含上次 commit 的狀態檔）
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      # 2. 設定 Python 環境
-      - name: 🐍 Setup Python
+      # ── 2. Python 環境
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          # ❌ 已移除 cache: 'pip' 以避免找不到 requirements.txt 時報錯
-          # 如果需要快取，請確保專案根目錄有 requirements.txt 檔案
+          python-version: "3.11"
 
-      # 3. 安裝依賴
-      - name: 📦 Install Dependencies
+      # ── 3. 安裝依賴（無 requirements.txt 也能跑）
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          
-          # 嘗試安裝 requirements.txt，如果不存在則忽略錯誤並安裝基礎庫
           if [ -f requirements.txt ]; then
-            echo "📄 發現 requirements.txt，正在安裝..."
             pip install -r requirements.txt
           else
-            echo "⚠️ 未發現 requirements.txt，安裝基礎依賴庫..."
-            pip install requests pandas numpy pyyaml matplotlib
+            pip install requests pandas numpy
           fi
 
-      # 4. 自動生成配置檔（若不存在）
-      - name: 📂 Prepare Config & Directories
+      # ── 4. 判斷執行模式
+      #      手動觸發 → 用輸入的 mode
+      #      定時觸發 → 依時間自動判斷
+      - name: Determine mode
+        id: mode
         run: |
-          mkdir -p logs
-          if [ ! -f config.yaml ]; then
-            echo "⚙️ 自動生成 config.yaml..."
-            cat > config.yaml << 'EOF'
-            scan:
-              timeframes: ["15m", "30m"]
-              max_signals_per_run: 15
-              score_threshold: 75
-              parallel_workers: 8
-              cache_ttl_seconds: 30
-            risk:
-              risk_per_trade_pct: 1.0
-              max_correlation_exposure: 3
-              volatility_adjustment: true
-              max_total_exposure_pct: 10.0
-            monitor:
-              entry_tolerance: 0.002
-              signal_expire_hours: 24
-              check_interval_seconds: 30
-            telegram:
-              enable_commands: false
-              stats_chart_enabled: true
-            EOF
+          # 手動觸發時直接用使用者輸入
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
+            echo "max_signals=${{ github.event.inputs.max_signals || '6' }}" >> $GITHUB_OUTPUT
+            echo "[手動] mode=${{ github.event.inputs.mode }}"
+            exit 0
           fi
-          echo "✅ 環境準備完成"
 
-      # 5. 執行機器人
-      - name: 🤖 Run Alpha Oracle
+          # 定時觸發：依 UTC 時間自動選擇模式
+          HOUR=$(date -u +%H)
+          MIN=$(date -u +%M)
+          DAY=$(date -u +%d)
+
+          if [ "$DAY" = "01" ] && [ "$HOUR" = "00" ] && [ "$MIN" -ge "10" ] && [ "$MIN" -lt "20" ]; then
+            MODE="monthly_report"
+          elif [ "$HOUR" = "00" ] && [ "$MIN" -ge "05" ] && [ "$MIN" -lt "15" ]; then
+            MODE="daily_report"
+          else
+            MODE="scan"
+          fi
+
+          echo "mode=$MODE" >> $GITHUB_OUTPUT
+          echo "max_signals=6" >> $GITHUB_OUTPUT
+          echo "[自動] UTC ${HOUR}:${MIN} → mode=$MODE"
+
+      # ── 5. 執行機器人
+      - name: Run Alpha Oracle
         env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: ${{ github.event.inputs.max_signals || '15' }}
+          TG_TOKEN:    ${{ secrets.TG_TOKEN }}
+          CHAT_ID:     ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS: ${{ steps.mode.outputs.max_signals }}
         run: |
-          MODE="${{ github.event.inputs.mode || 'scan' }}"
-          ALL_COINS="${{ github.event.inputs.all_coins || 'false' }}"
-          
-          echo "🚀 啟動 Alpha Oracle v10.0"
-          echo "📊 模式: $MODE"
-          echo "🌍 全市場掃描: $ALL_COINS"
-          echo " 最大訊號數: $MAX_SIGNALS"
-          echo "━━━━━━━━━━━━━━━━━━━━━━"
-          
-          # 組合執行指令
-          CMD="python main.py --mode $MODE --config config.yaml"
-          
-          if [ "$ALL_COINS" = "true" ]; then
-            CMD="$CMD --all-coins"
-          fi
-          
-          # 執行並即時輸出日誌
-          $CMD 2>&1 | tee logs/runtime.log
-          
-          echo "━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ 執行完畢"
+          MODE="${{ steps.mode.outputs.mode }}"
+          echo "==============================="
+          echo "  Alpha Oracle v9.0"
+          echo "  mode        = $MODE"
+          echo "  max_signals = $MAX_SIGNALS"
+          echo "  time(UTC)   = $(date -u '+%Y-%m-%d %H:%M:%S')"
+          echo "==============================="
+          python main.py --mode "$MODE"
 
-      # 6. 上傳日誌與狀態檔（無論成功失敗都上傳）
-      - name: 📤 Upload Logs & State
+      # ── 6. 提交狀態檔案回 repo（讓下次 run 繼承訊號追蹤 & 交易歷史）
+      #      使用 [skip ci] 讓這次 commit 不觸發新的 workflow
+      - name: Commit state files
+        if: always()
+        run: |
+          git config user.name  "alpha-oracle[bot]"
+          git config user.email "alpha-oracle[bot]@users.noreply.github.com"
+          git remote set-url origin \
+            https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+          # 強制加入狀態檔（即使在 .gitignore 裡也能加）
+          git add -f active_signals.json trade_history.json 2>/dev/null || true
+          # log 選擇性加入（避免 log 太大）
+          git add -f alpha_oracle.log 2>/dev/null || true
+
+          # 只有有變動才 commit，避免空 commit
+          if git diff --staged --quiet; then
+            echo "No state changes to commit."
+          else
+            git commit -m "bot: update state [skip ci]"
+            git push
+            echo "State files committed successfully."
+          fi
+        continue-on-error: true  # git push 失敗不影響主流程
+
+      # ── 7. 上傳日誌 Artifact（方便手動查 log，保留 7 天）
+      - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: alpha-oracle-artifacts-${{ github.run_id }}
+          name: oracle-log-${{ github.run_id }}
           path: |
-            logs/
             alpha_oracle.log
-            trade_history.json
             active_signals.json
-            stats_chart.png
-            config.yaml
-          retention-days: 3
-          overwrite: true
+            trade_history.json
+          retention-days: 7
+          if-no-files-found: ignore
 
-      # 7. 失敗時發送 Telegram 通知
-      - name: 📢 Notify Failure
+      # ── 8. 執行失敗時發 Telegram 告警
+      - name: Notify on failure
         if: failure()
         run: |
-          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage" \
+          curl -s -X POST \
+            "https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage" \
             -H "Content-Type: application/json" \
             -d '{
               "chat_id": "'"${{ secrets.CHAT_ID }}"'",
-              "text": "❌ *Alpha Oracle 執行失敗*\n\n請查看 GitHub Actions 日誌下載詳細錯誤。",
+              "text": "❌ *Alpha Oracle 執行失敗*\n\n時間：'"$(date -u '+%Y-%m-%d %H:%M UTC')"'\n請到 GitHub Actions 查看錯誤日誌。",
               "parse_mode": "Markdown"
-            }'
+            }' || true
