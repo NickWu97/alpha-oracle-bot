@@ -3,21 +3,28 @@
 """
 Alpha Oracle v9.0 — 完整版（掃描 + 進場監控 + 勝率統計 + 每日/月報）
 ══════════════════════════════════════════════════════════════════════
-v9.0 核心功能：
-  ✅ 雙時框掃描（15m+30m）+ 75分進場門檻
-  ✅ 進場檢測 + TP/SL 動態追蹤 + 保本移損
-  ✅ WinRateTracker — 每筆交易持久化記錄
-  ✅ 每日戰報（00:05 UTC）+ 月度戰報（每月1日 00:10 UTC）
-  ✅ GitHub Actions 狀態持久化（每次掃描後 git commit）
+v8.1 全功能保留 + 新增：
+  ✅ WinRateTracker  — 記錄每筆交易勝敗，持久化到 trade_history.json
+  ✅ 每日戰報        — 00:05 UTC 自動發送（GitHub Actions cron）
+  ✅ 月度戰報        — 每月1日 00:10 UTC 自動發送
+  ✅ 每筆平倉通知    — TP1/TP2/TP3/SL 觸發時記錄並更新統計
+  ✅ 狀態持久化      — GitHub Actions 每次掃描後 git commit 狀態檔案
 
 ══ 執行模式 ══════════════════════════════════════
   python main.py                       → 掃描 + 監控一次（本地用）
   python main.py --mode scan           → 只掃描一次（GitHub Actions 用）
   python main.py --mode monitor        → 只監控活躍訊號
   python main.py --mode loop           → 定時掃描 + 持續監控（Render/VPS）
-  python main.py --mode daily_report   → 發送今日戰報
-  python main.py --mode monthly_report → 發送月度戰報
+  python main.py --mode daily_report   → 發送今日戰報（GitHub Actions 00:05 觸發）
+  python main.py --mode monthly_report → 發送月度戰報（GitHub Actions 每月1日觸發）
   python main.py --status              → 查詢目前追蹤中訊號
+
+══ GitHub Actions 2000分鐘/月 預算規劃 ══════════
+  亞洲盤（UTC 01-05）每15分鐘 = 4x5x31 = 620 run
+  歐美盤（UTC 13-17）每15分鐘 = 4x5x31 = 620 run
+  每次執行約 1~2 分鐘（pip 快取後約1分鐘）
+  每日戰報 + 每月戰報 各 1 run/天
+  合計約 1240 run x 1.5分 = 1860分 < 2000分 OK
 
 ══ 評分系統（100分，75分進場）══════════════════
   1H HTF Supertrend         20 分
@@ -908,75 +915,67 @@ def format_alert(coin: str, side: str, alert_type: str,
                  price: float, entry: float, sl: float,
                  tp1: float, tp2: float, tp3: float,
                  new_sl: float = None, score: int = 0) -> str:
-    """格式化警報訊息（匹配圖片簡潔風格）"""
     arrow = "🟢" if side=="LONG" else "🔴"
     st    = "多" if side=="LONG" else "空"
-    
     if alert_type == "ENTRY":
         sl_pct  = abs(entry - sl) / entry * 100
         tp1_pct = abs(tp1 - entry) / entry * 100
-        sl_sign = "-" if side=="LONG" else "+"
         sign    = "+" if side=="LONG" else "-"
+        sl_sign = "-" if side=="LONG" else "+"
         return (
-            f"🟢 *進場提醒 — #{coin}* {arrow} {st}\n"
-            f"{'━' * 30}\n"
-            f"📌 進場價    `{entry:.4f}`\n"
-            f"🔴 止損      `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)\n"
-            f"🥇 TP1       `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
-            f"🥈 TP2       `{tp2:.4f}`\n"
-            f"🏆 TP3       `{tp3:.4f}`\n"
-            f"{'━' * 30}\n"
+            f"✅ *進場提醒* — #{coin} {arrow}{st}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"📌 進場價  `{entry:.4f}`\n"
+            f"🛑 止損    `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)\n"
+            f"🥇 TP1     `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
+            f"🥈 TP2     `{tp2:.4f}`\n"
+            f"🏆 TP3     `{tp3:.4f}`\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"📊 評分 {score}分  |  當前 `{price:.4f}`\n"
-            f"💡 *價格已到達進場區，請確認進場！*"
+            f"💡 價格已到達進場區，請確認進場！"
         )
-        
     elif alert_type == "TP1":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🎯 *TP1 到達！保本移損* — #{coin} {arrow}{st}\n"
-            f"{'━' * 30}\n"
-            f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
-            f"🎯 TP1  `{tp1:.4f}`  ✅\n"
-            f"{'━' * 30}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
+            f"🎯 TP1  `{tp1:.4f}`  已到\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🛡 止損已移至成本 `{new_sl:.4f}`\n"
             f"🎯 繼續等 TP2  `{tp2:.4f}`\n"
             f"🏆 最終 TP3    `{tp3:.4f}`"
         )
-        
     elif alert_type == "TP2":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🎯 *TP2 到達！移損至TP1* — #{coin} {arrow}{st}\n"
-            f"{'━' * 30}\n"
-            f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
-            f"🥈 TP2  `{tp2:.4f}`  ✅\n"
-            f"{'━' * 30}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
+            f"🥈 TP2  `{tp2:.4f}`  已到\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🛡 止損已移至 TP1 `{new_sl:.4f}`（鎖利）\n"
             f"🏆 繼續持有等 TP3  `{tp3:.4f}` 🎉"
         )
-        
     elif alert_type == "TP3":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🏆 *TP3 全部到達！* — #{coin} {arrow}{st}\n"
-            f"{'━' * 30}\n"
-            f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
-            f"🏆 TP3  `{tp3:.4f}`  ✅ 完美收割！\n"
-            f"{'━' * 30}\n"
-            f"🎉 建議全部平倉，恭喜獲利！"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
+            f"🏆 TP3  `{tp3:.4f}`  完美收割！\n"
+            f"建議全部平倉，恭喜獲利 🎉🎉🎉"
         )
-        
     elif alert_type == "SL":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         is_be = new_sl is not None and abs(new_sl - entry) < entry * 0.0001
-        label = "🛡 保本止損" if is_be else "🛑 止損"
+        label = "保本止損" if is_be else "止損"
         return (
-            f"{label} 觸發 — #{coin} {arrow}{st}\n"
-            f"{'━' * 30}\n"
-            f"當前價  `{price:.4f}`  ({pnl:+.2f}%)\n"
+            f"🛑 *{label}觸發* — #{coin} {arrow}{st}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  ({pnl:.2f}%)\n"
             f"🛑 止損  `{sl:.4f}`  已觸發\n"
-            f"{'━' * 30}\n"
-            f"{'✅ 保本出場，不虧！' if is_be else '⚠️ 請確認平倉'}"
+            f"倉位已平，請確認出場！"
         )
     return ""
 
@@ -985,7 +984,10 @@ def format_alert(coin: str, side: str, alert_type: str,
 # 14. WinRateTracker — 勝率統計 & 戰報
 # ─────────────────────────────────────────────────────────
 class WinRateTracker:
-    """記錄每筆已結算交易，持久化到 trade_history.json"""
+    """
+    記錄每筆已結算交易，持久化到 trade_history.json。
+    close_type: TP1 / TP2 / TP3 (勝) | BE (保本平手) | SL (敗)
+    """
 
     def __init__(self, filepath: str = TRADE_HISTORY_FILE):
         self.filepath = filepath
@@ -1055,24 +1057,26 @@ class WinRateTracker:
         s = self._stats(trades)
         if not s:
             return (f"📊 *今日戰報 {date_str}*\n"
-                    f"{'━' * 30}\n"
-                    f"😴 今日暫無已結算訊號\n"
-                    f"💡 持續掃描中...")
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"今日暫無已結算訊號\n"
+                    f"持續掃描中... 💪\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"🤖 Alpha Oracle v9.0 持續監控中")
         grade = ("🏆 優秀" if s["win_rate"]>=70 else
                  "✅ 良好" if s["win_rate"]>=55 else
                  "⚠️ 一般" if s["win_rate"]>=40 else "❌ 待改善")
         return (
             f"📊 *今日戰報 {date_str}*\n"
-            f"{'━' * 30}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🎯 訊號總數：{s['total']} 筆  {grade}\n"
             f"✅ 勝：{s['wins']}  ❌ 敗：{s['losses']}  ⚖️ 保本：{s['be']}\n"
             f"📈 *勝率：{s['win_rate']:.1f}%*\n"
             f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
             f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
             f"⚡ 期望值：{s['expectancy']:+.2f}%/筆\n"
-            f"{'━' * 30}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"{self._trade_lines(trades)}\n"
-            f"{'━' * 30}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🤖 Alpha Oracle v9.0 明日繼續！"
         )
 
@@ -1082,8 +1086,9 @@ class WinRateTracker:
         s = self._stats(trades)
         if not s:
             return (f"📅 *月度戰報 {month_str}*\n"
-                    f"{'━' * 30}\n"
-                    f"😴 本月暫無已結算訊號")
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"本月暫無已結算訊號\n"
+                    f"持續掃描中... 💪")
         coin_stats: dict = {}
         for t in trades:
             cn = t["coin"]
@@ -1098,31 +1103,29 @@ class WinRateTracker:
                  "⚠️ 普通" if s["win_rate"]>=40 else "❌ 需優化")
         return (
             f"📅 *月度戰報 {month_str}*\n"
-            f"{'━' * 30}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🎯 本月訊號：{s['total']} 筆  {grade}\n"
             f"✅ 勝：{s['wins']}  ❌ 敗：{s['losses']}  ⚖️ 保本：{s['be']}\n"
             f"📈 *月勝率：{s['win_rate']:.1f}%*\n"
             f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
             f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
             f"⚡ 月期望值：{s['expectancy']:+.2f}%/筆\n"
-            f"{'━' * 30}\n"
-            f"🏅 各幣種：\n" + "\n".join(coin_lines) +
-            f"\n{'━' * 30}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🏅 各幣種：\n"
+            + "\n".join(coin_lines) +
+            f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🤖 Alpha Oracle v9.0 下月繼續！"
         )
 
 
 # ─────────────────────────────────────────────────────────
-# 15. SignalTracker — 進場/TP/SL 監控（核心修復版）
+# 15. SignalTracker — 進場/TP/SL 監控
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     """
-    追蹤活躍訊號，持久化到 JSON。
-    狀態流程：PENDING → ACTIVE → [BE → TRAIL] → CLOSED
-    ✅ TP1: 通知 + SL移至entry + 記錄TP1 + 繼續追蹤
-    ✅ TP2: 通知 + SL移至TP1 + 記錄TP2 + 繼續追蹤
-    ✅ TP3: 通知 + 記錄TP3 + 移除訊號
-    ✅ SL : 通知(保本/原損) + 記錄 + 移除訊號
+    追蹤活躍訊號，持久化到 JSON，監控進場/TP/SL 觸發。
+    平倉時自動寫入 WinRateTracker。
+    狀態：PENDING → ACTIVE → BE → TRAIL → (closed)
     """
 
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE,
@@ -1173,7 +1176,6 @@ class SignalTracker:
         with self._lock: return list(self.signals.items())
 
     def _close(self, sig: dict, close_price: float, close_type: str):
-        """記錄交易結果到 WinRateTracker（不移除訊號）"""
         if self.win_tracker:
             try:
                 self.win_tracker.record(
@@ -1185,158 +1187,66 @@ class SignalTracker:
                 logging.error(f"WinRateTracker.record: {e}")
 
     def check_one(self, key: str, sig: dict) -> bool:
-        """
-        檢查單一訊號狀態
-        返回 True = 訊號已結束（可移除），False = 繼續追蹤
-        """
         price = fetch_ticker_price(sig["instId"])
         if price <= 0: return False
-        
         coin   = sig["instId"].split("-")[0]
-        side   = sig["side"]
-        status = sig["status"]
-        entry  = sig["entry"]
-        sl     = sig["sl"]  # 動態止損（會隨TP調整）
+        side   = sig["side"]; status = sig["status"]
+        entry  = sig["entry"]; sl    = sig["sl"]
         tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
 
-        # ── 過期清理 ─────────────────────────
+        # 過期清理
         if status == "PENDING":
             age_h = (time.time() - sig["created"]) / 3600
             if age_h > SIGNAL_EXPIRE_HOURS:
-                arrow = "🟢" if side=="LONG" else "🔴"
-                msg = (f"⏰ *訊號過期*  #{coin}\n"
-                       f"{'━' * 25}\n"
-                       f"{arrow} {side} {sig['tf']}\n"
-                       f"進場 `{entry:.4f}`\n"
-                       f"超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
-                send_tg(msg)
+                send_tg(f"⏰ *訊號過期* #{coin} {side}\n"
+                        f"進場 `{entry:.4f}` 超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
                 return True
 
-        # ── PENDING → 進場 ──────────────────
+        # PENDING → 進場
         if status == "PENDING":
             entered = ((side=="LONG"  and price <= entry*(1+ENTRY_TOLERANCE)) or
                        (side=="SHORT" and price >= entry*(1-ENTRY_TOLERANCE)))
             if entered:
                 self.update(key, status="ACTIVE")
-                arrow = "🟢" if side=="LONG" else "🔴"
-                msg = (f"✅ *已進場*  #{coin}\n"
-                       f"{'━' * 25}\n"
-                       f"{arrow} {side} {sig['tf']}  [{sig['score']}分]\n"
-                       f"{'━' * 25}\n"
-                       f"📌 進場  `{entry:.4f}`\n"
-                       f"🛑 SL    `{sl:.4f}`\n"
-                       f"🥇 TP1   `{tp1:.4f}`\n"
-                       f"🥈 TP2   `{tp2:.4f}`\n"
-                       f"🏆 TP3   `{tp3:.4f}`\n"
-                       f"{'━' * 25}\n"
-                       f"💡 *開始追蹤止損/獲利*")
-                send_tg(msg)
-                logging.info(f"  ✅ 進場: {key} @ {price:.4f}")
+                send_tg(format_alert(coin, side, "ENTRY",
+                                     price, entry, sl, tp1, tp2, tp3, score=sig["score"]))
+                logging.info(f"  进场: {key} price={price:.4f}")
             return False
 
         if status not in ("ACTIVE","BE","TRAIL"): return False
 
-        # ── 止損檢查（最高優先級）─────────────
+        # 止損
         sl_hit = (side=="LONG" and price<=sl) or (side=="SHORT" and price>=sl)
         if sl_hit:
-            is_be = (status == "BE")  # 判斷是否為保本止損
+            is_be = (status == "BE")
             ct    = "BE" if is_be else "SL"
-            arrow = "🟢" if side=="LONG" else "🔴"
-            
-            # 發送止損通知（顯示保本/原損）
-            msg = (f"{'🛡 *保本止損*' if is_be else '🛑 *止損觸發*'}  #{coin}\n"
-                   f"{'━' * 25}\n"
-                   f"{arrow} {side} {sig['tf']}\n"
-                   f"{'━' * 25}\n"
-                   f"📉 當前價  `{price:.4f}`\n"
-                   f"{'🛑 SL' if not is_be else '🛡 SL'}    `{sl:.4f}`\n"
-                   f"{'━' * 25}\n"
-                   f"{'✅ 保本出場，不虧！' if is_be else '⚠️ 已平倉，等待下次機會'}")
-            send_tg(msg)
-            
-            # 記錄交易結果
+            send_tg(format_alert(coin, side, "SL", price, entry, sl, tp1, tp2, tp3,
+                                 new_sl=entry if is_be else None))
             self._close(sig, price, ct)
-            logging.info(f"  🛑 止損({ct}): {key} @ {price:.4f}")
-            return True  # ✅ 訊號結束，移除
+            logging.info(f"  止损({ct}): {key} price={price:.4f}")
+            return True
 
-        # ── TP3 到達（全部平倉）──────────────
+        # TP3
         if ((side=="LONG" and price>=tp3) or (side=="SHORT" and price<=tp3)):
-            pnl = ((price - entry) / entry * 100) if side=="LONG" else ((entry - price) / entry * 100)
-            arrow = "🟢" if side=="LONG" else "🔴"
-            msg = (f"🏆 *TP3 全部到達！*  #{coin}\n"
-                   f"{'━' * 25}\n"
-                   f"{arrow} {side} {sig['tf']}  [{sig['score']}分]\n"
-                   f"{'━' * 25}\n"
-                   f"📈 當前價  `{price:.4f}`\n"
-                   f"💰 獲利   `{pnl:+.2f}%`\n"
-                   f"{'━' * 25}\n"
-                   f"🏆 TP3   `{tp3:.4f}`\n"
-                   f"{'━' * 25}\n"
-                   f"🎉 *完美收割！建議全部平倉*")
-            send_tg(msg)
-            
+            send_tg(format_alert(coin, side, "TP3", price, entry, sl, tp1, tp2, tp3))
             self._close(sig, tp3, "TP3")
-            logging.info(f"  🏆 TP3: {key} @ {price:.4f}")
-            return True  # ✅ 訊號結束，移除
+            return True
 
-        # ── TP2 到達（移損至TP1，繼續追蹤）────
-        if ((side=="LONG" and price>=tp2) or (side=="SHORT" and price<=tp2)):
-            if not sig.get("hit_tp2"):
-                pnl = ((price - entry) / entry * 100) if side=="LONG" else ((entry - price) / entry * 100)
-                arrow = "🟢" if side=="LONG" else "🔴"
-                
-                # 更新：標記TP2已達 + 止損移至TP1 + 狀態改為TRAIL
-                self.update(key, hit_tp2=True, sl=tp1, status="TRAIL")
-                
-                # 發送通知（包含新止損價）
-                msg = (f"🎯 *TP2 到達！*  #{coin}\n"
-                       f"{'━' * 25}\n"
-                       f"{arrow} {side} {sig['tf']}\n"
-                       f"{'━' * 25}\n"
-                       f"📈 當前價  `{price:.4f}`\n"
-                       f"💰 獲利   `{pnl:+.2f}%`\n"
-                       f"{'━' * 25}\n"
-                       f"🥈 TP2   `{tp2:.4f}`  ✅\n"
-                       f"🛡 新SL   `{tp1:.4f}`  (鎖利)\n"
-                       f"{'━' * 25}\n"
-                       f"🏆 繼續持有等 TP3  `{tp3:.4f}`")
-                send_tg(msg)
-                
-                # 記錄TP2獲利（但不關閉訊號）
-                self._close(sig, tp2, "TP2")
-                logging.info(f"  🥈 TP2: {key} @ {price:.4f} | SL移至 {tp1:.4f}")
-            return False  # ⏳ 繼續追蹤TP3
+        # TP2
+        if ((side=="LONG" and price>=tp2) or (side=="SHORT" and price<=tp2)) and not sig.get("hit_tp2"):
+            self.update(key, hit_tp2=True, sl=tp1, status="TRAIL")
+            send_tg(format_alert(coin, side, "TP2", price, entry, sl, tp1, tp2, tp3, new_sl=tp1))
+            self._close(sig, tp2, "TP2")
+            return False
 
-        # ── TP1 到達（移損至保本，繼續追蹤）──
-        if ((side=="LONG" and price>=tp1) or (side=="SHORT" and price<=tp1)):
-            if not sig.get("hit_tp1"):
-                pnl = ((price - entry) / entry * 100) if side=="LONG" else ((entry - price) / entry * 100)
-                arrow = "🟢" if side=="LONG" else "🔴"
-                
-                # 更新：標記TP1已達 + 止損移至開倉價 + 狀態改為BE
-                self.update(key, hit_tp1=True, sl=entry, status="BE")
-                
-                # 發送通知（包含新止損價=保本）
-                msg = (f"🎯 *TP1 到達！*  #{coin}\n"
-                       f"{'━' * 25}\n"
-                       f"{arrow} {side} {sig['tf']}\n"
-                       f"{'━' * 25}\n"
-                       f"📈 當前價  `{price:.4f}`\n"
-                       f"💰 獲利   `{pnl:+.2f}%`\n"
-                       f"{'━' * 25}\n"
-                       f"🥇 TP1   `{tp1:.4f}`  ✅\n"
-                       f"🛡 SL移至 `{entry:.4f}`  (保本)\n"
-                       f"{'━' * 25}\n"
-                       f"🥈 繼續等 TP2  `{tp2:.4f}`\n"
-                       f"🏆 最終 TP3    `{tp3:.4f}`")
-                send_tg(msg)
-                
-                # 記錄TP1獲利（但不關閉訊號）
-                self._close(sig, tp1, "TP1")
-                logging.info(f"  🥇 TP1: {key} @ {price:.4f} | SL移至保本 {entry:.4f}")
-            return False  # ⏳ 繼續追蹤TP2
+        # TP1 → 保本
+        if ((side=="LONG" and price>=tp1) or (side=="SHORT" and price<=tp1)) and not sig.get("hit_tp1"):
+            self.update(key, hit_tp1=True, sl=entry, status="BE")
+            send_tg(format_alert(coin, side, "TP1", price, entry, sl, tp1, tp2, tp3, new_sl=entry))
+            self._close(sig, tp1, "TP1")
+            return False
 
-        return False  # 未觸發任何條件，繼續追蹤
+        return False
 
     def check_all(self):
         to_remove = []
@@ -1349,37 +1259,16 @@ class SignalTracker:
         if to_remove: logging.info(f"  移除 {len(to_remove)} 筆已關閉訊號")
 
     def status_summary(self) -> str:
-        """格式化追蹤中訊號（匹配圖片簡潔風格）"""
         items = self.list_active()
-        if not items: 
-            return "📭 目前無追蹤中訊號"
-        
-        lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*\n{'━' * 30}"]
-        
+        if not items: return "📭 目前無追蹤中訊號"
+        lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*\n━━━━━━━━━━━━━━"]
         for key, s in items:
             coin  = s["instId"].split("-")[0]
             arrow = "🟢" if s["side"]=="LONG" else "🔴"
-            status_emoji = {"PENDING":"⏳","ACTIVE":"🔵","BE":"🛡","TRAIL":"🔁"}.get(s["status"],"❓")
-            
-            # 第一行：狀態 + 幣種 + 方向 + 時間框架
-            line1 = f"{status_emoji} #{coin} {arrow} {s['side']} {s['tf']}"
-            
-            # 第二行：Entry + SL
-            line2 = f"E:{s['entry']:.4f}  SL:{s['sl']:.4f}"
-            
-            # 第三行：TP1 + 分數
-            line3 = f"TP1:{s['tp1']:.4f}  {s['score']}分"
-            
-            # 如果有達成目標，加上標記
-            if s.get("hit_tp1") and s.get("hit_tp2"):
-                lines.append(f"{line1}\n{line2}\n{line3} ✅🥈🏆\nTP2:{s['tp2']:.4f}  TP3:{s['tp3']:.4f}")
-            elif s.get("hit_tp1"):
-                lines.append(f"{line1}\n{line2}\n{line3} ✅\nTP2:{s['tp2']:.4f}  TP3:{s['tp3']:.4f}")
-            else:
-                lines.append(f"{line1}\n{line2}\n{line3}")
-            
-            lines.append("━" * 30)
-        
+            em    = {"PENDING":"⏳","ACTIVE":"🔵","BE":"🛡","TRAIL":"🔁"}.get(s["status"],"❓")
+            lines.append(f"{em} #{coin} {arrow}{s['side']} {s['tf']}  "
+                         f"E:`{s['entry']:.4f}`  SL:`{s['sl']:.4f}`  "
+                         f"TP1:`{s['tp1']:.4f}`  [{s['score']}分]")
         return "\n".join(lines)
 
 
@@ -1396,7 +1285,7 @@ def monitor_loop(tracker: SignalTracker, interval: int = 30, stop_event=None):
                 logging.info(f"監控中... {len(active)} 筆")
                 tracker.check_all()
             else:
-                logging.info("📭 無追蹤訊號")
+                logging.info("無追蹤訊號")
         except Exception as e:
             logging.error(f"monitor_loop: {e}")
         time.sleep(interval)
@@ -1415,26 +1304,26 @@ def _check_entry_zone(opp: dict) -> tuple:
     )
     dist_pct = (live - entry) / entry * 100
     if in_zone:
-        return True, live, f"✅ 已在進場區 {live:.4f}（{dist_pct:+.2f}%）"
+        return True, live, f"已在進場區 {live:.4f}（{dist_pct:+.2f}%）"
     elif (side=="LONG" and live > entry):
-        return False, live, f"⬆️ 價格高於進場區 {dist_pct:+.2f}% 等待回踩"
+        return False, live, f"價格高於進場區 {dist_pct:+.2f}% 等待回踩"
     elif (side=="SHORT" and live < entry):
-        return False, live, f"⬇️ 價格低於進場區 {dist_pct:+.2f}% 等待回升"
+        return False, live, f"價格低於進場區 {dist_pct:+.2f}% 等待回升"
     else:
-        return False, live, f"⏳ 等待接近進場區（{abs(dist_pct):.2f}%）"
+        return False, live, f"等待接近進場區（{abs(dist_pct):.2f}%）"
 
 
 # ─────────────────────────────────────────────────────────
 # 18. 主掃描函式
 # ─────────────────────────────────────────────────────────
 def run_scan(tracker: SignalTracker) -> int:
-    logging.info(f"🔍 掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
+    logging.info(f"掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
     sent = 0
     for i, coin in enumerate(ALL_COINS, 1):
         if sent >= MAX_SIGNALS_PER_RUN: break
         logging.info(f"[{i}/{len(ALL_COINS)}] {coin}")
         if not check_news_cooldown(coin):
-            logging.info(f"  📰 新聞冷卻期"); continue
+            logging.info(f"  新聞冷卻期"); continue
         try:
             opps = scan_for_opportunity(coin)
             if opps:
@@ -1443,8 +1332,7 @@ def run_scan(tracker: SignalTracker) -> int:
                     if sent >= MAX_SIGNALS_PER_RUN: break
                     if send_tg(format_signal(opp)):
                         sent += 1
-                        logging.info(f"  📤 #{sent} [{opp['tf']}]{opp['side']} {opp['score']}分")
-                        # 檢查是否已可進場
+                        logging.info(f"  #{sent} [{opp['tf']}]{opp['side']} {opp['score']}分")
                         in_zone, live, zone_msg = _check_entry_zone(opp)
                         logging.info(f"     {zone_msg}")
                         if in_zone and live > 0:
@@ -1456,13 +1344,12 @@ def run_scan(tracker: SignalTracker) -> int:
                                 tp1=opp["tp1"], tp2=opp["tp2"], tp3=opp["tp3"],
                                 score=opp["score"],
                             ))
-                        # 加入追蹤列表
                         tracker.add(opp)
                     time.sleep(1)
             time.sleep(0.5)
         except Exception as e:
-            logging.error(f"❌ {coin}: {e}"); traceback.print_exc()
-    logging.info(f"✅ 掃描完成，發送 {sent} 筆")
+            logging.error(f"{coin}: {e}"); traceback.print_exc()
+    logging.info(f"掃描完成，發送 {sent} 筆")
     if sent > 0: send_tg(tracker.status_summary())
     return sent
 
@@ -1477,9 +1364,9 @@ def main():
                                  "daily_report","monthly_report"],
                         help="scan=只掃描 | monitor=只監控 | loop=定時掃描+監控 | "
                              "all=掃描+監控 | daily_report=今日戰報 | monthly_report=月度戰報")
-    parser.add_argument("--interval",      type=int, default=30, help="監控間隔(秒)")
-    parser.add_argument("--loop-interval", type=int, default=900, help="loop模式掃描間隔(秒)")
-    parser.add_argument("--status",        action="store_true", help="顯示追蹤狀態")
+    parser.add_argument("--interval",      type=int, default=30)
+    parser.add_argument("--loop-interval", type=int, default=900)
+    parser.add_argument("--status",        action="store_true")
     args = parser.parse_args()
 
     win_tracker = WinRateTracker(TRADE_HISTORY_FILE)
@@ -1491,18 +1378,18 @@ def main():
 
     if args.mode == "daily_report":
         msg = win_tracker.daily_report()
-        logging.info("📊 發送每日戰報"); print(msg); send_tg(msg); return
+        logging.info("發送每日戰報"); print(msg); send_tg(msg); return
 
     if args.mode == "monthly_report":
         msg = win_tracker.monthly_report()
-        logging.info("📅 發送月度戰報"); print(msg); send_tg(msg); return
+        logging.info("發送月度戰報"); print(msg); send_tg(msg); return
 
     if args.mode == "scan":
         run_scan(tracker); return
 
     if args.mode == "monitor":
         try: monitor_loop(tracker, interval=args.interval)
-        except KeyboardInterrupt: logging.info("⛔ 監控停止")
+        except KeyboardInterrupt: logging.info("監控停止")
         return
 
     if args.mode == "loop":
@@ -1513,23 +1400,20 @@ def main():
         try:
             while True:
                 run_scan(tracker)
-                logging.info(f"⏱ 下次掃描：{args.loop_interval}s 後")
+                logging.info(f"下次掃描：{args.loop_interval}s 後")
                 time.sleep(args.loop_interval)
         except KeyboardInterrupt:
-            logging.info("⛔ 迴圈停止"); stop_ev.set()
+            logging.info("迴圈停止"); stop_ev.set()
         return
 
-    # all 模式（預設）：掃描一次 + 持續監控
+    # all 模式（預設）
     run_scan(tracker)
     try: monitor_loop(tracker, interval=args.interval)
-    except KeyboardInterrupt: logging.info("⛔ 停止")
+    except KeyboardInterrupt: logging.info("停止")
 
 
-# ─────────────────────────────────────────────────────────
-# 主執行入口
-# ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        logging.error(f"💥 崩潰: {e}"); traceback.print_exc(); sys.exit(1)
+        logging.error(f"崩潰: {e}"); traceback.print_exc(); sys.exit(1)
