@@ -8,16 +8,18 @@ v9.0 核心功能：
   ✅ 進場檢測 + TP/SL 動態追蹤 + 保本移損
   ✅ WinRateTracker — 每筆交易持久化記錄
   ✅ 每日戰報（00:05 UTC）+ 月度戰報（每月1日 00:10 UTC）
-  ✅ GitHub Actions 狀態持久化（每次掃描後 git commit）
+  ✅ 自動抓取 OKX 所有永續合約
+  ✅ 重複幣種智能處理（同幣同方向保留最高分）
 
 ══ 執行模式 ══════════════════════════════════════
   python main.py                       → 掃描 + 監控一次（本地用）
-  python main.py --mode scan           → 只掃描一次（GitHub Actions 用）
+  python main.py --mode scan           → 只掃描一次
+  python main.py --mode scan --all-coins → 掃描所有 OKX 合約
   python main.py --mode monitor        → 只監控活躍訊號
-  python main.py --mode loop           → 定時掃描 + 持續監控（Render/VPS）
+  python main.py --mode loop           → 定時掃描 + 持續監控
+  python main.py --status              → 查詢目前追蹤中訊號
   python main.py --mode daily_report   → 發送今日戰報
   python main.py --mode monthly_report → 發送月度戰報
-  python main.py --status              → 查詢目前追蹤中訊號
 
 ══ 評分系統（100分，75分進場）══════════════════
   1H HTF Supertrend         20 分
@@ -67,13 +69,14 @@ logging.basicConfig(
 TG_TOKEN = os.getenv("TG_TOKEN")
 CHAT_ID  = os.getenv("CHAT_ID")
 
+# 預設主流幣（快速模式）
 ALL_COINS = [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP",
     "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP"
 ]
 
 SCAN_TIMEFRAMES         = ["15m", "30m"]
-MAX_SIGNALS_PER_RUN     = int(os.getenv("MAX_SIGNALS", "8"))
+MAX_SIGNALS_PER_RUN     = int(os.getenv("MAX_SIGNALS", "15"))
 SETUP_SCORE_THRESHOLD   = 75
 
 # 訂單流參數
@@ -132,6 +135,30 @@ def utc_now() -> datetime:
 # ─────────────────────────────────────────────────────────
 # 3. 數據抓取
 # ─────────────────────────────────────────────────────────
+def fetch_all_okx_swaps() -> list:
+    """從 OKX API 抓取所有 USDT 永續合約"""
+    try:
+        res = requests.get(
+            "https://www.okx.com/api/v5/public/instruments?instType=SWAP&uly=USDT",
+            timeout=10
+        ).json()
+        
+        if res.get("code") == "0" and res.get("data"):
+            coins = []
+            for inst in res["data"]:
+                inst_id = inst["instId"]
+                if inst_id.endswith("-USDT-SWAP"):
+                    if not any(x in inst_id for x in ["3L", "3S", "5L", "5S", "UP", "DOWN"]):
+                        coins.append(inst_id)
+            
+            logging.info(f"✅ 抓取到 {len(coins)} 個 OKX 永續合約")
+            return coins
+        return ALL_COINS
+        
+    except Exception as e:
+        logging.error(f"抓取 OKX 合約列表失敗: {e}")
+        return ALL_COINS
+
 def fetch_okx(instId: str, tf: str = "15m", limit: int = 150):
     try:
         url = (f"https://www.okx.com/api/v5/market/candles"
@@ -908,14 +935,11 @@ def format_alert(coin: str, side: str, alert_type: str,
                  price: float, entry: float, sl: float,
                  tp1: float, tp2: float, tp3: float,
                  new_sl: float = None, score: int = 0) -> str:
-    """
-    格式化警報訊息（完全匹配圖片格式）
-    """
+    """格式化警報訊息（完全匹配圖片格式）"""
     arrow = "🟢" if side=="LONG" else "🔴"
     st    = "多" if side=="LONG" else "空"
     
     if alert_type == "ENTRY":
-        # ✅ 圖片格式進場提醒
         sl_pct  = abs(entry - sl) / entry * 100
         tp1_pct = abs(tp1 - entry) / entry * 100
         sl_sign = "-" if side=="LONG" else "+"
@@ -966,7 +990,7 @@ def format_alert(coin: str, side: str, alert_type: str,
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
             f"🏆 TP3  `{tp3:.4f}`  完美收割！\n"
-            f"建議全部平倉，恭喜獲利 🎉🎉🎉"
+            f"建議全部平倉，恭喜獲利 🎉🎉"
         )
         
     elif alert_type == "SL":
@@ -1146,8 +1170,38 @@ class SignalTracker:
             json.dump(self.signals, f, ensure_ascii=False, indent=2)
 
     def add(self, opp: dict) -> str:
-        key = f"{opp['instId']}_{opp['side']}_{opp['tf']}_{int(time.time())}"
+        """
+        新增訊號到追蹤列表
+        ✅ 重複檢查：同幣種+同方向+同時框，只保留最高分
+        """
+        coin = opp["instId"].split("-")[0]
+        side = opp["side"]
+        tf = opp["tf"]
+        score = opp["score"]
+        
         with self._lock:
+            # 檢查是否已存在同幣同方向同時框的訊號
+            existing_key = None
+            for key, sig in self.signals.items():
+                if (sig["instId"].split("-")[0] == coin and 
+                    sig["side"] == side and 
+                    sig["tf"] == tf):
+                    existing_key = key
+                    break
+            
+            # 如果已存在，比較分數
+            if existing_key:
+                existing_score = self.signals[existing_key]["score"]
+                if score <= existing_score:
+                    logging.info(f"⏭ 跳過 {coin} {side} {tf} (已有 {existing_score}分 > {score}分)")
+                    return existing_key  # 保留較高分的
+                else:
+                    # 新訊號分數更高，移除舊的
+                    logging.info(f"🔄 更新 {coin} {side} {tf} ({existing_score}分 → {score}分)")
+                    del self.signals[existing_key]
+            
+            # 新增訊號
+            key = f"{opp['instId']}_{opp['side']}_{opp['tf']}_{int(time.time())}"
             self.signals[key] = {
                 "instId"  : opp["instId"], "side"    : opp["side"],
                 "tf"      : opp["tf"],     "entry"   : opp["entry"],
@@ -1159,7 +1213,8 @@ class SignalTracker:
                 "created" : time.time(),
             }
             self._save()
-        logging.info(f"📌 追蹤: {key}")
+        
+        logging.info(f"📌 追蹤: {coin} {side} {tf} [{score}分]")
         return key
 
     def remove(self, key: str):
@@ -1277,16 +1332,66 @@ class SignalTracker:
         if to_remove: logging.info(f"  移除 {len(to_remove)} 筆已關閉訊號")
 
     def status_summary(self) -> str:
+        """
+        格式化追蹤中訊號（完全匹配圖片格式）
+        顯示：進場價、止損、TP1/TP2/TP3、評分、當前價、PnL%
+        """
         items = self.list_active()
-        if not items: return "📭 目前無追蹤中訊號"
-        lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*\n━━━━━━━━━━━━━━"]
+        if not items: 
+            return "📭 目前無追蹤中訊號"
+        
+        # 分組：按幣種+方向+時間框
+        lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*\n" + "━" * 35]
+        
         for key, s in items:
             coin  = s["instId"].split("-")[0]
-            arrow = "🟢" if s["side"]=="LONG" else "🔴"
-            em    = {"PENDING":"⏳","ACTIVE":"🔵","BE":"🛡","TRAIL":"🔁"}.get(s["status"],"❓")
-            lines.append(f"{em} #{coin} {arrow}{s['side']} {s['tf']}  "
-                         f"E:`{s['entry']:.4f}`  SL:`{s['sl']:.4f}`  "
-                         f"TP1:`{s['tp1']:.4f}`  [{s['score']}分]")
+            side  = s["side"]
+            arrow = "🟢" if side=="LONG" else "🔴"
+            tf    = s["tf"]
+            
+            # 獲取當前價格計算 PnL
+            current_price = fetch_ticker_price(s["instId"])
+            entry = s["entry"]
+            
+            if current_price > 0:
+                pnl_pct = ((current_price - entry) / entry * 100) if side=="LONG" else ((entry - current_price) / entry * 100)
+                pnl_str = f"{pnl_pct:+.2f}%"
+                price_str = f"{current_price:.4f}"
+            else:
+                pnl_str = "N/A"
+                price_str = "N/A"
+            
+            # 狀態圖示
+            status_emoji = {"PENDING":"⏳","ACTIVE":"🔵","BE":"🛡","TRAIL":"🔁"}.get(s["status"],"❓")
+            
+            # TP 達成狀態
+            tp1_mark = "✅" if s.get("hit_tp1") else ""
+            tp2_mark = "✅" if s.get("hit_tp2") else ""
+            
+            # 第一行：幣種 + 方向 + 時間框
+            lines.append(f"{status_emoji} *#{coin}* {arrow} {side} {tf}")
+            
+            # 第二行：進場價 + 止損
+            lines.append(f"📌 進場 `{entry:.4f}`  |  🛑 SL `{s['sl']:.4f}`")
+            
+            # 第三行：TP1/TP2/TP3
+            tp_line = f"🥇 TP1 `{s['tp1']:.4f}` {tp1_mark}"
+            if s.get("hit_tp1"):
+                tp_line += f"  |  🥈 TP2 `{s['tp2']:.4f}` {tp2_mark}"
+                if s.get("hit_tp2"):
+                    tp_line += f"  |  🏆 TP3 `{s['tp3']:.4f}`"
+            lines.append(tp_line)
+            
+            # 第四行：評分 + 當前價 + PnL
+            lines.append(f"📊 {s['score']}分  |  💰 當前 `{price_str}` ({pnl_str})")
+            
+            lines.append("━" * 35)
+        
+        # 添加總結
+        active_count = len([s for k,s in items if s["status"] in ("ACTIVE","BE","TRAIL")])
+        pending_count = len([s for k,s in items if s["status"] == "PENDING"])
+        lines.append(f"\n✅ 已進場: {active_count}  |  ⏳ 等待進場: {pending_count}")
+        
         return "\n".join(lines)
 
 
@@ -1334,26 +1439,49 @@ def _check_entry_zone(opp: dict) -> tuple:
 # ─────────────────────────────────────────────────────────
 # 18. 主掃描函式
 # ─────────────────────────────────────────────────────────
-def run_scan(tracker: SignalTracker) -> int:
-    logging.info(f"🔍 掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
+def run_scan(tracker: SignalTracker, use_all_coins: bool = False) -> int:
+    """
+    主掃描函式
+    use_all_coins: True = 抓取所有 OKX 合約, False = 使用預設列表
+    """
+    # 決定使用哪個幣種列表
+    if use_all_coins:
+        coin_list = fetch_all_okx_swaps()
+        logging.info(f"🔍 掃描模式：所有 OKX 合約 ({len(coin_list)} 個)")
+    else:
+        coin_list = ALL_COINS
+        logging.info(f"🔍 掃描模式：預設列表 ({len(coin_list)} 個)")
+    
+    logging.info(f"閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
     sent = 0
-    for i, coin in enumerate(ALL_COINS, 1):
-        if sent >= MAX_SIGNALS_PER_RUN: break
-        logging.info(f"[{i}/{len(ALL_COINS)}] {coin}")
+    scanned = 0
+    
+    for i, coin in enumerate(coin_list, 1):
+        if sent >= MAX_SIGNALS_PER_RUN: 
+            logging.info(f"⏸ 已達最大訊號數 ({MAX_SIGNALS_PER_RUN})，停止掃描")
+            break
+        
+        scanned += 1
+        logging.info(f"[{i}/{len(coin_list)}] {coin}")
+        
         if not check_news_cooldown(coin):
             logging.info(f"  📰 新聞冷卻期"); continue
+        
         try:
             opps = scan_for_opportunity(coin)
             if opps:
                 opps.sort(key=lambda x: x["score"], reverse=True)
                 for opp in opps:
                     if sent >= MAX_SIGNALS_PER_RUN: break
+                    
                     if send_tg(format_signal(opp)):
                         sent += 1
                         logging.info(f"  📤 #{sent} [{opp['tf']}]{opp['side']} {opp['score']}分")
+                        
                         # 檢查是否已可進場
                         in_zone, live, zone_msg = _check_entry_zone(opp)
                         logging.info(f"     {zone_msg}")
+                        
                         if in_zone and live > 0:
                             time.sleep(0.5)
                             send_tg(format_alert(
@@ -1363,14 +1491,24 @@ def run_scan(tracker: SignalTracker) -> int:
                                 tp1=opp["tp1"], tp2=opp["tp2"], tp3=opp["tp3"],
                                 score=opp["score"],
                             ))
-                        # 加入追蹤列表
+                        
+                        # 加入追蹤列表（會自動處理重複）
                         tracker.add(opp)
-                    time.sleep(1)
-            time.sleep(0.5)
+                    
+                    time.sleep(0.5)  # 避免 API 限制
+            
+            time.sleep(0.3)
+            
         except Exception as e:
-            logging.error(f"❌ {coin}: {e}"); traceback.print_exc()
-    logging.info(f"✅ 掃描完成，發送 {sent} 筆")
-    if sent > 0: send_tg(tracker.status_summary())
+            logging.error(f"❌ {coin}: {e}")
+    
+    logging.info(f"✅ 掃描完成：檢查 {scanned} 個幣種，發送 {sent} 筆訊號")
+    
+    if sent > 0: 
+        # 發送追蹤清單（圖片格式）
+        summary = tracker.status_summary()
+        send_tg(summary)
+    
     return sent
 
 
@@ -1387,6 +1525,7 @@ def main():
     parser.add_argument("--interval",      type=int, default=30, help="監控間隔(秒)")
     parser.add_argument("--loop-interval", type=int, default=900, help="loop模式掃描間隔(秒)")
     parser.add_argument("--status",        action="store_true", help="顯示追蹤狀態")
+    parser.add_argument("--all-coins",     action="store_true", help="掃描所有 OKX 合約（預設：只掃描主流幣）")
     args = parser.parse_args()
 
     win_tracker = WinRateTracker(TRADE_HISTORY_FILE)
@@ -1405,7 +1544,7 @@ def main():
         logging.info("📅 發送月度戰報"); print(msg); send_tg(msg); return
 
     if args.mode == "scan":
-        run_scan(tracker); return
+        run_scan(tracker, use_all_coins=args.all_coins); return
 
     if args.mode == "monitor":
         try: monitor_loop(tracker, interval=args.interval)
@@ -1419,7 +1558,7 @@ def main():
         t.start()
         try:
             while True:
-                run_scan(tracker)
+                run_scan(tracker, use_all_coins=args.all_coins)
                 logging.info(f"⏱ 下次掃描：{args.loop_interval}s 後")
                 time.sleep(args.loop_interval)
         except KeyboardInterrupt:
@@ -1427,7 +1566,7 @@ def main():
         return
 
     # all 模式（預設）：掃描一次 + 持續監控
-    run_scan(tracker)
+    run_scan(tracker, use_all_coins=args.all_coins)
     try: monitor_loop(tracker, interval=args.interval)
     except KeyboardInterrupt: logging.info("⛔ 停止")
 
