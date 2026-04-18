@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v9.0 — 完整版（掃描 + 進場監控 + 勝率統計 + 每日/月報）
+Alpha Oracle v9.1 — 完整版（掃描 + 進場監控 + 勝率統計 + 每日/月報）
 ══════════════════════════════════════════════════════════════════════
-v9.0 核心功能：
-  ✅ 雙時框掃描（15m+30m）+ 75 分進場門檻
-  ✅ 進場檢測 + TP/SL 動態追蹤 + 保本移損
-  ✅ WinRateTracker — 每筆交易持久化記錄
-  ✅ 每日戰報（00:05 UTC）+ 月度戰報（每月 1 日 00:10 UTC）
-  ✅ GitHub Actions 狀態持久化（每次掃描後 git commit）
-  ✅ 精簡通知格式 — 手機閱讀友好，重點一目了然
+v9.0 全功能保留 + v9.1 新增優化：
+  ✅ VWAP 分析          — 判斷價格在 VWAP 上下方，+0~5 分加成
+  ✅ OI 持倉量趨勢      — 偵測 Open Interest 增減，+0~4 分加成
+  ✅ MACD 背離          — 雙重背離確認（RSI + MACD），+4 分加成
+  ✅ 訊號冷卻機制       — 同幣同方向 4 小時內不重複發訊
+  ✅ 市場盤別顯示       — 亞盤/歐盤/美盤/清淡時段 顯示在訊號頭部
+  ✅ 連勝/連敗追蹤      — 每日戰報顯示目前連勝/連敗狀態
+  ✅ 倉位大小建議       — 依 ATR + 1% 風控建議進場張數/金額
 
 ══ 執行模式 ══════════════════════════════════════
   python main.py                       → 掃描 + 監控一次（本地用）
   python main.py --mode scan           → 只掃描一次（GitHub Actions 用）
   python main.py --mode monitor        → 只監控活躍訊號
   python main.py --mode loop           → 定時掃描 + 持續監控（Render/VPS）
-  python main.py --mode daily_report   → 發送今日戰報
-  python main.py --mode monthly_report → 發送月度戰報
+  python main.py --mode daily_report   → 發送今日戰報（GitHub Actions 00:05 觸發）
+  python main.py --mode monthly_report → 發送月度戰報（GitHub Actions 每月1日觸發）
   python main.py --status              → 查詢目前追蹤中訊號
 
-══ 評分系統（100 分，75 分進場）══════════════════
+══ 評分系統（100分，75分進場）══════════════════
   1H HTF Supertrend         20 分
   OB / FVG 進場             18 分（最高）
   流動性池掃除（EQH/EQL）   18 分（最高）
@@ -31,12 +32,15 @@ v9.0 核心功能：
   多空比（逆向）             8 分
   資金費率                   5 分
   盤口方向                   5 分
-  ── 獎勵（疊加，上限 100）──
+  ── 獎勵（疊加，上限100）──
   4H 趨勢一致               +5
   RSI 背離確認              +5
   BTC 大盤偏向              +3
   ADX 市場狀態吻合          +3
   BOS / CHoCH               +5
+  VWAP 位置優質             +0~5  ← v9.1 新增
+  OI 持倉量趨勢             +0~4  ← v9.1 新增
+  MACD 背離確認             +4    ← v9.1 新增
 ══════════════════════════════════════════════════════════════════════
 """
 
@@ -97,7 +101,15 @@ ACTIVE_SIGNALS_FILE     = "active_signals.json"
 TRADE_HISTORY_FILE      = "trade_history.json"
 SIGNAL_EXPIRE_HOURS     = 24
 
-_news_cooldown: dict = {}
+# v9.1 新增參數
+SIGNAL_COOLDOWN_HOURS       = 4        # 同幣同方向最短間隔（小時）
+VWAP_PERIODS                = 50       # VWAP 計算週期
+MACD_FAST                   = 12
+MACD_SLOW                   = 26
+MACD_SIGNAL_PERIOD          = 9
+
+_news_cooldown:    dict = {}
+_SIGNAL_COOLDOWN:  dict = {}           # {instId_side: timestamp}
 
 # ─────────────────────────────────────────────────────────
 # 2. 工具 & 通知
@@ -129,6 +141,40 @@ def mark_news_event(instId: str):
 
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
+
+# ─────────────────────────────────────────────────────────
+# 2b. v9.1 輔助工具
+# ─────────────────────────────────────────────────────────
+def check_signal_cooldown(instId: str, side: str) -> bool:
+    """True = 可以發訊號（未在冷卻期）"""
+    key  = f"{instId}_{side}"
+    last = _SIGNAL_COOLDOWN.get(key, 0)
+    return (time.time() - last) >= SIGNAL_COOLDOWN_HOURS * 3600
+
+def set_signal_cooldown(instId: str, side: str):
+    _SIGNAL_COOLDOWN[f"{instId}_{side}"] = time.time()
+
+def get_market_session() -> str:
+    """依 UTC 時間回傳目前盤別"""
+    h = utc_now().hour
+    if   13 <= h < 22: return "🌎 美盤"
+    elif  7 <= h < 16: return "🌍 歐盤"
+    elif  1 <= h <  8: return "🌏 亞盤"
+    else:              return "🌙 清淡"
+
+def suggest_position_size(entry: float, sl: float,
+                           account_size: float = 1000.0,
+                           risk_pct: float = 0.01) -> str:
+    """1% 風控：返回建議倉位金額及槓桿提示"""
+    try:
+        sl_dist = abs(entry - sl)
+        if sl_dist <= 0: return "─"
+        sl_ratio    = sl_dist / entry
+        pos_usdt    = account_size * risk_pct / sl_ratio   # 建議倉位 USDT
+        leverage    = pos_usdt / account_size
+        return f"≈{pos_usdt:.0f}U  (x{leverage:.1f} | 1%風控/{account_size:.0f}U)"
+    except:
+        return "─"
 
 # ─────────────────────────────────────────────────────────
 # 3. 數據抓取
@@ -202,6 +248,36 @@ def fetch_order_book(instId: str, depth: int = 20) -> tuple:
         else:               label = f"賣盤強勢 ({ratio:.2f})"
         return ratio, label
     except: return 1.0, "盤口均衡"
+
+def fetch_oi_analysis(instId: str) -> tuple:
+    """
+    OI 持倉量趨勢分析（使用 OKX rubik 統計 API）
+    返回 (score 0.0~1.0, label)
+    """
+    try:
+        base = instId.split("-")[0]   # BTC, ETH …
+        res  = requests.get(
+            f"https://www.okx.com/api/v5/rubik/stat/contracts/open-interest-volume"
+            f"?instId={base}&period=1H&limit=6",
+            timeout=8
+        ).json()
+        if res.get("code") != "0" or not res.get("data"):
+            return 0.5, "OI─"
+        # data: [[timestamp, oi, volume], ...] newest first
+        oi_vals = [float(d[1]) for d in res["data"]][::-1]   # oldest → newest
+        if len(oi_vals) < 4:
+            return 0.5, "OI─"
+        recent = sum(oi_vals[-2:]) / 2
+        older  = sum(oi_vals[:2])  / 2
+        chg    = (recent - older) / (older + 1e-10)
+        if   chg >  0.05: return 1.0, f"OI持增 +{chg*100:.1f}%"
+        elif chg >  0.01: return 0.7, f"OI微增 +{chg*100:.1f}%"
+        elif chg > -0.01: return 0.5, f"OI持平"
+        elif chg > -0.05: return 0.3, f"OI微降 {chg*100:.1f}%"
+        else:             return 0.0, f"OI下降 {chg*100:.1f}%"
+    except Exception as e:
+        logging.debug(f"OI分析: {e}")
+        return 0.5, "OI─"
 
 # ─────────────────────────────────────────────────────────
 # 4. 技術指標
@@ -283,6 +359,78 @@ def calculate_adx(df: pd.DataFrame, period: int = 14) -> tuple:
             adx[i]=(adx[i-1]*(period-1)+dx[i])/period
     return float(adx[-1]), float(plus_di[-1]), float(minus_di[-1])
 
+def calculate_vwap(df: pd.DataFrame, periods: int = VWAP_PERIODS) -> float:
+    """錨定式 VWAP（以最近 N 根 K 線計算）"""
+    data = df.tail(periods).copy()
+    tp   = (data["h"] + data["l"] + data["c"]) / 3.0
+    vol  = data["v"]
+    cum_vol = vol.cumsum()
+    vwap = (tp * vol).cumsum() / (cum_vol + 1e-10)
+    val  = float(vwap.iloc[-1])
+    return val if not np.isnan(val) else float(data["c"].iloc[-1])
+
+def analyze_vwap_position(df: pd.DataFrame, side: str) -> tuple:
+    """
+    返回 (score 0.0~1.0, label)
+    做多：價格在 VWAP 之下 = 低買優質；做空：價格在 VWAP 之上 = 高賣優質
+    """
+    vwap  = calculate_vwap(df)
+    price = df["c"].iloc[-1]
+    atr   = calculate_atr(df)
+    if side == "LONG":
+        if   price < vwap - atr * 0.3: return 1.0, f"VWAP之下 {vwap:.4f} ✅"
+        elif price < vwap + atr * 0.3: return 0.7, f"VWAP附近 {vwap:.4f}"
+        elif price < vwap + atr * 1.0: return 0.4, f"VWAP偏高 {vwap:.4f}"
+        else:                          return 0.1, f"VWAP大幅偏高 {vwap:.4f}"
+    else:
+        if   price > vwap + atr * 0.3: return 1.0, f"VWAP之上 {vwap:.4f} ✅"
+        elif price > vwap - atr * 0.3: return 0.7, f"VWAP附近 {vwap:.4f}"
+        elif price > vwap - atr * 1.0: return 0.4, f"VWAP偏低 {vwap:.4f}"
+        else:                          return 0.1, f"VWAP大幅偏低 {vwap:.4f}"
+
+def calculate_macd(df: pd.DataFrame) -> tuple:
+    """返回 (macd_line, signal_line, histogram) — pd.Series"""
+    close     = df["c"]
+    ema_fast  = calculate_ema(close, MACD_FAST)
+    ema_slow  = calculate_ema(close, MACD_SLOW)
+    macd_line = ema_fast - ema_slow
+    signal    = calculate_ema(macd_line, MACD_SIGNAL_PERIOD)
+    histogram = macd_line - signal
+    return macd_line, signal, histogram
+
+def detect_macd_divergence(df: pd.DataFrame, side: str) -> tuple:
+    """
+    返回 (has_divergence: bool, description: str)
+    與 RSI 背離互補，提供雙重確認。
+    """
+    if len(df) < MACD_SLOW + 20:
+        return False, "MACD數據不足"
+    macd, _, _ = calculate_macd(df)
+    lookback   = 20
+    macd_arr   = macd.tail(lookback).values
+    price_h    = df["h"].tail(lookback).values
+    price_l    = df["l"].tail(lookback).values
+    mid        = lookback // 2
+    if side == "LONG":
+        # 看漲背離：價格創新低，MACD 不創新低
+        prev_l = price_l[:mid].min(); curr_l = price_l[mid:].min()
+        if curr_l < prev_l * 0.999:
+            idx1 = int(np.argmin(price_l[:mid]))
+            idx2 = mid + int(np.argmin(price_l[mid:]))
+            m1   = macd_arr[idx1]; m2 = macd_arr[idx2]
+            if m2 > m1 + abs(m1) * 0.05:
+                return True, f"MACD看漲背離 ({m2:.4f}>{m1:.4f})"
+    else:
+        # 看跌背離：價格創新高，MACD 不創新高
+        prev_h = price_h[:mid].max(); curr_h = price_h[mid:].max()
+        if curr_h > prev_h * 1.001:
+            idx1 = int(np.argmax(price_h[:mid]))
+            idx2 = mid + int(np.argmax(price_h[mid:]))
+            m1   = macd_arr[idx1]; m2 = macd_arr[idx2]
+            if m2 < m1 - abs(m1) * 0.05:
+                return True, f"MACD看跌背離 ({m2:.4f}<{m1:.4f})"
+    return False, "無MACD背離"
+
 # ─────────────────────────────────────────────────────────
 # 5. 精度分析模組
 # ─────────────────────────────────────────────────────────
@@ -301,16 +449,16 @@ def adx_regime_bonus(regime: dict, side: str) -> tuple:
     is_uptrend = regime["trend_dir"] == "上升趨勢"
     if adx >= 25:
         if (side=="LONG" and is_uptrend) or (side=="SHORT" and not is_uptrend):
-            return 3, f"ADX 趨勢{adx:.0f} 順勢 +3"
-        return 0, f"ADX 趨勢{adx:.0f} 逆勢"
+            return 3, f"ADX趨勢{adx:.0f} 順勢 +3"
+        return 0, f"ADX趨勢{adx:.0f} 逆勢"
     else:
         if (side=="LONG" and not is_uptrend) or (side=="SHORT" and is_uptrend):
-            return 3, f"ADX 震盪{adx:.0f} 均值回歸 +3"
-        return 1, f"ADX 震盪{adx:.0f}"
+            return 3, f"ADX震盪{adx:.0f} 均值回歸 +3"
+        return 1, f"ADX震盪{adx:.0f}"
 
 def detect_rsi_divergence(df: pd.DataFrame, side: str) -> tuple:
     rsi = calculate_rsi(df, RSI_PERIOD)
-    if len(rsi) < 20: return False, "RSI 數據不足", float(rsi.iloc[-1]) if len(rsi)>0 else 50.0
+    if len(rsi) < 20: return False, "RSI數據不足", float(rsi.iloc[-1]) if len(rsi)>0 else 50.0
     lookback = 20
     rsi_arr   = rsi.tail(lookback).values
     price_h   = df["h"].tail(lookback).values
@@ -335,39 +483,39 @@ def get_btc_bias(side: str, _cache: dict) -> tuple:
     if "BTC_1H" not in _cache:
         _cache["BTC_1H"] = fetch_okx("BTC-USDT-SWAP", tf="1H", limit=20)
     df_btc = _cache["BTC_1H"]
-    if df_btc is None: return 0.5, "BTC 數據不足"
+    if df_btc is None: return 0.5, "BTC數據不足"
     st_val, _ = calculate_supertrend(df_btc)
     chg = (df_btc["c"].iloc[-1]-df_btc["c"].iloc[-6]) / (df_btc["c"].iloc[-6]+1e-10)
     if side == "LONG":
-        if st_val==1  and chg>0:       return 1.0, f"BTC 多頭 ({chg*100:.1f}%)"
-        elif st_val==1:                return 0.7, f"BTC ST 多弱 ({chg*100:.1f}%)"
-        elif st_val==-1 and chg<-0.02: return 0.1, f"BTC 大跌 ({chg*100:.1f}%)"
-        else:                          return 0.5, f"BTC 中性 ({chg*100:.1f}%)"
+        if st_val==1  and chg>0:       return 1.0, f"BTC多頭({chg*100:.1f}%)"
+        elif st_val==1:                return 0.7, f"BTC ST多弱({chg*100:.1f}%)"
+        elif st_val==-1 and chg<-0.02: return 0.1, f"BTC大跌({chg*100:.1f}%)"
+        else:                          return 0.5, f"BTC中性({chg*100:.1f}%)"
     else:
-        if st_val==-1 and chg<0:       return 1.0, f"BTC 空頭 ({chg*100:.1f}%)"
-        elif st_val==-1:               return 0.7, f"BTC ST 空弱 ({chg*100:.1f}%)"
-        elif st_val==1  and chg>0.02:  return 0.1, f"BTC 大漲 ({chg*100:.1f}%)"
-        else:                          return 0.5, f"BTC 中性 ({chg*100:.1f}%)"
+        if st_val==-1 and chg<0:       return 1.0, f"BTC空頭({chg*100:.1f}%)"
+        elif st_val==-1:               return 0.7, f"BTC ST空弱({chg*100:.1f}%)"
+        elif st_val==1  and chg>0.02:  return 0.1, f"BTC大漲({chg*100:.1f}%)"
+        else:                          return 0.5, f"BTC中性({chg*100:.1f}%)"
 
 def get_4h_trend(instId: str, side: str, _cache: dict) -> tuple:
     key = f"{instId}_4H"
     if key not in _cache:
         _cache[key] = fetch_okx(instId, tf="4H", limit=60)
     df4h = _cache[key]
-    if df4h is None: return 0.5, "4H 數據不足"
+    if df4h is None: return 0.5, "4H數據不足"
     st4, _ = calculate_supertrend(df4h)
     ema21  = calculate_ema(df4h["c"], 21).iloc[-1]
     price  = df4h["c"].iloc[-1]
     if side == "LONG":
-        if st4==1 and price>ema21:  return 1.0, "4H 多頭排列"
-        elif st4==1:                return 0.7, "4H ST 多頭"
-        elif price>ema21:           return 0.5, "4H EMA 多偏"
-        else:                       return 0.2, "4H 偏空"
+        if st4==1 and price>ema21:  return 1.0, "4H多頭排列"
+        elif st4==1:                return 0.7, "4H ST多頭"
+        elif price>ema21:           return 0.5, "4H EMA多偏"
+        else:                       return 0.2, "4H偏空"
     else:
-        if st4==-1 and price<ema21: return 1.0, "4H 空頭排列"
-        elif st4==-1:               return 0.7, "4H ST 空頭"
-        elif price<ema21:           return 0.5, "4H EMA 空偏"
-        else:                       return 0.2, "4H 偏多"
+        if st4==-1 and price<ema21: return 1.0, "4H空頭排列"
+        elif st4==-1:               return 0.7, "4H ST空頭"
+        elif price<ema21:           return 0.5, "4H EMA空偏"
+        else:                       return 0.2, "4H偏多"
 
 def check_extreme_volatility(df: pd.DataFrame) -> tuple:
     atr   = calculate_atr(df)
@@ -379,14 +527,14 @@ def check_extreme_volatility(df: pd.DataFrame) -> tuple:
 
 def calculate_dynamic_sl(entry: float, side: str, atr: float,
                           support: float = None, resistance: float = None) -> float:
-    base = entry - atr*ATR_SL_MULT if side=="LONG" else entry + atr*ATR_SL_MULT
+    base = entry - atr*1.5 if side=="LONG" else entry + atr*1.5
     if side=="LONG" and support:
         if abs(entry - support) < atr*2.5:
             base = min(base, support - atr*0.5)
     if side=="SHORT" and resistance:
         if abs(resistance - entry) < atr*2.5:
             base = max(base, resistance + atr*0.5)
-    min_dist = atr * ATR_SL_MULT
+    min_dist = atr * 1.5
     if abs(entry - base) < min_dist:
         base = entry - min_dist if side=="LONG" else entry + min_dist
     return base
@@ -448,11 +596,11 @@ def find_liquidity_pools(df: pd.DataFrame, side: str, lookback: int = 60) -> dic
     for i in range(len(sh)-1, 0, -1):
         if abs(sh[i]-sh[i-1])/(sh[i-1]+1e-10)<0.003:
             res["eqh"]=(sh[i-1]+sh[i])/2
-            res["pools"].append(f"EQH 等高 {res['eqh']:.4f}"); break
+            res["pools"].append(f"EQH等高 {res['eqh']:.4f}"); break
     for i in range(len(sl)-1, 0, -1):
         if abs(sl[i]-sl[i-1])/(sl[i-1]+1e-10)<0.003:
             res["eql"]=(sl[i-1]+sl[i])/2
-            res["pools"].append(f"EQL 等低 {res['eql']:.4f}"); break
+            res["pools"].append(f"EQL等低 {res['eql']:.4f}"); break
     bsl_c=[h for h in sh if h>price]; ssl_c=[l for l in sl if l<price]
     if bsl_c: res["nearest_bsl"]=min(bsl_c)
     if ssl_c: res["nearest_ssl"]=max(ssl_c)
@@ -464,7 +612,7 @@ def find_liquidity_pools(df: pd.DataFrame, side: str, lookback: int = 60) -> dic
                 if k["l"]<lvl-atr*0.05 and k["c"]>lvl:
                     wick=(lvl-k["l"])/(atr+1e-10)
                     res["sweep_detected"]=True
-                    res["sweep_desc"]=f"{'EQL' if is_eq else 'SSL'} 掃除反彈 {k['l']:.4f}→{k['c']:.4f}"
+                    res["sweep_desc"]=f"{'EQL' if is_eq else 'SSL'}掃除反彈 {k['l']:.4f}→{k['c']:.4f}"
                     res["sweep_score"]=0.95 if is_eq else min(0.55+wick*0.08,0.90); break
             if res["sweep_detected"]: break
     else:
@@ -474,7 +622,7 @@ def find_liquidity_pools(df: pd.DataFrame, side: str, lookback: int = 60) -> dic
                 if k["h"]>lvl+atr*0.05 and k["c"]<lvl:
                     wick=(k["h"]-lvl)/(atr+1e-10)
                     res["sweep_detected"]=True
-                    res["sweep_desc"]=f"{'EQH' if is_eq else 'BSL'} 掃除回落 {k['h']:.4f}→{k['c']:.4f}"
+                    res["sweep_desc"]=f"{'EQH' if is_eq else 'BSL'}掃除回落 {k['h']:.4f}→{k['c']:.4f}"
                     res["sweep_score"]=0.95 if is_eq else min(0.55+wick*0.08,0.90); break
             if res["sweep_detected"]: break
     return res
@@ -516,14 +664,14 @@ def find_fvg(df: pd.DataFrame, side: str, lookback: int = 40) -> list:
 
 def check_ob_fvg_entry(df: pd.DataFrame, side: str, atr: float) -> tuple:
     price=df["c"].iloc[-1]; obs=find_order_blocks(df,side); fvgs=find_fvg(df,side)
-    at_ob=at_fvg=False; ob_d="無 OB"; fvg_d="無 FVG"; ez=price
+    at_ob=at_fvg=False; ob_d="無OB"; fvg_d="無FVG"; ez=price
     for ob in obs:
         if ob["low"]-atr*0.5<=price<=ob["high"]+atr*0.5:
-            at_ob=True; ob_d=f"在 OB [{ob['low']:.4f}~{ob['high']:.4f}] 強{ob['strength']:.1f}x"; ez=ob["mid"]; break
+            at_ob=True; ob_d=f"在OB [{ob['low']:.4f}~{ob['high']:.4f}] 強{ob['strength']:.1f}x"; ez=ob["mid"]; break
         else: ob_d=f"OB [{ob['low']:.4f}~{ob['high']:.4f}]"
     for fvg in reversed(fvgs):
         if fvg["bottom"]-atr*0.3<=price<=fvg["top"]+atr*0.3:
-            at_fvg=True; fvg_d=f"在 FVG [{fvg['bottom']:.4f}~{fvg['top']:.4f}]"
+            at_fvg=True; fvg_d=f"在FVG [{fvg['bottom']:.4f}~{fvg['top']:.4f}]"
             if not at_ob: ez=fvg["mid"]; break
         else: fvg_d=f"FVG [{fvg['bottom']:.4f}~{fvg['top']:.4f}]"
     return at_ob, at_fvg, ob_d, fvg_d, ez
@@ -559,14 +707,14 @@ def detect_crossline(df: pd.DataFrame, lookback: int = 15):
             dist=len(df)-1-i
             return dict(price=k["c"],high=k["h"],low=k["l"],body_ratio=body/rng,
                         potential_side=pot,distance=dist,
-                        desc=f"十字線@{k['c']:.4f}({pot},{dist} 根前)")
+                        desc=f"十字線@{k['c']:.4f}({pot},{dist}根前)")
     return None
 
 def detect_active_sweep(df: pd.DataFrame, side: str) -> tuple:
     if len(df)<8: return False,0.0,"數據不足"
     recent=df.tail(8); vol_ma=df["v"].tail(20).mean()
     vol_sc=recent.iloc[-1]["v"]/(vol_ma+1e-10)
-    if vol_sc<SWEEP_VOLUME_RATIO: return False,0.0,f"量能不足 ({vol_sc:.1f}x)"
+    if vol_sc<SWEEP_VOLUME_RATIO: return False,0.0,f"量能不足({vol_sc:.1f}x)"
     moves=0
     for i in range(len(recent)-1,0,-1):
         if side=="LONG"  and recent["c"].iloc[i]>recent["c"].iloc[i-1]: moves+=1
@@ -574,7 +722,7 @@ def detect_active_sweep(df: pd.DataFrame, side: str) -> tuple:
         else: break
     if moves>=SWEEP_CONSECUTIVE_MOVES:
         return True,min(vol_sc/3.0,1.0),f"主動掃單 連續{moves}根 {vol_sc:.1f}x"
-    return False,0.0,f"無連續掃單 ({moves} 根)"
+    return False,0.0,f"無連續掃單({moves}根)"
 
 def detect_fishing_trap(df: pd.DataFrame, side: str) -> bool:
     if len(df)<6: return False
@@ -601,19 +749,19 @@ def calculate_cvd(df: pd.DataFrame, periods: int = 50) -> tuple:
     cvd   = np.cumsum(delta); cur = cvd[-1]
     slope = cur - (cvd[-10] if len(cvd)>=10 else cvd[0])
     if slope>0 and cur>0:   lb,sc = f"買盤累積 CVD+{cur:,.0f}", 1.0
-    elif slope>0 and cur<0: lb,sc = f"CVD 底部翻正 (吸籌)", 0.65
+    elif slope>0 and cur<0: lb,sc = f"CVD底部翻正(吸籌)", 0.65
     elif slope<0 and cur<0: lb,sc = f"賣盤累積 CVD{cur:,.0f}", 1.0
-    elif slope<0 and cur>0: lb,sc = f"CVD 頂部翻負 (出貨)", 0.65
-    else:                   lb,sc = f"CVD 持平", 0.3
+    elif slope<0 and cur>0: lb,sc = f"CVD頂部翻負(出貨)", 0.65
+    else:                   lb,sc = f"CVD持平", 0.3
     return cur, slope, lb, sc
 
 def interpret_ls_ratio(ratio: float, side: str) -> tuple:
-    if   ratio>=2.5: senti=f"極度多頭擁擠 ({ratio:.2f}) 逆向偏空"
-    elif ratio>=1.8: senti=f"多頭擁擠 ({ratio:.2f}) 謹慎做多"
-    elif ratio>=1.2: senti=f"略偏多頭 ({ratio:.2f})"
-    elif ratio>=0.8: senti=f"均衡 ({ratio:.2f})"
-    elif ratio>=0.5: senti=f"空頭擁擠 ({ratio:.2f}) 謹慎做空"
-    else:            senti=f"極度空頭擁擠 ({ratio:.2f}) 逆向偏多"
+    if   ratio>=2.5: senti=f"極度多頭擁擠({ratio:.2f}) 逆向偏空"
+    elif ratio>=1.8: senti=f"多頭擁擠({ratio:.2f}) 謹慎做多"
+    elif ratio>=1.2: senti=f"略偏多頭({ratio:.2f})"
+    elif ratio>=0.8: senti=f"均衡({ratio:.2f})"
+    elif ratio>=0.5: senti=f"空頭擁擠({ratio:.2f}) 謹慎做空"
+    else:            senti=f"極度空頭擁擠({ratio:.2f}) 逆向偏多"
     if side=="LONG": sc=1.0 if ratio<0.8 else(0.7 if ratio<1.2 else(0.4 if ratio<1.8 else 0.1))
     else:            sc=1.0 if ratio>2.0 else(0.7 if ratio>1.5 else(0.4 if ratio>1.0 else 0.1))
     return sc, senti
@@ -635,33 +783,33 @@ def interpret_funding_rate(fr: float, side: str) -> tuple:
 
 def check_ob_direction(side: str, ob_r: float) -> tuple:
     if side=="LONG":
-        if   ob_r>=1.30: return 1.0,f"買盤強勢 ({ob_r:.2f})"
-        elif ob_r>=1.05: return 0.7,f"買盤略強 ({ob_r:.2f})"
-        elif ob_r>=0.95: return 0.3,f"盤口均衡 ({ob_r:.2f})"
-        else:            return 0.0,f"賣盤主導，做多風險 ({ob_r:.2f})"
+        if   ob_r>=1.30: return 1.0,f"買盤強勢({ob_r:.2f})"
+        elif ob_r>=1.05: return 0.7,f"買盤略強({ob_r:.2f})"
+        elif ob_r>=0.95: return 0.3,f"盤口均衡({ob_r:.2f})"
+        else:            return 0.0,f"賣盤主導，做多風險({ob_r:.2f})"
     else:
-        if   ob_r<=0.77: return 1.0,f"賣盤強勢 ({ob_r:.2f})"
-        elif ob_r<=0.95: return 0.7,f"賣盤略強 ({ob_r:.2f})"
-        elif ob_r<=1.05: return 0.3,f"盤口均衡 ({ob_r:.2f})"
-        else:            return 0.0,f"買盤主導，做空風險 ({ob_r:.2f})"
+        if   ob_r<=0.77: return 1.0,f"賣盤強勢({ob_r:.2f})"
+        elif ob_r<=0.95: return 0.7,f"賣盤略強({ob_r:.2f})"
+        elif ob_r<=1.05: return 0.3,f"盤口均衡({ob_r:.2f})"
+        else:            return 0.0,f"買盤主導，做空風險({ob_r:.2f})"
 
 def detect_pa(df: pd.DataFrame, side: str) -> tuple:
     sigs=[]
     for i in range(len(df)-1, max(len(df)-6,0), -1):
         k=df.iloc[i]; body=abs(k["c"]-k["o"]); rng=k["h"]-k["l"]+1e-10
         uw=k["h"]-max(k["c"],k["o"]); dw=min(k["c"],k["o"])-k["l"]; bp=body/rng
-        if side=="SHORT" and uw>=body*2.0 and dw<=body*0.5: sigs.append(f"空頭流星線 ({min(uw/(body+1e-10),5):.1f}x)@{k['c']:.4f}")
-        if side=="LONG"  and dw>=body*2.0 and uw<=body*0.5: sigs.append(f"多頭錘子線 ({min(dw/(body+1e-10),5):.1f}x)@{k['c']:.4f}")
-        if side=="SHORT" and uw/rng>0.40 and k["c"]<k["o"]: sigs.append(f"壓力拒絕 (上影{uw/rng*100:.0f}%)@{k['c']:.4f}")
-        if side=="LONG"  and dw/rng>0.40 and k["c"]>k["o"]: sigs.append(f"支撐拒絕 (下影{dw/rng*100:.0f}%)@{k['c']:.4f}")
+        if side=="SHORT" and uw>=body*2.0 and dw<=body*0.5: sigs.append(f"空頭流星線({min(uw/(body+1e-10),5):.1f}x)@{k['c']:.4f}")
+        if side=="LONG"  and dw>=body*2.0 and uw<=body*0.5: sigs.append(f"多頭錘子線({min(dw/(body+1e-10),5):.1f}x)@{k['c']:.4f}")
+        if side=="SHORT" and uw/rng>0.40 and k["c"]<k["o"]: sigs.append(f"壓力拒絕(上影{uw/rng*100:.0f}%)@{k['c']:.4f}")
+        if side=="LONG"  and dw/rng>0.40 and k["c"]>k["o"]: sigs.append(f"支撐拒絕(下影{dw/rng*100:.0f}%)@{k['c']:.4f}")
         if bp>=0.70 and ((side=="LONG" and k["c"]>k["o"]) or (side=="SHORT" and k["c"]<k["o"])):
-            sigs.append(f"{'多' if side=='LONG' else '空'}頭動量棒 ({bp*100:.0f}%)@{k['c']:.4f}")
+            sigs.append(f"{'多' if side=='LONG' else '空'}頭動量棒({bp*100:.0f}%)@{k['c']:.4f}")
     sigs=sigs[:3]
     sc=0.6 if len(sigs)>=3 else(0.4 if len(sigs)>=2 else(0.2 if sigs else 0.0))
     last=df.iloc[-1]; body=abs(last["c"]-last["o"]); rng=last["h"]-last["l"]+1e-10
     if body/rng>0.70: sc+=0.20
     if (side=="LONG" and last["c"]>last["o"]) or (side=="SHORT" and last["c"]<last["o"]): sc+=0.20
-    sc=min(sc,1.0); lb="強 PA" if sc>=0.65 else("弱 PA" if sc>=0.40 else "無 PA")
+    sc=min(sc,1.0); lb="強PA" if sc>=0.65 else("弱PA" if sc>=0.40 else "無PA")
     return sc*100, lb, sigs
 
 def detect_whale_zones(df: pd.DataFrame, side: str) -> list:
@@ -675,7 +823,7 @@ def detect_whale_zones(df: pd.DataFrame, side: str) -> list:
     return zones[:2]
 
 # ─────────────────────────────────────────────────────────
-# 11. 評分系統
+# 11. 評分系統（v9.1：加入 VWAP / OI / MACD 加成）
 # ─────────────────────────────────────────────────────────
 def calculate_score(p: dict) -> tuple:
     sc=0.0; bd=[]; side=p["side"]
@@ -708,9 +856,16 @@ def calculate_score(p: dict) -> tuple:
     adx_b=p.get("adx_bonus",0)
     if adx_b: sc+=adx_b; bd.append(f"ADX+{adx_b}")
     if p.get("pd_score",0)>=0.7: sc+=3; bd.append("PD+3")
-    if htf not in(side,"NEUTRAL","UNKNOWN"): sc-=15; bd.append("HTF 逆 -15")
-    if p.get("fr_score",1)==0.0:             sc-=10; bd.append("FR 禁 -10")
-    if p.get("ob_dir_score",1)==0.0:         sc-=10; bd.append("盤口反 -10")
+    # ── v9.1 新增加成 ──────────────────────────────────
+    vwap_pts = round(p.get("vwap_score", 0.0) * 5)
+    if vwap_pts: sc += vwap_pts; bd.append(f"VWAP+{vwap_pts}")
+    oi_pts = round(p.get("oi_score", 0.0) * 4)
+    if oi_pts: sc += oi_pts; bd.append(f"OI+{oi_pts}")
+    if p.get("has_macd_divergence", False): sc += 4; bd.append("MACD背離+4")
+    # ── 懲罰項 ────────────────────────────────────────
+    if htf not in(side,"NEUTRAL","UNKNOWN"): sc-=15; bd.append("HTF逆-15")
+    if p.get("fr_score",1)==0.0:             sc-=10; bd.append("FR禁-10")
+    if p.get("ob_dir_score",1)==0.0:         sc-=10; bd.append("盤口反-10")
     sc=max(0,min(round(sc),100))
     if   sc>=88: grade="A+ 極強"
     elif sc>=75: grade="A  強力"
@@ -724,7 +879,8 @@ def calculate_score(p: dict) -> tuple:
 # ─────────────────────────────────────────────────────────
 def scan_timeframe(instId: str, tf: str,
                    htf_trend: str, fr: float, ls_f: float, ls_str: str,
-                   ob_r: float, _cache: dict) -> list:
+                   ob_r: float, oi_sc: float, oi_lb: str,
+                   _cache: dict) -> list:
     df = fetch_okx(instId, tf=tf, limit=150)
     if df is None or len(df) < 50: return []
     vol_ok, vol_msg = check_extreme_volatility(df)
@@ -755,6 +911,9 @@ def scan_timeframe(instId: str, tf: str,
         whale_zones      = detect_whale_zones(df, side)
         ls_sc, ls_lb     = interpret_ls_ratio(ls_f, side)
         as_bool,as_sc,as_d = detect_active_sweep(df, side)
+        # v9.1：VWAP & MACD
+        vwap_sc, vwap_lb   = analyze_vwap_position(df, side)
+        has_macd, macd_d   = detect_macd_divergence(df, side)
         cl_sc = 0.0
         if cl:
             pot=cl["potential_side"]
@@ -773,10 +932,12 @@ def scan_timeframe(instId: str, tf: str,
             ls_score=ls_sc, fr_score=fr_sc, ob_dir_score=ob_dir_sc,
             bos_score=bos_sc, trend_4h_score=t4h_sc, has_rsi_divergence=has_rsi,
             btc_score=btc_sc, adx_bonus=adx_bonus, pd_score=pd_sc,
+            # v9.1 新增
+            vwap_score=vwap_sc, oi_score=oi_sc, has_macd_divergence=has_macd,
         )
         score, grade, bd = calculate_score(params)
         if score < SETUP_SCORE_THRESHOLD:
-            logging.info(f"  [{instId}/{tf}/{side}] {score} 分 < {SETUP_SCORE_THRESHOLD}，跳過"); continue
+            logging.info(f"  [{instId}/{tf}/{side}] {score}分 < {SETUP_SCORE_THRESHOLD}，跳過"); continue
         price = df["c"].iloc[-1]
         sh,sl,_,_ = find_swing_points(df, n=2, lookback=30)
         support    = max([s for s in sl if s<price], default=None)
@@ -792,6 +953,7 @@ def scan_timeframe(instId: str, tf: str,
         tp1 = entry+risk     if side=="LONG" else entry-risk
         tp2 = entry+risk*2.5 if side=="LONG" else entry-risk*2.5
         tp3 = entry+risk*4.0 if side=="LONG" else entry-risk*4.0
+        pos_hint = suggest_position_size(entry, sl_price)
         opp = dict(
             instId=instId, side=side, tf=tf,
             entry=entry, sl=sl_price, tp1=tp1, tp2=tp2, tp3=tp3,
@@ -806,6 +968,11 @@ def scan_timeframe(instId: str, tf: str,
             t4h_lb=t4h_lb, btc_lb=btc_lb, adx_lb=adx_lb, vol_msg=vol_msg,
             score=score, grade=grade, breakdown=bd,
             lev="10x~20x" if atr/price<0.015 else "3x~5x",
+            # v9.1 新增欄位
+            vwap_lb=vwap_lb, oi_lb=oi_lb,
+            has_macd=has_macd, macd_d=macd_d,
+            pos_hint=pos_hint,
+            session=get_market_session(),
         )
         opportunities.append(opp)
     return opportunities
@@ -822,10 +989,12 @@ def scan_for_opportunity(instId: str) -> list:
     fr           = fetch_funding_rate(instId)
     ls_f, ls_str = fetch_ls_ratio(instId)
     ob_r, _      = fetch_order_book(instId)
+    oi_sc, oi_lb = fetch_oi_analysis(instId)   # v9.1
     all_opps = []
     for tf in SCAN_TIMEFRAMES:
         try:
-            opps = scan_timeframe(instId, tf, htf_trend_str, fr, ls_f, ls_str, ob_r, _cache)
+            opps = scan_timeframe(instId, tf, htf_trend_str, fr, ls_f, ls_str,
+                                  ob_r, oi_sc, oi_lb, _cache)
             all_opps.extend(opps)
         except Exception as e:
             logging.error(f"  [{instId}/{tf}] {e}")
@@ -836,74 +1005,79 @@ def scan_for_opportunity(instId: str) -> list:
     return list(seen.values())
 
 # ─────────────────────────────────────────────────────────
-# 13. 訊號格式化 — 精簡版（重點突出，手機友好）
+# 13. 訊號格式化（v9.1：加入盤別 / VWAP / OI / 倉位建議）
 # ─────────────────────────────────────────────────────────
-
 def format_signal(opp: dict) -> str:
-    """
-    精簡版訊號格式 — 只顯示關鍵資訊
-    ✅ 所有技術分析邏輯保留，只是訊息呈現簡化
-    """
     coin   = opp["instId"].split("-")[0]
     arrow  = "🟢" if opp["side"]=="LONG" else "🔴"
-    side_short = "多" if opp["side"]=="LONG" else "空"
-    
-    # 核心數據
+    st     = "多單 (LONG)" if opp["side"]=="LONG" else "空單 (SHORT)"
+    htf_e  = {"LONG":"🟢","SHORT":"🔴","NEUTRAL":"⚪","UNKNOWN":"⚪"}.get(opp["htf_trend"],"⚪")
+    liq    = opp["liq"]; regime = opp["regime"]
     entry  = opp["entry"]
-    sl     = opp["sl"]
-    tp1    = opp["tp1"]
-    tp2    = opp["tp2"]
-    tp3    = opp["tp3"]
-    score  = opp["score"]
-    grade  = opp["grade"]
-    tf     = opp["tf"]
-    
-    # 計算盈虧百分比
-    risk_pct = abs(entry - sl) / entry * 100
-    tp1_pct  = abs(tp1 - entry) / entry * 100
-    tp2_pct  = abs(tp2 - entry) / entry * 100
-    tp3_pct  = abs(tp3 - entry) / entry * 100
-    sign = "+" if opp["side"]=="LONG" else "-"
-    
-    # 提取 2-3 個最強觸發條件（保留所有分析，只是簡化顯示）
+    sl_pct = abs(entry - opp["sl"])  / entry * 100
+    tp1_pct= abs(opp["tp1"] - entry) / entry * 100
+    tp2_pct= abs(opp["tp2"] - entry) / entry * 100
+    tp3_pct= abs(opp["tp3"] - entry) / entry * 100
+    sign   = "+" if opp["side"]=="LONG" else "-"
+    sl_sign= "-" if opp["side"]=="LONG" else "+"
+    top_bd = [x for x in opp["breakdown"] if not x.endswith("+0")][:6]
+    bd_line= "  ".join(top_bd)
     triggers = []
-    if opp["liq"].get("sweep_detected"):
-        triggers.append(f"💧 掃除")
-    if opp["at_ob"]:
-        triggers.append(f"🟦 OB")
-    if opp["at_fvg"]:
-        triggers.append(f"🟩 FVG")
-    if opp["as_bool"]:
-        triggers.append(f"⚡ 掃單")
-    if opp["has_rsi"]:
-        triggers.append(f"📉 背離")
-    if opp["bos_desc"] not in ("", "無明顯結構"):
-        triggers.append(f"📈 {opp['bos_desc'].split()[0]}")
-    
-    # 取前 3 個最重要的觸發條件
-    trigger_str = "  |  ".join(triggers[:3]) if triggers else "⏳ 等待確認"
-    
-    # 大盤狀態簡寫
-    htf_short = {"多頭":"🟢","空頭":"🔴","中性":"⚪"}.get(opp["htf_trend"], "⚪")
-    btc_short = opp["btc_lb"].split("(")[0].replace("BTC","₿").strip()
-    
-    # 品質標籤
-    quality_tag = "🔥" if score >= 85 else "⭐" if score >= 75 else ""
-    
+    if liq["sweep_detected"]: triggers.append(f"💧 {liq['sweep_desc']}")
+    if opp["at_ob"]:          triggers.append(f"🟦 {opp['ob_d']}")
+    if opp["at_fvg"]:         triggers.append(f"🟩 {opp['fvg_d']}")
+    if opp["bos_desc"] not in ("無明顯結構",""):
+        triggers.append(f"🏗 {opp['bos_desc']}")
+    if opp["as_bool"]:        triggers.append(f"⚡ {opp['as_d']}")
+    if opp["has_rsi"]:        triggers.append(f"📉 {opp['rsi_d']}")
+    if opp.get("has_macd"):   triggers.append(f"〽️ {opp['macd_d']}")
+    if not triggers:          triggers.append("⚪ 等待進場區確認")
+    trigger_txt = "\n".join(f"  • {t}" for t in triggers[:4])
+    bsl = f"{liq['nearest_bsl']:.4f}" if liq["nearest_bsl"] else "─"
+    ssl = f"{liq['nearest_ssl']:.4f}" if liq["nearest_ssl"] else "─"
+    eqh = f"EQH {liq['eqh']:.4f}" if liq["eqh"] else "─"
+    eql = f"EQL {liq['eql']:.4f}" if liq["eql"] else "─"
+    pa_top = opp["pa_sigs"][0] if opp["pa_sigs"] else "─"
+    whale  = "  |  ".join(opp["whale_zones"]) if opp["whale_zones"] else "─"
+    session = opp.get("session", get_market_session())
+    vwap_lb = opp.get("vwap_lb", "─")
+    oi_lb   = opp.get("oi_lb",   "─")
+    pos_hint= opp.get("pos_hint","─")
     return (
-        f"{arrow} *#{coin} {side_short}*  {score} 分 {quality_tag}  [{tf}]\n"
-        f"{'━' * 30}\n"
-        f"📌 Entry  `{entry:.4f}`\n"
-        f"🛑 SL     `{sl:.4f}`  ({sign}{risk_pct:.2f}%)\n"
-        f"{'━' * 30}\n"
-        f"🥇 TP1  `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
-        f"🥈 TP2  `{tp2:.4f}`  ({sign}{tp2_pct:.2f}%)\n"
-        f"🏆 TP3  `{tp3:.4f}`  ({sign}{tp3_pct:.2f}%)\n"
-        f"{'━' * 30}\n"
-        f"{trigger_str}\n"
-        f"📡 1H:{htf_short}  |  {btc_short}  |  🎯 {grade}\n"
-        f"{'━' * 30}\n"
-        f"💡 *{'流動性掃除後進場' if opp['liq'].get('sweep_detected') else '確認訊號後執行'}*"
+        f"🔥 *Alpha Oracle v9.1*  {session}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"💎 #{coin}  {arrow} {st}  [{opp['lev']}]\n"
+        f"⏰ {opp['tf']}  |  1H: {htf_e} {opp['htf_trend']}  |  {opp['t4h_lb']}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"📊 *{opp['score']}分*  {opp['grade']}\n"
+        f"   {bd_line}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"📌 進場    `{opp['entry']:.4f}`\n"
+        f"🛑 止損    `{opp['sl']:.4f}`  ({sl_sign}{sl_pct:.2f}%  動態SL)\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"🥇 TP1 (1R)    `{opp['tp1']:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
+        f"🥈 TP2 (2.5R)  `{opp['tp2']:.4f}`  ({sign}{tp2_pct:.2f}%)\n"
+        f"🏆 TP3 (4R)    `{opp['tp3']:.4f}`  ({sign}{tp3_pct:.2f}%)\n"
+        f"💼 倉位建議  {pos_hint}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"🔍 *訊號根據*\n"
+        f"{trigger_txt}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"📐 結構: {opp['structure']}  |  P/D: {opp['pd_lb']}\n"
+        f"💧 BSL {bsl}  |  SSL {ssl}\n"
+        f"   {eqh}  |  {eql}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"📊 ADX={regime['adx']:.1f} {regime['regime']}  |  {opp['adx_lb']}\n"
+        f"₿  {opp['btc_lb']}  |  {opp['vol_msg']}\n"
+        f"🧬 {opp['cvd_lb']}  |  多空比 {opp['ls_str']}\n"
+        f"💸 {opp['fr_lb']}  |  {opp['ob_dir_lb']}\n"
+        f"📈 {vwap_lb}  |  {oi_lb}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"🕯 PA: {opp['pa_lb']} {opp['pa_sc']:.0f}分  |  {pa_top}\n"
+        f"🐋 {whale}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"💡 *{'流動性掃除後進場' if liq['sweep_detected'] else ('主動掃單確認' if opp['as_bool'] else '等待進場區回踩')}*\n"
+        f"📡 ST: {opp['st_lb']}  |  {opp['tf']} 波段"
     )
 
 
@@ -911,85 +1085,79 @@ def format_alert(coin: str, side: str, alert_type: str,
                  price: float, entry: float, sl: float,
                  tp1: float, tp2: float, tp3: float,
                  new_sl: float = None, score: int = 0) -> str:
-    """精簡版警報訊息 — 保留所有邏輯，簡化顯示"""
     arrow = "🟢" if side=="LONG" else "🔴"
-    st = "多" if side=="LONG" else "空"
-    
+    st    = "多" if side=="LONG" else "空"
     if alert_type == "ENTRY":
-        risk_pct = abs(entry - sl) / entry * 100
-        tp1_pct  = abs(tp1 - entry) / entry * 100
+        sl_pct  = abs(entry - sl) / entry * 100
+        tp1_pct = abs(tp1 - entry) / entry * 100
+        sign    = "+" if side=="LONG" else "-"
         sl_sign = "-" if side=="LONG" else "+"
-        sign = "+" if side=="LONG" else "-"
-        
         return (
-            f"{arrow} *#{coin} {st} 進場*  {score} 分 🔥\n"
-            f"{'━' * 28}\n"
-            f"📌 Entry  `{entry:.4f}`\n"
-            f"🛑 SL     `{sl:.4f}`  ({sl_sign}{risk_pct:.2f}%)\n"
-            f"{'━' * 28}\n"
-            f"🥇 TP1  `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
-            f"🥈 TP2  `{tp2:.4f}`\n"
-            f"🏆 TP3  `{tp3:.4f}`\n"
-            f"{'━' * 28}\n"
-            f"💰 當前 `{price:.4f}`\n"
-            f"💡 *價格已達進場區，請確認執行*"
+            f"✅ *進場提醒* — #{coin} {arrow}{st}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"📌 進場價  `{entry:.4f}`\n"
+            f"🛑 止損    `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)\n"
+            f"🥇 TP1     `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
+            f"🥈 TP2     `{tp2:.4f}`\n"
+            f"🏆 TP3     `{tp3:.4f}`\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"📊 評分 {score}分  |  當前 `{price:.4f}`\n"
+            f"💡 價格已到達進場區，請確認進場！"
         )
-        
     elif alert_type == "TP1":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
-            f"🎯 *#{coin} TP1 到達*  {arrow}{st}\n"
-            f"{'━' * 28}\n"
-            f"💰 當前 `{price:.4f}`  ({pnl:+.2f}%)\n"
-            f"✅ TP1  `{tp1:.4f}`\n"
-            f"{'━' * 28}\n"
-            f"🛡 SL 移至保本 `{entry:.4f}`\n"
-            f"🎯 繼續等 TP2 `{tp2:.4f}`"
+            f"🎯 *TP1 到達！保本移損* — #{coin} {arrow}{st}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
+            f"🎯 TP1  `{tp1:.4f}`  已到\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🛡 止損已移至成本 `{new_sl:.4f}`\n"
+            f"🎯 繼續等 TP2  `{tp2:.4f}`\n"
+            f"🏆 最終 TP3    `{tp3:.4f}`"
         )
-        
     elif alert_type == "TP2":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
-            f"🎯 *#{coin} TP2 到達*  {arrow}{st}\n"
-            f"{'━' * 28}\n"
-            f"💰 當前 `{price:.4f}`  ({pnl:+.2f}%)\n"
-            f"✅ TP2  `{tp2:.4f}`\n"
-            f"{'━' * 28}\n"
-            f"🛡 SL 移至 TP1 `{tp1:.4f}` (鎖利)\n"
-            f"🏆 最終目標 TP3 `{tp3:.4f}` 🎉"
+            f"🎯 *TP2 到達！移損至TP1* — #{coin} {arrow}{st}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
+            f"🥈 TP2  `{tp2:.4f}`  已到\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🛡 止損已移至 TP1 `{new_sl:.4f}`（鎖利）\n"
+            f"🏆 繼續持有等 TP3  `{tp3:.4f}` 🎉"
         )
-        
     elif alert_type == "TP3":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
-            f"🏆 *#{coin} TP3 全部到達*  {arrow}{st}\n"
-            f"{'━' * 28}\n"
-            f"💰 當前 `{price:.4f}`  ({pnl:+.2f}%)\n"
-            f"✅ TP3  `{tp3:.4f}` 完美收割！\n"
-            f"{'━' * 28}\n"
-            f"🎉 建議全部平倉，恭喜獲利！"
+            f"🏆 *TP3 全部到達！* — #{coin} {arrow}{st}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
+            f"🏆 TP3  `{tp3:.4f}`  完美收割！\n"
+            f"建議全部平倉，恭喜獲利 🎉🎉🎉"
         )
-        
     elif alert_type == "SL":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         is_be = new_sl is not None and abs(new_sl - entry) < entry * 0.0001
-        label = "🛡 保本" if is_be else "🛑 止損"
+        label = "保本止損" if is_be else "止損"
         return (
-            f"{label} *#{coin}*  {arrow}{st}\n"
-            f"{'━' * 28}\n"
-            f"💰 當前 `{price:.4f}`  ({pnl:+.2f}%)\n"
-            f"🛑 SL `{sl:.4f}` 觸發\n"
-            f"{'━' * 28}\n"
-            f"{'✅ 保本出場，不虧！' if is_be else '⚠️ 已平倉，等待下次機會'}"
+            f"🛑 *{label}觸發* — #{coin} {arrow}{st}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"當前價  `{price:.4f}`  ({pnl:.2f}%)\n"
+            f"🛑 止損  `{sl:.4f}`  已觸發\n"
+            f"倉位已平，請確認出場！"
         )
     return ""
 
 
 # ─────────────────────────────────────────────────────────
-# 14. WinRateTracker — 勝率統計 & 戰報
+# 14. WinRateTracker — 勝率統計 & 戰報（v9.1：加入連勝/連敗）
 # ─────────────────────────────────────────────────────────
 class WinRateTracker:
-    """記錄每筆已結算交易，持久化到 trade_history.json"""
+    """
+    記錄每筆已結算交易，持久化到 trade_history.json。
+    close_type: TP1 / TP2 / TP3 (勝) | BE (保本平手) | SL (敗)
+    """
 
     def __init__(self, filepath: str = TRADE_HISTORY_FILE):
         self.filepath = filepath
@@ -1041,8 +1209,31 @@ class WinRateTracker:
         avg_win  = sum(t["pnl_pct"] for t in wins)  / len(wins)  if wins  else 0.0
         avg_loss = sum(t["pnl_pct"] for t in losses) / len(losses) if losses else 0.0
         exp = (win_r/100 * avg_win) + ((1-win_r/100) * avg_loss)
+        # v9.1：連勝/連敗追蹤
+        streak = 0; streak_type = ""
+        for t in reversed(trades):
+            if t.get("is_be"):
+                continue   # 保本不計入連勝連敗
+            if t["is_win"]:
+                if streak_type in ("W", ""):
+                    streak_type = "W"; streak += 1
+                else:
+                    break
+            else:
+                if streak_type in ("L", ""):
+                    streak_type = "L"; streak += 1
+                else:
+                    break
+        if   streak_type == "W" and streak >= 3: streak_str = f"🔥 連勝 {streak} 筆！"
+        elif streak_type == "W" and streak >= 2: streak_str = f"✅ 連勝 {streak} 筆"
+        elif streak_type == "W":                 streak_str = f"✅ 最近一勝"
+        elif streak_type == "L" and streak >= 3: streak_str = f"❄️ 連敗 {streak} 筆，注意風控"
+        elif streak_type == "L" and streak >= 2: streak_str = f"⚠️ 連敗 {streak} 筆"
+        elif streak_type == "L":                 streak_str = f"❌ 最近一敗"
+        else:                                    streak_str = ""
         return {"total":total,"wins":len(wins),"losses":len(losses),"be":len(be),
-                "win_rate":win_r,"avg_win":avg_win,"avg_loss":avg_loss,"expectancy":exp}
+                "win_rate":win_r,"avg_win":avg_win,"avg_loss":avg_loss,"expectancy":exp,
+                "streak_str": streak_str}
 
     def _trade_lines(self, trades: list, n: int = 8) -> str:
         ct_map = {"TP1":"🥇","TP2":"🥈","TP3":"🏆","BE":"⚖️","SL":"🛑"}
@@ -1060,11 +1251,14 @@ class WinRateTracker:
         if not s:
             return (f"📊 *今日戰報 {date_str}*\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"😴 今日暫無已結算訊號\n"
-                    f"💡 持續掃描中...")
+                    f"今日暫無已結算訊號\n"
+                    f"持續掃描中... 💪\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"🤖 Alpha Oracle v9.1 持續監控中")
         grade = ("🏆 優秀" if s["win_rate"]>=70 else
                  "✅ 良好" if s["win_rate"]>=55 else
                  "⚠️ 一般" if s["win_rate"]>=40 else "❌ 待改善")
+        streak_line = f"\n{s['streak_str']}" if s.get("streak_str") else ""
         return (
             f"📊 *今日戰報 {date_str}*\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -1073,11 +1267,11 @@ class WinRateTracker:
             f"📈 *勝率：{s['win_rate']:.1f}%*\n"
             f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
             f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
-            f"⚡ 期望值：{s['expectancy']:+.2f}%/筆\n"
+            f"⚡ 期望值：{s['expectancy']:+.2f}%/筆{streak_line}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"{self._trade_lines(trades)}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🤖 Alpha Oracle v9.0 明日繼續！"
+            f"🤖 Alpha Oracle v9.1 明日繼續！"
         )
 
     def monthly_report(self, month_str: str = None) -> str:
@@ -1087,7 +1281,8 @@ class WinRateTracker:
         if not s:
             return (f"📅 *月度戰報 {month_str}*\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"😴 本月暫無已結算訊號")
+                    f"本月暫無已結算訊號\n"
+                    f"持續掃描中... 💪")
         coin_stats: dict = {}
         for t in trades:
             cn = t["coin"]
@@ -1100,6 +1295,7 @@ class WinRateTracker:
         grade = ("🏆 傑出" if s["win_rate"]>=70 else
                  "✅ 良好" if s["win_rate"]>=55 else
                  "⚠️ 普通" if s["win_rate"]>=40 else "❌ 需優化")
+        streak_line = f"\n{s['streak_str']}" if s.get("streak_str") else ""
         return (
             f"📅 *月度戰報 {month_str}*\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -1108,25 +1304,23 @@ class WinRateTracker:
             f"📈 *月勝率：{s['win_rate']:.1f}%*\n"
             f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
             f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
-            f"⚡ 月期望值：{s['expectancy']:+.2f}%/筆\n"
+            f"⚡ 月期望值：{s['expectancy']:+.2f}%/筆{streak_line}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🏅 各幣種：\n" + "\n".join(coin_lines) +
+            f"🏅 各幣種：\n"
+            + "\n".join(coin_lines) +
             f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🤖 Alpha Oracle v9.0 下月繼續！"
+            f"🤖 Alpha Oracle v9.1 下月繼續！"
         )
 
 
 # ─────────────────────────────────────────────────────────
-# 15. SignalTracker — 進場/TP/SL 監控（核心修正）
+# 15. SignalTracker — 進場/TP/SL 監控
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     """
-    追蹤活躍訊號，持久化到 JSON。
-    狀態流程：PENDING → ACTIVE → [BE → TRAIL] → CLOSED
-    ✅ TP1: 通知 + SL 移至 entry + 記錄 TP1 + 繼續追蹤
-    ✅ TP2: 通知 + SL 移至 TP1 + 記錄 TP2 + 繼續追蹤
-    ✅ TP3: 通知 + 記錄 TP3 + 移除訊號
-    ✅ SL : 通知 (保本/原損) + 記錄 + 移除訊號
+    追蹤活躍訊號，持久化到 JSON，監控進場/TP/SL 觸發。
+    平倉時自動寫入 WinRateTracker。
+    狀態：PENDING → ACTIVE → BE → TRAIL → (closed)
     """
 
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE,
@@ -1177,7 +1371,6 @@ class SignalTracker:
         with self._lock: return list(self.signals.items())
 
     def _close(self, sig: dict, close_price: float, close_type: str):
-        """記錄交易結果到 WinRateTracker（不移除訊號）"""
         if self.win_tracker:
             try:
                 self.win_tracker.record(
@@ -1189,84 +1382,66 @@ class SignalTracker:
                 logging.error(f"WinRateTracker.record: {e}")
 
     def check_one(self, key: str, sig: dict) -> bool:
-        """
-        檢查單一訊號狀態
-        返回 True = 訊號已結束（可移除），False = 繼續追蹤
-        """
         price = fetch_ticker_price(sig["instId"])
         if price <= 0: return False
-        
         coin   = sig["instId"].split("-")[0]
-        side   = sig["side"]
-        status = sig["status"]
-        entry  = sig["entry"]
-        sl     = sig["sl"]  # 動態止損（會隨 TP 調整）
+        side   = sig["side"]; status = sig["status"]
+        entry  = sig["entry"]; sl    = sig["sl"]
         tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
 
-        # ── 過期清理 ─────────────────────────
+        # 過期清理
         if status == "PENDING":
             age_h = (time.time() - sig["created"]) / 3600
             if age_h > SIGNAL_EXPIRE_HOURS:
-                send_tg(f"⏰ *訊號過期* #{coin} {side}\n進場 `{entry:.4f}` 超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
+                send_tg(f"⏰ *訊號過期* #{coin} {side}\n"
+                        f"進場 `{entry:.4f}` 超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
                 return True
 
-        # ── PENDING → 進場 ──────────────────
+        # PENDING → 進場
         if status == "PENDING":
             entered = ((side=="LONG"  and price <= entry*(1+ENTRY_TOLERANCE)) or
                        (side=="SHORT" and price >= entry*(1-ENTRY_TOLERANCE)))
             if entered:
                 self.update(key, status="ACTIVE")
-                send_tg(format_alert(coin, side, "ENTRY", price, entry, sl, tp1, tp2, tp3, score=sig["score"]))
-                logging.info(f"  ✅ 進場: {key} @ {price:.4f}")
+                send_tg(format_alert(coin, side, "ENTRY",
+                                     price, entry, sl, tp1, tp2, tp3, score=sig["score"]))
+                logging.info(f"  进场: {key} price={price:.4f}")
             return False
 
         if status not in ("ACTIVE","BE","TRAIL"): return False
 
-        # ── 止損檢查（最高優先級）─────────────
+        # 止損
         sl_hit = (side=="LONG" and price<=sl) or (side=="SHORT" and price>=sl)
         if sl_hit:
-            is_be = (status == "BE")  # 判斷是否為保本止損
+            is_be = (status == "BE")
             ct    = "BE" if is_be else "SL"
-            # 發送止損通知（顯示保本/原損）
             send_tg(format_alert(coin, side, "SL", price, entry, sl, tp1, tp2, tp3,
                                  new_sl=entry if is_be else None))
-            # 記錄交易結果
             self._close(sig, price, ct)
-            logging.info(f"  🛑 止損 ({ct}): {key} @ {price:.4f}")
-            return True  # ✅ 訊號結束，移除
+            logging.info(f"  止损({ct}): {key} price={price:.4f}")
+            return True
 
-        # ── TP3 到達（全部平倉）──────────────
+        # TP3
         if ((side=="LONG" and price>=tp3) or (side=="SHORT" and price<=tp3)):
             send_tg(format_alert(coin, side, "TP3", price, entry, sl, tp1, tp2, tp3))
             self._close(sig, tp3, "TP3")
-            logging.info(f"  🏆 TP3: {key} @ {price:.4f}")
-            return True  # ✅ 訊號結束，移除
+            return True
 
-        # ── TP2 到達（移損至 TP1，繼續追蹤）────
-        if ((side=="LONG" and price>=tp2) or (side=="SHORT" and price<=tp2)):
-            if not sig.get("hit_tp2"):
-                # 更新：標記 TP2 已達 + 止損移至 TP1 + 狀態改為 TRAIL
-                self.update(key, hit_tp2=True, sl=tp1, status="TRAIL")
-                # 發送通知（包含新止損價）
-                send_tg(format_alert(coin, side, "TP2", price, entry, sl, tp1, tp2, tp3, new_sl=tp1))
-                # 記錄 TP2 獲利（但不關閉訊號）
-                self._close(sig, tp2, "TP2")
-                logging.info(f"  🥈 TP2: {key} @ {price:.4f} | SL 移至 {tp1:.4f}")
-            return False  # ⏳ 繼續追蹤 TP3
+        # TP2
+        if ((side=="LONG" and price>=tp2) or (side=="SHORT" and price<=tp2)) and not sig.get("hit_tp2"):
+            self.update(key, hit_tp2=True, sl=tp1, status="TRAIL")
+            send_tg(format_alert(coin, side, "TP2", price, entry, sl, tp1, tp2, tp3, new_sl=tp1))
+            self._close(sig, tp2, "TP2")
+            return False
 
-        # ── TP1 到達（移損至保本，繼續追蹤）──
-        if ((side=="LONG" and price>=tp1) or (side=="SHORT" and price<=tp1)):
-            if not sig.get("hit_tp1"):
-                # 更新：標記 TP1 已達 + 止損移至開倉價 + 狀態改為 BE
-                self.update(key, hit_tp1=True, sl=entry, status="BE")
-                # 發送通知（包含新止損價=保本）
-                send_tg(format_alert(coin, side, "TP1", price, entry, sl, tp1, tp2, tp3, new_sl=entry))
-                # 記錄 TP1 獲利（但不關閉訊號）
-                self._close(sig, tp1, "TP1")
-                logging.info(f"  🥇 TP1: {key} @ {price:.4f} | SL 移至保本 {entry:.4f}")
-            return False  # ⏳ 繼續追蹤 TP2
+        # TP1 → 保本
+        if ((side=="LONG" and price>=tp1) or (side=="SHORT" and price<=tp1)) and not sig.get("hit_tp1"):
+            self.update(key, hit_tp1=True, sl=entry, status="BE")
+            send_tg(format_alert(coin, side, "TP1", price, entry, sl, tp1, tp2, tp3, new_sl=entry))
+            self._close(sig, tp1, "TP1")
+            return False
 
-        return False  # 未觸發任何條件，繼續追蹤
+        return False
 
     def check_all(self):
         to_remove = []
@@ -1305,7 +1480,7 @@ def monitor_loop(tracker: SignalTracker, interval: int = 30, stop_event=None):
                 logging.info(f"監控中... {len(active)} 筆")
                 tracker.check_all()
             else:
-                logging.info("📭 無追蹤訊號")
+                logging.info("無追蹤訊號")
         except Exception as e:
             logging.error(f"monitor_loop: {e}")
         time.sleep(interval)
@@ -1324,36 +1499,40 @@ def _check_entry_zone(opp: dict) -> tuple:
     )
     dist_pct = (live - entry) / entry * 100
     if in_zone:
-        return True, live, f"✅ 已在進場區 {live:.4f}（{dist_pct:+.2f}%）"
+        return True, live, f"已在進場區 {live:.4f}（{dist_pct:+.2f}%）"
     elif (side=="LONG" and live > entry):
-        return False, live, f"⬆️ 價格高於進場區 {dist_pct:+.2f}% 等待回踩"
+        return False, live, f"價格高於進場區 {dist_pct:+.2f}% 等待回踩"
     elif (side=="SHORT" and live < entry):
-        return False, live, f"⬇️ 價格低於進場區 {dist_pct:+.2f}% 等待回升"
+        return False, live, f"價格低於進場區 {dist_pct:+.2f}% 等待回升"
     else:
-        return False, live, f"⏳ 等待接近進場區（{abs(dist_pct):.2f}%）"
+        return False, live, f"等待接近進場區（{abs(dist_pct):.2f}%）"
 
 
 # ─────────────────────────────────────────────────────────
-# 18. 主掃描函式
+# 18. 主掃描函式（v9.1：加入訊號冷卻機制）
 # ─────────────────────────────────────────────────────────
 def run_scan(tracker: SignalTracker) -> int:
-    logging.info(f"🔍 掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
+    logging.info(f"掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
     sent = 0
     for i, coin in enumerate(ALL_COINS, 1):
         if sent >= MAX_SIGNALS_PER_RUN: break
         logging.info(f"[{i}/{len(ALL_COINS)}] {coin}")
         if not check_news_cooldown(coin):
-            logging.info(f"  📰 新聞冷卻期"); continue
+            logging.info(f"  新聞冷卻期"); continue
         try:
             opps = scan_for_opportunity(coin)
             if opps:
                 opps.sort(key=lambda x: x["score"], reverse=True)
                 for opp in opps:
                     if sent >= MAX_SIGNALS_PER_RUN: break
+                    # v9.1：訊號冷卻檢查
+                    if not check_signal_cooldown(opp["instId"], opp["side"]):
+                        logging.info(f"  [{opp['instId']}/{opp['side']}] 冷卻期中（{SIGNAL_COOLDOWN_HOURS}h），跳過")
+                        continue
                     if send_tg(format_signal(opp)):
                         sent += 1
-                        logging.info(f"  📤 #{sent} [{opp['tf']}]{opp['side']} {opp['score']}分")
-                        # 檢查是否已可進場
+                        set_signal_cooldown(opp["instId"], opp["side"])   # v9.1：設定冷卻
+                        logging.info(f"  #{sent} [{opp['tf']}]{opp['side']} {opp['score']}分")
                         in_zone, live, zone_msg = _check_entry_zone(opp)
                         logging.info(f"     {zone_msg}")
                         if in_zone and live > 0:
@@ -1365,13 +1544,12 @@ def run_scan(tracker: SignalTracker) -> int:
                                 tp1=opp["tp1"], tp2=opp["tp2"], tp3=opp["tp3"],
                                 score=opp["score"],
                             ))
-                        # 加入追蹤列表
                         tracker.add(opp)
                     time.sleep(1)
             time.sleep(0.5)
         except Exception as e:
-            logging.error(f"❌ {coin}: {e}"); traceback.print_exc()
-    logging.info(f"✅ 掃描完成，發送 {sent} 筆")
+            logging.error(f"{coin}: {e}"); traceback.print_exc()
+    logging.info(f"掃描完成，發送 {sent} 筆")
     if sent > 0: send_tg(tracker.status_summary())
     return sent
 
@@ -1380,15 +1558,15 @@ def run_scan(tracker: SignalTracker) -> int:
 # 19. 主函式
 # ─────────────────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="Alpha Oracle v9.0")
+    parser = argparse.ArgumentParser(description="Alpha Oracle v9.1")
     parser.add_argument("--mode", default="all",
                         choices=["scan","monitor","loop","all",
                                  "daily_report","monthly_report"],
-                        help="scan=只掃描 | monitor=只監控 | loop=定時掃描 + 監控 | "
-                             "all=掃描 + 監控 | daily_report=今日戰報 | monthly_report=月度戰報")
-    parser.add_argument("--interval",      type=int, default=30, help="監控間隔 (秒)")
-    parser.add_argument("--loop-interval", type=int, default=900, help="loop 模式掃描間隔 (秒)")
-    parser.add_argument("--status",        action="store_true", help="顯示追蹤狀態")
+                        help="scan=只掃描 | monitor=只監控 | loop=定時掃描+監控 | "
+                             "all=掃描+監控 | daily_report=今日戰報 | monthly_report=月度戰報")
+    parser.add_argument("--interval",      type=int, default=30)
+    parser.add_argument("--loop-interval", type=int, default=900)
+    parser.add_argument("--status",        action="store_true")
     args = parser.parse_args()
 
     win_tracker = WinRateTracker(TRADE_HISTORY_FILE)
@@ -1400,18 +1578,18 @@ def main():
 
     if args.mode == "daily_report":
         msg = win_tracker.daily_report()
-        logging.info("📊 發送每日戰報"); print(msg); send_tg(msg); return
+        logging.info("發送每日戰報"); print(msg); send_tg(msg); return
 
     if args.mode == "monthly_report":
         msg = win_tracker.monthly_report()
-        logging.info("📅 發送月度戰報"); print(msg); send_tg(msg); return
+        logging.info("發送月度戰報"); print(msg); send_tg(msg); return
 
     if args.mode == "scan":
         run_scan(tracker); return
 
     if args.mode == "monitor":
         try: monitor_loop(tracker, interval=args.interval)
-        except KeyboardInterrupt: logging.info("⛔ 監控停止")
+        except KeyboardInterrupt: logging.info("監控停止")
         return
 
     if args.mode == "loop":
@@ -1422,23 +1600,20 @@ def main():
         try:
             while True:
                 run_scan(tracker)
-                logging.info(f"⏱ 下次掃描：{args.loop_interval}s 後")
+                logging.info(f"下次掃描：{args.loop_interval}s 後")
                 time.sleep(args.loop_interval)
         except KeyboardInterrupt:
-            logging.info("⛔ 迴圈停止"); stop_ev.set()
+            logging.info("迴圈停止"); stop_ev.set()
         return
 
-    # all 模式（預設）：掃描一次 + 持續監控
+    # all 模式（預設）
     run_scan(tracker)
     try: monitor_loop(tracker, interval=args.interval)
-    except KeyboardInterrupt: logging.info("⛔ 停止")
+    except KeyboardInterrupt: logging.info("停止")
 
 
-# ─────────────────────────────────────────────────────────
-# 主執行入口
-# ─────────────────────────────────────────────────────────
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        logging.error(f"💥 崩潰: {e}"); traceback.print_exc(); sys.exit(1)
+        logging.error(f"崩潰: {e}"); traceback.print_exc(); sys.exit(1)
