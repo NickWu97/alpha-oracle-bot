@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v9.1 — 完整版（掃描 + 進場監控 + 勝率統計 + 每日/月報）
+Alpha Oracle v9.1 — 完整版（掃描 + 進場監控 + 勝率統計 + 每日/月報 + TP/SL通知）
 ══════════════════════════════════════════════════════════════════════
 v9.0 全功能保留 + v9.1 新增優化：
   ✅ VWAP 分析          — 判斷價格在 VWAP 上下方，+0~5 分加成
@@ -11,6 +11,7 @@ v9.0 全功能保留 + v9.1 新增優化：
   ✅ 市場盤別顯示       — 亞盤/歐盤/美盤/清淡時段 顯示在訊號頭部
   ✅ 連勝/連敗追蹤      — 每日戰報顯示目前連勝/連敗狀態
   ✅ 倉位大小建議       — 依 ATR + 1% 風控建議進場張數/金額
+  ✅ TP/SL 通知優化     — 到達目標價/止損時發送精美通知
 
 ══ 執行模式 ══════════════════════════════════════
   python main.py                       → 掃描 + 監控一次（本地用）
@@ -21,7 +22,7 @@ v9.0 全功能保留 + v9.1 新增優化：
   python main.py --mode monthly_report → 發送月度戰報（GitHub Actions 每月1日觸發）
   python main.py --status              → 查詢目前追蹤中訊號
 
-══ 評分系統（100分，75分進場）══════════════════
+══ 評分系統（100分，68分進場）══════════════════
   1H HTF Supertrend         20 分
   OB / FVG 進場             18 分（最高）
   流動性池掃除（EQH/EQL）   18 分（最高）
@@ -78,9 +79,9 @@ ALL_COINS = [
     "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP"
 ]
 
-SCAN_TIMEFRAMES         = ["15m", "30m", "1H"]   # v9.1r：加入 1H 時框，訊號更多
-MAX_SIGNALS_PER_RUN     = int(os.getenv("MAX_SIGNALS", "12"))  # 每輪上限從 8 → 12
-SETUP_SCORE_THRESHOLD   = 68                      # 閾值從 75 → 68，放寬進場條件
+SCAN_TIMEFRAMES         = ["15m", "30m", "1H"]
+MAX_SIGNALS_PER_RUN     = int(os.getenv("MAX_SIGNALS", "12"))
+SETUP_SCORE_THRESHOLD   = 68
 
 # 訂單流參數
 CROSSLINE_BODY_RATIO       = 0.30
@@ -103,14 +104,14 @@ TRADE_HISTORY_FILE      = "trade_history.json"
 SIGNAL_EXPIRE_HOURS     = 24
 
 # v9.1 新增參數
-SIGNAL_COOLDOWN_HOURS       = 2        # 同幣同方向最短間隔（小時）
-VWAP_PERIODS                = 50       # VWAP 計算週期
+SIGNAL_COOLDOWN_HOURS       = 2
+VWAP_PERIODS                = 50
 MACD_FAST                   = 12
 MACD_SLOW                   = 26
 MACD_SIGNAL_PERIOD          = 9
 
 _news_cooldown:    dict = {}
-_SIGNAL_COOLDOWN:  dict = {}           # {instId_side: timestamp}
+_SIGNAL_COOLDOWN:  dict = {}
 
 # ─────────────────────────────────────────────────────────
 # 2. 工具 & 通知
@@ -147,7 +148,6 @@ def utc_now() -> datetime:
 # 2b. v9.1 輔助工具
 # ─────────────────────────────────────────────────────────
 def check_signal_cooldown(instId: str, side: str) -> bool:
-    """True = 可以發訊號（未在冷卻期）"""
     key  = f"{instId}_{side}"
     last = _SIGNAL_COOLDOWN.get(key, 0)
     return (time.time() - last) >= SIGNAL_COOLDOWN_HOURS * 3600
@@ -156,7 +156,6 @@ def set_signal_cooldown(instId: str, side: str):
     _SIGNAL_COOLDOWN[f"{instId}_{side}"] = time.time()
 
 def get_market_session() -> str:
-    """依 UTC 時間回傳目前盤別"""
     h = utc_now().hour
     if   13 <= h < 22: return "🌎 美盤"
     elif  7 <= h < 16: return "🌍 歐盤"
@@ -166,12 +165,11 @@ def get_market_session() -> str:
 def suggest_position_size(entry: float, sl: float,
                            account_size: float = 1000.0,
                            risk_pct: float = 0.01) -> str:
-    """1% 風控：返回建議倉位金額及槓桿提示"""
     try:
         sl_dist = abs(entry - sl)
         if sl_dist <= 0: return "─"
         sl_ratio    = sl_dist / entry
-        pos_usdt    = account_size * risk_pct / sl_ratio   # 建議倉位 USDT
+        pos_usdt    = account_size * risk_pct / sl_ratio
         leverage    = pos_usdt / account_size
         return f"≈{pos_usdt:.0f}U  (x{leverage:.1f} | 1%風控/{account_size:.0f}U)"
     except:
@@ -251,12 +249,8 @@ def fetch_order_book(instId: str, depth: int = 20) -> tuple:
     except: return 1.0, "盤口均衡"
 
 def fetch_oi_analysis(instId: str) -> tuple:
-    """
-    OI 持倉量趨勢分析（使用 OKX rubik 統計 API）
-    返回 (score 0.0~1.0, label)
-    """
     try:
-        base = instId.split("-")[0]   # BTC, ETH …
+        base = instId.split("-")[0]
         res  = requests.get(
             f"https://www.okx.com/api/v5/rubik/stat/contracts/open-interest-volume"
             f"?instId={base}&period=1H&limit=6",
@@ -264,8 +258,7 @@ def fetch_oi_analysis(instId: str) -> tuple:
         ).json()
         if res.get("code") != "0" or not res.get("data"):
             return 0.5, "OI─"
-        # data: [[timestamp, oi, volume], ...] newest first
-        oi_vals = [float(d[1]) for d in res["data"]][::-1]   # oldest → newest
+        oi_vals = [float(d[1]) for d in res["data"]][::-1]
         if len(oi_vals) < 4:
             return 0.5, "OI─"
         recent = sum(oi_vals[-2:]) / 2
@@ -361,7 +354,6 @@ def calculate_adx(df: pd.DataFrame, period: int = 14) -> tuple:
     return float(adx[-1]), float(plus_di[-1]), float(minus_di[-1])
 
 def calculate_vwap(df: pd.DataFrame, periods: int = VWAP_PERIODS) -> float:
-    """錨定式 VWAP（以最近 N 根 K 線計算）"""
     data = df.tail(periods).copy()
     tp   = (data["h"] + data["l"] + data["c"]) / 3.0
     vol  = data["v"]
@@ -371,10 +363,6 @@ def calculate_vwap(df: pd.DataFrame, periods: int = VWAP_PERIODS) -> float:
     return val if not np.isnan(val) else float(data["c"].iloc[-1])
 
 def analyze_vwap_position(df: pd.DataFrame, side: str) -> tuple:
-    """
-    返回 (score 0.0~1.0, label)
-    做多：價格在 VWAP 之下 = 低買優質；做空：價格在 VWAP 之上 = 高賣優質
-    """
     vwap  = calculate_vwap(df)
     price = df["c"].iloc[-1]
     atr   = calculate_atr(df)
@@ -390,7 +378,6 @@ def analyze_vwap_position(df: pd.DataFrame, side: str) -> tuple:
         else:                          return 0.1, f"VWAP大幅偏低 {vwap:.4f}"
 
 def calculate_macd(df: pd.DataFrame) -> tuple:
-    """返回 (macd_line, signal_line, histogram) — pd.Series"""
     close     = df["c"]
     ema_fast  = calculate_ema(close, MACD_FAST)
     ema_slow  = calculate_ema(close, MACD_SLOW)
@@ -400,10 +387,6 @@ def calculate_macd(df: pd.DataFrame) -> tuple:
     return macd_line, signal, histogram
 
 def detect_macd_divergence(df: pd.DataFrame, side: str) -> tuple:
-    """
-    返回 (has_divergence: bool, description: str)
-    與 RSI 背離互補，提供雙重確認。
-    """
     if len(df) < MACD_SLOW + 20:
         return False, "MACD數據不足"
     macd, _, _ = calculate_macd(df)
@@ -413,7 +396,6 @@ def detect_macd_divergence(df: pd.DataFrame, side: str) -> tuple:
     price_l    = df["l"].tail(lookback).values
     mid        = lookback // 2
     if side == "LONG":
-        # 看漲背離：價格創新低，MACD 不創新低
         prev_l = price_l[:mid].min(); curr_l = price_l[mid:].min()
         if curr_l < prev_l * 0.999:
             idx1 = int(np.argmin(price_l[:mid]))
@@ -422,7 +404,6 @@ def detect_macd_divergence(df: pd.DataFrame, side: str) -> tuple:
             if m2 > m1 + abs(m1) * 0.05:
                 return True, f"MACD看漲背離 ({m2:.4f}>{m1:.4f})"
     else:
-        # 看跌背離：價格創新高，MACD 不創新高
         prev_h = price_h[:mid].max(); curr_h = price_h[mid:].max()
         if curr_h > prev_h * 1.001:
             idx1 = int(np.argmax(price_h[:mid]))
@@ -894,11 +875,9 @@ def scan_timeframe(instId: str, tf: str,
     has_rsi_short, rsi_d_short, _     = detect_rsi_divergence(df, "SHORT")
     opportunities = []
     for side in ["LONG", "SHORT"]:
-        # v9.1r：移除三道硬性 filter，改由評分懲罰項處理
-        # HTF 逆勢 -15、FR 禁入 -10、盤口反向 -10 仍會讓分數大幅下降
         ob_dir_sc, ob_dir_lb = check_ob_direction(side, ob_r)
         fr_sc, fr_lb = interpret_funding_rate(fr, side)
-        if detect_fishing_trap(df, side): continue   # 釣魚陷阱仍保留
+        if detect_fishing_trap(df, side): continue
         cvd_cur, cvd_sl, cvd_lb, cvd_sc_raw = calculate_cvd(df)
         cvd_aligned = (side=="LONG" and cvd_sl>0) or (side=="SHORT" and cvd_sl<0)
         eff_cvd_sc  = cvd_sc_raw if cvd_aligned else cvd_sc_raw*0.25
@@ -989,7 +968,7 @@ def scan_for_opportunity(instId: str) -> list:
     fr           = fetch_funding_rate(instId)
     ls_f, ls_str = fetch_ls_ratio(instId)
     ob_r, _      = fetch_order_book(instId)
-    oi_sc, oi_lb = fetch_oi_analysis(instId)   # v9.1
+    oi_sc, oi_lb = fetch_oi_analysis(instId)
     all_opps = []
     for tf in SCAN_TIMEFRAMES:
         try:
@@ -1081,16 +1060,20 @@ def format_signal(opp: dict) -> str:
     )
 
 
+# ─────────────────────────────────────────────────────────
+# 14. 通知格式化函數（v9.1r：TP/SL 通知優化版）
+# ─────────────────────────────────────────────────────────
 def format_alert(coin: str, side: str, alert_type: str,
                  price: float, entry: float, sl: float,
                  tp1: float, tp2: float, tp3: float,
                  new_sl: float = None, score: int = 0) -> str:
     arrow = "🟢" if side=="LONG" else "🔴"
     st    = "多" if side=="LONG" else "空"
+    sign  = "+" if side=="LONG" else "-"
+    
     if alert_type == "ENTRY":
         sl_pct  = abs(entry - sl) / entry * 100
         tp1_pct = abs(tp1 - entry) / entry * 100
-        sign    = "+" if side=="LONG" else "-"
         sl_sign = "-" if side=="LONG" else "+"
         return (
             f"✅ *進場提醒* — #{coin} {arrow}{st}\n"
@@ -1104,61 +1087,63 @@ def format_alert(coin: str, side: str, alert_type: str,
             f"📊 評分 {score}分  |  當前 `{price:.4f}`\n"
             f"💡 價格已到達進場區，請確認進場！"
         )
+    
     elif alert_type == "TP1":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
+        new_sl_str = f"`{new_sl:.4f}`" if new_sl else "成本"
         return (
             f"🎯 *TP1 到達！保本移損* — #{coin} {arrow}{st}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
-            f"🎯 TP1  `{tp1:.4f}`  已到\n"
+            f"當前價  `{price:.4f}`  ({sign}{pnl:.2f}%)\n"
+            f"🥇 TP1  `{tp1:.4f}`  ✅ 已到\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🛡 止損已移至成本 `{new_sl:.4f}`\n"
-            f"🎯 繼續等 TP2  `{tp2:.4f}`\n"
+            f"🛡 止損已移至成本 `{new_sl_str}`\n"
+            f"🥈 繼續等 TP2  `{tp2:.4f}`\n"
             f"🏆 最終 TP3    `{tp3:.4f}`"
         )
+    
     elif alert_type == "TP2":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🎯 *TP2 到達！移損至TP1* — #{coin} {arrow}{st}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
-            f"🥈 TP2  `{tp2:.4f}`  已到\n"
+            f"當前價  `{price:.4f}`  ({sign}{pnl:.2f}%)\n"
+            f"🥈 TP2  `{tp2:.4f}`  ✅ 已到\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🛡 止損已移至 TP1 `{new_sl:.4f}`（鎖利）\n"
+            f"🛡 止損已移至 TP1 `{tp1:.4f}`（鎖利）\n"
             f"🏆 繼續持有等 TP3  `{tp3:.4f}` 🎉"
         )
+    
     elif alert_type == "TP3":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
             f"🏆 *TP3 全部到達！* — #{coin} {arrow}{st}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  (+{pnl:.2f}%)\n"
+            f"當前價  `{price:.4f}`  ({sign}{pnl:.2f}%)\n"
             f"🏆 TP3  `{tp3:.4f}`  完美收割！\n"
             f"建議全部平倉，恭喜獲利 🎉🎉🎉"
         )
+    
     elif alert_type == "SL":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         is_be = new_sl is not None and abs(new_sl - entry) < entry * 0.0001
         label = "保本止損" if is_be else "止損"
+        sl_display = f"`{new_sl:.4f}`" if new_sl else f"`{sl:.4f}`"
         return (
             f"🛑 *{label}觸發* — #{coin} {arrow}{st}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"當前價  `{price:.4f}`  ({pnl:.2f}%)\n"
-            f"🛑 止損  `{sl:.4f}`  已觸發\n"
+            f"🛑 止損  {sl_display}  已觸發\n"
             f"倉位已平，請確認出場！"
         )
+    
     return ""
 
 
 # ─────────────────────────────────────────────────────────
-# 14. WinRateTracker — 勝率統計 & 戰報（v9.1：加入連勝/連敗）
+# 15. WinRateTracker — 勝率統計 & 戰報（v9.1：加入連勝/連敗）
 # ─────────────────────────────────────────────────────────
 class WinRateTracker:
-    """
-    記錄每筆已結算交易，持久化到 trade_history.json。
-    close_type: TP1 / TP2 / TP3 (勝) | BE (保本平手) | SL (敗)
-    """
-
     def __init__(self, filepath: str = TRADE_HISTORY_FILE):
         self.filepath = filepath
         self._lock    = threading.Lock()
@@ -1209,11 +1194,10 @@ class WinRateTracker:
         avg_win  = sum(t["pnl_pct"] for t in wins)  / len(wins)  if wins  else 0.0
         avg_loss = sum(t["pnl_pct"] for t in losses) / len(losses) if losses else 0.0
         exp = (win_r/100 * avg_win) + ((1-win_r/100) * avg_loss)
-        # v9.1：連勝/連敗追蹤
         streak = 0; streak_type = ""
         for t in reversed(trades):
             if t.get("is_be"):
-                continue   # 保本不計入連勝連敗
+                continue
             if t["is_win"]:
                 if streak_type in ("W", ""):
                     streak_type = "W"; streak += 1
@@ -1314,15 +1298,9 @@ class WinRateTracker:
 
 
 # ─────────────────────────────────────────────────────────
-# 15. SignalTracker — 進場/TP/SL 監控
+# 16. SignalTracker — 進場/TP/SL 監控
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
-    """
-    追蹤活躍訊號，持久化到 JSON，監控進場/TP/SL 觸發。
-    平倉時自動寫入 WinRateTracker。
-    狀態：PENDING → ACTIVE → BE → TRAIL → (closed)
-    """
-
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE,
                  win_tracker: WinRateTracker = None):
         self.filepath    = filepath
@@ -1389,7 +1367,6 @@ class SignalTracker:
         entry  = sig["entry"]; sl    = sig["sl"]
         tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
 
-        # 過期清理
         if status == "PENDING":
             age_h = (time.time() - sig["created"]) / 3600
             if age_h > SIGNAL_EXPIRE_HOURS:
@@ -1397,7 +1374,6 @@ class SignalTracker:
                         f"進場 `{entry:.4f}` 超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
                 return True
 
-        # PENDING → 進場
         if status == "PENDING":
             entered = ((side=="LONG"  and price <= entry*(1+ENTRY_TOLERANCE)) or
                        (side=="SHORT" and price >= entry*(1-ENTRY_TOLERANCE)))
@@ -1410,7 +1386,6 @@ class SignalTracker:
 
         if status not in ("ACTIVE","BE","TRAIL"): return False
 
-        # 止損
         sl_hit = (side=="LONG" and price<=sl) or (side=="SHORT" and price>=sl)
         if sl_hit:
             is_be = (status == "BE")
@@ -1421,20 +1396,17 @@ class SignalTracker:
             logging.info(f"  止损({ct}): {key} price={price:.4f}")
             return True
 
-        # TP3
         if ((side=="LONG" and price>=tp3) or (side=="SHORT" and price<=tp3)):
             send_tg(format_alert(coin, side, "TP3", price, entry, sl, tp1, tp2, tp3))
             self._close(sig, tp3, "TP3")
             return True
 
-        # TP2
         if ((side=="LONG" and price>=tp2) or (side=="SHORT" and price<=tp2)) and not sig.get("hit_tp2"):
             self.update(key, hit_tp2=True, sl=tp1, status="TRAIL")
             send_tg(format_alert(coin, side, "TP2", price, entry, sl, tp1, tp2, tp3, new_sl=tp1))
             self._close(sig, tp2, "TP2")
             return False
 
-        # TP1 → 保本
         if ((side=="LONG" and price>=tp1) or (side=="SHORT" and price<=tp1)) and not sig.get("hit_tp1"):
             self.update(key, hit_tp1=True, sl=entry, status="BE")
             send_tg(format_alert(coin, side, "TP1", price, entry, sl, tp1, tp2, tp3, new_sl=entry))
@@ -1468,7 +1440,7 @@ class SignalTracker:
 
 
 # ─────────────────────────────────────────────────────────
-# 16. 監控迴圈
+# 17. 監控迴圈
 # ─────────────────────────────────────────────────────────
 def monitor_loop(tracker: SignalTracker, interval: int = 30, stop_event=None):
     logging.info(f"監控迴圈啟動，間隔 {interval}s")
@@ -1487,7 +1459,7 @@ def monitor_loop(tracker: SignalTracker, interval: int = 30, stop_event=None):
 
 
 # ─────────────────────────────────────────────────────────
-# 17. 即時進場區判斷
+# 18. 即時進場區判斷
 # ─────────────────────────────────────────────────────────
 def _check_entry_zone(opp: dict) -> tuple:
     live = fetch_ticker_price(opp["instId"])
@@ -1509,10 +1481,9 @@ def _check_entry_zone(opp: dict) -> tuple:
 
 
 # ─────────────────────────────────────────────────────────
-# 18. 主掃描函式（v9.1r：並行掃幣 + 冷卻機制）
+# 19. 主掃描函式（v9.1r：並行掃幣 + 冷卻機制）
 # ─────────────────────────────────────────────────────────
 def _scan_one_coin(coin: str) -> list:
-    """單幣掃描，供 ThreadPoolExecutor 使用"""
     if not check_news_cooldown(coin):
         logging.info(f"  [{coin}] 新聞冷卻期")
         return []
@@ -1525,7 +1496,6 @@ def _scan_one_coin(coin: str) -> list:
 
 def run_scan(tracker: SignalTracker) -> int:
     logging.info(f"掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
-    # ── 並行掃描所有幣種（最多 5 條執行緒，避免 API rate limit）──
     all_opps: list = []
     workers = min(5, len(ALL_COINS))
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -1539,13 +1509,11 @@ def run_scan(tracker: SignalTracker) -> int:
                     all_opps.extend(opps)
             except Exception as e:
                 logging.error(f"[{coin}] Future 錯誤: {e}")
-    # ── 依分數排序，高分優先發送 ──
     all_opps.sort(key=lambda x: x["score"], reverse=True)
     sent = 0
     for opp in all_opps:
         if sent >= MAX_SIGNALS_PER_RUN:
             break
-        # 訊號冷卻檢查（v9.1r：2 小時）
         if not check_signal_cooldown(opp["instId"], opp["side"]):
             logging.info(f"  [{opp['instId']}/{opp['side']}] 冷卻期中（{SIGNAL_COOLDOWN_HOURS}h），跳過")
             continue
@@ -1565,7 +1533,7 @@ def run_scan(tracker: SignalTracker) -> int:
                     score=opp["score"],
                 ))
             tracker.add(opp)
-        time.sleep(0.8)   # 小間隔避免 TG rate limit
+        time.sleep(0.8)
     logging.info(f"掃描完成，發送 {sent} 筆")
     if sent > 0:
         send_tg(tracker.status_summary())
@@ -1573,7 +1541,7 @@ def run_scan(tracker: SignalTracker) -> int:
 
 
 # ─────────────────────────────────────────────────────────
-# 19. 主函式
+# 20. 主函式
 # ─────────────────────────────────────────────────────────
 def main():
     parser = argparse.ArgumentParser(description="Alpha Oracle v9.1")
@@ -1624,7 +1592,6 @@ def main():
             logging.info("迴圈停止"); stop_ev.set()
         return
 
-    # all 模式（預設）
     run_scan(tracker)
     try: monitor_loop(tracker, interval=args.interval)
     except KeyboardInterrupt: logging.info("停止")
