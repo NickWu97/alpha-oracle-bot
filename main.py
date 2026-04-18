@@ -55,6 +55,7 @@ import logging
 import traceback
 import time
 import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
 # ─────────────────────────────────────────────────────────
@@ -77,9 +78,9 @@ ALL_COINS = [
     "SUI-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "APT-USDT-SWAP"
 ]
 
-SCAN_TIMEFRAMES         = ["15m", "30m"]
-MAX_SIGNALS_PER_RUN     = int(os.getenv("MAX_SIGNALS", "8"))
-SETUP_SCORE_THRESHOLD   = 75
+SCAN_TIMEFRAMES         = ["15m", "30m", "1H"]   # v9.1r：加入 1H 時框，訊號更多
+MAX_SIGNALS_PER_RUN     = int(os.getenv("MAX_SIGNALS", "12"))  # 每輪上限從 8 → 12
+SETUP_SCORE_THRESHOLD   = 68                      # 閾值從 75 → 68，放寬進場條件
 
 # 訂單流參數
 CROSSLINE_BODY_RATIO       = 0.30
@@ -102,7 +103,7 @@ TRADE_HISTORY_FILE      = "trade_history.json"
 SIGNAL_EXPIRE_HOURS     = 24
 
 # v9.1 新增參數
-SIGNAL_COOLDOWN_HOURS       = 4        # 同幣同方向最短間隔（小時）
+SIGNAL_COOLDOWN_HOURS       = 2        # 同幣同方向最短間隔（小時）
 VWAP_PERIODS                = 50       # VWAP 計算週期
 MACD_FAST                   = 12
 MACD_SLOW                   = 26
@@ -893,12 +894,11 @@ def scan_timeframe(instId: str, tf: str,
     has_rsi_short, rsi_d_short, _     = detect_rsi_divergence(df, "SHORT")
     opportunities = []
     for side in ["LONG", "SHORT"]:
-        if htf_trend not in("UNKNOWN","NEUTRAL") and htf_trend!=side: continue
+        # v9.1r：移除三道硬性 filter，改由評分懲罰項處理
+        # HTF 逆勢 -15、FR 禁入 -10、盤口反向 -10 仍會讓分數大幅下降
         ob_dir_sc, ob_dir_lb = check_ob_direction(side, ob_r)
-        if ob_dir_sc == 0.0: continue
         fr_sc, fr_lb = interpret_funding_rate(fr, side)
-        if fr_sc == 0.0: continue
-        if detect_fishing_trap(df, side): continue
+        if detect_fishing_trap(df, side): continue   # 釣魚陷阱仍保留
         cvd_cur, cvd_sl, cvd_lb, cvd_sc_raw = calculate_cvd(df)
         cvd_aligned = (side=="LONG" and cvd_sl>0) or (side=="SHORT" and cvd_sl<0)
         eff_cvd_sc  = cvd_sc_raw if cvd_aligned else cvd_sc_raw*0.25
@@ -1509,48 +1509,66 @@ def _check_entry_zone(opp: dict) -> tuple:
 
 
 # ─────────────────────────────────────────────────────────
-# 18. 主掃描函式（v9.1：加入訊號冷卻機制）
+# 18. 主掃描函式（v9.1r：並行掃幣 + 冷卻機制）
 # ─────────────────────────────────────────────────────────
+def _scan_one_coin(coin: str) -> list:
+    """單幣掃描，供 ThreadPoolExecutor 使用"""
+    if not check_news_cooldown(coin):
+        logging.info(f"  [{coin}] 新聞冷卻期")
+        return []
+    try:
+        return scan_for_opportunity(coin)
+    except Exception as e:
+        logging.error(f"[{coin}] 掃描錯誤: {e}")
+        return []
+
+
 def run_scan(tracker: SignalTracker) -> int:
     logging.info(f"掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
+    # ── 並行掃描所有幣種（最多 5 條執行緒，避免 API rate limit）──
+    all_opps: list = []
+    workers = min(5, len(ALL_COINS))
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futures = {ex.submit(_scan_one_coin, c): c for c in ALL_COINS}
+        for fut in as_completed(futures):
+            coin = futures[fut]
+            try:
+                opps = fut.result()
+                if opps:
+                    logging.info(f"  [{coin}] 找到 {len(opps)} 個機會")
+                    all_opps.extend(opps)
+            except Exception as e:
+                logging.error(f"[{coin}] Future 錯誤: {e}")
+    # ── 依分數排序，高分優先發送 ──
+    all_opps.sort(key=lambda x: x["score"], reverse=True)
     sent = 0
-    for i, coin in enumerate(ALL_COINS, 1):
-        if sent >= MAX_SIGNALS_PER_RUN: break
-        logging.info(f"[{i}/{len(ALL_COINS)}] {coin}")
-        if not check_news_cooldown(coin):
-            logging.info(f"  新聞冷卻期"); continue
-        try:
-            opps = scan_for_opportunity(coin)
-            if opps:
-                opps.sort(key=lambda x: x["score"], reverse=True)
-                for opp in opps:
-                    if sent >= MAX_SIGNALS_PER_RUN: break
-                    # v9.1：訊號冷卻檢查
-                    if not check_signal_cooldown(opp["instId"], opp["side"]):
-                        logging.info(f"  [{opp['instId']}/{opp['side']}] 冷卻期中（{SIGNAL_COOLDOWN_HOURS}h），跳過")
-                        continue
-                    if send_tg(format_signal(opp)):
-                        sent += 1
-                        set_signal_cooldown(opp["instId"], opp["side"])   # v9.1：設定冷卻
-                        logging.info(f"  #{sent} [{opp['tf']}]{opp['side']} {opp['score']}分")
-                        in_zone, live, zone_msg = _check_entry_zone(opp)
-                        logging.info(f"     {zone_msg}")
-                        if in_zone and live > 0:
-                            time.sleep(0.5)
-                            send_tg(format_alert(
-                                coin=opp["instId"].split("-")[0], side=opp["side"],
-                                alert_type="ENTRY", price=live,
-                                entry=opp["entry"], sl=opp["sl"],
-                                tp1=opp["tp1"], tp2=opp["tp2"], tp3=opp["tp3"],
-                                score=opp["score"],
-                            ))
-                        tracker.add(opp)
-                    time.sleep(1)
-            time.sleep(0.5)
-        except Exception as e:
-            logging.error(f"{coin}: {e}"); traceback.print_exc()
+    for opp in all_opps:
+        if sent >= MAX_SIGNALS_PER_RUN:
+            break
+        # 訊號冷卻檢查（v9.1r：2 小時）
+        if not check_signal_cooldown(opp["instId"], opp["side"]):
+            logging.info(f"  [{opp['instId']}/{opp['side']}] 冷卻期中（{SIGNAL_COOLDOWN_HOURS}h），跳過")
+            continue
+        if send_tg(format_signal(opp)):
+            sent += 1
+            set_signal_cooldown(opp["instId"], opp["side"])
+            logging.info(f"  #{sent} {opp['instId']} [{opp['tf']}]{opp['side']} {opp['score']}分")
+            in_zone, live, zone_msg = _check_entry_zone(opp)
+            logging.info(f"     {zone_msg}")
+            if in_zone and live > 0:
+                time.sleep(0.5)
+                send_tg(format_alert(
+                    coin=opp["instId"].split("-")[0], side=opp["side"],
+                    alert_type="ENTRY", price=live,
+                    entry=opp["entry"], sl=opp["sl"],
+                    tp1=opp["tp1"], tp2=opp["tp2"], tp3=opp["tp3"],
+                    score=opp["score"],
+                ))
+            tracker.add(opp)
+        time.sleep(0.8)   # 小間隔避免 TG rate limit
     logging.info(f"掃描完成，發送 {sent} 筆")
-    if sent > 0: send_tg(tracker.status_summary())
+    if sent > 0:
+        send_tg(tracker.status_summary())
     return sent
 
 
