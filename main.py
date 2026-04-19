@@ -1098,76 +1098,90 @@ def format_alert(coin: str, side: str, alert_type: str,
                  price: float, entry: float, sl: float,
                  tp1: float, tp2: float, tp3: float,
                  new_sl: float = None, score: int = 0) -> str:
+    """
+    追蹤訊號通知（v9.1 精緻排版）
+    設計原則：標題粗體 → 空行分區 → 重點數字 monospace → 行動建議清晰
+    """
     arrow = "🟢" if side=="LONG" else "🔴"
     st    = "多" if side=="LONG" else "空"
-    sign  = "+" if side=="LONG" else "-"   # 用於 pnl 顯示
+    sign  = "+" if side=="LONG" else "-"
 
+    # ── 進場提醒 ─────────────────────────────────────────
     if alert_type == "ENTRY":
         sl_pct  = abs(entry - sl)  / entry * 100
-        tp1_pct = abs(tp1 - entry) / entry * 100
+        tp1_pct = abs(tp1   - entry) / entry * 100
         sl_sign = "-" if side=="LONG" else "+"
         return (
-            f"✅ *進場提醒* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"✅ *進場提醒 — #{coin} {arrow}{st}*\n"
+            f"\n"
             f"📌 進場價  `{entry:.4f}`\n"
-            f"🛑 止損    `{sl:.4f}`  ({sl_sign}{sl_pct:.2f}%)\n"
-            f"🥇 TP1     `{tp1:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
+            f"🛑 止損    `{sl:.4f}`  `{sl_sign}{sl_pct:.2f}%`\n"
+            f"🥇 TP1     `{tp1:.4f}`  `{sign}{tp1_pct:.2f}%`\n"
             f"🥈 TP2     `{tp2:.4f}`\n"
             f"🏆 TP3     `{tp3:.4f}`\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"📊 評分 {score}分  |  當前 `{price:.4f}`\n"
+            f"\n"
+            f"📊 評分 {score}分  ·  當前 `{price:.4f}`\n"
             f"💡 價格已到達進場區，請確認進場！"
         )
 
+    # ── TP1 到達：移損至成本，平 ⅓ ──────────────────────
     elif alert_type == "TP1":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         new_sl_str = f"`{new_sl:.4f}`" if new_sl else "`成本`"
         return (
-            f"🎯 *TP1 到達！保本移損* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  ({sign}{pnl:.2f}%)\n"
-            f"🥇 TP1  `{tp1:.4f}`  ✅ 已到\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🎯 *TP1 到達！保本移損 — #{coin} {arrow}{st}*\n"
+            f"\n"
+            f"當前價  `{price:.4f}`  `{sign}{pnl:.2f}%`\n"
+            f"🥇 TP1   `{tp1:.4f}`  ✅ 已到\n"
+            f"\n"
             f"🛡 止損已移至成本 {new_sl_str}\n"
-            f"💡 建議此時平倉 *1/3 部位*，剩餘繼續持有\n"
+            f"💡 建議平倉 *⅓ 部位*，剩餘繼續持有\n"
+            f"\n"
             f"🥈 繼續等 TP2  `{tp2:.4f}`\n"
             f"🏆 最終 TP3    `{tp3:.4f}`"
         )
 
+    # ── TP2 到達：移損至 TP1，再平 ⅓ ────────────────────
     elif alert_type == "TP2":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
-            f"🎯 *TP2 到達！移損至TP1* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  ({sign}{pnl:.2f}%)\n"
-            f"🥈 TP2  `{tp2:.4f}`  ✅ 已到\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🎯 *TP2 到達！移損至TP1 — #{coin} {arrow}{st}*\n"
+            f"\n"
+            f"當前價  `{price:.4f}`  `{sign}{pnl:.2f}%`\n"
+            f"🥈 TP2   `{tp2:.4f}`  ✅ 已到\n"
+            f"\n"
             f"🛡 止損已移至 TP1 `{tp1:.4f}`（鎖利）\n"
-            f"💡 建議此時再平倉 *1/3 部位*，留 1/3 衝 TP3\n"
+            f"💡 建議再平倉 *⅓ 部位*，留 ⅓ 衝 TP3\n"
+            f"\n"
             f"🏆 繼續持有等 TP3  `{tp3:.4f}` 🎉"
         )
 
+    # ── TP3 到達：完美收割 ───────────────────────────────
     elif alert_type == "TP3":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
         return (
-            f"🏆 *TP3 全部到達！* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  ({sign}{pnl:.2f}%)\n"
-            f"🏆 TP3  `{tp3:.4f}`  完美收割！\n"
-            f"🎉 建議全部平倉，恭喜獲利 🎉🎉🎉"
+            f"🏆 *TP3 完美收割！— #{coin} {arrow}{st}*\n"
+            f"\n"
+            f"當前價  `{price:.4f}`  `{sign}{pnl:.2f}%`\n"
+            f"🏆 TP3   `{tp3:.4f}`  ✅ 已到\n"
+            f"\n"
+            f"🎉 全部目標達成，建議全部平倉！恭喜獲利 🎉"
         )
 
+    # ── 止損觸發（含保本止損）────────────────────────────
     elif alert_type == "SL":
         pnl = (price - entry) / entry * 100 if side=="LONG" else (entry - price) / entry * 100
-        is_be  = new_sl is not None and abs(new_sl - entry) < entry * 0.0001
-        label  = "保本止損" if is_be else "止損"
+        is_be      = new_sl is not None and abs(new_sl - entry) < entry * 0.0001
+        label      = "保本止損" if is_be else "止損"
         sl_display = f"`{new_sl:.4f}`" if new_sl else f"`{sl:.4f}`"
+        outcome    = "🛡 保本出場，繼續等下一個機會 💪" if is_be else "❌ 倉位已平，請確認出場！"
         return (
-            f"🛑 *{label}觸發* — #{coin} {arrow}{st}\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"當前價  `{price:.4f}`  ({pnl:.2f}%)\n"
-            f"🛑 止損  {sl_display}  已觸發\n"
-            f"倉位已平，請確認出場！"
+            f"🛑 *{label}觸發 — #{coin} {arrow}{st}*\n"
+            f"\n"
+            f"當前價  `{price:.4f}`  `{pnl:.2f}%`\n"
+            f"🛑 止損  {sl_display}  ✅ 已觸發\n"
+            f"\n"
+            f"{outcome}"
         )
 
     return ""
