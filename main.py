@@ -1005,79 +1005,92 @@ def scan_for_opportunity(instId: str) -> list:
     return list(seen.values())
 
 # ─────────────────────────────────────────────────────────
-# 13. 訊號格式化（v9.1：加入盤別 / VWAP / OI / 倉位建議）
+# 13. 訊號格式化（v9.1：精緻排版 — 一眼看懂版）
 # ─────────────────────────────────────────────────────────
 def format_signal(opp: dict) -> str:
-    coin   = opp["instId"].split("-")[0]
-    arrow  = "🟢" if opp["side"]=="LONG" else "🔴"
-    st     = "多單 (LONG)" if opp["side"]=="LONG" else "空單 (SHORT)"
-    htf_e  = {"LONG":"🟢","SHORT":"🔴","NEUTRAL":"⚪","UNKNOWN":"⚪"}.get(opp["htf_trend"],"⚪")
-    liq    = opp["liq"]; regime = opp["regime"]
-    entry  = opp["entry"]
-    sl_pct = abs(entry - opp["sl"])  / entry * 100
-    tp1_pct= abs(opp["tp1"] - entry) / entry * 100
-    tp2_pct= abs(opp["tp2"] - entry) / entry * 100
-    tp3_pct= abs(opp["tp3"] - entry) / entry * 100
-    sign   = "+" if opp["side"]=="LONG" else "-"
-    sl_sign= "-" if opp["side"]=="LONG" else "+"
-    top_bd = [x for x in opp["breakdown"] if not x.endswith("+0")][:6]
-    bd_line= "  ".join(top_bd)
+    coin    = opp["instId"].split("-")[0]
+    is_long = opp["side"] == "LONG"
+    arrow   = "🟢" if is_long else "🔴"
+    dir_txt = "LONG" if is_long else "SHORT"
+    sign    = "+" if is_long else "-"
+    sl_sign = "-" if is_long else "+"
+    htf_e   = {"LONG":"🟢","SHORT":"🔴","NEUTRAL":"⚪","UNKNOWN":"⚪"}.get(opp["htf_trend"],"⚪")
+
+    entry   = opp["entry"]
+    sl_pct  = abs(entry - opp["sl"])  / entry * 100
+    tp1_pct = abs(opp["tp1"] - entry) / entry * 100
+    tp2_pct = abs(opp["tp2"] - entry) / entry * 100
+    tp3_pct = abs(opp["tp3"] - entry) / entry * 100
+
+    liq      = opp["liq"]
+    regime   = opp["regime"]
+    session  = opp.get("session", get_market_session())
+    vwap_lb  = opp.get("vwap_lb", "")
+    oi_lb    = opp.get("oi_lb",   "")
+    pos_hint = opp.get("pos_hint","─")
+
+    # ── 評分摘要：取非零前5項 ───────────────────────────
+    top_bd  = [x for x in opp["breakdown"] if not x.endswith("+0")][:5]
+    bd_line = "  ".join(top_bd)
+
+    # ── 等級標誌 ─────────────────────────────────────────
+    grade_icon = {"S":"🏆","A":"⭐","B":"✅","C":"📊"}.get(opp.get("grade","C"), "📊")
+
+    # ── 觸發條件（最多4條）────────────────────────────────
     triggers = []
-    if liq["sweep_detected"]: triggers.append(f"💧 {liq['sweep_desc']}")
-    if opp["at_ob"]:          triggers.append(f"🟦 {opp['ob_d']}")
-    if opp["at_fvg"]:         triggers.append(f"🟩 {opp['fvg_d']}")
-    if opp["bos_desc"] not in ("無明顯結構",""):
-        triggers.append(f"🏗 {opp['bos_desc']}")
-    if opp["as_bool"]:        triggers.append(f"⚡ {opp['as_d']}")
-    if opp["has_rsi"]:        triggers.append(f"📉 {opp['rsi_d']}")
-    if opp.get("has_macd"):   triggers.append(f"〽️ {opp['macd_d']}")
-    if not triggers:          triggers.append("⚪ 等待進場區確認")
+    if liq["sweep_detected"]:                          triggers.append(f"💧 {liq['sweep_desc']}")
+    if opp["at_ob"]:                                   triggers.append(f"🟦 {opp['ob_d']}")
+    if opp["at_fvg"]:                                  triggers.append(f"🟩 {opp['fvg_d']}")
+    if opp["bos_desc"] not in ("無明顯結構", ""):      triggers.append(f"🏗 {opp['bos_desc']}")
+    if opp["as_bool"]:                                 triggers.append(f"⚡ {opp['as_d']}")
+    if opp["has_rsi"]:                                 triggers.append(f"📉 {opp['rsi_d']}")
+    if opp.get("has_macd"):                            triggers.append(f"〽️ {opp['macd_d']}")
+    if not triggers:                                   triggers.append("⚪ 等待進場區確認")
     trigger_txt = "\n".join(f"  • {t}" for t in triggers[:4])
-    bsl = f"{liq['nearest_bsl']:.4f}" if liq["nearest_bsl"] else "─"
-    ssl = f"{liq['nearest_ssl']:.4f}" if liq["nearest_ssl"] else "─"
-    eqh = f"EQH {liq['eqh']:.4f}" if liq["eqh"] else "─"
-    eql = f"EQL {liq['eql']:.4f}" if liq["eql"] else "─"
-    pa_top = opp["pa_sigs"][0] if opp["pa_sigs"] else "─"
-    whale  = "  |  ".join(opp["whale_zones"]) if opp["whale_zones"] else "─"
-    session = opp.get("session", get_market_session())
-    vwap_lb = opp.get("vwap_lb", "─")
-    oi_lb   = opp.get("oi_lb",   "─")
-    pos_hint= opp.get("pos_hint","─")
+
+    # ── 流動性水位 ────────────────────────────────────────
+    liq_parts = []
+    if liq["nearest_bsl"]: liq_parts.append(f"BSL `{liq['nearest_bsl']:.2f}`")
+    if liq["nearest_ssl"]: liq_parts.append(f"SSL `{liq['nearest_ssl']:.2f}`")
+    if liq["eqh"]:         liq_parts.append(f"EQH `{liq['eqh']:.2f}`")
+    if liq["eql"]:         liq_parts.append(f"EQL `{liq['eql']:.2f}`")
+    liq_line = "  ·  ".join(liq_parts) if liq_parts else "─"
+
+    # ── 市場背景（壓縮成一行）────────────────────────────
+    ctx = []
+    ctx.append(f"ADX {regime['adx']:.0f} {regime['regime']}")
+    if vwap_lb: ctx.append(vwap_lb)
+    if oi_lb:   ctx.append(oi_lb)
+    ctx.append(opp["btc_lb"])
+    ctx_line = "  ·  ".join(ctx)
+
+    # ══════════════════════════════════════════════════════
     return (
-        f"🔥 *Alpha Oracle v9.1*  {session}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"💎 #{coin}  {arrow} {st}  [{opp['lev']}]\n"
-        f"⏰ {opp['tf']}  |  1H: {htf_e} {opp['htf_trend']}  |  {opp['t4h_lb']}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"📊 *{opp['score']}分*  {opp['grade']}\n"
-        f"   {bd_line}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"📌 進場    `{opp['entry']:.4f}`\n"
-        f"🛑 止損    `{opp['sl']:.4f}`  ({sl_sign}{sl_pct:.2f}%  動態SL)\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"🥇 TP1 (1R)    `{opp['tp1']:.4f}`  ({sign}{tp1_pct:.2f}%)\n"
-        f"🥈 TP2 (2.5R)  `{opp['tp2']:.4f}`  ({sign}{tp2_pct:.2f}%)\n"
-        f"🏆 TP3 (4R)    `{opp['tp3']:.4f}`  ({sign}{tp3_pct:.2f}%)\n"
-        f"💼 倉位建議  {pos_hint}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"🔍 *訊號根據*\n"
+        # ── 標題列 ──────────────────────────────────────
+        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"{arrow} *#{coin} · {dir_txt}*  {grade_icon} *{opp['score']}分*  {session}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        # ── 時框 & 評分細項 ──────────────────────────────
+        f"⏱ `{opp['tf']}`  ·  1H {htf_e}  ·  {opp['t4h_lb']}  [{opp['lev']}]\n"
+        f"📊 {bd_line}\n"
+        f"\n"
+        # ── 進場 / 止損 ──────────────────────────────────
+        f"📌 進場    `{entry:.4f}`\n"
+        f"🛑 止損    `{opp['sl']:.4f}`  `{sl_sign}{sl_pct:.2f}%`\n"
+        f"\n"
+        # ── 獲利目標 ─────────────────────────────────────
+        f"🥇 TP1    `{opp['tp1']:.4f}`  `{sign}{tp1_pct:.2f}%`  ⅓倉\n"
+        f"🥈 TP2    `{opp['tp2']:.4f}`  `{sign}{tp2_pct:.2f}%`  ⅓倉\n"
+        f"🏆 TP3    `{opp['tp3']:.4f}`  `{sign}{tp3_pct:.2f}%`  ⅓倉\n"
+        f"💼 {pos_hint}\n"
+        # ── 訊號觸發 ─────────────────────────────────────
+        f"─────────────────────────\n"
         f"{trigger_txt}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"📐 結構: {opp['structure']}  |  P/D: {opp['pd_lb']}\n"
-        f"💧 BSL {bsl}  |  SSL {ssl}\n"
-        f"   {eqh}  |  {eql}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"📊 ADX={regime['adx']:.1f} {regime['regime']}  |  {opp['adx_lb']}\n"
-        f"₿  {opp['btc_lb']}  |  {opp['vol_msg']}\n"
-        f"🧬 {opp['cvd_lb']}  |  多空比 {opp['ls_str']}\n"
-        f"💸 {opp['fr_lb']}  |  {opp['ob_dir_lb']}\n"
-        f"📈 {vwap_lb}  |  {oi_lb}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"🕯 PA: {opp['pa_lb']} {opp['pa_sc']:.0f}分  |  {pa_top}\n"
-        f"🐋 {whale}\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"💡 *{'流動性掃除後進場' if liq['sweep_detected'] else ('主動掃單確認' if opp['as_bool'] else '等待進場區回踩')}*\n"
-        f"📡 ST: {opp['st_lb']}  |  {opp['tf']} 波段"
+        # ── 市場背景 ─────────────────────────────────────
+        f"─────────────────────────\n"
+        f"🗺 {opp['structure']}  ·  P/D {opp['pd_lb']}  ·  {liq_line}\n"
+        f"📡 {ctx_line}\n"
+        f"🧬 {opp['cvd_lb']}  ·  多空比 {opp['ls_str']}  ·  💸 {opp['fr_lb']}"
     )
 
 
