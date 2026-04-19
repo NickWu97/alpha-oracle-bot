@@ -1298,7 +1298,7 @@ class WinRateTracker:
 
 
 # ─────────────────────────────────────────────────────────
-# 16. SignalTracker — 進場/TP/SL 監控
+# 16. SignalTracker — 進場/TP/SL 監控 [✅ 已修復 TP1/TP2 通知問題]
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE,
@@ -1360,6 +1360,11 @@ class SignalTracker:
                 logging.error(f"WinRateTracker.record: {e}")
 
     def check_one(self, key: str, sig: dict) -> bool:
+        """
+        ✅ 修復重點：
+        - TP1/TP2 觸發時：發送通知 + 移動止損 + 繼續追蹤（不關閉訊號）
+        - TP3/SL 觸發時：發送通知 + 記錄交易 + 關閉訊號
+        """
         price = fetch_ticker_price(sig["instId"])
         if price <= 0: return False
         coin   = sig["instId"].split("-")[0]
@@ -1367,6 +1372,7 @@ class SignalTracker:
         entry  = sig["entry"]; sl    = sig["sl"]
         tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
 
+        # 過期清理
         if status == "PENDING":
             age_h = (time.time() - sig["created"]) / 3600
             if age_h > SIGNAL_EXPIRE_HOURS:
@@ -1374,6 +1380,7 @@ class SignalTracker:
                         f"進場 `{entry:.4f}` 超過{SIGNAL_EXPIRE_HOURS}h 未觸發")
                 return True
 
+        # PENDING → 進場
         if status == "PENDING":
             entered = ((side=="LONG"  and price <= entry*(1+ENTRY_TOLERANCE)) or
                        (side=="SHORT" and price >= entry*(1-ENTRY_TOLERANCE)))
@@ -1381,11 +1388,12 @@ class SignalTracker:
                 self.update(key, status="ACTIVE")
                 send_tg(format_alert(coin, side, "ENTRY",
                                      price, entry, sl, tp1, tp2, tp3, score=sig["score"]))
-                logging.info(f"  进场: {key} price={price:.4f}")
+                logging.info(f"  進場: {key} price={price:.4f}")
             return False
 
         if status not in ("ACTIVE","BE","TRAIL"): return False
 
+        # 止損
         sl_hit = (side=="LONG" and price<=sl) or (side=="SHORT" and price>=sl)
         if sl_hit:
             is_be = (status == "BE")
@@ -1393,25 +1401,30 @@ class SignalTracker:
             send_tg(format_alert(coin, side, "SL", price, entry, sl, tp1, tp2, tp3,
                                  new_sl=entry if is_be else None))
             self._close(sig, price, ct)
-            logging.info(f"  止损({ct}): {key} price={price:.4f}")
+            logging.info(f"  止損({ct}): {key} price={price:.4f}")
             return True
 
+        # TP3 - 全部平倉 ✅ 發送通知 + 記錄交易 + 關閉訊號
         if ((side=="LONG" and price>=tp3) or (side=="SHORT" and price<=tp3)):
             send_tg(format_alert(coin, side, "TP3", price, entry, sl, tp1, tp2, tp3))
             self._close(sig, tp3, "TP3")
             return True
 
+        # TP2 - 移動止損到TP1，但不平倉 ✅ 發送通知 + 更新狀態 + 繼續追蹤
         if ((side=="LONG" and price>=tp2) or (side=="SHORT" and price<=tp2)) and not sig.get("hit_tp2"):
             self.update(key, hit_tp2=True, sl=tp1, status="TRAIL")
             send_tg(format_alert(coin, side, "TP2", price, entry, sl, tp1, tp2, tp3, new_sl=tp1))
-            self._close(sig, tp2, "TP2")
-            return False
+            # ⚠️ 注意：這裡「不」調用 _close，因為倉位繼續持有
+            logging.info(f"  TP2到達: {key} price={price:.4f} 止損移至TP1")
+            return False  # 返回 False = 繼續追蹤此訊號
 
+        # TP1 - 移動止損到成本，但不平倉 ✅ 發送通知 + 更新狀態 + 繼續追蹤
         if ((side=="LONG" and price>=tp1) or (side=="SHORT" and price<=tp1)) and not sig.get("hit_tp1"):
             self.update(key, hit_tp1=True, sl=entry, status="BE")
             send_tg(format_alert(coin, side, "TP1", price, entry, sl, tp1, tp2, tp3, new_sl=entry))
-            self._close(sig, tp1, "TP1")
-            return False
+            # ⚠️ 注意：這裡「不」調用 _close，因為倉位繼續持有
+            logging.info(f"  TP1到達: {key} price={price:.4f} 止損移至成本")
+            return False  # 返回 False = 繼續追蹤此訊號
 
         return False
 
