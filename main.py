@@ -890,6 +890,25 @@ def scan_timeframe(instId: str, tf: str,
         elif side=="LONG" and liq["nearest_ssl"]: entry = liq["nearest_ssl"]*1.001
         elif side=="SHORT" and liq["nearest_bsl"]: entry = liq["nearest_bsl"]*0.999
         else:                          entry = price
+
+        # ✨ v9.1.2 方向校驗：抓即時價做 sanity check
+        # LONG 不追高（進場應 ≤ 當前，等回踩）
+        # SHORT 不追低（進場應 ≥ 當前，等反彈）
+        live = fetch_ticker_price(instId) or price
+        tol_px = 0.0005  # 容許 0.05% 誤差（高波動幣可微調）
+        if side == "LONG" and entry > live * (1 + tol_px):
+            logging.info(f"  [校正/{instId}/{tf}] LONG 進場 {entry:.4f} > 當前 {live:.4f}，改為當前價")
+            entry = live
+        elif side == "SHORT" and entry < live * (1 - tol_px):
+            logging.info(f"  [校正/{instId}/{tf}] SHORT 進場 {entry:.4f} < 當前 {live:.4f}，改為當前價")
+            entry = live
+        # 若即時價已遠離預設進場區（> 0.8% ATR 比例），直接跳過這個訊號
+        atr_ratio = atr / (live + 1e-10)
+        deviation = abs(live - entry) / (live + 1e-10)
+        if deviation > max(atr_ratio * 0.8, 0.008):
+            logging.info(f"  [略過/{instId}/{tf}/{side}] 即時價 {live:.4f} 偏離進場 {entry:.4f} 過遠 ({deviation*100:.2f}%)")
+            continue
+
         sl_price = calculate_dynamic_sl(entry, side, atr, support, resistance)
         risk     = abs(entry - sl_price)
         tp1 = entry+risk     if side=="LONG" else entry-risk
