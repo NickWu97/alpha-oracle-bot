@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle v9.1.1 — 完整版（掃描 + 進場監控 + 勝率統計 + 每日/月報 + 動態追蹤止損）
+Alpha Oracle v9.1.3 — 完整版（掃描 + 進場監控 + 勝率統計 + 每日/月報 + 動態追蹤止損）
 ══════════════════════════════════════════════════════════════════════
+v9.1.3 修正（雲端追蹤關鍵修復）：
+  🐛 FIX: GitHub Actions 上 PENDING 訊號永遠不轉 ACTIVE 的致命問題
+         → run_scan() 開頭強制先呼叫 check_all() 預檢既有訊號
+  ✨ NEW: monitor_once 輕量監控模式（單次檢查，雲端 cron 專用）
+  ✨ NEW: 掃描結束後一律推播追蹤狀態（不再限定有新訊號才推）
+v9.1.2 修正：
+  🐛 FIX: SHORT 進場價可能低於當前價（追空）、LONG 進場價可能高於當前價（追高）
+         → scan_timeframe 加入方向校驗 + 偏離過大則略過
 v9.1.1 修正：
-  🐛 FIX: PENDING 訊號永遠卡住的致命 bug（check_one 提前 return False）
-  🐛 FIX: TP2 觸發後下一輪誤觸發 TP1 的競態（hit_tp1 同步標記）
-  ✨ NEW: format_alert 全面重排（進場/TP1/TP2/TP3/SL 分段顯示）
-  ✨ NEW: status_summary 多行結構 + 進度條 + 距離提示
+  🐛 FIX: check_one 提前 return False 導致 PENDING 卡住
+  🐛 FIX: TP2 觸發後下一輪誤觸發 TP1（hit_tp1 同步標記）
+  ✨ NEW: format_alert / status_summary 全面重排
 v9.1 保留：
   ✅ VWAP 分析 / OI 持倉量 / MACD 背離 / 訊號冷卻 / 盤別 / 連勝連敗 / 倉位建議
 ══ 執行模式 ══════════════════════════════════════
   python main.py                       → 掃描 + 監控一次（本地用）
-  python main.py --mode scan           → 只掃描一次（GitHub Actions 用）
-  python main.py --mode monitor        → 只監控活躍訊號
-  python main.py --mode loop           → 定時掃描 + 持續監控（Render/VPS）
+  python main.py --mode scan           → 預檢既有訊號 + 掃描新訊號（GitHub Actions 主要模式）
+  python main.py --mode monitor_once   → 單次檢查既有訊號（GitHub Actions 快速心跳）
+  python main.py --mode monitor        → 持續監控（阻塞）
+  python main.py --mode loop           → 定時掃描 + 持續監控（Render/VPS 理想）
   python main.py --mode daily_report   → 發送今日戰報
   python main.py --mode monthly_report → 發送月度戰報
   python main.py --status              → 查詢目前追蹤中訊號
@@ -1300,7 +1308,7 @@ class WinRateTracker:
                     f"今日暫無已結算訊號\n"
                     f"持續掃描中... 💪\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"🤖 Alpha Oracle v9.1.1 持續監控中")
+                    f"🤖 Alpha Oracle v9.1.3 持續監控中")
         grade = ("🏆 優秀" if s["win_rate"]>=70 else
                  "✅ 良好" if s["win_rate"]>=55 else
                  "⚠️ 一般" if s["win_rate"]>=40 else "❌ 待改善")
@@ -1317,7 +1325,7 @@ class WinRateTracker:
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"{self._trade_lines(trades)}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🤖 Alpha Oracle v9.1.1 明日繼續！"
+            f"🤖 Alpha Oracle v9.1.3 明日繼續！"
         )
 
     def monthly_report(self, month_str: str = None) -> str:
@@ -1355,7 +1363,7 @@ class WinRateTracker:
             f"🏅 各幣種：\n"
             + "\n".join(coin_lines) +
             f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🤖 Alpha Oracle v9.1.1 下月繼續！"
+            f"🤖 Alpha Oracle v9.1.3 下月繼續！"
         )
 
 # ─────────────────────────────────────────────────────────
@@ -1623,7 +1631,7 @@ class SignalTracker:
 
         lines.append("")
         lines.append(f"━━━━━━━━━━━━━━━━━━━━━━━━")
-        lines.append(f"🤖 Alpha Oracle v9.1.1 動態追蹤中")
+        lines.append(f"🤖 Alpha Oracle v9.1.3 動態追蹤中")
 
         return "\n".join(lines)
 
@@ -1680,7 +1688,16 @@ def _scan_one_coin(coin: str) -> list:
         return []
 
 def run_scan(tracker: SignalTracker) -> int:
-    logging.info(f"掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES}")
+    # ✨ v9.1.3：掃描前先檢查既有訊號，確保雲端環境下 PENDING/ACTIVE 也會被更新
+    active_before = len(tracker.list_active())
+    if active_before > 0:
+        logging.info(f"═══ 預檢 {active_before} 筆既有訊號 ═══")
+        try:
+            tracker.check_all()
+        except Exception as e:
+            logging.error(f"check_all 預檢錯誤: {e}")
+
+    logging.info(f"═══ 掃描開始 閾值={SETUP_SCORE_THRESHOLD} 時框={SCAN_TIMEFRAMES} ═══")
     all_opps: list = []
     workers = min(5, len(ALL_COINS))
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -1720,19 +1737,44 @@ def run_scan(tracker: SignalTracker) -> int:
             tracker.add(opp)
         time.sleep(0.8)
     logging.info(f"掃描完成，發送 {sent} 筆")
-    if sent > 0:
+    # ✨ v9.1.3：只要有追蹤中訊號就推播狀態快照（不再限定必須有新訊號）
+    if len(tracker.list_active()) > 0:
         send_tg(tracker.status_summary())
     return sent
+
+def run_monitor_once(tracker: SignalTracker, push_status: bool = True) -> int:
+    """
+    ✨ v9.1.3 輕量監控模式：只檢查既有訊號一次，不掃描新訊號。
+    適合雲端 cron（例如每 3~5 分鐘）快速同步 TP/SL 狀態。
+    回傳被檢查的訊號數量。
+    """
+    active = tracker.list_active()
+    n = len(active)
+    if n == 0:
+        logging.info("monitor_once: 無追蹤中訊號")
+        return 0
+    logging.info(f"monitor_once: 檢查 {n} 筆追蹤中訊號")
+    try:
+        tracker.check_all()
+    except Exception as e:
+        logging.error(f"monitor_once 錯誤: {e}")
+    # 檢查完若還有存活訊號，推播狀態
+    remaining = tracker.list_active()
+    if push_status and remaining:
+        send_tg(tracker.status_summary())
+    logging.info(f"monitor_once: 完成，剩餘 {len(remaining)} 筆")
+    return n
 
 # ─────────────────────────────────────────────────────────
 # 19. 主函式
 # ─────────────────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="Alpha Oracle v9.1.1")
+    parser = argparse.ArgumentParser(description="Alpha Oracle v9.1.3")
     parser.add_argument("--mode", default="all",
-                        choices=["scan","monitor","loop","all",
+                        choices=["scan","monitor","monitor_once","loop","all",
                                  "daily_report","monthly_report"],
-                        help="scan=只掃描 | monitor=只監控 | loop=定時掃描+監控 | "
+                        help="scan=掃描（含預檢既有訊號） | monitor=持續監控（阻塞） | "
+                             "monitor_once=輕量單次監控（雲端用） | loop=定時掃描+監控 | "
                              "all=掃描+監控 | daily_report=今日戰報 | monthly_report=月度戰報")
     parser.add_argument("--interval",      type=int, default=30)
     parser.add_argument("--loop-interval", type=int, default=900)
@@ -1751,6 +1793,8 @@ def main():
         logging.info("發送月度戰報"); print(msg); send_tg(msg); return
     if args.mode == "scan":
         run_scan(tracker); return
+    if args.mode == "monitor_once":
+        run_monitor_once(tracker); return
     if args.mode == "monitor":
         try: monitor_loop(tracker, interval=args.interval)
         except KeyboardInterrupt: logging.info("監控停止")
