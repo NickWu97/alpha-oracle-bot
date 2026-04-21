@@ -1,25 +1,25 @@
-name: Alpha Oracle v9.1.3
+name: Alpha Oracle v9.1.8
 on:
   schedule:
     # ═══════════════════════════════════════════════════════════
     # 掃描（生成新訊號 + 預檢既有訊號）— 每 15 分鐘
     # ═══════════════════════════════════════════════════════════
-    - cron: "*/15 1-5 * * *"    # 亞洲盤
-    - cron: "*/15 13-17 * * *"  # 歐美盤
+    - cron: "*/15 1-5 * * *"     # 亞洲盤 (UTC)
+    - cron: "*/15 13-17 * * *"   # 歐美盤 (UTC)
 
     # ═══════════════════════════════════════════════════════════
-    # ✨ 高頻監控（只檢查既有訊號的 TP/SL 觸發）— 每 5 分鐘
-    # 避免漏掉 TP/SL；不產生新訊號，純粹同步狀態與推播
-    # 注意：GitHub Actions 免費額度 2000 min/月；5 min cron × 20s ≈ 200 min/月，OK
-    # 若要節省額度，可改為 */10 或只在交易時段啟用
+    # 高頻監控（只檢查既有訊號的 TP/SL 觸發）— 每 5 分鐘
     # ═══════════════════════════════════════════════════════════
-    - cron: "*/5 * * * *"       # 24h 每 5 分鐘檢查
+    - cron: "*/5 * * * *"        # 24h 每 5 分鐘檢查
 
     # ═══════════════════════════════════════════════════════════
-    # 戰報
+    # 🔥 午夜戰報（台灣時間 00:00 = UTC 16:00）
     # ═══════════════════════════════════════════════════════════
-    - cron: "5 0 * * *"         # 每日戰報 00:05 UTC
-    - cron: "10 0 1 * *"        # 月度戰報 每月 1 日 00:10 UTC
+    - cron: "0 16 * * *"         # 每日戰報 台灣時間 00:00
+    
+    # 備援戰報（可選）
+    - cron: "5 0 * * *"          # UTC 00:05 備援
+    - cron: "10 0 1 * *"         # 月度戰報 每月 1 日
 
   workflow_dispatch:
     inputs:
@@ -37,9 +37,9 @@ on:
 permissions:
   contents: write
 
-# 避免同一模式的兩次執行互踩（active_signals.json 寫入衝突）
+# 🔧 優化：按 branch 分離 concurrency group
 concurrency:
-  group: alpha-oracle-state
+  group: alpha-oracle-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -74,12 +74,12 @@ jobs:
           DAY=$(date -u +%d)
           MIN_INT=$((10#$MIN))
 
-          # 月度戰報：每月 1 日 00:10 UTC（±5 min 容差）
-          if [ "$DAY" = "01" ] && [ "$HOUR" = "00" ] && [ "$MIN_INT" -ge 10 ] && [ "$MIN_INT" -lt 15 ]; then
-            echo "mode=monthly_report" >> $GITHUB_OUTPUT
-          # 每日戰報：00:05 UTC（±5 min 容差）
-          elif [ "$HOUR" = "00" ] && [ "$MIN_INT" -ge 5 ] && [ "$MIN_INT" -lt 10 ]; then
+          # 🔥 午夜戰報：台灣時間 00:00 = UTC 16:00（±5 min 容差）
+          if [ "$HOUR" = "16" ] && [ "$MIN_INT" -ge 0 ] && [ "$MIN_INT" -lt 5 ]; then
             echo "mode=daily_report" >> $GITHUB_OUTPUT
+          # 月度戰報：每月 1 日 00:10 UTC
+          elif [ "$DAY" = "01" ] && [ "$HOUR" = "00" ] && [ "$MIN_INT" -ge 10 ] && [ "$MIN_INT" -lt 15 ]; then
+            echo "mode=monthly_report" >> $GITHUB_OUTPUT
           # 每 15 分鐘的 00/15/30/45 分 → scan（主要掃描模式）
           elif [ "$MIN" = "00" ] || [ "$MIN" = "15" ] || [ "$MIN" = "30" ] || [ "$MIN" = "45" ]; then
             # 只在亞洲/歐美盤啟動 scan，其他時段仍跑 monitor_once
@@ -88,16 +88,19 @@ jobs:
             else
               echo "mode=monitor_once" >> $GITHUB_OUTPUT
             fi
-          # 其他分鐘（5/10/20/25/35/40/50/55）→ monitor_once 輕量模式
+          # 其他分鐘 → monitor_once 輕量模式
           else
             echo "mode=monitor_once" >> $GITHUB_OUTPUT
           fi
 
       - name: Run Alpha Oracle (${{ steps.mode.outputs.mode }})
         env:
-          TG_TOKEN:    ${{ secrets.TG_TOKEN }}
-          CHAT_ID:     ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "6"
+          TG_TOKEN:             ${{ secrets.TG_TOKEN }}
+          CHAT_ID:              ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS:          "6"
+          # 🔥 新增環境變數
+          CONFIRM_TP_ON_CLOSE:  "true"      # true=收盤確認，false=即時觸發
+          DEBUG_MODE:           "false"     # 除錯模式（上線後設 false）
         run: python main.py --mode ${{ steps.mode.outputs.mode }}
 
       - name: Commit state files
@@ -107,15 +110,14 @@ jobs:
           git config user.email "alpha-oracle[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
-          # 用 rebase 降低 race condition（多個 cron 同時寫檔時）
+          # 用 rebase 降低 race condition
           git pull --rebase --autostash origin "$(git rev-parse --abbrev-ref HEAD)" || true
 
-          git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
+          git add -f active_signals.json trade_history.json daily_stats.csv alpha_oracle.log 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No state changes to commit"
           else
             git commit -m "bot: state update [${{ steps.mode.outputs.mode }}] [skip ci]"
-            # 再 pull 一次避免 push 時 non-fast-forward
             git pull --rebase --autostash origin "$(git rev-parse --abbrev-ref HEAD)" || true
             git push || git push --force-with-lease
           fi
