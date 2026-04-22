@@ -1,25 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Build tag: v9.2.0
 """
-Alpha Oracle v9.2.0 — 商用版：自動戰報 + 精準統計 + 策略全透明
+Alpha Oracle v9.1.6 — 狀態同步修復 + 收盤確認 + 狀態推播節流
 ══════════════════════════════════════════════════════════════════════
-v9.2.0 新增：
-  ✨ NEW: 自動戰報觸發 — 每日 UTC+8 00:00 自動推送昨日戰報；
-         月初 1 日 UTC+8 00:00 自動推送上月戰報（report_state.json 去重）
-  ✨ NEW: 商用級統計指標 — Profit Factor、最大回撤（連續 R 回撤）、
-         最佳/最差單筆、Time-in-Trade、R 期望值
-  ✨ NEW: 進出場通知全覆蓋審計 — 每個狀態轉換必發 TG（見 STRATEGY.md）
-  ✨ NEW: STRATEGY.md 公開全部判斷依據（商用銷售可附）
-v9.1.8 保留：
-  ✨ MAX_CONCURRENT=3（env 可調）→ PENDING+ACTIVE 合計達上限時，
-     本輪掃描拒絕再新增訊號（TP/SL 監控不受影響）
-v9.1.7 保留：
-  🐛 K 線 wick fallback（解決 cron 5min 錯過 wick）
-  ✨ TP1/TP2 首次觸及發「⚡ 觸及（待收盤確認）」TG 通知
-  ✨ PENDING 進場區判斷吃 tick + wick
-v9.1.6 保留：
-  ✅ TP 收盤確認（CONFIRM_TP_ON_CLOSE）+ 狀態推播節流
+v9.1.6 新增：
+  🐛 FIX: 掃描當下價格已在進場區 → 訊號直接存 ACTIVE（避免 PENDING 錯位）
+  🐛 FIX: 掃描結尾再 check_all 一次（避免新訊號狀態延遲）
+  ✨ NEW: TP1/TP2 收盤確認（CONFIRM_TP_ON_CLOSE）→ 去除 wick 誤觸發
+         只有「已收盤 K 線的收盤價」穿越 TP1/TP2，才觸發 SL 移動
+  ✨ NEW: 狀態摘要推播節流（monitor_once 只在「有變動」或「整點心跳」推播）
+         減少 Telegram 噪音，從 288 則/天 → ~12 則/天
+  ✨ NEW: status_summary 對 PENDING 訊號若當前價在進場區，顯示 ⚡ 已在進場區
 v9.1.4 保留：
   ✅ send_tg/fetch_ticker_price 重試機制 + 詳細通知 log
   ✅ monitor_loop 預設 10 秒間隔
@@ -57,7 +48,6 @@ ALL_COINS = [
 ]
 SCAN_TIMEFRAMES         = ["15m", "30m", "1H"]
 MAX_SIGNALS_PER_RUN     = int(os.getenv("MAX_SIGNALS", "12"))
-MAX_CONCURRENT          = int(os.getenv("MAX_CONCURRENT", "3"))  # v9.1.8：最大同時持倉（PENDING+ACTIVE 合計）
 SETUP_SCORE_THRESHOLD   = 68
 # 訂單流參數
 CROSSLINE_BODY_RATIO       = 0.30
@@ -75,11 +65,7 @@ ADX_PERIOD              = 14
 ENTRY_TOLERANCE         = 0.002
 ACTIVE_SIGNALS_FILE     = "active_signals.json"
 TRADE_HISTORY_FILE      = "trade_history.json"
-REPORT_STATE_FILE       = "report_state.json"   # v9.2.0：自動戰報去重
 SIGNAL_EXPIRE_HOURS     = 24
-# v9.2.0：自動戰報時區 — 預設 UTC+8 00:00 發送前一日戰報（UTC 16:00）
-REPORT_TZ_OFFSET_HOURS  = int(os.getenv("REPORT_TZ_OFFSET_HOURS", "8"))
-AUTO_REPORT_HOUR_LOCAL  = int(os.getenv("AUTO_REPORT_HOUR_LOCAL", "0"))  # local hour to fire
 # v9.1 新增參數
 SIGNAL_COOLDOWN_HOURS       = 2
 VWAP_PERIODS                = 50
@@ -1239,53 +1225,15 @@ class WinRateTracker:
             self._save()
         logging.info(f"📝 記錄 {coin} {side} {close_type} {pnl_pct:+.2f}%")
     def _stats(self, trades: list):
-        """
-        v9.2.0 商用級統計：
-          - 勝率（只計 win vs loss，BE 另列）
-          - Profit Factor = 總獲利% / 總虧損%
-          - 最大回撤（以累計 pnl_pct 模擬權益曲線）
-          - 最佳/最差單筆
-          - 平均持倉時間（若 trade_history 有 opened_at/closed_at 則計算）
-          - 連勝/連敗 streak
-        """
         if not trades: return None
         wins   = [t for t in trades if t["is_win"]]
         losses = [t for t in trades if not t["is_win"] and not t.get("is_be")]
         be     = [t for t in trades if t.get("is_be")]
         total  = len(trades)
-        decisive_total = len(wins) + len(losses)  # 勝率分母不含 BE
-        win_r  = (len(wins) / decisive_total * 100) if decisive_total else 0.0
-        avg_win  = sum(t["pnl_pct"] for t in wins)   / len(wins)   if wins   else 0.0
+        win_r  = len(wins) / total * 100
+        avg_win  = sum(t["pnl_pct"] for t in wins)  / len(wins)  if wins  else 0.0
         avg_loss = sum(t["pnl_pct"] for t in losses) / len(losses) if losses else 0.0
-        # 期望值：以勝率 * 平均獲利 + 敗率 * 平均虧損（僅用 decisive 樣本）
-        if decisive_total:
-            wr = win_r / 100
-            exp = (wr * avg_win) + ((1 - wr) * avg_loss)
-        else:
-            exp = 0.0
-        # Profit Factor
-        gross_win  = sum(t["pnl_pct"] for t in wins)
-        gross_loss = abs(sum(t["pnl_pct"] for t in losses))
-        if gross_loss > 0:
-            pf = gross_win / gross_loss
-        elif gross_win > 0:
-            pf = float("inf")
-        else:
-            pf = 0.0
-        # 最大回撤（以按時間順序的累計 pnl_pct 為 equity）
-        equity, peak, max_dd = 0.0, 0.0, 0.0
-        for t in trades:
-            equity += t["pnl_pct"]
-            if equity > peak:
-                peak = equity
-            dd = peak - equity
-            if dd > max_dd:
-                max_dd = dd
-        total_pnl = sum(t["pnl_pct"] for t in trades)
-        # 最佳 / 最差
-        best  = max(trades, key=lambda t: t["pnl_pct"])
-        worst = min(trades, key=lambda t: t["pnl_pct"])
-        # streak（連勝 / 連敗，BE 跳過不計）
+        exp = (win_r/100 * avg_win) + ((1-win_r/100) * avg_loss)
         streak = 0; streak_type = ""
         for t in reversed(trades):
             if t.get("is_be"):
@@ -1307,17 +1255,9 @@ class WinRateTracker:
         elif streak_type == "L" and streak >= 2: streak_str = f"⚠️ 連敗 {streak} 筆"
         elif streak_type == "L":                 streak_str = f"❌ 最近一敗"
         else:                                    streak_str = ""
-        return {
-            "total": total, "wins": len(wins), "losses": len(losses), "be": len(be),
-            "decisive_total": decisive_total,
-            "win_rate": win_r, "avg_win": avg_win, "avg_loss": avg_loss,
-            "expectancy": exp, "profit_factor": pf,
-            "gross_win": gross_win, "gross_loss": gross_loss,
-            "max_dd": max_dd, "total_pnl": total_pnl,
-            "best_pnl": best["pnl_pct"], "best_coin": best["coin"],
-            "worst_pnl": worst["pnl_pct"], "worst_coin": worst["coin"],
-            "streak_str": streak_str,
-        }
+        return {"total":total,"wins":len(wins),"losses":len(losses),"be":len(be),
+                "win_rate":win_r,"avg_win":avg_win,"avg_loss":avg_loss,"expectancy":exp,
+                "streak_str": streak_str}
     def _trade_lines(self, trades: list, n: int = 8) -> str:
         ct_map = {"TP1":"🥇","TP2":"🥈","TP3":"🏆","BE":"⚖️","SL":"🛑"}
         lines = []
@@ -1336,29 +1276,24 @@ class WinRateTracker:
                     f"今日暫無已結算訊號\n"
                     f"持續掃描中... 💪\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"🤖 Alpha Oracle v9.2.0 持續監控中")
+                    f"🤖 Alpha Oracle v9.1.6 持續監控中")
         grade = ("🏆 優秀" if s["win_rate"]>=70 else
                  "✅ 良好" if s["win_rate"]>=55 else
                  "⚠️ 一般" if s["win_rate"]>=40 else "❌ 待改善")
         streak_line = f"\n{s['streak_str']}" if s.get("streak_str") else ""
-        pf_str = ("∞" if s["profit_factor"] == float("inf")
-                  else f"{s['profit_factor']:.2f}")
         return (
             f"📊 *今日戰報 {date_str}*\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🎯 訊號總數：{s['total']} 筆  {grade}\n"
             f"✅ 勝：{s['wins']}  ❌ 敗：{s['losses']}  ⚖️ 保本：{s['be']}\n"
-            f"📈 *勝率：{s['win_rate']:.1f}%*（不含保本 {s['be']} 筆）\n"
-            f"💰 平均獲利：{s['avg_win']:+.2f}%   📉 平均虧損：{s['avg_loss']:+.2f}%\n"
-            f"⚡ 期望值：{s['expectancy']:+.2f}%/筆\n"
-            f"📊 Profit Factor：{pf_str}    📉 最大回撤：{s['max_dd']:.2f}%\n"
-            f"🌟 最佳：#{s['best_coin']} {s['best_pnl']:+.2f}%   "
-            f"💢 最差：#{s['worst_coin']} {s['worst_pnl']:+.2f}%\n"
-            f"💹 當日累計：{s['total_pnl']:+.2f}%{streak_line}\n"
+            f"📈 *勝率：{s['win_rate']:.1f}%*\n"
+            f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
+            f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
+            f"⚡ 期望值：{s['expectancy']:+.2f}%/筆{streak_line}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"{self._trade_lines(trades)}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🤖 Alpha Oracle v9.2.0 明日繼續！"
+            f"🤖 Alpha Oracle v9.1.6 明日繼續！"
         )
     def monthly_report(self, month_str: str = None) -> str:
         if not month_str: month_str = utc_now().strftime("%Y-%m")
@@ -1382,25 +1317,20 @@ class WinRateTracker:
                  "✅ 良好" if s["win_rate"]>=55 else
                  "⚠️ 普通" if s["win_rate"]>=40 else "❌ 需優化")
         streak_line = f"\n{s['streak_str']}" if s.get("streak_str") else ""
-        pf_str = ("∞" if s["profit_factor"] == float("inf")
-                  else f"{s['profit_factor']:.2f}")
         return (
             f"📅 *月度戰報 {month_str}*\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🎯 本月訊號：{s['total']} 筆  {grade}\n"
             f"✅ 勝：{s['wins']}  ❌ 敗：{s['losses']}  ⚖️ 保本：{s['be']}\n"
-            f"📈 *月勝率：{s['win_rate']:.1f}%*（不含保本 {s['be']} 筆）\n"
-            f"💰 平均獲利：{s['avg_win']:+.2f}%   📉 平均虧損：{s['avg_loss']:+.2f}%\n"
-            f"⚡ 月期望值：{s['expectancy']:+.2f}%/筆\n"
-            f"📊 Profit Factor：{pf_str}    📉 最大回撤：{s['max_dd']:.2f}%\n"
-            f"🌟 最佳：#{s['best_coin']} {s['best_pnl']:+.2f}%   "
-            f"💢 最差：#{s['worst_coin']} {s['worst_pnl']:+.2f}%\n"
-            f"💹 本月累計：{s['total_pnl']:+.2f}%{streak_line}\n"
+            f"📈 *月勝率：{s['win_rate']:.1f}%*\n"
+            f"💰 平均獲利：{s['avg_win']:+.2f}%\n"
+            f"📉 平均虧損：{s['avg_loss']:+.2f}%\n"
+            f"⚡ 月期望值：{s['expectancy']:+.2f}%/筆{streak_line}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
             f"🏅 各幣種：\n"
             + "\n".join(coin_lines) +
             f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🤖 Alpha Oracle v9.2.0 下月繼續！"
+            f"🤖 Alpha Oracle v9.1.6 下月繼續！"
         )
 # ─────────────────────────────────────────────────────────
 # 15. SignalTracker — 進場/TP/SL 監控 + 動態追蹤止損
@@ -1464,9 +1394,6 @@ class SignalTracker:
                 # v9.1.6：收盤確認的中間狀態
                 "touched_tp1"  : False,
                 "touched_tp2"  : False,
-                # v9.1.7：觸及通知只發一次（避免每輪刷屏）
-                "alerted_touch_tp1": False,
-                "alerted_touch_tp2": False,
                 "created"      : now,
                 "activated_at" : now if active else None,
                 "hit_tp1_at"   : None,
@@ -1515,8 +1442,6 @@ class SignalTracker:
     def check_one(self, key: str, sig: dict) -> bool:
         """
         檢查單一訊號。返回 True = 已結束可移除；False = 繼續追蹤。
-        v9.1.7：新增 K 線 high/low wick fallback，解決 GitHub Actions cron
-                間隔（5min）錯過短暫 wick 的問題。
         """
         try:
             price = fetch_ticker_price(sig["instId"])
@@ -1529,22 +1454,7 @@ class SignalTracker:
             entry  = sig["entry"]
             sl     = sig["sl"]
             tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
-            # v9.1.7：抓最近 2 根已收盤 K 的 high/low 當 wick fallback
-            kline_high = price
-            kline_low  = price
-            kline_last_close = price
-            try:
-                df_last = fetch_okx_last_closed(sig["instId"], tf=sig["tf"], limit=2)
-                if df_last is not None and len(df_last) > 0:
-                    kline_high = float(df_last["h"].max())
-                    kline_low  = float(df_last["l"].min())
-                    kline_last_close = float(df_last["c"].iloc[-1])
-            except Exception as e:
-                logging.warning(f"  [{key}] K 線 high/low 抓取失敗: {e}")
-            # 輔助：LONG 上穿 level / SHORT 下穿 level（tick 或 wick 任一）
-            def _long_hit(level):  return price >= level or kline_high >= level
-            def _short_hit(level): return price <= level or kline_low  <= level
-            logging.debug(f"[{key}] 檢查: 價={price:.4f}, H={kline_high:.4f}, L={kline_low:.4f}, 狀態={status}")
+            logging.debug(f"[{key}] 檢查: 價格={price:.4f}, 狀態={status}")
             # ── 1. PENDING 狀態：檢查過期 & 進場區 ─────────────
             if status == "PENDING":
                 age_h = (time.time() - sig["created"]) / 3600
@@ -1554,15 +1464,10 @@ class SignalTracker:
                     logging.info(f"  [過期] {key}")
                     self.last_run_transitions += 1
                     return True
-                # v9.1.7：進場區判斷同時吃 tick 和 wick
-                if side == "LONG":
-                    zone_lo = entry * (1 - ENTRY_TOLERANCE * 3)
-                    zone_hi = entry * (1 + ENTRY_TOLERANCE)
-                    in_entry_zone = (zone_lo <= price <= zone_hi) or (zone_lo <= kline_low <= zone_hi) or (kline_low <= zone_hi and kline_high >= zone_lo)
-                else:
-                    zone_lo = entry * (1 - ENTRY_TOLERANCE)
-                    zone_hi = entry * (1 + ENTRY_TOLERANCE * 3)
-                    in_entry_zone = (zone_lo <= price <= zone_hi) or (zone_lo <= kline_high <= zone_hi) or (kline_low <= zone_hi and kline_high >= zone_lo)
+                in_entry_zone = (
+                    (side == "LONG"  and entry*(1-ENTRY_TOLERANCE*3) <= price <= entry*(1+ENTRY_TOLERANCE)) or
+                    (side == "SHORT" and entry*(1-ENTRY_TOLERANCE) <= price <= entry*(1+ENTRY_TOLERANCE*3))
+                )
                 if in_entry_zone:
                     self.update(key, status="ACTIVE", activated_at=time.time())
                     msg = format_alert(coin, side, "ENTRY",
@@ -1576,90 +1481,75 @@ class SignalTracker:
             # ── 2. 非活躍狀態不處理 ─────────────────────────
             if status not in ("ACTIVE", "BE", "TRAIL"):
                 return False
-            # ── 3. 止損觸發（最優先，避免錯過保護；含 wick）─────────
-            sl_hit = (side == "LONG" and _short_hit(sl)) or (side == "SHORT" and _long_hit(sl))
+            # ── 3. 止損觸發（最優先，避免錯過保護）─────────────
+            #      SL 不需要收盤確認，tick 觸及立即觸發
+            sl_hit = (side == "LONG" and price <= sl) or (side == "SHORT" and price >= sl)
             if sl_hit:
                 is_be = (status in ("BE", "TRAIL") and abs(sl - entry) < entry * 0.0001)
                 close_type = "BE" if is_be else "SL"
-                hit_price = sl  # 實際成交理論上在 SL 價位
-                msg = format_alert(coin, side, "SL", hit_price, entry, sig["sl_orig"],
+                msg = format_alert(coin, side, "SL", price, entry, sig["sl_orig"],
                                    tp1, tp2, tp3,
                                    new_sl=(entry if is_be else sl))
                 if send_tg(msg):
-                    logging.info(f"  [{close_type}] {key} @ {hit_price:.4f} (BE={is_be}) - 通知已發送")
+                    logging.info(f"  [{close_type}] {key} @ {price:.4f} (BE={is_be}) - 通知已發送")
                 else:
                     logging.error(f"  [{close_type}] {key} - 通知發送失敗")
-                self._close(sig, hit_price, close_type)
+                self._close(sig, price, close_type)
                 self.last_run_transitions += 1
                 return True
-            # ── 4. TP3 達成（含 wick，不需收盤確認）──────────
-            tp3_hit = (side == "LONG" and _long_hit(tp3)) or (side == "SHORT" and _short_hit(tp3))
+            # ── 4. TP3 達成 → 全部平倉（不需收盤確認，行情已走很遠）────
+            tp3_hit = (side == "LONG" and price >= tp3) or (side == "SHORT" and price <= tp3)
             if tp3_hit:
-                msg = format_alert(coin, side, "TP3", tp3, entry, sig["sl_orig"], tp1, tp2, tp3)
+                msg = format_alert(coin, side, "TP3", price, entry, sig["sl_orig"], tp1, tp2, tp3)
                 if send_tg(msg):
-                    logging.info(f"  [TP3] {key} @ {tp3:.4f} ✅ 完美收割 - 通知已發送")
+                    logging.info(f"  [TP3] {key} @ {price:.4f} ✅ 完美收割 - 通知已發送")
                 else:
                     logging.error(f"  [TP3] {key} - 通知發送失敗")
                 self._close(sig, tp3, "TP3")
                 self.last_run_transitions += 1
                 return True
-            # ── 5. TP2 觸及（含 wick）→ 先標 ⚡ 通知，待收盤確認再移損 ─
-            tp2_touched_now = (side == "LONG" and _long_hit(tp2)) or (side == "SHORT" and _short_hit(tp2))
+            # ── 5. TP2 達成 → 移損至 TP1（需收盤確認）────────
+            tp2_touched_now = (side == "LONG" and price >= tp2) or (side == "SHORT" and price <= tp2)
             if tp2_touched_now and not sig.get("hit_tp2"):
-                # 首次觸及：標記 + 發一次「觸及」通知（避免刷屏）
+                # 標記觸及（讓 status_summary 顯示 ⚡）
                 if not sig.get("touched_tp2"):
                     self.update(key, touched_tp2=True)
-                    logging.info(f"  [TP2 觸及] {key}  價={price:.4f} H={kline_high:.4f} L={kline_low:.4f}  等收盤確認")
-                    if not sig.get("alerted_touch_tp2"):
-                        touch_msg = (
-                            f"⚡ *TP2 觸及（待收盤確認）*  #{coin} {side}\n"
-                            f"目標 `{tp2:.4f}` / 最高 `{kline_high:.4f}` / 最低 `{kline_low:.4f}`\n"
-                            f"收盤站穩才會移損至 TP1"
-                        )
-                        if send_tg(touch_msg):
-                            self.update(key, alerted_touch_tp2=True)
+                    logging.info(f"  [TP2 觸及] {key} @ {price:.4f}  等收盤確認")
                 # 收盤確認
                 if not self._is_close_confirmed(sig, tp2):
-                    logging.info(f"  [TP2 待確認] {key}  本根 K 尚未收盤於 TP2 之上/下（close={kline_last_close:.4f}）")
+                    logging.info(f"  [TP2 待確認] {key}  本根 K 尚未收盤於 TP2 之上/下")
                     return False
                 now = time.time()
                 # 同時標記 hit_tp1（避免下一輪誤觸發 TP1）
                 if not sig.get("hit_tp1"):
-                    self.update(key, hit_tp1=True, touched_tp1=True, alerted_touch_tp1=True, hit_tp1_at=now)
+                    self.update(key, hit_tp1=True, touched_tp1=True, hit_tp1_at=now)
                     self._close(sig, tp1, "TP1")
                 self.update(key, hit_tp2=True, sl=tp1, status="TRAIL", hit_tp2_at=now)
-                msg = format_alert(coin, side, "TP2", tp2, entry, sig["sl_orig"],
+                msg = format_alert(coin, side, "TP2", price, entry, sig["sl_orig"],
                                    tp1, tp2, tp3, new_sl=tp1)
                 if send_tg(msg):
-                    logging.info(f"  [TP2] {key} @ {tp2:.4f} → SL移至TP1={tp1:.4f} - 通知已發送")
+                    logging.info(f"  [TP2] {key} @ {price:.4f} → SL移至TP1={tp1:.4f} - 通知已發送")
                 else:
                     logging.error(f"  [TP2] {key} - 通知發送失敗")
                 self._close(sig, tp2, "TP2")
                 self.last_run_transitions += 1
                 return False
-            # ── 6. TP1 觸及（含 wick）→ 先標 ⚡ 通知，待收盤確認再移損 ─
-            tp1_touched_now = (side == "LONG" and _long_hit(tp1)) or (side == "SHORT" and _short_hit(tp1))
+            # ── 6. TP1 達成 → 移損至進場價（需收盤確認）─────
+            tp1_touched_now = (side == "LONG" and price >= tp1) or (side == "SHORT" and price <= tp1)
             if tp1_touched_now and not sig.get("hit_tp1"):
+                # 標記觸及
                 if not sig.get("touched_tp1"):
                     self.update(key, touched_tp1=True)
-                    logging.info(f"  [TP1 觸及] {key}  價={price:.4f} H={kline_high:.4f} L={kline_low:.4f}  等收盤確認")
-                    if not sig.get("alerted_touch_tp1"):
-                        touch_msg = (
-                            f"⚡ *TP1 觸及（待收盤確認）*  #{coin} {side}\n"
-                            f"目標 `{tp1:.4f}` / 最高 `{kline_high:.4f}` / 最低 `{kline_low:.4f}`\n"
-                            f"收盤站穩才會移損至保本"
-                        )
-                        if send_tg(touch_msg):
-                            self.update(key, alerted_touch_tp1=True)
+                    logging.info(f"  [TP1 觸及] {key} @ {price:.4f}  等收盤確認")
                 # 收盤確認
                 if not self._is_close_confirmed(sig, tp1):
-                    logging.info(f"  [TP1 待確認] {key}  本根 K 尚未收盤於 TP1 之上/下（close={kline_last_close:.4f}）")
+                    logging.info(f"  [TP1 待確認] {key}  本根 K 尚未收盤於 TP1 之上/下")
                     return False
                 self.update(key, hit_tp1=True, sl=entry, status="BE", hit_tp1_at=time.time())
-                msg = format_alert(coin, side, "TP1", tp1, entry, sig["sl_orig"],
+                msg = format_alert(coin, side, "TP1", price, entry, sig["sl_orig"],
                                    tp1, tp2, tp3, new_sl=entry)
                 if send_tg(msg):
-                    logging.info(f"  [TP1] {key} @ {tp1:.4f} → SL移至保本={entry:.4f} - 通知已發送")
+                    logging.info(f"  [TP1] {key} @ {price:.4f} → SL移至保本={entry:.4f} - 通知已發送")
                 else:
                     logging.error(f"  [TP1] {key} - 通知發送失敗")
                 self._close(sig, tp1, "TP1")
@@ -1756,21 +1646,14 @@ class SignalTracker:
                 lines.append("")
         lines.append("")
         lines.append(f"━━━━━━━━━━━━━━━━━━━━━━━━")
-        lines.append(f"🤖 Alpha Oracle v9.2.0 動態追蹤中")
+        lines.append(f"🤖 Alpha Oracle v9.1.6 動態追蹤中")
         return "\n".join(lines)
 # ─────────────────────────────────────────────────────────
 # 16. 監控迴圈
 # ─────────────────────────────────────────────────────────
-def monitor_loop(tracker: SignalTracker, interval: int = 10, stop_event=None,
-                 win_tracker: "WinRateTracker" = None):
-    """
-    v9.2.0：若傳入 win_tracker，則在每個 AUTO_REPORT_HOUR_LOCAL 小時觸發時
-    執行一次自動戰報檢查（去重用 report_state.json，不會重複推送）。
-    """
-    logging.info(f"監控迴圈啟動，間隔 {interval}s"
-                 + ("，🗓 啟用自動戰報" if win_tracker is not None else ""))
+def monitor_loop(tracker: SignalTracker, interval: int = 10, stop_event=None):
+    logging.info(f"監控迴圈啟動，間隔 {interval}s")
     check_count = 0
-    last_report_check_hour = -1  # 紀錄上一次戰報檢查的小時，避免同一小時重覆檢查
     while True:
         if stop_event and stop_event.is_set():
             break
@@ -1783,15 +1666,6 @@ def monitor_loop(tracker: SignalTracker, interval: int = 10, stop_event=None,
             else:
                 if check_count % 6 == 0:
                     logging.info(f"【檢查 #{check_count}】無追蹤訊號，等待新機會...")
-            # v9.2.0：每小時最多檢查一次自動戰報
-            if win_tracker is not None:
-                cur_hour = _local_now().hour
-                if cur_hour != last_report_check_hour:
-                    last_report_check_hour = cur_hour
-                    try:
-                        maybe_auto_report(win_tracker)
-                    except Exception as e:
-                        logging.error(f"自動戰報執行失敗: {e}")
         except Exception as e:
             logging.error(f"monitor_loop 錯誤: {e}\n{traceback.format_exc()}")
         time.sleep(interval)
@@ -1852,16 +1726,8 @@ def run_scan(tracker: SignalTracker) -> int:
                 logging.error(f"[{coin}] Future 錯誤: {e}")
     all_opps.sort(key=lambda x: x["score"], reverse=True)
     sent = 0
-    # v9.1.8：最大同時持倉檢查（PENDING + ACTIVE 合計）
-    cur_active = len(tracker.list_active())
-    if cur_active >= MAX_CONCURRENT:
-        logging.info(f"⛔ 已達最大同時持倉上限（{cur_active}/{MAX_CONCURRENT}），本輪不新增訊號")
     for opp in all_opps:
         if sent >= MAX_SIGNALS_PER_RUN:
-            break
-        # v9.1.8：每次 add 前再檢查一次（因為上一輪可能剛新增）
-        if len(tracker.list_active()) >= MAX_CONCURRENT:
-            logging.info(f"  [{opp['instId']}/{opp['side']}] 達持倉上限（{MAX_CONCURRENT}），跳過")
             break
         if not check_signal_cooldown(opp["instId"], opp["side"]):
             logging.info(f"  [{opp['instId']}/{opp['side']}] 冷卻期中（{SIGNAL_COOLDOWN_HOURS}h），跳過")
@@ -1907,92 +1773,18 @@ def run_scan(tracker: SignalTracker) -> int:
 def _is_heartbeat_window() -> bool:
     """v9.1.6：是否在每小時的整點心跳窗口（UTC 分鐘 0 ~ HEARTBEAT_MINUTE_WINDOW-1）"""
     return utc_now().minute < HEARTBEAT_MINUTE_WINDOW
-
-# ─────────────────────────────────────────────────────────
-# 18.5  v9.2.0 — 自動戰報觸發
-# ─────────────────────────────────────────────────────────
-def _load_report_state() -> dict:
-    try:
-        with open(REPORT_STATE_FILE, "r", encoding="utf-8") as f:
-            d = json.load(f)
-            return d if isinstance(d, dict) else {}
-    except Exception:
-        return {}
-
-def _save_report_state(st: dict):
-    try:
-        with open(REPORT_STATE_FILE, "w", encoding="utf-8") as f:
-            json.dump(st, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        logging.error(f"儲存 report_state 失敗: {e}")
-
-def _local_now():
-    """回傳 UTC + REPORT_TZ_OFFSET_HOURS 的 datetime（naive）"""
-    from datetime import timedelta
-    return utc_now().replace(tzinfo=None) + timedelta(hours=REPORT_TZ_OFFSET_HOURS)
-
-def maybe_auto_report(win_tracker: "WinRateTracker") -> bool:
-    """
-    v9.2.0：每輪 monitor_once 結尾呼叫。
-      - 本地時間進入 AUTO_REPORT_HOUR_LOCAL 小時 →
-          若 report_state 未記錄「昨日」戰報 → 發送昨日戰報（與 TG 去重）
-      - 且本地時間日期 = 當月 1 日 →
-          若 report_state 未記錄「上月」月報 → 發送上月月報
-    回傳：True 表示本輪有觸發任一戰報。
-    """
-    from datetime import timedelta
-    now_local = _local_now()
-    if now_local.hour != AUTO_REPORT_HOUR_LOCAL:
-        return False
-    yesterday_local = (now_local - timedelta(days=1))
-    yday_str = yesterday_local.strftime("%Y-%m-%d")
-    ymonth   = yesterday_local.strftime("%Y-%m")
-    fired = False
-    state = _load_report_state()
-    # 每日戰報（送「昨日」）
-    if state.get("last_daily_date") != yday_str:
-        logging.info(f"🕛 觸發自動每日戰報 {yday_str}")
-        msg = win_tracker.daily_report(yday_str)
-        if send_tg(msg):
-            state["last_daily_date"] = yday_str
-            _save_report_state(state)
-            fired = True
-            logging.info(f"✅ 每日戰報 {yday_str} 已發送並登記")
-        else:
-            logging.error(f"❌ 每日戰報 {yday_str} 發送失敗，下輪重試")
-    # 月度戰報（當本地「今日」是 1 號才送「上月」）
-    if now_local.day == 1:
-        if state.get("last_monthly_month") != ymonth:
-            logging.info(f"🗓  觸發自動月度戰報 {ymonth}")
-            msg = win_tracker.monthly_report(ymonth)
-            if send_tg(msg):
-                state["last_monthly_month"] = ymonth
-                _save_report_state(state)
-                fired = True
-                logging.info(f"✅ 月度戰報 {ymonth} 已發送並登記")
-            else:
-                logging.error(f"❌ 月度戰報 {ymonth} 發送失敗，下輪重試")
-    return fired
-def run_monitor_once(tracker: SignalTracker, push_status: bool = None,
-                     win_tracker: "WinRateTracker" = None) -> int:
+def run_monitor_once(tracker: SignalTracker, push_status: bool = None) -> int:
     """
     v9.1.6 智能推播節流：
       - 有狀態變動（進場/TP/SL）→ 一定推狀態摘要
       - 無變動 + 整點心跳窗口 → 推狀態摘要
       - 無變動 + 非心跳窗口 → 靜默（不推狀態，但 TP/SL 通知仍照常發）
     `push_status` 參數若為 None 則走智能判斷；True/False 則強制覆寫。
-    v9.2.0：若傳入 win_tracker，則在收尾執行自動戰報檢查（每日 / 月度）
     """
-    # v9.2.0：即使無追蹤訊號，仍要嘗試觸發自動戰報
     active = tracker.list_active()
     n = len(active)
     if n == 0:
         logging.info("monitor_once: 無追蹤中訊號")
-        if win_tracker is not None:
-            try:
-                maybe_auto_report(win_tracker)
-            except Exception as e:
-                logging.error(f"自動戰報執行失敗: {e}")
         return 0
     logging.info(f"monitor_once: 檢查 {n} 筆追蹤中訊號")
     try:
@@ -2018,18 +1810,12 @@ def run_monitor_once(tracker: SignalTracker, push_status: bool = None,
     else:
         logging.info(f"monitor_once: 靜默（transitions={transitions}, heartbeat={heartbeat}）")
     logging.info(f"monitor_once: 完成，剩餘 {len(remaining)} 筆")
-    # v9.2.0：自動戰報檢查
-    if win_tracker is not None:
-        try:
-            maybe_auto_report(win_tracker)
-        except Exception as e:
-            logging.error(f"自動戰報執行失敗: {e}")
     return n
 # ─────────────────────────────────────────────────────────
 # 19. 主函式
 # ─────────────────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="Alpha Oracle v9.2.0")
+    parser = argparse.ArgumentParser(description="Alpha Oracle v9.1.6")
     parser.add_argument("--mode", default="all",
                         choices=["scan","monitor","monitor_once","loop","all",
                                  "daily_report","monthly_report"],
@@ -2043,8 +1829,7 @@ def main():
     args = parser.parse_args()
 
     logging.info("=" * 60)
-    logging.info("🤖 Alpha Oracle v9.2.0 啟動")
-    logging.info(f"🛡  最大同時持倉: {MAX_CONCURRENT} 筆")
+    logging.info("🤖 Alpha Oracle v9.1.6 啟動")
     logging.info(f"📋 模式: {args.mode}")
     logging.info(f"⏱  監控間隔: {args.interval}秒")
     logging.info(f"🎯 TP 收盤確認: {CONFIRM_TP_ON_CLOSE}")
@@ -2078,12 +1863,12 @@ def main():
         return
 
     if args.mode == "monitor_once":
-        run_monitor_once(tracker, win_tracker=win_tracker)
+        run_monitor_once(tracker)
         return
 
     if args.mode == "monitor":
         try:
-            monitor_loop(tracker, interval=args.interval, win_tracker=win_tracker)
+            monitor_loop(tracker, interval=args.interval)
         except KeyboardInterrupt:
             logging.info("監控停止")
         return
@@ -2091,8 +1876,7 @@ def main():
     if args.mode == "loop":
         stop_ev = threading.Event()
         t = threading.Thread(target=monitor_loop,
-                             args=(tracker, args.interval, stop_ev),
-                             kwargs={"win_tracker": win_tracker}, daemon=True)
+                             args=(tracker, args.interval, stop_ev), daemon=True)
         t.start()
         try:
             while True:
@@ -2107,7 +1891,7 @@ def main():
     # all 模式（預設）
     run_scan(tracker)
     try:
-        monitor_loop(tracker, interval=args.interval, win_tracker=win_tracker)
+        monitor_loop(tracker, interval=args.interval)
     except KeyboardInterrupt:
         logging.info("停止")
 if __name__ == "__main__":
