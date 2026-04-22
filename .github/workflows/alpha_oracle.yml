@@ -1,52 +1,148 @@
-name: Alpha Oracle Bot
-
+name: Alpha Oracle v9.2.0
 on:
   schedule:
-    - cron: '*/15 * * * *'   # 每 15 分鐘執行一次（正常掃描）
-    - cron: '0 16 * * *'     # 每天 UTC 16:00 = 台灣時間 00:00（午夜戰績回報）
+    # ═══════════════════════════════════════════════════════════
+    # 掃描（生成新訊號）— 每 30 分鐘，僅交易時段
+    # 亞盤 UTC 01-05（台灣 09-13）/ 歐美盤 UTC 13-17（台灣 21-01）
+    # ═══════════════════════════════════════════════════════════
+    - cron: "*/30 1-5 * * *"
+    - cron: "*/30 13-17 * * *"
+
+    # ═══════════════════════════════════════════════════════════
+    # TP/SL 監控 — 交易時段每 5 分鐘，其他時段每 15 分鐘
+    # ★ 配合 v9.1.7 K 線 wick fallback：3 min vs 5 min cron 的抓取能力一致
+    #   （系統會回看最近 2 根已收盤 K 的 high/low，wick 不會漏）
+    # ★ 配合 early-exit：無活躍訊號的輪次只跑 ~5s
+    # 預計分鐘消耗：≈ 52 min/day × 30 ≈ 1560 min/月 ✓
+    # ═══════════════════════════════════════════════════════════
+    - cron: "*/5 1-5 * * *"
+    - cron: "*/5 13-17 * * *"
+    - cron: "*/15 0,6-12,18-23 * * *"
+
+    # ═══════════════════════════════════════════════════════════
+    # 戰報（v9.2.0 bot 內建自動觸發，這裡保留當備援）
+    # ═══════════════════════════════════════════════════════════
+    - cron: "5 0 * * *"         # 每日戰報 00:05 UTC = UTC+8 08:05
+    - cron: "10 0 1 * *"        # 月度戰報 每月 1 日 00:10 UTC
+
   workflow_dispatch:
     inputs:
-      manual_report:
-        description: '手動觸發戰績回報'
+      mode:
+        description: "手動執行模式（想看當前狀態選 status）"
         required: false
-        default: 'false'
+        default: "status"
+        type: choice
+        options:
+          - status           # 立即回傳當前持倉狀況（<15s）
+          - scan             # 立即掃描一輪
+          - monitor_once     # 只檢查 TP/SL
+          - daily_report
+          - monthly_report
+
+permissions:
+  contents: write
+
+concurrency:
+  group: alpha-oracle-state
+  cancel-in-progress: false
 
 jobs:
-  run-bot:
+  alpha-oracle:
     runs-on: ubuntu-latest
-
+    timeout-minutes: 4
     steps:
-      # 1. 拉取 repo（含最新 CSV state）
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      # 2. 安裝 Python 依賴
+      # ✨ 關鍵優化 1：pip cache（每次下載 pandas/numpy 從 45s 降到 5s）
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+          cache: 'pip'
 
       - name: Install dependencies
         run: pip install requests pandas numpy
 
-      # 3. 執行 bot
-      - name: Run Alpha Oracle
-        env:
-          TG_TOKEN:      ${{ secrets.TG_TOKEN }}
-          CHAT_ID:       ${{ secrets.CHAT_ID }}
-          MANUAL_REPORT: ${{ github.event.inputs.manual_report || 'false' }}
-        run: python main.py
-
-      # 4. ⭐ 關鍵：把更新後的 CSV 狀態 commit 回 repo
-      #    這樣下一次執行才能讀到上次的 trade 狀態
-      #    必須在 repo Settings > Actions > General >
-      #    Workflow permissions 選 "Read and write permissions"
-      - name: Save state back to repo
+      - name: Determine mode
+        id: mode
         run: |
-          git config user.name  "alpha-oracle-bot"
-          git config user.email "bot@alpha-oracle"
-          git add -f active_trades.csv daily_stats.csv midnight.ok 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "chore: update trade state [skip ci]"
-          git push
+          if [ -n "${{ github.event.inputs.mode }}" ]; then
+            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          HOUR=$(date -u +%H)
+          MIN=$(date -u +%M)
+          DAY=$(date -u +%d)
+          MIN_INT=$((10#$MIN))
+          HOUR_INT=$((10#$HOUR))
+
+          if [ "$DAY" = "01" ] && [ "$HOUR" = "00" ] && [ "$MIN_INT" -ge 10 ] && [ "$MIN_INT" -lt 15 ]; then
+            echo "mode=monthly_report" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" = "00" ] && [ "$MIN_INT" -ge 5 ] && [ "$MIN_INT" -lt 10 ]; then
+            echo "mode=daily_report" >> $GITHUB_OUTPUT
+          elif { [ "$HOUR_INT" -ge 1 ] && [ "$HOUR_INT" -le 5 ]; } || { [ "$HOUR_INT" -ge 13 ] && [ "$HOUR_INT" -le 17 ]; }; then
+            if [ "$MIN" = "00" ] || [ "$MIN" = "30" ]; then
+              echo "mode=scan" >> $GITHUB_OUTPUT
+            else
+              echo "mode=monitor_once" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "mode=monitor_once" >> $GITHUB_OUTPUT
+          fi
+
+      # ✨ 關鍵優化 2：無活躍訊號直接跳過（省啟 Python）
+      - name: Early exit if no active signals
+        id: early
+        if: steps.mode.outputs.mode == 'monitor_once'
+        run: |
+          if [ ! -f active_signals.json ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "ℹ️  active_signals.json 不存在，跳過本輪"
+            exit 0
+          fi
+          N=$(python3 -c "import json; d=json.load(open('active_signals.json'))
+          print(len(d) if isinstance(d,(list,dict)) else 0)" 2>/dev/null || echo "0")
+          if [ "$N" = "0" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "ℹ️  無活躍訊號，跳過本輪（省時）"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "📊 $N 筆活躍訊號，進入監控"
+          fi
+
+      - name: Run Alpha Oracle (${{ steps.mode.outputs.mode }})
+        if: steps.early.outputs.skip != 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TG_TOKEN:     ${{ secrets.TG_TOKEN }}
+          CHAT_ID:      ${{ secrets.CHAT_ID }}
+          MAX_SIGNALS:  "6"
+          MAX_CONCURRENT: "3"
+          REPORT_TZ_OFFSET_HOURS: "8"
+          AUTO_REPORT_HOUR_LOCAL: "0"
+        run: |
+          if [ "${{ steps.mode.outputs.mode }}" = "status" ]; then
+            python main.py --status
+          else
+            python main.py --mode ${{ steps.mode.outputs.mode }}
+          fi
+
+      - name: Commit state files
+        if: always() && steps.early.outputs.skip != 'true'
+        run: |
+          git config user.name  "alpha-oracle[bot]"
+          git config user.email "alpha-oracle[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull --rebase --autostash origin "$(git rev-parse --abbrev-ref HEAD)" || true
+          git add -f active_signals.json trade_history.json report_state.json alpha_oracle.log 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No state changes to commit"
+          else
+            git commit -m "bot: state update [${{ steps.mode.outputs.mode }}] [skip ci]"
+            git pull --rebase --autostash origin "$(git rev-parse --abbrev-ref HEAD)" || true
+            git push || git push --force-with-lease
+          fi
+        continue-on-error: true
