@@ -1,115 +1,227 @@
-name: Alpha Oracle Pro v10.0.0
+name: Alpha Oracle v9.1.6 - Auto Trading Bot
 
 on:
   schedule:
-    # 🔍 掃描模式 (產生新訊號) - 每 15 分鐘，僅交易時段
-    - cron: "*/15 1-5 * * *"     # 亞洲盤 09:00-13:00 TW
-    - cron: "*/15 13-17 * * *"   # 歐美盤 21:00-01:00 TW
+    # ═══════════════════════════════════════════════════════════
+    #  掃描模式 (Scan) - 生成新訊號 + 預檢既有訊號
+    # 頻率：每 15 分鐘
+    # 時段：僅在亞洲盤與歐美盤活躍時段執行，節省額度並提高訊號質量
+    # ═══════════════════════════════════════════════════════════
     
-    # 🔁 監控模式 (檢查 TP/SL) - 每 2 分鐘，24 小時
-    - cron: "*/2 * * * *"
+    # 亞洲盤活躍期 (UTC 1-5, 對應台北時間 09:00-13:00)
+    - cron: "*/15 1-5 * * *"
     
-    # 📊 戰報 - 台灣時間 00:05 (UTC 16:05)
-    - cron: "5 16 * * *"
+    # 歐美盤活躍期 (UTC 13-17, 對應台北時間 21:00-01:00)
+    - cron: "*/15 13-17 * * *"
 
+    # ═══════════════════════════════════════════════════════════
+    # 🔵 監控模式 (Monitor) - 僅檢查既有訊號的 TP/SL 觸發
+    # 頻率：每 5 分鐘 (24小時運行)
+    # 目的：確保不會錯過止盈或止損，即使不在掃描時段也能即時通知
+    # 注意：此模式不產生新訊號，僅同步狀態與推播通知
+    # ═══════════════════════════════════════════════════════════
+    - cron: "*/5 * * * *"
+
+    # ═══════════════════════════════════════════════════════════
+    # 📊 戰報模式 (Report)
+    # ═══════════════════════════════════════════════════════════
+    # 每日戰報：UTC 16:05 (台北時間 00:05)
+    - cron: "5 16 * * *"
+    
+    # 月度戰報：每月 1 日 UTC 16:10 (台北時間 00:10)
+    - cron: "10 16 1 * *"
+
+  # 手動觸發支援
   workflow_dispatch:
     inputs:
       mode:
-        description: "執行模式"
+        description: '執行模式'
         required: false
-        default: "scan"
+        default: 'scan'
         type: choice
-        options: [scan, monitor, daily_report]
+        options:
+          - scan
+          - monitor_once
+          - daily_report
+          - monthly_report
+          - status_check
 
+# 權限設定：需要寫入內容以保存狀態文件
 permissions:
   contents: write
 
+# 併發控制：防止同一分支的多個工作流同時修改狀態文件導致衝突
 concurrency:
-  group: alpha-oracle-pro-${{ github.ref }}
+  group: alpha-oracle-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  alpha-oracle-pro:
+  run-alpha-oracle:
+    name: Run Alpha Oracle Bot
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    
+    timeout-minutes: 5 # 嚴格限制執行時間，避免浪費額度
+
     steps:
-      - name: 📦 Checkout
+      # 1. checkout 代碼
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 1 # 僅獲取最新提交，加速過程
 
-      - name: 🐍 Setup Python
+      # 2. 設置 Python 環境
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-          cache: "pip"
+          python-version: '3.11'
+          cache: 'pip' # 啟用 pip 快取，加速依賴安裝
 
-      - name: 📦 Install Dependencies
+      # 3. 安裝依賴
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests pandas numpy
+          echo "✅ Dependencies installed"
 
-      - name: 🎯 Determine Mode
-        id: mode
+      # 4. 恢復之前的狀態文件 (重要！)
+      # 從 Git 歷史中恢復 active_signals.json 等文件，確保追蹤連續性
+      - name: Restore State Files
         run: |
-          # 手動觸發優先
-          if [ -n "${{ github.event.inputs.mode }}" ]; then
-            echo "mode=${{ github.event.inputs.mode }}" >> $GITHUB_OUTPUT
-            exit 0
+          if [ -f active_signals.json ]; then
+            echo "✅ Found existing active_signals.json"
+          else
+            echo "⚠️ No existing state file found, starting fresh."
+            echo '{}' > active_signals.json
           fi
           
-          HOUR=$(date -u +%H)
-          MIN=$(date -u +%M)
-          MIN_INT=$((10#$MIN))
+          if [ -f trade_history.json ]; then
+            echo "✅ Found existing trade_history.json"
+          else
+            echo "[]" > trade_history.json
+          fi
+
+          if [ -f daily_stats.csv ]; then
+            echo "✅ Found existing daily_stats.csv"
+          else
+            echo "instId,result,date" > daily_stats.csv
+          fi
+
+      # 5. 智能判斷執行模式
+      - name: Determine Execution Mode
+        id: determine_mode
+        run: |
+          # 預設值
+          MODE="monitor_once"
           
-          # 戰報: UTC 16:05 (TW 00:05)
-          if [ "$HOUR" = "16" ] && [ "$MIN_INT" -ge 5 ] && [ "$MIN_INT" -lt 10 ]; then
-            echo "mode=daily_report" >> $GITHUB_OUTPUT
-          # 每 15 分鐘的 00/15/30/45 → scan (僅交易時段)
-          elif [[ "$MIN" =~ ^(00|15|30|45)$ ]]; then
-            if { [ "$HOUR" -ge 1 ] && [ "$HOUR" -le 5 ]; } || { [ "$HOUR" -ge 13 ] && [ "$HOUR" -le 17 ]; }; then
-              echo "mode=scan" >> $GITHUB_OUTPUT
+          # 如果是手動觸發，優先使用手動輸入的模式
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            MODE="${{ github.event.inputs.mode }}"
+            echo "🔧 Manual trigger detected. Mode: $MODE"
+          else
+            # 自動觸發邏輯
+            HOUR=$(date -u +%H)
+            MIN=$(date -u +%M)
+            DAY=$(date -u +%d)
+            
+            # 轉換為整數比較
+            HOUR_INT=$((10#$HOUR))
+            MIN_INT=$((10#$MIN))
+
+            # 📊 戰報邏輯
+            # 每日戰報: UTC 16:05-16:09
+            if [ "$HOUR_INT" -eq 16 ] && [ "$MIN_INT" -ge 5 ] && [ "$MIN_INT" -lt 10 ]; then
+              MODE="daily_report"
+            # 月度戰報: 每月1日 UTC 16:10-16:14
+            elif [ "$DAY" -eq 1 ] && [ "$HOUR_INT" -eq 16 ] && [ "$MIN_INT" -ge 10 ] && [ "$MIN_INT" -lt 15 ]; then
+              MODE="monthly_report"
+            # 🟢 掃描邏輯: 每15分鐘的 00, 15, 30, 45 分
+            elif [[ "$MIN" =~ ^(00|15|30|45)$ ]]; then
+               # 進一步確認是否在活躍時段 (雖然 cron 已經限制了，但加一層保險)
+               MODE="scan"
+            # 🔵 監控邏輯: 其他時間 (每5分鐘觸發時)
             else
-              echo "mode=monitor" >> $GITHUB_OUTPUT
+               MODE="monitor_once"
             fi
-          # 其他時間 → monitor
-          else
-            echo "mode=monitor" >> $GITHUB_OUTPUT
+            
+            echo "⏰ Auto trigger detected. Time: ${HOUR}:${MIN} UTC. Mode: $MODE"
           fi
+          
+          # 輸出結果供後續步驟使用
+          echo "mode=$MODE" >> $GITHUB_OUTPUT
+          echo "Selected Mode: $MODE"
 
-      - name: 🚀 Run Alpha Oracle Pro
+      # 6. 執行 Alpha Oracle
+      - name: Run Alpha Oracle
         env:
-          TG_TOKEN:             ${{ secrets.TG_TOKEN }}
-          CHAT_ID:              ${{ secrets.CHAT_ID }}
-          SETUP_SCORE:          "68"
-          MAX_SIGNALS:          "12"
-          MAX_CONCURRENT:       "20"
-          MONITOR_INTERVAL:     "60"          # GitHub Actions 最小 1 分鐘
-          CONFIRM_TP_ON_CLOSE:  "true"        # TP1/TP2 需收盤確認
-          ENTRY_TOLERANCE:      "0.002"
+          # 🔑 敏感資訊從 Secrets 獲取
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          
+          # ⚙️ 配置參數
+          MAX_SIGNALS: "6"                # 單次掃描最大訊號數
+          SETUP_SCORE_THRESHOLD: "68"     # 訊號評分閾值
+          CONFIRM_TP_ON_CLOSE: "true"     # TP1/TP2 是否需要收盤確認 (建議 true 以避免 wick 誤觸)
+          DEBUG_MODE: "false"             # 生產環境設為 false
+          
+          # 🌍 時區與行為
+          TZ: "Asia/Taipei"               # 設定時區影響日誌時間戳記
         run: |
-          echo "🎯 執行模式: ${{ steps.mode.outputs.mode }}"
-          python main.py --mode ${{ steps.mode.outputs.mode }} --interval 60
+          MODE=${{ steps.determine_mode.outputs.mode }}
+          echo "🚀 Starting Alpha Oracle in mode: $MODE"
+          
+          # 根據模式執行對應命令
+          case $MODE in
+            scan)
+              python main.py --mode scan
+              ;;
+            monitor_once)
+              python main.py --mode monitor_once
+              ;;
+            daily_report)
+              python main.py --mode daily_report
+              ;;
+            monthly_report)
+              python main.py --mode monthly_report
+              ;;
+            status_check)
+              python main.py --status
+              ;;
+            *)
+              echo "❌ Unknown mode: $MODE"
+              exit 1
+              ;;
+          esac
 
-      - name: 💾 Commit State
-        if: always()
+      # 7. 提交狀態更新
+      - name: Commit and Push State Changes
+        if: always() # 無論成功失敗都嘗試提交，確保狀態同步
         run: |
-          git config user.name "alpha-oracle-pro[bot]"
-          git config user.email "bot@alpha-oracle.dev"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git config user.name "alpha-oracle-bot"
+          git config user.email "bot@alpha-oracle.local"
           
-          # 安全 pull
-          git pull --rebase --autostash origin main || true
+          # 添加狀態文件
+          git add active_signals.json trade_history.json daily_stats.csv alpha_oracle.log
           
-          # 提交狀態檔案
-          git add -f active_signals.json trade_history.json daily_stats.csv alpha_oracle.log 2>/dev/null || true
-          if ! git diff --staged --quiet; then
-            git commit -m "🤖 bot: state update [${{ steps.mode.outputs.mode }}] [skip ci]"
-            git pull --rebase --autostash origin main || true
-            git push || git push --force-with-lease
-            echo "✅ 狀態已同步"
+          # 檢查是否有變更
+          if git diff --staged --quiet; then
+            echo "ℹ️ No changes to commit."
           else
-            echo "ℹ️  無狀態變更"
+            # 提交變更
+            git commit -m "🤖 bot: update state [${{ steps.determine_mode.outputs.mode }}] [skip ci]"
+            
+            # 拉取最新變更以避免衝突
+            git pull --rebase origin main || true
+            
+            # 推送變更
+            git push origin main
+            echo "✅ State files committed and pushed."
           fi
-        continue-on-error: true
+        continue-on-error: true # 即使推送失敗也不讓整個工作流失敗
+
+      # 8. 上傳日誌作為構件 (方便除錯)
+      - name: Upload Logs
+        if: failure() # 僅在失敗時上傳日誌
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-oracle-logs
+          path: alpha_oracle.log
+          retention-days: 3
