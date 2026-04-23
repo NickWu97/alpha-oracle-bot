@@ -1,16 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.0 — 專業級交易監控系統
+Alpha Oracle Pro v10.1 — 專業級交易監控系統 (修復版)
 ══════════════════════════════════════════════════════════════════════
-🎯 產品定位：專業交易員級監控工具，新手也能輕鬆使用
-✨ 核心功能：
-  ✅ 即時通知：進場/TP1/2/3/SL 秒級推送（三重保障機制）
-  ✅ 每日戰報：00:00 自動發送勝率統計 + 止損分析報告
-  ✅ 專業分析：多因子評分 + 市場結構 + 訂單流 + 情緒面
-  ✅ 新手友好：Telegram 訊息簡潔直觀，關鍵資訊一目了然
-  ✅ 狀態永續：JSON 狀態文件 + GitHub Actions 自動同步
-  ✅ 資源優化：嚴格控制 GitHub Actions 用量 <200 分鐘/月
+🔧 修復：環境變數解析錯誤 (解決 Exit Code 1)
+✨ 功能：即時通知 + 持倉統計 (/stats) + 每日戰報 + 新手友好介面
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -24,31 +18,49 @@ import logging
 import traceback
 import time
 import threading
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone, timedelta
 
 # ─────────────────────────────────────────────────────────
-# 🔧 環境變數安全解析輔助函數（修復空字串問題）
+# 🔧 環境變數安全解析輔助函數 (關鍵修復)
 # ─────────────────────────────────────────────────────────
 def _get_env_str(key: str, default: str = "") -> str:
-    val = os.getenv(key, "")
-    return val.strip() if val and val.strip() else default
+    """安全獲取字串環境變數，空值時回傳預設值"""
+    val = os.getenv(key)
+    if val is None:
+        return default
+    val = val.strip()
+    return val if val else default
 
 def _get_env_int(key: str, default: int) -> int:
-    val = os.getenv(key, "")
+    """安全獲取整數環境變數，空值或無效時回傳預設值"""
+    val = os.getenv(key)
+    if val is None:
+        return default
+    val = val.strip()
+    if not val:
+        return default
     try:
-        return int(val.strip()) if val and val.strip() else default
+        return int(val)
     except (ValueError, TypeError):
+        logging.warning(f"⚠️ 環境變數 {key} 解析失敗，使用預設值 {default}")
         return default
 
 def _get_env_float(key: str, default: float) -> float:
-    val = os.getenv(key, "")
+    """安全獲取浮點數環境變數，空值或無效時回傳預設值"""
+    val = os.getenv(key)
+    if val is None:
+        return default
+    val = val.strip()
+    if not val:
+        return default
     try:
-        return float(val.strip()) if val and val.strip() else default
+        return float(val)
     except (ValueError, TypeError):
+        logging.warning(f"⚠️ 環境變數 {key} 解析失敗，使用預設值 {default}")
         return default
 
 def _get_env_bool(key: str, default: bool = False) -> bool:
+    """安全獲取布林環境變數"""
     val = _get_env_str(key, "")
     return val.lower() in ("true", "1", "yes", "on")
 
@@ -64,7 +76,7 @@ logging.basicConfig(
     ]
 )
 
-# Telegram 設定
+# Telegram 設定 (必填，若無則不發送通知)
 TG_TOKEN = _get_env_str("TG_TOKEN")
 CHAT_ID = _get_env_str("CHAT_ID")
 
@@ -204,80 +216,194 @@ def _format_simple_alert(coin: str, side: str, alert_type: str, price: float,
     
     return ""
 
-def _format_daily_report(trades: list, date_str: str) -> str:
-    """📊 專業日報格式：勝率統計 + 止損分析 + 改進建議"""
-    if not trades:
-        return (
-            f"📊 *Alpha Oracle 每日戰報*\n"
-            f"────────────\n"
-            f"📅 日期：{date_str}\n"
-            f"\n"
-            f"📭 今日暫無已結算交易\n"
-            f"🔄 系統持續監控中...\n"
-            f"\n"
-            f"💡 提示：有訊號時會即時通知您"
-        )
+def _format_position_card(coin: str, side: str, entry: float, current: float, 
+                         sl: float, tp1: float, tp2: float, tp3: float,
+                         status: str, hit_tp1: bool, hit_tp2: bool, hit_tp3: bool) -> str:
+    """📋 持倉卡片格式：單筆持倉清晰摘要"""
+    arrow = "🟢" if side == "LONG" else "🔴"
+    direction = "多" if side == "LONG" else "空"
+    pnl = ((current - entry) / entry * 100) if side == "LONG" else ((entry - current) / entry * 100)
+    pnl_color = "🟢" if pnl >= 0 else "🔴"
     
-    # 統計計算
-    total = len(trades)
-    wins = [t for t in trades if t.get("is_win")]
-    losses = [t for t in trades if not t.get("is_win") and not t.get("is_be")]
-    breakevens = [t for t in trades if t.get("is_be")]
+    # 🔹 進度條
+    progress = []
+    if hit_tp3: progress.append("🏆TP3✅")
+    elif hit_tp2: progress.append("🥈TP2✅")
+    elif hit_tp1: progress.append("🥇TP1✅")
+    else: progress.append("⏳等待")
     
-    win_rate = len(wins) / total * 100 if total > 0 else 0
-    avg_win = np.mean([t["pnl_pct"] for t in wins]) if wins else 0
-    avg_loss = np.mean([t["pnl_pct"] for t in losses]) if losses else 0
-    expectancy = (win_rate/100 * avg_win) + ((1-win_rate/100) * avg_loss) if total > 0 else 0
+    # 🔹 狀態標籤
+    status_map = {
+        "ACTIVE": "🔵持倉中",
+        "BE": "🔒已保本", 
+        "TRAIL": "🔁已鎖利",
+        "PENDING": "⏳等待進場"
+    }
+    status_tag = status_map.get(status, "❓未知")
     
-    # 止損原因分析（簡化版）
-    sl_reasons = {}
-    for t in losses:
-        reason = t.get("sl_reason", "市場波動")
-        sl_reasons[reason] = sl_reasons.get(reason, 0) + 1
-    
-    # 等級評定
-    if win_rate >= 70: grade, emoji = "🏆 優秀", "⭐"
-    elif win_rate >= 55: grade, emoji = "✅ 良好", "👍"
-    elif win_rate >= 40: grade, emoji = "⚠️ 普通", "📊"
-    else: grade, emoji = "🔧 需優化", "⚙️"
-    
-    # 組裝訊息
-    msg = (
-        f"📊 *Alpha Oracle 每日戰報* {emoji}\n"
+    return (
+        f"{arrow} *{coin}* {direction} {status_tag}\n"
         f"────────────\n"
-        f"📅 日期：{date_str}\n"
+        f"進場：`{entry:.4f}`\n"
+        f"當前：`{current:.4f}` {pnl_color}`{pnl:+.1f}%`\n"
+        f"\n"
+        f"🎯 止盈進度：{' → '.join(progress)}\n"
+        f"  TP1 `{tp1:.4f}`{'✅' if hit_tp1 else ''}\n"
+        f"  TP2 `{tp2:.4f}`{'✅' if hit_tp2 else ''}\n"
+        f"  TP3 `{tp3:.4f}`{'✅' if hit_tp3 else ''}\n"
+        f"\n"
+        f"🛑 止損：`{sl:.4f}`"
+    )
+
+def _format_position_stats(positions: list) -> str:
+    """📊 持倉統計摘要：總覽 + 績效 + 風險"""
+    if not positions:
+        return "📭 *目前無持倉*\n\n🔄 系統持續掃描中，有新訊號會即時通知"
+    
+    # 🔹 基礎統計
+    total = len(positions)
+    longs = [p for p in positions if p["side"] == "LONG"]
+    shorts = [p for p in positions if p["side"] == "SHORT"]
+    
+    # 🔹 盈虧計算
+    pnls = []
+    for p in positions:
+        current = p.get("current_price", p["entry"])
+        pnl = ((current - p["entry"]) / p["entry"] * 100) if p["side"] == "LONG" else ((p["entry"] - current) / p["entry"] * 100)
+        pnls.append(pnl)
+    
+    avg_pnl = np.mean(pnls) if pnls else 0
+    best = max(pnls) if pnls else 0
+    worst = min(pnls) if pnls else 0
+    
+    # 🔹 進度統計
+    tp1_hits = sum(1 for p in positions if p.get("hit_tp1"))
+    tp2_hits = sum(1 for p in positions if p.get("hit_tp2"))
+    tp3_hits = sum(1 for p in positions if p.get("hit_tp3"))
+    
+    # 🔹 風險暴露
+    active = [p for p in positions if p["status"] in ("ACTIVE", "BE", "TRAIL")]
+    pending = [p for p in positions if p["status"] == "PENDING"]
+    
+    # 🔹 組裝訊息
+    msg = (
+        f"📊 *持倉總覽 ({total} 筆)*\n"
+        f"────────────\n"
+        f"🟢 多單：{len(longs)} 筆 | 🔴 空單：{len(shorts)} 筆\n"
+        f"🔵 持倉中：{len(active)} | ⏳ 等待進場：{len(pending)}\n"
         f"\n"
         f"📈 績效統計：\n"
-        f"  總交易：{total} 筆 {grade}\n"
-        f"  ✅ 盈利：{len(wins)} 筆 ({win_rate:.1f}%)\n"
-        f"  ❌ 止損：{len(losses)} 筆\n"
-        f"  🔒 保本：{len(breakevens)} 筆\n"
+        f"  平均盈虧：`{avg_pnl:+.1f}%`\n"
+        f"  最佳持倉：`+{best:.1f}%` 🏆\n"
+        f"  最差持倉：`{worst:+.1f}%` 📉\n"
         f"\n"
-        f"💰 平均獲利：`+{avg_win:.1f}%`\n"
-        f"📉 平均虧損：`{avg_loss:+.1f}%`\n"
-        f"⚡ 期望值：`{expectancy:+.2f}%/筆`\n"
+        f"🎯 止盈進度：\n"
+        f"  TP1 達成：{tp1_hits}/{total} 筆\n"
+        f"  TP2 達成：{tp2_hits}/{total} 筆\n"
+        f"  TP3 達成：{tp3_hits}/{total} 筆\n"
     )
     
-    # 止損分析（如果有）
-    if sl_reasons:
-        msg += f"\n🔍 止損原因分析：\n"
-        for reason, count in sorted(sl_reasons.items(), key=lambda x: -x[1])[:3]:
-            pct = count / len(losses) * 100
-            msg += f"  • {reason}：{count}筆 ({pct:.0f}%)\n"
-        
-        # 改進建議
-        top_reason = max(sl_reasons.items(), key=lambda x: x[1])[0]
-        if "盤整" in top_reason:
-            msg += f"\n💡 建議：盤整行情減少交易，等待明確突破訊號"
-        elif "波動" in top_reason:
-            msg += f"\n💡 建議：高波動時縮小倉位或放寬止損"
-        elif "趨勢" in top_reason:
-            msg += f"\n💡 建議：順勢交易，避免逆勢抄底摸頂"
+    # 🔹 列出持倉卡片（最多 3 筆）
+    if positions:
+        msg += f"\n📋 持倉明細：\n"
+        for p in positions[:3]:
+            msg += _format_position_card(
+                coin=p["instId"].split("-")[0],
+                side=p["side"],
+                entry=p["entry"],
+                current=p.get("current_price", p["entry"]),
+                sl=p["sl"],
+                tp1=p["tp1"],
+                tp2=p["tp2"],
+                tp3=p["tp3"],
+                status=p["status"],
+                hit_tp1=p.get("hit_tp1", False),
+                hit_tp2=p.get("hit_tp2", False),
+                hit_tp3=p.get("hit_tp3", False)
+            ) + "\n\n"
+        if len(positions) > 3:
+            msg += f"⋮ 還有 {len(positions)-3} 筆持倉，發送 /stats 查看完整列表\n"
     
-    msg += f"\n────────────\n"
-    msg += f"🤖 Alpha Oracle Pro 明日繼續為您監控！"
-    
+    msg += f"────────────\n💡 提示：發送 `/stats` 即時更新持倉統計"
     return msg
+
+def _format_daily_report(trades: list, positions: list, date_str: str) -> str:
+    """📊 專業日報格式：勝率統計 + 持倉績效 + 止損分析"""
+    # 🔹 交易統計
+    if trades:
+        total = len(trades)
+        wins = [t for t in trades if t.get("is_win")]
+        losses = [t for t in trades if not t.get("is_win") and not t.get("is_be")]
+        breakevens = [t for t in trades if t.get("is_be")]
+        
+        win_rate = len(wins) / total * 100 if total > 0 else 0
+        avg_win = np.mean([t["pnl_pct"] for t in wins]) if wins else 0
+        avg_loss = np.mean([t["pnl_pct"] for t in losses]) if losses else 0
+        expectancy = (win_rate/100 * avg_win) + ((1-win_rate/100) * avg_loss) if total > 0 else 0
+        
+        # 🔹 止損原因分析
+        sl_reasons = {}
+        for t in losses:
+            reason = t.get("sl_reason", "市場波動")
+            sl_reasons[reason] = sl_reasons.get(reason, 0) + 1
+        
+        # 🔹 等級評定
+        if win_rate >= 70: grade, emoji = "🏆 優秀", "⭐"
+        elif win_rate >= 55: grade, emoji = "✅ 良好", "👍"
+        elif win_rate >= 40: grade, emoji = "⚠️ 普通", "📊"
+        else: grade, emoji = "🔧 需優化", "⚙️"
+        
+        trade_summary = (
+            f"📈 *交易績效* {emoji}\n"
+            f"  總交易：{total} 筆 {grade}\n"
+            f"  ✅ 盈利：{len(wins)} 筆 ({win_rate:.1f}%)\n"
+            f"  ❌ 止損：{len(losses)} 筆\n"
+            f"  🔒 保本：{len(breakevens)} 筆\n"
+            f"  💰 平均獲利：`+{avg_win:.1f}%`\n"
+            f"  📉 平均虧損：`{avg_loss:+.1f}%`\n"
+            f"  ⚡ 期望值：`{expectancy:+.2f}%/筆`\n"
+        )
+        
+        if sl_reasons:
+            trade_summary += f"\n🔍 止損分析：\n"
+            for reason, count in sorted(sl_reasons.items(), key=lambda x: -x[1])[:2]:
+                pct = count / len(losses) * 100
+                trade_summary += f"  • {reason}：{count}筆 ({pct:.0f}%)\n"
+    else:
+        trade_summary = "📭 今日暫無已結算交易"
+    
+    # 🔹 持倉統計
+    if positions:
+        active_pnls = []
+        for p in positions:
+            if p["status"] in ("ACTIVE", "BE", "TRAIL"):
+                current = p.get("current_price", p["entry"])
+                pnl = ((current - p["entry"]) / p["entry"] * 100) if p["side"] == "LONG" else ((p["entry"] - current) / p["entry"] * 100)
+                active_pnls.append(pnl)
+        
+        avg_active = np.mean(active_pnls) if active_pnls else 0
+        position_summary = (
+            f"\n📋 *持倉績效*\n"
+            f"  當前持倉：{len(positions)} 筆\n"
+            f"  平均盈虧：`{avg_active:+.1f}%`\n"
+            f"  🔵 持倉中：{len([p for p in positions if p['status']=='ACTIVE'])}\n"
+            f"  🔒 已保本：{len([p for p in positions if p['status']=='BE'])}\n"
+            f"  🔁 已鎖利：{len([p for p in positions if p['status']=='TRAIL'])}\n"
+        )
+    else:
+        position_summary = "\n📭 目前無持倉"
+    
+    # 🔹 組裝完整報告
+    return (
+        f"📊 *Alpha Oracle 每日戰報*\n"
+        f"────────────\n"
+        f"📅 日期：{date_str}\n\n"
+        f"{trade_summary}"
+        f"{position_summary}\n"
+        f"\n────────────\n"
+        f"💡 提示：發送 `/stats` 查看即時持倉統計\n"
+        f"🤖 Alpha Oracle Pro 明日繼續為您監控！"
+    )
 
 # ─────────────────────────────────────────────────────────
 # 3. 數據抓取（專業可靠）
@@ -355,18 +481,15 @@ def calculate_supertrend(df: pd.DataFrame, period: int = 10, mult: float = 3.0) 
     h, l, c = df["h"].values, df["l"].values, df["c"].values
     n = len(df)
     
-    # True Range
     tr = np.zeros(n)
     for i in range(1, n):
         tr[i] = max(h[i]-l[i], abs(h[i]-c[i-1]), abs(l[i]-c[i-1]))
     
-    # ATR
     atr = np.zeros(n)
     atr[period] = tr[1:period+1].mean()
     for i in range(period+1, n):
         atr[i] = (atr[i-1]*(period-1) + tr[i]) / period
     
-    # Supertrend
     hl2 = (h + l) / 2
     bu, bd = hl2 - mult*atr, hl2 + mult*atr
     fu, fd = np.zeros(n), np.zeros(n)
@@ -394,13 +517,11 @@ def detect_market_structure(df: pd.DataFrame) -> str:
     highs = recent["h"].values
     lows = recent["l"].values
     
-    # 尋找擺動點
     swing_highs = [i for i in range(3, len(highs)-3) 
                    if all(highs[i] > highs[i+j] for j in range(-3, 4) if j != 0)]
     swing_lows = [i for i in range(3, len(lows)-3) 
                   if all(lows[i] < lows[i+j] for j in range(-3, 4) if j != 0)]
     
-    # W 底 / M 頭偵測
     if len(swing_lows) >= 2:
         l1, l2 = lows[swing_lows[-2]], lows[swing_lows[-1]]
         if abs(l1 - l2) / l1 < 0.015: return "W 底反轉"
@@ -408,7 +529,6 @@ def detect_market_structure(df: pd.DataFrame) -> str:
         h1, h2 = highs[swing_highs[-2]], highs[swing_highs[-1]]
         if abs(h1 - h2) / h1 < 0.015: return "M 頭反轉"
     
-    # 趨勢判斷
     slope = (recent["c"].iloc[-1] - recent["c"].iloc[-20]) / recent["c"].iloc[-20]
     if slope > 0.025: return "上升趨勢"
     if slope < -0.025: return "下降趨勢"
@@ -469,7 +589,7 @@ def calculate_score(df: pd.DataFrame, side: str) -> tuple:
     return score, grade, factors
 
 # ─────────────────────────────────────────────────────────
-# 5. 訊號生成與追蹤（專業核心）
+# 5. 訊號生成與追蹤（專業核心 + 持倉統計）
 # ─────────────────────────────────────────────────────────
 def generate_signal(instId: str, df: pd.DataFrame) -> dict | None:
     """🎯 生成專業交易訊號"""
@@ -478,7 +598,6 @@ def generate_signal(instId: str, df: pd.DataFrame) -> dict | None:
     price = df["c"].iloc[-1]
     atr = calculate_atr(df)
     
-    # 🔹 波動過濾
     if atr / price > VOLATILITY_LIMIT:
         logging.info(f"[{instId}] 波動過大，跳過")
         return None
@@ -488,7 +607,6 @@ def generate_signal(instId: str, df: pd.DataFrame) -> dict | None:
         score, grade, factors = calculate_score(df, side)
         if score < SETUP_SCORE_THRESHOLD: continue
         
-        # 🔹 計算進場/止損/止盈
         entry = price
         sl_dist = atr * 1.5
         sl = entry - sl_dist if side == "LONG" else entry + sl_dist
@@ -518,13 +636,13 @@ def generate_signal(instId: str, df: pd.DataFrame) -> dict | None:
     return max(signals, key=lambda x: x["score"]) if signals else None
 
 class SignalTracker:
-    """🔍 專業訊號追蹤器：進場/TP/SL 即時監控"""
+    """🔍 專業訊號追蹤器：進場/TP/SL 即時監控 + 持倉統計"""
     
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
         self.filepath = filepath
         self._lock = threading.Lock()
         self.signals = self._load()
-        self.transitions = 0  # 狀態變動計數
+        self.transitions = 0
     
     def _load(self) -> dict:
         try:
@@ -557,11 +675,21 @@ class SignalTracker:
         logging.info(f"📌 新增: {key} [{'ACTIVE' if active else 'PENDING'}]")
         return key
     
+    def remove(self, key: str):
+        """🗑️ 移除已結算訊號"""
+        with self._lock:
+            if key in self.signals:
+                del self.signals[key]
+                self._save()
+    
     def check_one(self, key: str, sig: dict) -> bool:
         """🔍 檢查單一訊號狀態，返回 True=已結束"""
         try:
             price = fetch_ticker_price(sig["instId"])
             if price <= 0: return False
+            
+            # 🔹 更新當前價格到訊號（用於持倉統計）
+            sig["current_price"] = price
             
             coin = sig["instId"].split("-")[0]
             side, status = sig["side"], sig["status"]
@@ -570,19 +698,16 @@ class SignalTracker:
             
             # ── PENDING: 等待進場 ─────────────────────
             if status == "PENDING":
-                # 🔹 過期檢查
                 if time.time() > sig["expires"]:
                     send_tg(f"⏰ *{coin} 訊號過期*\n進場 `{entry:.4f}` 未觸發")
                     self.transitions += 1
                     return True
                 
-                # 🔹 進場區檢查
                 in_zone = (
                     (side == "LONG" and entry*(1-ENTRY_TOLERANCE*3) <= price <= entry*(1+ENTRY_TOLERANCE)) or
                     (side == "SHORT" and entry*(1-ENTRY_TOLERANCE) <= price <= entry*(1+ENTRY_TOLERANCE*3))
                 )
                 if in_zone:
-                    # 更新狀態 + 發送通知
                     with self._lock:
                         sig["status"] = "ACTIVE"
                         sig["activated_at"] = time.time()
@@ -596,7 +721,6 @@ class SignalTracker:
             # ── ACTIVE/BE/TRAIL: 監控 TP/SL ─────────────
             if status not in ("ACTIVE", "BE", "TRAIL"): return False
             
-            # 🔹 輔助函數
             def _dev(target): return abs(price - target) / target * 100
             EMG = EMERGENCY_PRICE_THRESHOLD
             
@@ -612,7 +736,6 @@ class SignalTracker:
                                          pnl_pct=pnl if not is_be else 0.0)
                 send_tg(msg, emergency=sl_emg)
                 
-                # 🔹 記錄交易歷史
                 _record_trade(coin, side, entry, price, "BE" if is_be else "SL", sig["score"])
                 self.transitions += 1
                 return True
@@ -630,20 +753,18 @@ class SignalTracker:
                 self.transitions += 1
                 return True
             
-            # 🥈 TP2 觸發（收盤確認 + 緊急備援）
+            # 🥈 TP2 觸發
             tp2_hit = (side == "LONG" and price >= tp2) or (side == "SHORT" and price <= tp2)
             tp2_emg = _dev(tp2) > EMG and ((side == "LONG" and price > tp2) or (side == "SHORT" and price < tp2))
             
             if (tp2_hit or tp2_emg) and not sig.get("hit_tp2"):
-                # 🔹 收盤確認（可配置）
                 if CONFIRM_TP_ON_CLOSE and not tp2_emg:
                     if not _is_close_confirmed(sig["instId"], sig["tf"], tp2, side):
                         return False
                 
-                # 🔹 更新狀態 + 移動止損到 TP1
                 with self._lock:
                     sig["hit_tp2"] = True
-                    sig["sl"] = tp1  # 鎖利
+                    sig["sl"] = tp1
                     sig["status"] = "TRAIL"
                     self._save()
                 
@@ -655,7 +776,7 @@ class SignalTracker:
                 self.transitions += 1
                 return False
             
-            # 🥇 TP1 觸發（收盤確認 + 緊急備援）
+            # 🥇 TP1 觸發
             tp1_hit = (side == "LONG" and price >= tp1) or (side == "SHORT" and price <= tp1)
             tp1_emg = _dev(tp1) > EMG and ((side == "LONG" and price > tp1) or (side == "SHORT" and price < tp1))
             
@@ -666,7 +787,7 @@ class SignalTracker:
                 
                 with self._lock:
                     sig["hit_tp1"] = True
-                    sig["sl"] = entry  # 保本
+                    sig["sl"] = entry
                     sig["status"] = "BE"
                     self._save()
                 
@@ -700,6 +821,27 @@ class SignalTracker:
         if to_remove:
             logging.info(f"✅ 移除 {len(to_remove)} 筆已結算訊號")
     
+    def get_position_stats(self) -> str:
+        """📊 生成持倉統計報告（支援 /stats 命令）"""
+        # 🔹 過濾已進場持倉
+        positions = [
+            {**sig, "current_price": fetch_ticker_price(sig["instId"])}
+            for sig in self.signals.values()
+            if sig["status"] in ("ACTIVE", "BE", "TRAIL", "PENDING")
+        ]
+        
+        if not positions:
+            return "📭 *目前無持倉*\n\n🔄 系統持續掃描中，有新訊號會即時通知"
+        
+        # 🔹 排序：優先顯示持倉中，再按盈虧排序
+        positions.sort(key=lambda x: (
+            0 if x["status"] in ("ACTIVE", "BE", "TRAIL") else 1,
+            -((x.get("current_price", x["entry"]) - x["entry"]) / x["entry"] * 100) if x["side"]=="LONG" 
+            else -((x["entry"] - x.get("current_price", x["entry"])) / x["entry"] * 100)
+        ))
+        
+        return _format_position_stats(positions)
+    
     def status_summary(self) -> str:
         """📋 生成追蹤狀態摘要（新手友好）"""
         items = list(self.signals.values())
@@ -707,7 +849,7 @@ class SignalTracker:
             return "📭 *目前無追蹤中訊號*\n\n🔄 系統持續掃描中，有機會會即時通知您"
         
         lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*", "────────────"]
-        for sig in items[:5]:  # 最多顯示 5 筆
+        for sig in items[:5]:
             coin = sig["instId"].split("-")[0]
             arrow = "🟢" if sig["side"] == "LONG" else "🔴"
             status_map = {"PENDING": "⏳ 等待", "ACTIVE": "🔵 持倉", "BE": "🔒 保本", "TRAIL": "🔁 鎖利"}
@@ -723,7 +865,7 @@ class SignalTracker:
         if len(items) > 5:
             lines.append(f"\n⋮ 還有 {len(items)-5} 筆訊號追蹤中...")
         
-        lines.append("────────────\n🤖 Alpha Oracle Pro 持續監控中")
+        lines.append("────────────\n💡 發送 `/stats` 查看完整持倉統計")
         return "\n".join(lines)
 
 def _is_close_confirmed(instId: str, tf: str, level: float, side: str) -> bool:
@@ -741,10 +883,8 @@ def _record_trade(coin: str, side: str, entry: float, close_price: float,
     is_be = close_type == "BE"
     pnl_pct = ((close_price - entry) / entry * 100) if side == "LONG" else ((entry - close_price) / entry * 100)
     
-    # 🔹 簡化版止損原因分析
     sl_reason = "市場波動"
     if close_type == "SL":
-        # 可擴充：加入更多分析邏輯
         atr = calculate_atr(fetch_okx(f"{coin}-USDT-SWAP")) if coin else 0
         if atr and abs(pnl_pct) < 0.5: sl_reason = "正常波動止損"
         elif pnl_pct < -2: sl_reason = "趨勢反轉止損"
@@ -760,7 +900,6 @@ def _record_trade(coin: str, side: str, entry: float, close_price: float,
         "sl_reason": sl_reason if close_type == "SL" else None,
     }
     
-    # 🔹 追加寫入歷史文件
     try:
         history = []
         if os.path.exists(TRADE_HISTORY_FILE):
@@ -773,8 +912,21 @@ def _record_trade(coin: str, side: str, entry: float, close_price: float,
         logging.error(f"❌ 記錄交易失敗: {e}")
 
 # ─────────────────────────────────────────────────────────
-# 6. 主掃描與監控邏輯
+# 6. 命令處理與主邏輯
 # ─────────────────────────────────────────────────────────
+def handle_telegram_command(command: str, tracker: SignalTracker) -> bool:
+    """💬 處理 Telegram 命令（/stats, /持倉, /positions）"""
+    if not command:
+        return False
+    
+    cmd = command.strip().lower()
+    if cmd in ("/stats", "/持倉", "/positions", "/holdings"):
+        logging.info(f"📊 收到持倉統計命令: {command}")
+        stats_msg = tracker.get_position_stats()
+        return send_tg(stats_msg)
+    
+    return False
+
 def run_scan(tracker: SignalTracker) -> int:
     """🔍 執行訊號掃描"""
     logging.info(f"🚀 開始掃描 | 閾值: {SETUP_SCORE_THRESHOLD}")
@@ -783,7 +935,6 @@ def run_scan(tracker: SignalTracker) -> int:
     for instId in ALL_COINS:
         if sent >= MAX_SIGNALS_PER_RUN: break
         
-        # 🔹 冷卻期檢查
         key = f"{instId}_ALL"
         if key in _signal_cooldown and time.time() - _signal_cooldown[key] < SIGNAL_COOLDOWN_HOURS * 3600:
             continue
@@ -807,7 +958,6 @@ def run_scan(tracker: SignalTracker) -> int:
             sent += 1
             _signal_cooldown[key] = time.time()
             
-            # 🔹 檢查是否已在進場區
             price = fetch_ticker_price(instId)
             in_zone = (
                 (signal["side"] == "LONG" and signal["entry"]*(1-ENTRY_TOLERANCE*3) <= price <= signal["entry"]*(1+ENTRY_TOLERANCE)) or
@@ -815,55 +965,72 @@ def run_scan(tracker: SignalTracker) -> int:
             )
             tracker.add(signal, active=in_zone and price > 0)
         
-        time.sleep(1)  # API 頻率保護
+        time.sleep(1)
     
-    # 🔹 掃描後檢查既有訊號
     tracker.check_all()
     
-    # 🔹 發送狀態摘要（如有變動或整點）
     if tracker.transitions > 0 or utc_now().minute < HEARTBEAT_WINDOW_MIN:
         if tracker.signals:
             send_tg(tracker.status_summary())
     
     return sent
 
-def send_daily_report():
+def send_daily_report(tracker: SignalTracker):
     """📊 發送每日戰報（00:00 自動執行）"""
     today = utc_now().strftime("%Y-%m-%d")
     
-    # 🔹 讀取今日交易記錄
+    # 🔹 讀取交易記錄
     trades = []
     if os.path.exists(TRADE_HISTORY_FILE):
         with open(TRADE_HISTORY_FILE, "r", encoding="utf-8") as f:
             all_trades = json.load(f)
             trades = [t for t in all_trades if t["date"] == today]
     
+    # 🔹 獲取當前持倉
+    positions = [
+        {**sig, "current_price": fetch_ticker_price(sig["instId"])}
+        for sig in tracker.signals.values()
+        if sig["status"] in ("ACTIVE", "BE", "TRAIL")
+    ]
+    
     # 🔹 生成並發送報告
-    msg = _format_daily_report(trades, today)
+    msg = _format_daily_report(trades, positions, today)
     send_tg(msg)
     
-    # 🔹 標記已發送（避免重複）
+    # 🔹 標記已發送
     with open(DAILY_REPORT_FILE, "w") as f:
         json.dump({"last_sent": today}, f)
+
+def utc_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 # ─────────────────────────────────────────────────────────
 # 7. 主函式
 # ─────────────────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="Alpha Oracle Pro v10.0")
+    parser = argparse.ArgumentParser(description="Alpha Oracle Pro v10.1")
     parser.add_argument("--mode", default="all", 
-                       choices=["scan", "monitor_once", "daily_report", "all"])
+                       choices=["scan", "monitor_once", "daily_report", "all", "command"])
+    parser.add_argument("--command", type=str, help="Telegram 命令內容")
     args = parser.parse_args()
     
     logging.info("=" * 50)
-    logging.info("🤖 Alpha Oracle Pro v10.0 啟動")
+    logging.info("🤖 Alpha Oracle Pro v10.1 啟動")
     logging.info(f"📋 模式: {args.mode}")
     logging.info("=" * 50)
     
     tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
     
+    # 🔹 處理 Telegram 命令
+    if args.mode == "command" and args.command:
+        if handle_telegram_command(args.command, tracker):
+            logging.info("✅ 命令執行成功")
+        else:
+            logging.info(f"⚪ 未識別命令: {args.command}")
+        return
+    
     if args.mode == "daily_report":
-        send_daily_report()
+        send_daily_report(tracker)
         return
     
     if args.mode in ("scan", "all"):
