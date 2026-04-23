@@ -1,113 +1,83 @@
-# .github/workflows/alpha-oracle-pro.yml
-name: Alpha Oracle Pro — 專業交易監控
+name: Alpha Oracle Pro
 
 on:
   schedule:
-    # 🟢 掃描模式：活躍時段每 15 分鐘（節省額度 + 提高品質）
-    - cron: "*/15 1-5 * * *"    # 亞洲盤 09:00-13:00 TW
-    - cron: "*/15 13-17 * * *"  # 歐美盤 21:00-01:00 TW
-    
-    # 🔵 監控模式：24 小時每 5 分鐘（確保不漏掉 TP/SL）
+    # 🕒 Monitor every 5 minutes
     - cron: "*/5 * * * *"
-    
-    # 📊 每日戰報：台北時間 00:00
-    - cron: "0 16 * * *"         # UTC 16:00 = TW 00:00
-
+  
   workflow_dispatch:
     inputs:
       mode:
-        description: '執行模式'
+        description: 'Execution Mode'
         required: false
-        default: 'scan'
+        default: 'monitor'
         type: choice
-        options: [scan, monitor_once, daily_report]
-
-permissions:
-  contents: write
-
-concurrency:
-  group: alpha-oracle-pro-${{ github.ref }}
-  cancel-in-progress: false
+        options: [monitor, scan, command]
+      command:
+        description: 'Command (e.g., /stats)'
+        required: false
+        default: ''
 
 jobs:
-  run:
-    name: 🤖 Alpha Oracle Pro
+  run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 3  # 嚴格超時，避免浪費額度
-    
+    timeout-minutes: 5
+
     steps:
-      - name: 📦 Checkout
+      - name: 📦 Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          sparse-checkout: |
-            main.py
-            .github/workflows/
-            active_signals.json
-            trade_history.json
-            daily_report.json
 
-      - name: 🐍 Python Setup
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: 📦 Install Dependencies
-        run: pip install requests pandas numpy --quiet
-
-      - name: 🗄️ Init State Files
         run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 🗄️ Initialize State Files
+        run: |
+          # Ensure files exist to prevent JSON errors
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
-          [ -f daily_report.json ] || echo '{"last_sent":""}' > daily_report.json
-          touch alpha_oracle.log emergency_alerts.log
+          echo "✅ State files initialized"
 
-      - name: 🎯 Determine Mode
-        id: mode
-        run: |
-          MODE="monitor_once"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            MODE="${{ github.event.inputs.mode }}"
-          else
-            HOUR=$(date -u +%H); MIN=$(date -u +%M)
-            [[ "$MIN" =~ ^(00|15|30|45)$ ]] && MODE="scan"
-            [[ "$HOUR" = "16" && "$MIN" -ge 0 && "$MIN" -lt 5 ]] && MODE="daily_report"
-          fi
-          echo "mode=$MODE" >> $GITHUB_OUTPUT
-          echo "MODE=$MODE" >> $GITHUB_ENV
-
-      - name: 🚀 Run Alpha Oracle Pro
+      - name: 🚀 Run Alpha Oracle Bot
         env:
+          # 🔐 Secrets (Must be set in GitHub Settings -> Secrets)
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "6"
-          SETUP_SCORE_THRESHOLD: "68"
-          CONFIRM_TP_ON_CLOSE: "true"
-          TZ: Asia/Taipei
-        run: python main.py --mode $MODE
+          
+          # ⚙️ Runtime Config
+          MODE: ${{ github.event.inputs.mode || 'monitor' }}
+          COMMAND: ${{ github.event.inputs.command || '' }}
+          
+        run: |
+          echo "🚀 Mode: $MODE"
+          if [ -n "$COMMAND" ]; then
+            echo "📝 Command: $COMMAND"
+          fi
+          python main.py
 
-      - name: 🚨 Emergency Fallback
+      - name: 💾 Commit State Changes
         if: always()
         run: |
-          [ -s emergency_alerts.log ] && {
-            tail -3 emergency_alerts.log | while read line; do
-              curl -s -X POST "https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage" \
-                -d chat_id="${{ secrets.CHAT_ID }}" \
-                -d text="🚨 [備援] $line" \
-                -d parse_mode="Markdown" || true
-            done
-            > emergency_alerts.log
-          }
-
-      - name: 💾 Sync State
-        if: always()
-        run: |
-          git config user.name "alpha-oracle-bot"
-          git config user.email "bot@alpha-oracle.pro"
-          git add -f active_signals.json trade_history.json daily_report.json alpha_oracle.log 2>/dev/null || true
-          git diff --staged --quiet || {
-            git commit -m "🤖 state: $MODE [skip ci]"
-            git pull --rebase origin main --quiet || true
-            git push origin main --quiet || git push --force-with-lease origin main --quiet
-          }
+          git config user.name "alpha-bot"
+          git config user.email "bot@alpha-oracle.com"
+          
+          # Add state files
+          git add -f active_signals.json trade_history.json 2>/dev/null || true
+          
+          # Only commit if there are changes
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update state [skip ci]"
+            git push
+            echo "✅ State saved to repository"
+          else
+            echo "ℹ️ No state changes to save"
+          fi
         continue-on-error: true
