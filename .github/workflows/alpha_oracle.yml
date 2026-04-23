@@ -2,7 +2,7 @@ name: Alpha Oracle Pro - Instant TP/SL Alerts
 
 on:
   schedule:
-    # 🟢 掃描模式：活躍時段每 10 分鐘 (提高頻率)
+    # 🟢 掃描模式：活躍時段每 10 分鐘
     - cron: "*/10 1-5 * * *"     # 亞洲盤 (UTC)
     - cron: "*/10 13-17 * * *"   # 歐美盤 (UTC)
     
@@ -39,14 +39,13 @@ jobs:
   run-alpha-oracle-pro:
     name: Run Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 3  # 🔹 嚴格超時，避免浪費額度
+    timeout-minutes: 3
     
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          # 🔹 確保狀態文件也被 checkout
           sparse-checkout: |
             main.py
             .github/workflows/
@@ -58,7 +57,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          # 🔹 移除 cache，避免 requirements.txt 問題
 
       - name: Install Dependencies
         run: |
@@ -70,7 +68,7 @@ jobs:
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
           [ -f daily_stats.csv ] || echo 'instId,result,date' > daily_stats.csv
-          touch alpha_oracle.log emergency_alerts.log  # 🔹 新增緊急日誌文件
+          touch alpha_oracle.log emergency_alerts.log
 
       - name: Determine Mode
         id: determine_mode
@@ -97,7 +95,7 @@ jobs:
           
           echo "mode=$MODE" >> $GITHUB_OUTPUT
           echo "MODE=$MODE" >> $GITHUB_ENV
-          echo "EMERGENCY=$EMERGENCY" >> $GITHUB_ENV  # 🔹 傳遞緊急模式
+          echo "EMERGENCY=$EMERGENCY" >> $GITHUB_ENV
           echo "🎯 Mode: $MODE | Emergency: $EMERGENCY"
 
       - name: Run Alpha Oracle Pro
@@ -106,25 +104,21 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "6"
           SETUP_SCORE_THRESHOLD: "68"
-          CONFIRM_TP_ON_CLOSE: "true"  # 🔹 保持收盤確認，但有緊急備援
+          CONFIRM_TP_ON_CLOSE: "true"
           DEBUG_MODE: "false"
           TZ: "Asia/Taipei"
-          EMERGENCY_MODE: ${{ env.EMERGENCY }}  # 🔹 傳遞給 Python
+          EMERGENCY_MODE: ${{ env.EMERGENCY }}
         run: |
           echo "🚀 Alpha Oracle Pro 啟動 | Mode: $MODE | Emergency: $EMERGENCY"
-          
-          # 🔹 如果啟用緊急模式，臨時修改配置
           if [ "$EMERGENCY" = "true" ]; then
-            export CONFIRM_TP_ON_CLOSE="false"  # 🔹 緊急時關閉收盤確認
+            export CONFIRM_TP_ON_CLOSE="false"
             echo "⚠️ 緊急模式：已關閉收盤確認以加速通知"
           fi
-          
           python main.py --mode $MODE
 
       - name: Check Emergency Alerts
         if: always()
         run: |
-          # 🔹 如果有緊急日誌，額外發送通知
           if [ -s emergency_alerts.log ]; then
             echo "⚠️ 發現緊急日誌，嘗試發送..."
             tail -5 emergency_alerts.log | while read line; do
@@ -133,7 +127,6 @@ jobs:
                 -d text="🚨 [緊急備援] $line" \
                 -d parse_mode="Markdown" || true
             done
-            # 清空緊急日誌
             > emergency_alerts.log
           fi
 
