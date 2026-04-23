@@ -1,53 +1,63 @@
 name: Alpha Oracle Pro
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   schedule:
+    # 🕒 每 15 分鐘執行一次
     - cron: "*/15 * * * *"
+  
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: alpha-oracle-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  run-bot:
+  run:
+    name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3  # ⚡ 嚴格超時 3 分鐘
     
     steps:
-      - name: 📦 Checkout
+      - name: 📦 下載程式碼
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      - name: 🐍 Python Setup
+      - name: 🐍 設置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 📦 Install Dependencies
+      - name: 📦 安裝依賴
         run: pip install requests --quiet
 
-      - name: 🗄️ Init Files
+      - name: 🗄️ 初始化檔案
         run: |
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
 
-      - name: 🚀 Run Bot
+      - name: 🚀 執行 Alpha Oracle
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "3"
           SETUP_SCORE_THRESHOLD: "68"
-        run: python main.py
+          TZ: Asia/Taipei
+        run: |
+          echo "🚀 Alpha Oracle Pro - 繁體中文版"
+          python main.py
 
-      - name: 💾 Save State
+      - name: 💾 保存狀態
         if: always()
         run: |
-          git config user.name "bot"
-          git config user.email "bot@github.com"
+          git config user.name "alpha-bot"
+          git config user.email "bot@alpha.com"
           git add -f active_signals.json trade_history.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "update state"
-          git push || true
+          git diff --staged --quiet || {
+            git commit -m "chore: 更新狀態 [skip ci]"
+            git push --quiet
+          }
         continue-on-error: true
