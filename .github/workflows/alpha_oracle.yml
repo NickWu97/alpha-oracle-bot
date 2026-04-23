@@ -2,7 +2,6 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
-    # 🕒 每15分钟执行一次
     - cron: "*/15 * * * *"
   
   workflow_dispatch:
@@ -25,7 +24,7 @@ jobs:
   run:
     name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 2  # ⚡ 严格超时2分钟
+    timeout-minutes: 3
     
     steps:
       - name: 📦 Checkout
@@ -39,33 +38,82 @@ jobs:
           python-version: '3.11'
 
       - name: 📦 Install Dependencies
-        run: pip install requests pandas numpy --quiet
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+          echo "✅ 依赖安装完成"
 
       - name: 🗄️ Init State Files
         run: |
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
           touch alpha_oracle.log
+          echo "✅ 状态文件初始化"
 
-      - name: 🚀 Run Alpha Oracle Pro
+      - name: 🔍 Debug: Show Environment
+        run: |
+          echo "📋 环境变数:"
+          echo "TG_TOKEN 长度: ${#TG_TOKEN}"
+          echo "CHAT_ID: ${CHAT_ID:0:10}..."
+          echo "MAX_SIGNALS: ${MAX_SIGNALS:-3}"
+          echo "SETUP_SCORE_THRESHOLD: ${SETUP_SCORE_THRESHOLD:-68}"
+
+      - name: 🚀 Run Alpha Oracle Pro (Debug Mode)
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "3"
           SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
+          PYTHONUNBUFFERED: "1"  # 🔍 确保日志实时输出
         run: |
-          echo "🚀 Alpha Oracle Pro - 极速版"
-          python main.py ${{ github.event.inputs.action }}
+          echo "🚀 Alpha Oracle Pro - 调试版"
+          echo "📋 Action: ${{ github.event.inputs.action }}"
+          
+          # 执行主程序并捕获所有输出
+          python main.py ${{ github.event.inputs.action }} 2>&1 | tee execution.log
+          
+          # 检查退出码
+          EXIT_CODE=${PIPESTATUS[0]}
+          echo "📊 退出码: $EXIT_CODE"
+          
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "❌ 程序执行失败"
+            echo "📝 最后 20 行日志:"
+            tail -20 execution.log
+            exit $EXIT_CODE
+          fi
+          
+          echo "✅ 程序执行成功"
+
+      - name: 📋 Show Logs (on failure)
+        if: failure()
+        run: |
+          echo "🔍 完整日志:"
+          cat alpha_oracle.log || echo "❌ 日志文件不存在"
+          
+          echo "🔍 执行日志:"
+          cat execution.log || echo "❌ 执行日志不存在"
 
       - name: 💾 Sync State
         if: always()
         run: |
           git config user.name "alpha-bot"
           git config user.email "bot@alpha.com"
-          git add -f active_signals.json trade_history.json 2>/dev/null || true
+          git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
           git diff --staged --quiet || {
             git commit -m "chore: update state [skip ci]"
-            git push --quiet
+            git pull --rebase origin main --quiet || true
+            git push origin main --quiet || git push --force-with-lease origin main --quiet
           }
         continue-on-error: true
+
+      - name: 📦 Upload Logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs-${{ github.run_id }}
+          path: |
+            alpha_oracle.log
+            execution.log
+          retention-days: 1
