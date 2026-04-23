@@ -414,5 +414,44 @@
     "is_win": true,
     "is_be": false,
     "score": 70
+  },
+  {
+    "time": "2026-04-23 17:56",
+    "date": "2026-04-23",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 78063.6,
+    "close": 79554.9,
+    "close_type": "TP3",
+    "pnl": 1.91,
+    "is_win": true,
+    "is_be": false,
+    "score": 80
+  },
+  {
+    "time": "2026-04-23 17:56",
+    "date": "2026-04-23",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2328.11,
+    "close": 2309.78,
+    "close_type": "SL",
+    "pnl": -0.79,
+    "is_win": false,
+    "is_be": false,
+    "score": 80
+  },
+  {
+    "time": "2026-04-23 17:56",
+    "date": "2026-04-23",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 85.81,
+    "close": 85.32,
+    "close_type": "SL",
+    "pnl": -0.57,
+    "is_win": false,
+    "is_be": false,
+    "score": 80
   }
 ]
