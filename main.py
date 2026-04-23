@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v9.1.6 — 即時通知強化版
+Alpha Oracle Pro v9.1.6 — 即時通知強化最終版
 ══════════════════════════════════════════════════════════════════════
-🔥 核心強化：
-  ✅ 雙重觸發機制：收盤確認 + 價格偏離緊急備援 (>0.3% 立即觸發)
-  ✅ 通知三重保障：專業通知 + 簡化備援 + 本地日誌寫入
-  ✅ 價格抓取優化：指數退避重試 + 快取驗證 + 過期備援
+🔥 核心修復與強化：
+  ✅ 修復 IndentationError (monthly_report 縮排統一)
+  ✅ 修復 SyntaxError (所有 f-string 正確閉合)
+  ✅ 雙重觸發機制：收盤確認 + 價格偏離 >0.3% 緊急備援
+  ✅ 通知三重保障：專業格式 + 簡化備援 + 本地日誌寫入
+  ✅ 價格抓取優化：快取驗證 + 指數退避重試 + 過期備援
   ✅ 狀態文件原子寫入：臨時文件 → 驗證 → 替換，確保數據完整
   ✅ 詳細除錯日誌：完整記錄 Telegram API 請求/回應，快速定位問題
 ══════════════════════════════════════════════════════════════════════
@@ -271,8 +273,6 @@ def fetch_oi_analysis(instId: str) -> tuple:
 
 # ─────────────────────────────────────────────────────────
 # 4. 技術指標 & 5-11. 市場結構/流動性/訂單流/情緒/評分
-# (為節省篇幅，此處保留標準實現，與 v9.1.6 一致)
-# 若您有特定指標修改需求可告知，以下為完整可執行結構
 # ─────────────────────────────────────────────────────────
 def calculate_atr(df: pd.DataFrame, period: int = 14) -> float:
     hl = df["h"] - df["l"]
@@ -889,7 +889,7 @@ def format_alert(coin: str, side: str, alert_type: str, price: float, entry: flo
     return ""
 
 # ─────────────────────────────────────────────────────────
-# 14-15. WinRateTracker & SignalTracker (專業強化版)
+# 14. WinRateTracker (已修復縮排錯誤)
 # ─────────────────────────────────────────────────────────
 class WinRateTracker:
     def __init__(self, filepath: str = TRADE_HISTORY_FILE):
@@ -936,17 +936,28 @@ class WinRateTracker:
         if not month_str: month_str = utc_now().strftime("%Y-%m")
         trades = [t for t in self.history if t["month"] == month_str]; s = self._stats(trades)
         if not s: return f"📅 *月度戰報 {month_str}*\n━━━━━━━━━━━━━━━━━━━━━━\n本月暫無已結算訊號\n持續掃描中... 💪"
+        
         coin_stats: dict = {}
-        for t in trades: cn = t["coin"]; 
-            if cn not in coin_stats: coin_stats[cn] = {"w":0,"l":0,"b":0}
-            if t["is_win"]: coin_stats[cn]["w"] += 1
-            elif t["is_be"]: coin_stats[cn]["b"] += 1
-            else: coin_stats[cn]["l"] += 1
+        # 🔧 嚴格縮排修復
+        for t in trades:
+            cn = t["coin"]
+            if cn not in coin_stats:
+                coin_stats[cn] = {"w":0,"l":0,"b":0}
+            if t["is_win"]:
+                coin_stats[cn]["w"] += 1
+            elif t["is_be"]:
+                coin_stats[cn]["b"] += 1
+            else:
+                coin_stats[cn]["l"] += 1
+        
         coin_lines = [f"  #{cn}  W{cs['w']} L{cs['l']} BE{cs['b']}" for cn, cs in sorted(coin_stats.items(), key=lambda x: -x[1]["w"])]
         grade = "🏆 傑出" if s["win_rate"]>=70 else "✅ 良好" if s["win_rate"]>=55 else "⚠️ 普通" if s["win_rate"]>=40 else "❌ 需優化"
         streak_line = f"\n{s['streak_str']}" if s.get("streak_str") else ""
         return f"📅 *月度戰報 {month_str}*\n━━━━━━━━━━━━━━━━━━━━━━\n🎯 本月訊號：{s['total']} 筆  {grade}\n✅ 勝：{s['wins']}  ❌ 敗：{s['losses']}  ⚖️ 保本：{s['be']}\n📈 *月勝率：{s['win_rate']:.1f}%*\n💰 平均獲利：{s['avg_win']:+.2f}%\n📉 平均虧損：{s['avg_loss']:+.2f}%\n⚡ 月期望值：{s['expectancy']:+.2f}%/筆{streak_line}\n━━━━━━━━━━━━━━━━━━━━━━\n🏅 各幣種：\n" + "\n".join(coin_lines) + f"\n━━━━━━━━━━━━━━━━━━━━━━\n🤖 Alpha Oracle Pro v9.1.6 下月繼續！"
 
+# ─────────────────────────────────────────────────────────
+# 15. SignalTracker (專業強化版)
+# ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE, win_tracker: WinRateTracker = None):
         self.filepath = filepath; self._lock = threading.Lock(); self.signals = self._load(); self.win_tracker = win_tracker; self.last_run_transitions = 0
