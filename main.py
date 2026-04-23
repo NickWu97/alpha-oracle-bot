@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.1 — 專業級交易監控系統 (修復版)
+Alpha Oracle Pro v10.1 — 專業級交易監控系統 (修復版 + 持倉統計)
 ══════════════════════════════════════════════════════════════════════
 🔧 修復：環境變數解析錯誤 (解決 Exit Code 1)
 ✨ 功能：即時通知 + 持倉統計 (/stats) + 每日戰報 + 新手友好介面
@@ -216,115 +216,89 @@ def _format_simple_alert(coin: str, side: str, alert_type: str, price: float,
     
     return ""
 
-def _format_position_card(coin: str, side: str, entry: float, current: float, 
-                         sl: float, tp1: float, tp2: float, tp3: float,
+def _format_position_card(coin: str, side: str, tf: str, score: int, 
+                         current: float, entry: float, sl: float, 
+                         tp1: float, tp2: float, tp3: float,
                          status: str, hit_tp1: bool, hit_tp2: bool, hit_tp3: bool) -> str:
-    """📋 持倉卡片格式：單筆持倉清晰摘要"""
-    arrow = "🟢" if side == "LONG" else "🔴"
-    direction = "多" if side == "LONG" else "空"
+    """📋 持倉卡片格式（與圖片一致）"""
+    # 🔹 幣種與方向
+    coin_emoji = "🔵"  # 預設
+    if "BTC" in coin: coin_emoji = "🟠"
+    elif "ETH" in coin: coin_emoji = "🔷"
+    elif "SOL" in coin: coin_emoji = "🟣"
+    elif "BNB" in coin: coin_emoji = "🟡"
+    elif "LINK" in coin: coin_emoji = "🔵"
+    elif "AVAX" in coin: coin_emoji = "🔺"
+    
+    side_emoji = "🟢" if side == "LONG" else "🔴"
+    side_text = "LONG" if side == "LONG" else "SHORT"
+    
+    # 🔹 計算盈虧
     pnl = ((current - entry) / entry * 100) if side == "LONG" else ((entry - current) / entry * 100)
-    pnl_color = "🟢" if pnl >= 0 else "🔴"
+    pnl_color = "+" if pnl >= 0 else ""
+    pnl_emoji = "🟢" if pnl >= 0 else "🔴"
     
-    # 🔹 進度條
+    # 🔹 狀態
+    status_text = "ACTIVE · 持倉中" if status == "ACTIVE" else status
+    
+    # 🔹 進度條（獎盃/獎牌）
     progress = []
-    if hit_tp3: progress.append("🏆TP3✅")
-    elif hit_tp2: progress.append("🥈TP2✅")
-    elif hit_tp1: progress.append("🥇TP1✅")
-    else: progress.append("⏳等待")
+    if hit_tp3:
+        progress.append("🥇🏆")  # 全部達成
+    elif hit_tp2:
+        progress.append("🥇🥈⏳🏆")  # TP2 達成
+    elif hit_tp1:
+        progress.append("🥇⏳🥈🏆")  # TP1 達成
+    else:
+        progress.append("⏳🥇🥈⏳")  # 等待中
     
-    # 🔹 狀態標籤
-    status_map = {
-        "ACTIVE": "🔵持倉中",
-        "BE": "🔒已保本", 
-        "TRAIL": "🔁已鎖利",
-        "PENDING": "⏳等待進場"
-    }
-    status_tag = status_map.get(status, "❓未知")
+    progress_str = "".join(progress)
     
-    return (
-        f"{arrow} *{coin}* {direction} {status_tag}\n"
-        f"────────────\n"
-        f"進場：`{entry:.4f}`\n"
-        f"當前：`{current:.4f}` {pnl_color}`{pnl:+.1f}%`\n"
-        f"\n"
-        f"🎯 止盈進度：{' → '.join(progress)}\n"
-        f"  TP1 `{tp1:.4f}`{'✅' if hit_tp1 else ''}\n"
-        f"  TP2 `{tp2:.4f}`{'✅' if hit_tp2 else ''}\n"
-        f"  TP3 `{tp3:.4f}`{'✅' if hit_tp3 else ''}\n"
-        f"\n"
-        f"🛑 止損：`{sl:.4f}`"
-    )
+    # 🔹 組裝訊息
+    msg = f"{coin_emoji} *#{coin}* · {side_emoji} {side_text} · {tf} {score}分\n"
+    msg += f"{status_text}\n"
+    msg += f"✅ 當前 `{current:.4f}` {pnl_emoji}{pnl_color}{pnl:.2f}%\n"
+    msg += f"🟢 進場 `{entry:.4f}`\n"
+    msg += f"🔴 止損 `{sl:.4f}`\n"
+    msg += f"🥇 TP1 `{tp1:.4f}`\n"
+    msg += f"🥈 TP2 `{tp2:.4f}`\n"
+    msg += f"🏆 TP3 `{tp3:.4f}`\n"
+    msg += f"進度 {progress_str}"
+    
+    return msg
 
 def _format_position_stats(positions: list) -> str:
-    """📊 持倉統計摘要：總覽 + 績效 + 風險"""
+    """📊 持倉統計摘要（與圖片一致）"""
     if not positions:
         return "📭 *目前無持倉*\n\n🔄 系統持續掃描中，有新訊號會即時通知"
     
-    # 🔹 基礎統計
-    total = len(positions)
-    longs = [p for p in positions if p["side"] == "LONG"]
-    shorts = [p for p in positions if p["side"] == "SHORT"]
+    # 🔹 標題
+    msg = f"📊 *追蹤中訊號 ({len(positions)} 筆)*\n"
+    msg += "═" * 30 + "\n\n"
     
-    # 🔹 盈虧計算
-    pnls = []
-    for p in positions:
-        current = p.get("current_price", p["entry"])
-        pnl = ((current - p["entry"]) / p["entry"] * 100) if p["side"] == "LONG" else ((p["entry"] - current) / p["entry"] * 100)
-        pnls.append(pnl)
+    # 🔹 列出所有持倉
+    for i, p in enumerate(positions):
+        msg += _format_position_card(
+            coin=p["instId"].split("-")[0],
+            side=p["side"],
+            tf=p.get("tf", "15m"),
+            score=p.get("score", 0),
+            current=p.get("current_price", p["entry"]),
+            entry=p["entry"],
+            sl=p["sl"],
+            tp1=p["tp1"],
+            tp2=p["tp2"],
+            tp3=p["tp3"],
+            status=p["status"],
+            hit_tp1=p.get("hit_tp1", False),
+            hit_tp2=p.get("hit_tp2", False),
+            hit_tp3=p.get("hit_tp3", False)
+        )
+        
+        # 🔹 分隔線（最後一筆不加）
+        if i < len(positions) - 1:
+            msg += "\n\n" + "─" * 30 + "\n\n"
     
-    avg_pnl = np.mean(pnls) if pnls else 0
-    best = max(pnls) if pnls else 0
-    worst = min(pnls) if pnls else 0
-    
-    # 🔹 進度統計
-    tp1_hits = sum(1 for p in positions if p.get("hit_tp1"))
-    tp2_hits = sum(1 for p in positions if p.get("hit_tp2"))
-    tp3_hits = sum(1 for p in positions if p.get("hit_tp3"))
-    
-    # 🔹 風險暴露
-    active = [p for p in positions if p["status"] in ("ACTIVE", "BE", "TRAIL")]
-    pending = [p for p in positions if p["status"] == "PENDING"]
-    
-    # 🔹 組裝訊息
-    msg = (
-        f"📊 *持倉總覽 ({total} 筆)*\n"
-        f"────────────\n"
-        f"🟢 多單：{len(longs)} 筆 | 🔴 空單：{len(shorts)} 筆\n"
-        f"🔵 持倉中：{len(active)} | ⏳ 等待進場：{len(pending)}\n"
-        f"\n"
-        f"📈 績效統計：\n"
-        f"  平均盈虧：`{avg_pnl:+.1f}%`\n"
-        f"  最佳持倉：`+{best:.1f}%` 🏆\n"
-        f"  最差持倉：`{worst:+.1f}%` 📉\n"
-        f"\n"
-        f"🎯 止盈進度：\n"
-        f"  TP1 達成：{tp1_hits}/{total} 筆\n"
-        f"  TP2 達成：{tp2_hits}/{total} 筆\n"
-        f"  TP3 達成：{tp3_hits}/{total} 筆\n"
-    )
-    
-    # 🔹 列出持倉卡片（最多 3 筆）
-    if positions:
-        msg += f"\n📋 持倉明細：\n"
-        for p in positions[:3]:
-            msg += _format_position_card(
-                coin=p["instId"].split("-")[0],
-                side=p["side"],
-                entry=p["entry"],
-                current=p.get("current_price", p["entry"]),
-                sl=p["sl"],
-                tp1=p["tp1"],
-                tp2=p["tp2"],
-                tp3=p["tp3"],
-                status=p["status"],
-                hit_tp1=p.get("hit_tp1", False),
-                hit_tp2=p.get("hit_tp2", False),
-                hit_tp3=p.get("hit_tp3", False)
-            ) + "\n\n"
-        if len(positions) > 3:
-            msg += f"⋮ 還有 {len(positions)-3} 筆持倉，發送 /stats 查看完整列表\n"
-    
-    msg += f"────────────\n💡 提示：發送 `/stats` 即時更新持倉統計"
     return msg
 
 def _format_daily_report(trades: list, positions: list, date_str: str) -> str:
@@ -822,7 +796,7 @@ class SignalTracker:
             logging.info(f"✅ 移除 {len(to_remove)} 筆已結算訊號")
     
     def get_position_stats(self) -> str:
-        """📊 生成持倉統計報告（支援 /stats 命令）"""
+        """📊 生成持倉統計報告（與圖片一致）"""
         # 🔹 過濾已進場持倉
         positions = [
             {**sig, "current_price": fetch_ticker_price(sig["instId"])}
@@ -832,13 +806,6 @@ class SignalTracker:
         
         if not positions:
             return "📭 *目前無持倉*\n\n🔄 系統持續掃描中，有新訊號會即時通知"
-        
-        # 🔹 排序：優先顯示持倉中，再按盈虧排序
-        positions.sort(key=lambda x: (
-            0 if x["status"] in ("ACTIVE", "BE", "TRAIL") else 1,
-            -((x.get("current_price", x["entry"]) - x["entry"]) / x["entry"] * 100) if x["side"]=="LONG" 
-            else -((x["entry"] - x.get("current_price", x["entry"])) / x["entry"] * 100)
-        ))
         
         return _format_position_stats(positions)
     
