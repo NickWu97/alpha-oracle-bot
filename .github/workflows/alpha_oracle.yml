@@ -1,17 +1,17 @@
-name: Alpha Oracle v9.1.6 - Auto Trading Bot
+name: Alpha Oracle Pro - Instant TP/SL Alerts
 
 on:
   schedule:
-    # 🟢 掃描模式：僅在活躍時段每 15 分鐘執行
-    - cron: "*/15 1-5 * * *"     # 亞洲盤 (UTC)
-    - cron: "*/15 13-17 * * *"   # 歐美盤 (UTC)
+    # 🟢 掃描模式：活躍時段每 10 分鐘 (提高頻率)
+    - cron: "*/10 1-5 * * *"     # 亞洲盤 (UTC)
+    - cron: "*/10 13-17 * * *"   # 歐美盤 (UTC)
     
-    # 🔵 監控模式：24小時每 5 分鐘檢查既有訊號
-    - cron: "*/5 * * * *"
+    # 🔵 監控模式：24小時每 2 分鐘 (關鍵！)
+    - cron: "*/2 * * * *"
     
     # 📊 戰報模式
-    - cron: "5 16 * * *"         # 每日戰報 (UTC 16:05)
-    - cron: "10 16 1 * *"        # 月度戰報 (每月1日 UTC 16:10)
+    - cron: "5 16 * * *"          # 每日戰報 (台北時間 00:05)
+    - cron: "10 16 1 * *"         # 月度戰報 (每月1日 台北時間 00:10)
 
   workflow_dispatch:
     inputs:
@@ -20,75 +20,75 @@ on:
         required: false
         default: 'scan'
         type: choice
-        options:
-          - scan
-          - monitor_once
-          - daily_report
-          - monthly_report
-          - status_check
+        options: [scan, monitor_once, daily_report, monthly_report, status_check]
+      emergency:
+        description: '啟用緊急模式 (縮短超時/重試)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['true', 'false']
 
 permissions:
   contents: write
 
 concurrency:
-  group: alpha-oracle-${{ github.ref }}
+  group: alpha-oracle-pro-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  run-alpha-oracle:
-    name: Run Alpha Oracle Bot
+  run-alpha-oracle-pro:
+    name: Run Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-
+    timeout-minutes: 3  # 🔹 嚴格超時，避免浪費額度
+    
     steps:
-      # 1. 下載程式碼
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+          # 🔹 確保狀態文件也被 checkout
+          sparse-checkout: |
+            main.py
+            .github/workflows/
+            active_signals.json
+            trade_history.json
+            daily_stats.csv
 
-      # 2. 設置 Python (移除 cache 避免缺少 requirements.txt 報錯)
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          # 🔹 移除 cache，避免 requirements.txt 問題
 
-      # 3. 安裝依賴
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests pandas numpy
 
-      # 4. 🔧 確保狀態文件存在 (修復 pathspec 錯誤)
       - name: Initialize State Files
         run: |
-          # 若文件不存在則建立，避免 git add 報錯
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
           [ -f daily_stats.csv ] || echo 'instId,result,date' > daily_stats.csv
-          touch alpha_oracle.log
-          echo "✅ State files initialized"
+          touch alpha_oracle.log emergency_alerts.log  # 🔹 新增緊急日誌文件
 
-      # 5. 智能判斷執行模式
-      - name: Determine Execution Mode
+      - name: Determine Mode
         id: determine_mode
         run: |
           MODE="monitor_once"
+          EMERGENCY="${{ github.event.inputs.emergency || 'false' }}"
           
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             MODE="${{ github.event.inputs.mode }}"
           else
-            HOUR=$(date -u +%H)
-            MIN=$(date -u +%M)
-            DAY=$(date -u +%d)
-            HOUR_INT=$((10#$HOUR))
-            MIN_INT=$((10#$MIN))
-
+            HOUR=$(date -u +%H); MIN=$(date -u +%M); DAY=$(date -u +%d)
+            HOUR_INT=$((10#$HOUR)); MIN_INT=$((10#$MIN))
+            
             if [ "$HOUR_INT" -eq 16 ] && [ "$MIN_INT" -ge 5 ] && [ "$MIN_INT" -lt 10 ]; then
               MODE="daily_report"
             elif [ "$DAY" -eq 1 ] && [ "$HOUR_INT" -eq 16 ] && [ "$MIN_INT" -ge 10 ] && [ "$MIN_INT" -lt 15 ]; then
               MODE="monthly_report"
-            elif [[ "$MIN" =~ ^(00|15|30|45)$ ]]; then
+            elif [[ "$MIN" =~ ^(00|10|20|30|40|50)$ ]]; then
               MODE="scan"
             else
               MODE="monitor_once"
@@ -96,41 +96,61 @@ jobs:
           fi
           
           echo "mode=$MODE" >> $GITHUB_OUTPUT
-          echo "MODE=$MODE" >> $GITHUB_ENV # 存入環境變數供後續步驟使用
-          echo "🎯 Selected Mode: $MODE"
+          echo "MODE=$MODE" >> $GITHUB_ENV
+          echo "EMERGENCY=$EMERGENCY" >> $GITHUB_ENV  # 🔹 傳遞緊急模式
+          echo "🎯 Mode: $MODE | Emergency: $EMERGENCY"
 
-      # 6. 執行主程式
-      - name: Run Alpha Oracle
+      - name: Run Alpha Oracle Pro
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "6"
           SETUP_SCORE_THRESHOLD: "68"
-          CONFIRM_TP_ON_CLOSE: "true"
+          CONFIRM_TP_ON_CLOSE: "true"  # 🔹 保持收盤確認，但有緊急備援
           DEBUG_MODE: "false"
           TZ: "Asia/Taipei"
+          EMERGENCY_MODE: ${{ env.EMERGENCY }}  # 🔹 傳遞給 Python
         run: |
-          echo "🚀 Starting Alpha Oracle in mode: $MODE"
+          echo "🚀 Alpha Oracle Pro 啟動 | Mode: $MODE | Emergency: $EMERGENCY"
+          
+          # 🔹 如果啟用緊急模式，臨時修改配置
+          if [ "$EMERGENCY" = "true" ]; then
+            export CONFIRM_TP_ON_CLOSE="false"  # 🔹 緊急時關閉收盤確認
+            echo "⚠️ 緊急模式：已關閉收盤確認以加速通知"
+          fi
+          
           python main.py --mode $MODE
 
-      # 7. 提交狀態更新 (強化容錯)
-      - name: Commit and Push State Changes
+      - name: Check Emergency Alerts
         if: always()
         run: |
-          git config user.name "alpha-oracle-bot"
-          git config user.email "bot@alpha-oracle.local"
+          # 🔹 如果有緊急日誌，額外發送通知
+          if [ -s emergency_alerts.log ]; then
+            echo "⚠️ 發現緊急日誌，嘗試發送..."
+            tail -5 emergency_alerts.log | while read line; do
+              curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+                -d chat_id="${CHAT_ID}" \
+                -d text="🚨 [緊急備援] $line" \
+                -d parse_mode="Markdown" || true
+            done
+            # 清空緊急日誌
+            > emergency_alerts.log
+          fi
+
+      - name: Commit State Changes
+        if: always()
+        run: |
+          git config user.name "alpha-oracle-pro-bot"
+          git config user.email "bot@alpha-oracle.pro"
           
-          # 使用 --ignore-unmatched 忽略不存在的文件，避免 fatal 錯誤
-          git add --ignore-unmatched active_signals.json trade_history.json daily_stats.csv alpha_oracle.log 2>/dev/null || true
+          git add --ignore-unmatched active_signals.json trade_history.json daily_stats.csv alpha_oracle.log emergency_alerts.log 2>/dev/null || true
           
-          if git diff --staged --quiet; then
-            echo "ℹ️ No state changes to commit."
-          else
-            git commit -m "🤖 bot: update state [$MODE] [skip ci]"
-            
-            # 安全拉取與推送
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 pro: state update [$MODE] [skip ci]"
             git pull --rebase origin main || true
             git push origin main || git push --force-with-lease origin main
-            echo "✅ State files committed and pushed."
+            echo "✅ 狀態已同步"
+          else
+            echo "ℹ️  無狀態變更"
           fi
         continue-on-error: true
