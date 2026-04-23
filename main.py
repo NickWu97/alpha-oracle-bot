@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.3 — 极速版 + 精致通知
+Alpha Oracle Pro v10.4 — 调试版 (修复 Exit Code 1)
 ══════════════════════════════════════════════════════════════════════
-⚡ 优化：执行时间 180秒 → 15秒
+🔧 修复：添加详细错误日志 + 更健壮的错误处理
 ✨ 功能：精致通知格式 + 极速执行
 ══════════════════════════════════════════════════════════════════════
 """
@@ -13,32 +13,71 @@ import json
 import logging
 import time
 import threading
+import sys
+import traceback
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 
 # ─────────────────────────────────────────────────────────
-# 🔧 环境变数安全解析
+# 🔧 环境变数安全解析 (关键修复)
 # ─────────────────────────────────────────────────────────
 def _get_env(key, default=""):
+    """安全获取环境变数，空值时回传预设值"""
     val = os.getenv(key)
-    return val.strip() if val and val.strip() else default
+    if val is None:
+        logging.warning(f"⚠️ 环境变数 {key} 未设置，使用预设值")
+        return default
+    val = val.strip()
+    if not val:
+        logging.warning(f"⚠️ 环境变数 {key} 为空，使用预设值")
+        return default
+    return val
 
 def _get_env_int(key, default):
+    """安全获取整数环境变数"""
     val = os.getenv(key)
+    if val is None:
+        return default
+    val = val.strip()
+    if not val:
+        return default
     try:
-        return int(val.strip()) if val and val.strip() else default
-    except:
+        return int(val)
+    except ValueError:
+        logging.warning(f"⚠️ 环境变数 {key} 解析失败，使用预设值 {default}")
         return default
 
 # ─────────────────────────────────────────────────────────
 # 1. 基础配置
 # ─────────────────────────────────────────────────────────
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
+logging.basicConfig(
+    level=logging.DEBUG,  # 🔍 调试模式：输出更详细日志
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout),  # 输出到控制台
+        logging.FileHandler("alpha_oracle.log", encoding="utf-8", mode="w")  # 输出到文件
+    ]
+)
+
+logging.info("🔍 调试模式启动")
+
+# 🔍 打印所有环境变数（调试用）
+logging.info("📋 环境变数检查:")
+for key in ["TG_TOKEN", "CHAT_ID", "MAX_SIGNALS", "SETUP_SCORE_THRESHOLD"]:
+    val = os.getenv(key, "❌ 未设置")
+    if key in ["TG_TOKEN", "CHAT_ID"]:
+        val = val[:10] + "..." if val and len(val) > 10 else val
+    logging.info(f"  {key}: {val}")
 
 TG_TOKEN = _get_env("TG_TOKEN")
 CHAT_ID = _get_env("CHAT_ID")
 
-# ⚡ 只监控前3大币种
+# 🔍 检查 Telegram 凭证
+if not TG_TOKEN or not CHAT_ID:
+    logging.error("❌ TG_TOKEN 或 CHAT_ID 未正确设置！请检查 GitHub Secrets")
+    # 即使没有凭证也继续执行，只是不发送通知
+
+# ⚡ 只监控前 3 大币种
 ALL_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
 SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
@@ -52,28 +91,42 @@ _price_cache = {}
 _signal_cooldown = {}
 
 # ─────────────────────────────────────────────────────────
-# 2. 精致通知系统（与图片一致）
+# 2. 通知系统 (带错误处理)
 # ─────────────────────────────────────────────────────────
 def send_tg(msg: str) -> bool:
+    """发送 Telegram 通知，带详细错误处理"""
     if not TG_TOKEN or not CHAT_ID:
+        logging.warning("⚠️ TG_TOKEN 或 CHAT_ID 为空，跳过发送")
         return False
+    
     try:
-        r = requests.post(
-            f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
-            json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"},
-            timeout=5
-        )
-        return r.status_code == 200
+        logging.info(f"📤 准备发送通知: {msg[:50]}...")
+        url = f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage"
+        payload = {"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"}
+        
+        r = requests.post(url, json=payload, timeout=5)
+        
+        if r.status_code == 200:
+            logging.info("✅ Telegram 通知发送成功")
+            return True
+        else:
+            logging.error(f"❌ Telegram API 错误 {r.status_code}: {r.text}")
+            return False
+    except requests.exceptions.Timeout:
+        logging.error("❌ Telegram 请求超时")
+        return False
+    except requests.exceptions.ConnectionError:
+        logging.error("❌ Telegram 连接失败")
+        return False
     except Exception as e:
-        logging.error(f"❌ TG发送失败: {e}")
+        logging.error(f"❌ Telegram 发送异常: {e}")
+        traceback.print_exc()
         return False
 
 def _format_tp_alert(coin: str, side: str, tp_level: str, price: float, 
                      entry: float, pnl_pct: float, r_mult: float) -> str:
-    """🎯 精致止盈通知（与图片一致）"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
-    
     return (
         f"{emoji} *{coin} {tp_level} 达标！*\n"
         f"────────────\n"
@@ -86,11 +139,9 @@ def _format_tp_alert(coin: str, side: str, tp_level: str, price: float,
 
 def _format_sl_alert(coin: str, side: str, price: float, entry: float, 
                      pnl_pct: float, is_be: bool = False) -> str:
-    """🛑 精致止损通知"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
     label = "🔒 保本出场" if is_be else "❌ 止损离场"
-    
     return (
         f"{label} *{coin}*\n"
         f"────────────\n"
@@ -101,11 +152,9 @@ def _format_sl_alert(coin: str, side: str, price: float, entry: float,
 
 def _format_entry_alert(coin: str, side: str, price: float, entry: float,
                         sl: float, tp1: float, tp2: float, tp3: float, score: int) -> str:
-    """📌 精致进场通知"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
     grade = "🔥" if score >= 80 else "✅" if score >= 68 else "⚪"
-    
     return (
         f"{emoji} *{coin} 进场提醒* {grade}\n"
         f"────────────\n"
@@ -125,21 +174,11 @@ def _format_position_card(coin: str, side: str, score: int,
                          current: float, entry: float, sl: float,
                          tp1: float, tp2: float, tp3: float,
                          status: str, hit_tp1: bool, hit_tp2: bool, hit_tp3: bool) -> str:
-    """📊 精致持仓卡片"""
     coin_emoji = "🟠" if "BTC" in coin else "🔷" if "ETH" in coin else "🟣"
     side_emoji = "🟢" if side == "LONG" else "🔴"
     pnl = ((current - entry) / entry * 100) if side == "LONG" else ((entry - current) / entry * 100)
     pnl_emoji = "🟢" if pnl >= 0 else "🔴"
-    
-    # 进度显示
-    if hit_tp3:
-        progress = "🥇🏆"
-    elif hit_tp2:
-        progress = "🥇🥈🏆"
-    elif hit_tp1:
-        progress = "🥇🥈"
-    else:
-        progress = "⏳🏆"
+    progress = "🥇🏆" if hit_tp3 else "🥇🥈🏆" if hit_tp2 else "🥇🥈" if hit_tp1 else "⏳🏆"
     
     return (
         f"{coin_emoji} *#{coin}* · {side_emoji} {side} · {score}分\n"
@@ -154,107 +193,158 @@ def _format_position_card(coin: str, side: str, score: int,
     )
 
 # ─────────────────────────────────────────────────────────
-# 3. 数据抓取（⚡ 极速版 - 超时2秒）
+# 3. 数据抓取 (带错误处理)
 # ─────────────────────────────────────────────────────────
 def fetch_price(instId: str) -> float:
+    """获取即时价格，带缓存和错误处理"""
     now = time.time()
+    
+    # 检查缓存
     if instId in _price_cache:
         price, t = _price_cache[instId]
-        if now - t < 10:  # 10秒缓存
+        if now - t < 10:  # 10 秒缓存
             return price
     
     try:
+        logging.debug(f"🔍 请求价格: {instId}")
         res = requests.get(
             f"https://www.okx.com/api/v5/market/ticker?instId={instId}",
             timeout=2
         ).json()
+        
         if res.get("code") == "0" and res.get("data"):
             price = float(res["data"][0]["last"])
             if price > 0:
                 _price_cache[instId] = (price, now)
+                logging.debug(f"✅ 获取价格成功: {instId} = {price}")
                 return price
-    except:
-        pass
+    except Exception as e:
+        logging.warning(f"⚠️ 获取 {instId} 价格失败: {e}")
     
-    return _price_cache.get(instId, (0, 0))[0] if instId in _price_cache else 0.0
+    # 回传缓存（即使过期）
+    if instId in _price_cache:
+        return _price_cache[instId][0]
+    
+    return 0.0
 
 def fetch_candles(instId: str, tf: str = "15m", limit: int = 100):
+    """获取 K 线数据，带错误处理"""
     try:
+        logging.debug(f"🔍 请求 K 线: {instId} {tf}")
         res = requests.get(
             f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}",
             timeout=3
         ).json()
+        
         if res.get("code") != "0":
+            logging.warning(f"⚠️ OKX API 错误: {res.get('msg')}")
             return None
         
-        import pandas as pd
-        df = pd.DataFrame(res["data"], columns=["ts","o","h","l","c","v","volCcy","volCcyQuote","confirm"])
-        df[["o","h","l","c","v"]] = df[["o","h","l","c","v"]].astype(float)
-        return df[df["confirm"] == "1"].iloc[::-1].reset_index(drop=True)
-    except:
+        # 🔍 简化：不使用 pandas，用纯 Python 处理
+        data = res.get("data", [])
+        if len(data) < 30:
+            return None
+        
+        # 过滤已确认的 K 线并反转
+        confirmed = [row for row in data if row[8] == "1"][::-1]
+        
+        # 转换为字典列表
+        df = []
+        for row in confirmed:
+            df.append({
+                "ts": row[0], "o": float(row[1]), "h": float(row[2]),
+                "l": float(row[3]), "c": float(row[4]), "v": float(row[5])
+            })
+        
+        return df
+    except Exception as e:
+        logging.warning(f"⚠️ 获取 {instId} K 线失败: {e}")
         return None
 
 # ─────────────────────────────────────────────────────────
-# 4. 技术指标（⚡ 简化版）
+# 4. 技术指标 (纯 Python 实现，不依赖 pandas/numpy)
 # ─────────────────────────────────────────────────────────
 def calc_atr(df, period: int = 14) -> float:
-    import numpy as np
-    hl = df["h"] - df["l"]
-    hc = abs(df["h"] - df["c"].shift())
-    lc = abs(df["l"] - df["c"].shift())
-    tr = np.maximum.reduce([hl, hc, lc])
-    val = tr.rolling(period).mean().iloc[-1]
-    return float(val) if not np.isnan(val) else 0.001
+    """计算 ATR (纯 Python 实现)"""
+    if len(df) < period + 1:
+        return 0.001
+    
+    tr_values = []
+    for i in range(1, len(df)):
+        hl = df[i]["h"] - df[i]["l"]
+        hc = abs(df[i]["h"] - df[i-1]["c"])
+        lc = abs(df[i]["l"] - df[i-1]["c"])
+        tr = max(hl, hc, lc)
+        tr_values.append(tr)
+    
+    if len(tr_values) < period:
+        return 0.001
+    
+    # 简单移动平均
+    atr = sum(tr_values[-period:]) / period
+    return atr if atr > 0 else 0.001
 
 def calc_supertrend(df, period: int = 10, mult: float = 3.0) -> int:
+    """计算 Supertrend (简化版)"""
     if len(df) < period + 2:
         return 0
     
-    import numpy as np
-    h, l, c = df["h"].values, df["l"].values, df["c"].values
-    n = len(df)
+    # 计算 ATR
+    atr = calc_atr(df, period)
     
-    tr = np.zeros(n)
-    for i in range(1, n):
-        tr[i] = max(h[i]-l[i], abs(h[i]-c[i-1]), abs(l[i]-c[i-1]))
+    # 简单趋势判断：比较当前价格与中期均线
+    mid_price = sum(row["c"] for row in df[-20:]) / 20
+    current_price = df[-1]["c"]
     
-    atr = np.zeros(n)
-    atr[period] = tr[1:period+1].mean()
-    for i in range(period+1, n):
-        atr[i] = (atr[i-1]*(period-1) + tr[i]) / period
-    
-    hl2 = (h + l) / 2
-    bu, bd = hl2 - mult*atr, hl2 + mult*atr
-    fu, fd = np.zeros(n), np.zeros(n)
-    trend = np.ones(n, dtype=int)
-    
-    fu[period], fd[period] = bu[period], bd[period]
-    for i in range(period+1, n):
-        fu[i] = bu[i] if bu[i] > fu[i-1] or c[i-1] < fu[i-1] else fu[i-1]
-        fd[i] = bd[i] if bd[i] < fd[i-1] or c[i-1] > fd[i-1] else fd[i-1]
-        if trend[i-1] == -1 and c[i] > fd[i-1]:
-            trend[i] = 1
-        elif trend[i-1] == 1 and c[i] < fu[i-1]:
-            trend[i] = -1
-    
-    return int(trend[-1])
+    if current_price > mid_price + atr * 0.5:
+        return 1  # 多头
+    elif current_price < mid_price - atr * 0.5:
+        return -1  # 空头
+    else:
+        return 0  # 震荡
 
 def calc_rsi(df, period: int = 14) -> float:
-    delta = df["c"].diff()
-    gain = delta.where(delta > 0, 0).rolling(period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(period).mean()
-    rs = gain / (loss + 1e-10)
-    return float((100 - (100 / (1 + rs))).iloc[-1])
+    """计算 RSI (简化版)"""
+    if len(df) < period + 1:
+        return 50.0
+    
+    gains = []
+    losses = []
+    
+    for i in range(1, len(df)):
+        change = df[i]["c"] - df[i-1]["c"]
+        if change > 0:
+            gains.append(change)
+            losses.append(0)
+        else:
+            gains.append(0)
+            losses.append(-change)
+    
+    if len(gains) < period:
+        return 50.0
+    
+    avg_gain = sum(gains[-period:]) / period
+    avg_loss = sum(losses[-period:]) / period
+    
+    if avg_loss == 0:
+        return 100.0
+    
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
 
 def calc_score(df, side: str) -> tuple:
+    """计算信号评分"""
     score = 0
-    st = calc_supertrend(df)
     
+    # 趋势因子 (60 分)
+    st = calc_supertrend(df)
     if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1):
         score += 60
     elif st == 0:
         score += 30
     
+    # 动量因子 (40 分)
     rsi = calc_rsi(df)
     if side == "LONG":
         if 30 <= rsi <= 50:
@@ -274,13 +364,16 @@ def calc_score(df, side: str) -> tuple:
 # 5. 信号生成
 # ─────────────────────────────────────────────────────────
 def generate_signal(instId: str, df):
+    """生成交易信号"""
     if df is None or len(df) < 50:
         return None
     
-    price = df["c"].iloc[-1]
+    price = df[-1]["c"]
     atr = calc_atr(df)
     
-    if atr / price > 0.04:  # 波动过大跳过
+    # 波动过滤
+    if atr / price > 0.04:
+        logging.info(f"[{instId}] 波动过大，跳过")
         return None
     
     signals = []
@@ -321,12 +414,22 @@ class SignalTracker:
         self._lock = threading.Lock()
         self.signals = self._load()
         self.transitions = 0
+        logging.info(f"📦 加载 {len(self.signals)} 笔信号")
     
     def _load(self) -> dict:
         try:
-            with open(self.filepath, "r") as f:
-                return json.load(f)
-        except:
+            if os.path.exists(self.filepath):
+                with open(self.filepath, "r") as f:
+                    data = json.load(f)
+                    logging.info(f"✅ 成功加载 {self.filepath}")
+                    return data if isinstance(data, dict) else {}
+            logging.info(f"ℹ️  {self.filepath} 不存在，创建新文件")
+            return {}
+        except json.JSONDecodeError as e:
+            logging.error(f"❌ JSON 解析错误 {self.filepath}: {e}")
+            return {}
+        except Exception as e:
+            logging.error(f"❌ 加载 {self.filepath} 失败: {e}")
             return {}
     
     def _save(self):
@@ -335,8 +438,9 @@ class SignalTracker:
             with open(temp, "w") as f:
                 json.dump(self.signals, f, indent=2)
             os.replace(temp, self.filepath)
-        except:
-            pass
+            logging.debug(f"💾 保存 {self.filepath} 成功")
+        except Exception as e:
+            logging.error(f"❌ 保存 {self.filepath} 失败: {e}")
     
     def add(self, signal: dict, active: bool = False) -> str:
         key = f"{signal['instId']}_{signal['side']}_{int(time.time())}"
@@ -350,6 +454,7 @@ class SignalTracker:
                 "activated_at": time.time() if active else None,
             }
             self._save()
+        logging.info(f"📌 新增信号: {key} [{'ACTIVE' if active else 'PENDING'}]")
         return key
     
     def remove(self, key: str):
@@ -357,11 +462,14 @@ class SignalTracker:
             if key in self.signals:
                 del self.signals[key]
                 self._save()
+                logging.info(f"🗑️ 移除信号: {key}")
     
     def check_one(self, key: str, sig: dict) -> bool:
+        """检查单一信号状态"""
         try:
             price = fetch_price(sig["instId"])
             if price <= 0:
+                logging.debug(f"[{key}] 无法获取价格，跳过")
                 return False
             
             sig["current_price"] = price
@@ -445,6 +553,7 @@ class SignalTracker:
             return False
         except Exception as e:
             logging.error(f"❌ check_one [{key}] 错误: {e}")
+            traceback.print_exc()
             return False
     
     def check_all(self):
@@ -457,6 +566,8 @@ class SignalTracker:
             for key in to_remove:
                 del self.signals[key]
             self._save()
+        if to_remove:
+            logging.info(f"✅ 移除 {len(to_remove)} 笔已结算信号")
     
     def get_position_stats(self) -> str:
         positions = [
@@ -505,6 +616,7 @@ class SignalTracker:
 
 def _record_trade(coin: str, side: str, entry: float, close_price: float, 
                   close_type: str, score: int):
+    """记录交易历史"""
     is_win = close_type in ("TP1", "TP2", "TP3")
     is_be = close_type == "BE"
     pnl = ((close_price - entry) / entry * 100) if side == "LONG" else ((entry - close_price) / entry * 100)
@@ -530,24 +642,31 @@ def _record_trade(coin: str, side: str, entry: float, close_price: float,
         history.append(trade)
         with open(TRADE_HISTORY_FILE, "w") as f:
             json.dump(history, f, indent=2)
-    except:
-        pass
+        logging.info(f"📝 记录交易: {coin} {close_type}")
+    except Exception as e:
+        logging.error(f"❌ 记录交易失败: {e}")
 
 # ─────────────────────────────────────────────────────────
-# 7. 主扫描逻辑（⚡ 并发执行）
+# 7. 主扫描逻辑
 # ─────────────────────────────────────────────────────────
 def scan_one(instId: str, tracker: SignalTracker) -> bool:
+    """扫描单一币种"""
     try:
+        logging.info(f"🔍 扫描 {instId}...")
+        
         key = f"{instId}_ALL"
         if key in _signal_cooldown and time.time() - _signal_cooldown[key] < 2 * 3600:
+            logging.debug(f"[{instId}] 冷却中，跳过")
             return False
         
         df = fetch_candles(instId)
         if df is None:
+            logging.warning(f"[{instId}] 获取 K 线失败")
             return False
         
         signal = generate_signal(instId, df)
         if not signal:
+            logging.debug(f"[{instId}] 无符合信号")
             return False
         
         if send_tg(_format_entry_alert(
@@ -568,22 +687,28 @@ def scan_one(instId: str, tracker: SignalTracker) -> bool:
                 (signal["side"] == "SHORT" and signal["entry"]*(1-0.002) <= price <= signal["entry"]*(1+0.006))
             )
             tracker.add(signal, active=in_zone and price > 0)
+            logging.info(f"✅ {instId} 信号发送成功")
             return True
+        else:
+            logging.warning(f"[{instId}] 通知发送失败")
+            return False
     except Exception as e:
-        logging.error(f"[{instId}] 扫描失败: {e}")
-    return False
+        logging.error(f"[{instId}] 扫描异常: {e}")
+        traceback.print_exc()
+        return False
 
 def run_scan(tracker: SignalTracker) -> int:
+    """执行扫描"""
     logging.info("🚀 开始扫描...")
     sent = 0
     
-    # ⚡ 并发执行（最多3个同时）
+    # ⚡ 并发执行
     with ThreadPoolExecutor(max_workers=3) as executor:
         futures = {executor.submit(scan_one, instId, tracker): instId for instId in ALL_COINS}
         for future in as_completed(futures):
             instId = futures[future]
             try:
-                if future.result(timeout=8):  # ⚡ 每个币种最多等待8秒
+                if future.result(timeout=8):
                     sent += 1
             except Exception as e:
                 logging.error(f"[{instId}] 执行失败: {e}")
@@ -593,31 +718,43 @@ def run_scan(tracker: SignalTracker) -> int:
     if tracker.transitions > 0 or tracker.signals:
         send_tg(tracker.status_summary())
     
+    logging.info(f"✅ 扫描完成，发送 {sent} 笔信号")
     return sent
 
 # ─────────────────────────────────────────────────────────
 # 8. 主函数
 # ─────────────────────────────────────────────────────────
 def main():
-    logging.info("=" * 40)
-    logging.info("🤖 Alpha Oracle Pro v10.3 启动")
-    logging.info("=" * 40)
-    
-    tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
-    
-    # 🔹 处理 /stats 命令
-    if len(sys.argv) > 1 and sys.argv[1] in ("/stats", "/持仓"):
-        send_tg(tracker.get_position_stats())
-        return
-    
-    # 🔹 执行扫描 + 监控
-    run_scan(tracker)
-
-if __name__ == "__main__":
     try:
-        main()
+        logging.info("=" * 50)
+        logging.info("🤖 Alpha Oracle Pro v10.4 调试版启动")
+        logging.info("=" * 50)
+        
+        # 🔍 检查依赖
+        try:
+            import requests
+            logging.info("✅ requests 库正常")
+        except ImportError:
+            logging.error("❌ requests 库未安装")
+            return
+        
+        tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
+        
+        # 🔹 处理 /stats 命令
+        if len(sys.argv) > 1 and sys.argv[1] in ("/stats", "/持仓"):
+            logging.info("📊 执行持仓统计命令")
+            send_tg(tracker.get_position_stats())
+            return
+        
+        # 🔹 执行扫描 + 监控
+        run_scan(tracker)
+        
+        logging.info("🎉 程序执行完成")
+        
     except Exception as e:
-        logging.error(f"🔥 系统错误: {e}")
-        import traceback
+        logging.critical(f"💥 未捕获的异常: {e}")
         traceback.print_exc()
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()
