@@ -2,7 +2,7 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
-    # 🕒 每 15 分鐘執行一次（已足夠）
+    # 🕒 每15分钟执行一次
     - cron: "*/15 * * * *"
   
   workflow_dispatch:
@@ -25,7 +25,7 @@ jobs:
   run:
     name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 2  # ⚡ 嚴格超時 2 分鐘
+    timeout-minutes: 2  # ⚡ 严格超时2分钟
     
     steps:
       - name: 📦 Checkout
@@ -53,10 +53,9 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "3"
           SETUP_SCORE_THRESHOLD: "68"
-          CONFIRM_TP_ON_CLOSE: "true"
           TZ: Asia/Taipei
         run: |
-          echo "🚀 Alpha Oracle Pro - Fast Mode"
+          echo "🚀 Alpha Oracle Pro - 极速版"
           python main.py ${{ github.event.inputs.action }}
 
       - name: 💾 Sync State
