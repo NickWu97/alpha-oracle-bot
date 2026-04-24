@@ -83,5 +83,27 @@
     "entry_msg_id": 2207,
     "activated_at": 1777053098.9076207,
     "pending_trigger": null
+  },
+  "SOL-USDT-SWAP_SHORT_1777055298-22170AD4": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 86.18,
+    "sl": 86.6621,
+    "tp1": 85.6979,
+    "tp2": 84.9746,
+    "tp3": 84.2514,
+    "score": 70,
+    "grade": "B+ 合格",
+    "created": 1777055298.7833543,
+    "expires": 1777141698.7833545,
+    "order_id": "1777055298-22170AD4",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "entry_msg_id": 2208,
+    "activated_at": 1777055298.7833915,
+    "pending_trigger": null
   }
 }
