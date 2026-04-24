@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.8 — 訂單追蹤增強版 (修復版)
+Alpha Oracle Pro v10.8 — 訂單追蹤增強版 (修復版 + 線層回覆)
 ══════════════════════════════════════════════════════════════════════
 ✨ 功能：
-  ✅ 訂單編號正確顯示（不再生成臨時訂單號）
-  ✅ 價格同步驗證（與 OKX 即時價格對齊）
+  ✅ 訂單編號正確顯示
   ✅ 止損顯示具體百分比（-X.X%）
-  ✅ LINE 風格回覆按鈕 + 時間戳
+  ✅ 線層回覆功能（TP/SL 回覆在進場通知下方）
+  ✅ 價格同步驗證（與 OKX 即時價格對齊）
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -57,10 +57,15 @@ _price_cache = {}
 _signal_cooldown = {}
 
 # ─────────────────────────────────────────────────────────
-# 2. 通知系統（修復版）
+# 2. 通知系統（線層回覆版）
 # ─────────────────────────────────────────────────────────
-def send_tg(msg: str, parse_mode: str = "Markdown", reply_markup: dict = None) -> int:
-    """📤 發送 Telegram 通知（支援回覆按鈕）🔄 返回 message_id"""
+def send_tg(msg: str, parse_mode: str = "Markdown", reply_to_id: int = None, buttons: list = None) -> int:
+    """
+    📤 發送 Telegram 通知
+    ✅ 支援 reply_to_id (實現線層回覆)
+    ✅ 支援 Inline Keyboard (實現底部按鈕)
+    🔄 返回 message_id，以便後續追蹤
+    """
     if not TG_TOKEN or not CHAT_ID:
         logging.warning("⚠️ TG_TOKEN 或 CHAT_ID 未設定")
         return None
@@ -72,8 +77,13 @@ def send_tg(msg: str, parse_mode: str = "Markdown", reply_markup: dict = None) -
         "disable_web_page_preview": True
     }
     
-    if reply_markup:
-        payload["reply_markup"] = json.dumps(reply_markup)
+    # 🔹 線層回覆：回覆到指定訊息
+    if reply_to_id:
+        payload["reply_to_message_id"] = reply_to_id
+    
+    # 🔹 底部按鈕
+    if buttons:
+        payload["reply_markup"] = json.dumps({"inline_keyboard": [buttons]})
     
     try:
         r = requests.post(
@@ -87,16 +97,12 @@ def send_tg(msg: str, parse_mode: str = "Markdown", reply_markup: dict = None) -
         logging.error(f"❌ TG 發送失敗: {e}")
     return None
 
-def _get_order_keyboard(order_id: str) -> dict:
+def _get_order_button(order_id: str) -> list:
     """🔘 生成訂單查詢按鈕（LINE 風格）"""
-    return {
-        "inline_keyboard": [[
-            {
-                "text": f"🔍 查詢訂單 {order_id[-8:]}",
-                "callback_data": f"order_{order_id}"
-            }
-        ]]
-    }
+    return [{
+        "text": f"🔍 查詢訂單 {order_id[-8:]}",
+        "callback_data": f"order_{order_id}"
+    }]
 
 def _format_entry_alert(coin: str, side: str, order_id: str, price: float, entry: float,
                         sl: float, tp1: float, tp2: float, tp3: float, score: int) -> str:
@@ -399,7 +405,7 @@ def generate_signal(instId: str, df, current_price: float):
     return max(signals, key=lambda x: x["score"]) if signals else None
 
 # ─────────────────────────────────────────────────────────
-# 6. SignalTracker 類（修復訂單編號顯示）
+# 6. SignalTracker 類（線層回覆核心）
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
@@ -425,24 +431,35 @@ class SignalTracker:
         except:
             pass
     
-    def add(self, signal: dict, active: bool = False) -> tuple:
-        """📌 新增追蹤訊號（生成唯一訂單編號）🔄 返回 (key, order_id)"""
-        # 🔹 先生成訂單編號
+    def add(self, signal: dict, active: bool = False, entry_msg_id: int = None) -> tuple:
+        """
+        📌 新增追蹤訊號
+        🔹 生成唯一訂單編號
+        🔹 儲存 Telegram 訊息 ID（用於線層回覆）
+        🔄 返回 (key, order_id)
+        """
         order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
-        
         key = f"{signal['instId']}_{signal['side']}_{order_id}"
+        
         self.signals[key] = {
             **signal,
-            "order_id": order_id,  # 🔹 儲存訂單編號
+            "order_id": order_id,
             "status": "ACTIVE" if active else "PENDING",
             "hit_tp1": False,
             "hit_tp2": False,
             "hit_tp3": False,
+            "entry_msg_id": entry_msg_id,  # 🔹 儲存進場通知的 message_id
             "activated_at": time.time() if active else None,
         }
         self._save()
         logging.info(f"📌 新增訂單：{order_id}")
-        return key, order_id  # 🔹 返回訂單編號供通知使用
+        return key, order_id
+    
+    def update_signal(self, key: str, **kwargs):
+        """🔄 更新訊號數據（用於儲存 entry_msg_id）"""
+        if key in self.signals:
+            self.signals[key].update(kwargs)
+            self._save()
     
     def get_order_by_id(self, order_id: str) -> dict:
         """🔍 通過訂單編號查詢訂單"""
@@ -470,7 +487,7 @@ class SignalTracker:
         self._save()
     
     def _check_one(self, key: str, sig: dict) -> bool:
-        """🔍 檢查單一訊號（嚴格價格驗證）"""
+        """🔍 檢查單一訊號（嚴格價格驗證 + 線層回覆）"""
         try:
             price = fetch_price(sig["instId"])
             if price <= 0:
@@ -478,16 +495,19 @@ class SignalTracker:
             
             sig["current_price"] = price
             coin = sig["instId"].split("-")[0]
-            order_id = sig.get("order_id", "N/A")  # 🔹 獲取真實訂單編號
+            order_id = sig.get("order_id", "N/A")
             side, status = sig["side"], sig["status"]
             entry, sl = sig["entry"], sig["sl"]
             tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
+            
+            # 🔹 獲取進場通知的 message_id（用於回覆）
+            reply_id = sig.get("entry_msg_id")
             
             # PENDING: 等待進場
             if status == "PENDING":
                 if time.time() > sig["expires"]:
                     msg = f"⏰ *{coin} 訊號過期*\n訂單 `{order_id}`\n進場 `{entry:.4f}` 未觸發"
-                    send_tg(msg)
+                    send_tg(msg, reply_to_id=reply_id)  # 🔹 回覆到進場通知
                     self.transitions += 1
                     return True
                 
@@ -498,12 +518,17 @@ class SignalTracker:
                 if in_zone:
                     sig["status"] = "ACTIVE"
                     sig["activated_at"] = time.time()
-                    self._save()
                     
-                    # 🔹 使用真實訂單編號發送通知
+                    # 🔹 發送進場通知並獲取 message_id
                     msg = _format_entry_alert(coin, side, order_id, price, entry, sl, tp1, tp2, tp3, sig["score"])
-                    keyboard = _get_order_keyboard(order_id)
-                    send_tg(msg, reply_markup=keyboard)
+                    buttons = _get_order_button(order_id)
+                    new_msg_id = send_tg(msg, reply_to_id=reply_id, buttons=buttons)
+                    
+                    if new_msg_id:
+                        # 🔹 儲存進場通知的 message_id，供後續回覆使用
+                        sig["entry_msg_id"] = new_msg_id
+                        self._save()
+                    
                     self.transitions += 1
                 return False
             
@@ -523,8 +548,9 @@ class SignalTracker:
                 is_be = status in ("BE", "TRAIL") and abs(sl - entry) < entry * 0.0001
                 pnl = ((price - entry) / entry * 100) if side == "LONG" else ((entry - price) / entry * 100)
                 msg = _format_sl_alert(coin, side, order_id, price, entry, pnl, is_be)
-                keyboard = _get_order_keyboard(order_id)
-                send_tg(msg, reply_markup=keyboard)
+                buttons = _get_order_button(order_id)
+                # 🔹 回覆到進場通知（線層效果）
+                send_tg(msg, reply_to_id=reply_id, buttons=buttons)
                 _record_trade(coin, side, order_id, entry, price, "BE" if is_be else "SL", sig["score"])
                 self.transitions += 1
                 return True
@@ -538,8 +564,9 @@ class SignalTracker:
             if (tp3_triggered or _dev(tp3) > 0.003) and not sig.get("hit_tp3"):
                 pnl = ((tp3 - entry) / entry * 100) if side == "LONG" else ((entry - tp3) / entry * 100)
                 msg = _format_tp_alert(coin, side, order_id, "TP3", tp3, entry, sl, pnl, 4.0)
-                keyboard = _get_order_keyboard(order_id)
-                send_tg(msg, reply_markup=keyboard)
+                buttons = _get_order_button(order_id)
+                # 🔹 回覆到進場通知（線層效果）
+                send_tg(msg, reply_to_id=reply_id, buttons=buttons)
                 _record_trade(coin, side, order_id, entry, tp3, "TP3", sig["score"])
                 self.transitions += 1
                 return True
@@ -558,8 +585,9 @@ class SignalTracker:
                 
                 pnl = ((tp2 - entry) / entry * 100) if side == "LONG" else ((entry - tp2) / entry * 100)
                 msg = _format_tp_alert(coin, side, order_id, "TP2", tp2, entry, sl, pnl, 2.5)
-                keyboard = _get_order_keyboard(order_id)
-                send_tg(msg, reply_markup=keyboard)
+                buttons = _get_order_button(order_id)
+                # 🔹 回覆到進場通知（線層效果）
+                send_tg(msg, reply_to_id=reply_id, buttons=buttons)
                 _record_trade(coin, side, order_id, entry, tp2, "TP2", sig["score"])
                 self.transitions += 1
                 return False
@@ -577,8 +605,9 @@ class SignalTracker:
                 self._save()
                 
                 msg = _format_tp_alert(coin, side, order_id, "TP1", tp1, entry, sl, 0.0, 1.0)
-                keyboard = _get_order_keyboard(order_id)
-                send_tg(msg, reply_markup=keyboard)
+                buttons = _get_order_button(order_id)
+                # 🔹 回覆到進場通知（線層效果）
+                send_tg(msg, reply_to_id=reply_id, buttons=buttons)
                 _record_trade(coin, side, order_id, entry, tp1, "TP1", sig["score"])
                 self.transitions += 1
                 return False
@@ -597,6 +626,8 @@ class SignalTracker:
                 if price > 0:
                     coin = sig["instId"].split("-")[0]
                     order_id = sig.get("order_id", "N/A")
+                    reply_id = sig.get("entry_msg_id")
+                    
                     msg = _format_position_update(
                         coin=coin,
                         side=sig["side"],
@@ -611,8 +642,9 @@ class SignalTracker:
                         hit_tp2=sig.get("hit_tp2", False),
                         hit_tp3=sig.get("hit_tp3", False)
                     )
-                    keyboard = _get_order_keyboard(order_id)
-                    send_tg(msg, reply_markup=keyboard)
+                    buttons = _get_order_button(order_id)
+                    # 🔹 回覆到進場通知（線層效果）
+                    send_tg(msg, reply_to_id=reply_id, buttons=buttons)
                     updates.append(msg)
         
         if updates:
@@ -687,10 +719,10 @@ def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price
         logging.error(f"❌ 記錄交易失敗：{e}")
 
 # ─────────────────────────────────────────────────────────
-# 7. 主掃描邏輯（修復版）
+# 7. 主掃描邏輯（線層回覆版）
 # ─────────────────────────────────────────────────────────
 def run_scan(tracker: SignalTracker) -> int:
-    """🔍 執行掃描（使用即時價格 + 正確訂單編號）"""
+    """🔍 執行掃描（使用即時價格 + 正確訂單編號 + 線層回覆）"""
     logging.info("🚀 開始掃描...")
     sent = 0
     
@@ -721,16 +753,16 @@ def run_scan(tracker: SignalTracker) -> int:
             if not signal:
                 continue
             
-            # 🔹 先添加到追蹤器獲取真實訂單編號
+            # 🔹 檢查是否在進場區
             in_zone = (
                 (signal["side"] == "LONG" and signal["entry"]*(1-0.006) <= current_price <= signal["entry"]*(1+0.002)) or
                 (signal["side"] == "SHORT" and signal["entry"]*(1-0.002) <= current_price <= signal["entry"]*(1+0.006))
             )
             
-            # 🔹 添加並獲取真實訂單編號
+            # 🔹 先添加到追蹤器，獲取真實訂單編號
             _, order_id = tracker.add(signal, active=in_zone and current_price > 0)
             
-            # 🔹 使用真實訂單編號發送通知
+            # 🔹 發送進場通知（首次發送，reply_to_id=None）
             msg = _format_entry_alert(
                 coin=instId.split("-")[0],
                 side=signal["side"],
@@ -743,20 +775,27 @@ def run_scan(tracker: SignalTracker) -> int:
                 tp3=signal["tp3"],
                 score=signal["score"]
             )
+            buttons = _get_order_button(order_id)
             
-            keyboard = _get_order_keyboard(order_id)
-            if send_tg(msg, reply_markup=keyboard):
+            # 🔹 發送進場通知並獲取 message_id
+            entry_msg_id = send_tg(msg, reply_to_id=None, buttons=buttons)
+            
+            if entry_msg_id:
+                # 🔹 更新訊號，儲存進場通知的 message_id（用於後續回覆）
+                key = f"{instId}_{signal['side']}_{order_id}"
+                tracker.update_signal(key, entry_msg_id=entry_msg_id)
+                
                 _signal_cooldown[key_prefix] = time.time()
                 sent += 1
-                logging.info(f"✅ {instId} 訊號發送成功，訂單：{order_id}")
+                logging.info(f"✅ {instId} 訊號發送成功，訂單：{order_id}, msg_id: {entry_msg_id}")
         except Exception as e:
             logging.error(f"[{instId}] 掃描失敗：{e}")
             continue
     
-    # 🔹 檢查既有訊號
+    # 🔹 檢查既有訊號（會自動發送線層回覆的 TP/SL 通知）
     tracker.check_all()
     
-    # 🔹 發送持倉進度更新
+    # 🔹 發送持倉進度更新（也會回覆到進場通知）
     tracker.send_position_updates()
     
     logging.info(f"✅ 掃描完成，發送 {sent} 筆訊號")
@@ -768,7 +807,7 @@ def run_scan(tracker: SignalTracker) -> int:
 def main():
     try:
         logging.info("=" * 40)
-        logging.info("🤖 Alpha Oracle Pro v10.8 訂單追蹤版啟動")
+        logging.info("🤖 Alpha Oracle Pro v10.8 線層回覆版啟動")
         logging.info("=" * 40)
         
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
