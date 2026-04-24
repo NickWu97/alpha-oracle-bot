@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.5 — 繁體中文版 (快速退出)
+Alpha Oracle Pro v10.6 — 即時通知增強版
 ══════════════════════════════════════════════════════════════════════
-⚡ 修復：GitHub Actions 一直運行的問題
-✨ 功能：繁體中文 + 精致通知 + 確保 2 分鐘內完成
+✨ 功能：TP1/2/3/SL 即時通知 + 持倉狀態定期回報
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -41,7 +40,6 @@ logging.basicConfig(
 TG_TOKEN = _get_env("TG_TOKEN")
 CHAT_ID = _get_env("CHAT_ID")
 
-# ⚡ 只監控前 3 大幣種（加快執行）
 ALL_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
 SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
@@ -54,96 +52,139 @@ _price_cache = {}
 _signal_cooldown = {}
 
 # ─────────────────────────────────────────────────────────
-# 2. 通知系統（繁體中文）
+# 2. 通知系統（增強版）
 # ─────────────────────────────────────────────────────────
-def send_tg(msg: str) -> bool:
+def send_tg(msg: str, parse_mode: str = "Markdown") -> bool:
+    """📤 發送 Telegram 通知"""
     if not TG_TOKEN or not CHAT_ID:
+        logging.warning("⚠️ TG_TOKEN 或 CHAT_ID 未設定")
         return False
     try:
         r = requests.post(
             f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
-            json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"},
+            json={"chat_id": CHAT_ID, "text": msg, "parse_mode": parse_mode},
             timeout=5
         )
         return r.status_code == 200
-    except:
+    except Exception as e:
+        logging.error(f"❌ TG 發送失敗: {e}")
         return False
 
-def _format_tp_alert(coin: str, side: str, tp_level: str, price: float, 
-                     entry: float, pnl_pct: float, r_mult: float) -> str:
-    """🎯 止盈通知（繁體中文）"""
+def _format_entry_alert(coin: str, side: str, price: float, entry: float,
+                        sl: float, tp1: float, tp2: float, tp3: float, score: int) -> str:
+    """📌 進場通知"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
+    grade = "🔥" if score >= 80 else "✅" if score >= 68 else "⚪"
+    
+    tp1_pct = (tp1 - entry) / entry * 100
+    tp2_pct = (tp2 - entry) / entry * 100
+    tp3_pct = (tp3 - entry) / entry * 100
+    sl_pct = (sl - entry) / entry * 100
+    
     return (
-        f"{emoji} *{coin} {tp_level} 達標！*\n"
+        f"{emoji} *{coin} 進場提醒* {grade}\n"
+        f"────────────\n"
+        f"方向：{direction}\n"
+        f"進場價：`{entry:.4f}`\n"
+        f"評分：{score}分\n"
+        f"\n"
+        f"🎯 止盈目標：\n"
+        f"  TP1 `{tp1:.4f}` (+{tp1_pct:.1f}%)\n"
+        f"  TP2 `{tp2:.4f}` (+{tp2_pct:.1f}%)\n"
+        f"  TP3 `{tp3:.4f}` (+{tp3_pct:.1f}%)\n"
+        f"\n"
+        f"🛑 止損：`{sl:.4f}` ({sl_pct:+.1f}%)\n"
+        f"\n"
+        f"💡 到達 TP1 自動保本，到達 TP2 自動鎖利"
+    )
+
+def _format_tp_alert(coin: str, side: str, tp_level: str, price: float, 
+                     entry: float, sl: float, pnl_pct: float, r_mult: float) -> str:
+    """🎯 止盈通知（包含剩餘目標）"""
+    direction = "做多" if side == "LONG" else "做空"
+    emoji = "🟢" if side == "LONG" else "🔴"
+    
+    # 計算剩餘目標
+    remaining = []
+    if tp_level == "TP1":
+        remaining = ["TP2", "TP3"]
+    elif tp_level == "TP2":
+        remaining = ["TP3"]
+    
+    remaining_text = ""
+    if remaining:
+        remaining_text = f"\n🔄 剩餘目標：\n"
+        for tp in remaining:
+            remaining_text += f"  {tp}\n"
+    
+    return (
+        f"🎯 *{coin} {tp_level} 達標！*\n"
         f"────────────\n"
         f"方向：{direction}\n"
         f"價格：`{price:.4f}`\n"
         f"獲利：`+{pnl_pct:.1f}%` (`+{r_mult}R`)\n"
         f"\n"
-        f"💡 建議全部平倉"
+        f"✅ 已達成 {tp_level}\n"
+        f"{remaining_text}"
+        f"\n"
+        f"💡 {'建議平倉 ⅓ 鎖定獲利' if tp_level=='TP1' else '建議平倉 ⅓ 落袋為安' if tp_level=='TP2' else '建議全部平倉完美收割'}"
     )
 
 def _format_sl_alert(coin: str, side: str, price: float, entry: float, 
                      pnl_pct: float, is_be: bool = False) -> str:
-    """🛑 止損通知（繁體中文）"""
+    """🛑 止損通知"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
     label = "🔒 保本出場" if is_be else "❌ 止損離場"
+    r_tag = "`0.0R`" if is_be else "`-1.0R`"
+    
     return (
         f"{label} *{coin}*\n"
         f"────────────\n"
         f"方向：{direction}\n"
         f"價格：`{price:.4f}`\n"
-        f"結果：`{pnl_pct:+.1f}%`"
+        f"結果：`{pnl_pct:+.1f}%` {r_tag}\n"
+        f"\n"
+        f"💡 {'資金安全，等待下一次機會 💪' if is_be else '遵守風控，勿加碼攤平'}"
     )
 
-def _format_entry_alert(coin: str, side: str, price: float, entry: float,
-                        sl: float, tp1: float, tp2: float, tp3: float, score: int) -> str:
-    """📌 進場通知（繁體中文）"""
+def _format_position_update(coin: str, side: str, current_price: float, 
+                            entry: float, sl: float, tp1: float, tp2: float, tp3: float,
+                            hit_tp1: bool, hit_tp2: bool, hit_tp3: bool) -> str:
+    """📊 持倉進度更新"""
     direction = "做多" if side == "LONG" else "做空"
-    emoji = "🟢" if side == "LONG" else "🔴"
-    grade = "🔥" if score >= 80 else "✅" if score >= 68 else "⚪"
-    return (
-        f"{emoji} *{coin} 進場提醒* {grade}\n"
-        f"────────────\n"
-        f"方向：{direction}\n"
-        f"價格：`{price:.4f}`\n"
-        f"評分：{score}分\n"
-        f"\n"
-        f"🎯 止盈：\n"
-        f"  TP1 `{tp1:.4f}` (+{(tp1-entry)/entry*100:.1f}%)\n"
-        f"  TP2 `{tp2:.4f}` (+{(tp2-entry)/entry*100:.1f}%)\n"
-        f"  TP3 `{tp3:.4f}` (+{(tp3-entry)/entry*100:.1f}%)\n"
-        f"\n"
-        f"🛑 止損：`{sl:.4f}` ({(sl-entry)/entry*100:+.1f}%)"
-    )
-
-def _format_position_card(coin: str, side: str, score: int,
-                         current: float, entry: float, sl: float,
-                         tp1: float, tp2: float, tp3: float,
-                         status: str, hit_tp1: bool, hit_tp2: bool, hit_tp3: bool) -> str:
-    """📊 持倉卡片（繁體中文）"""
-    coin_emoji = "🟠" if "BTC" in coin else "🔷" if "ETH" in coin else "🟣"
-    side_emoji = "🟢" if side == "LONG" else "🔴"
-    pnl = ((current - entry) / entry * 100) if side == "LONG" else ((entry - current) / entry * 100)
+    pnl = ((current_price - entry) / entry * 100) if side == "LONG" else ((entry - current_price) / entry * 100)
     pnl_emoji = "🟢" if pnl >= 0 else "🔴"
-    progress = "🥇🏆" if hit_tp3 else "🥇🥈🏆" if hit_tp2 else "🥇🥈" if hit_tp1 else "⏳🏆"
+    
+    # 進度圖示
+    progress = []
+    if hit_tp3:
+        progress.append("🏆TP3✅")
+    elif hit_tp2:
+        progress.append("🥈TP2✅")
+    elif hit_tp1:
+        progress.append("🥇TP1✅")
+    else:
+        progress.append("⏳等待")
     
     return (
-        f"{coin_emoji} *#{coin}* · {side_emoji} {side} · {score}分\n"
-        f"{' ACTIVE · 持倉中' if status == 'ACTIVE' else status}\n"
-        f"✅ 當前 `{current:.4f}` {pnl_emoji}{pnl:+.2f}%\n"
-        f"🟢 進場 `{entry:.4f}`\n"
-        f"🔴 止損 `{sl:.4f}`\n"
-        f"🥇 TP1 `{tp1:.4f}`\n"
-        f"🥈 TP2 `{tp2:.4f}`\n"
-        f"🏆 TP3 `{tp3:.4f}`\n"
-        f"進度 {progress}"
+        f"📊 *{coin} 持倉更新*\n"
+        f"────────────\n"
+        f"方向：{direction}\n"
+        f"當前：`{current_price:.4f}` {pnl_emoji}{pnl:+.1f}%\n"
+        f"進場：`{entry:.4f}`\n"
+        f"\n"
+        f"🎯 止盈進度：{' → '.join(progress)}\n"
+        f"  TP1 `{tp1:.4f}`{'✅' if hit_tp1 else ''}\n"
+        f"  TP2 `{tp2:.4f}`{'✅' if hit_tp2 else ''}\n"
+        f"  TP3 `{tp3:.4f}`{'✅' if hit_tp3 else ''}\n"
+        f"\n"
+        f"🛑 止損：`{sl:.4f}`"
     )
 
 # ─────────────────────────────────────────────────────────
-# 3. 數據抓取（快速版）
+# 3. 數據抓取
 # ─────────────────────────────────────────────────────────
 def fetch_price(instId: str) -> float:
     now = time.time()
@@ -325,7 +366,7 @@ def generate_signal(instId: str, df):
     return max(signals, key=lambda x: x["score"]) if signals else None
 
 # ─────────────────────────────────────────────────────────
-# 6. SignalTracker 類
+# 6. SignalTracker 類（增強通知版）
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
@@ -370,6 +411,7 @@ class SignalTracker:
             self._save()
     
     def check_all(self):
+        """🔄 檢查所有訊號並發送通知"""
         self.transitions = 0
         to_remove = []
         
@@ -382,6 +424,7 @@ class SignalTracker:
         self._save()
     
     def _check_one(self, key: str, sig: dict) -> bool:
+        """🔍 檢查單一訊號，發送 TP/SL 通知"""
         try:
             price = fetch_price(sig["instId"])
             if price <= 0:
@@ -396,7 +439,7 @@ class SignalTracker:
             # PENDING: 等待進場
             if status == "PENDING":
                 if time.time() > sig["expires"]:
-                    send_tg(f"⏰ *{coin} 訊號過期*")
+                    send_tg(f"⏰ *{coin} 訊號過期*\n進場 `{entry:.4f}` 未觸發")
                     self.transitions += 1
                     return True
                 
@@ -418,7 +461,7 @@ class SignalTracker:
             def _dev(t):
                 return abs(price - t) / t * 100
             
-            # SL 觸發
+            # 🔴 SL 觸發
             sl_hit = (side == "LONG" and price <= sl) or (side == "SHORT" and price >= sl)
             if sl_hit or (_dev(sl) > 0.003 and ((side == "LONG" and price < sl) or (side == "SHORT" and price > sl))):
                 is_be = status in ("BE", "TRAIL") and abs(sl - entry) < entry * 0.0001
@@ -428,45 +471,78 @@ class SignalTracker:
                 self.transitions += 1
                 return True
             
-            # TP3 觸發
+            # 🏆 TP3 觸發
             tp3_hit = (side == "LONG" and price >= tp3) or (side == "SHORT" and price <= tp3)
             if (tp3_hit or _dev(tp3) > 0.003) and not sig.get("hit_tp3"):
                 pnl = ((tp3 - entry) / entry * 100) if side == "LONG" else ((entry - tp3) / entry * 100)
-                send_tg(_format_tp_alert(coin, side, "TP3", tp3, entry, pnl, 4.0))
+                send_tg(_format_tp_alert(coin, side, "TP3", tp3, entry, sl, pnl, 4.0))
                 _record_trade(coin, side, entry, tp3, "TP3", sig["score"])
                 self.transitions += 1
                 return True
             
-            # TP2 觸發
+            # 🥈 TP2 觸發
             tp2_hit = (side == "LONG" and price >= tp2) or (side == "SHORT" and price <= tp2)
             if (tp2_hit or _dev(tp2) > 0.003) and not sig.get("hit_tp2"):
                 sig["hit_tp2"] = True
-                sig["sl"] = tp1
+                sig["sl"] = tp1  # 移動止損到 TP1
                 sig["status"] = "TRAIL"
                 self._save()
+                
                 pnl = ((tp2 - entry) / entry * 100) if side == "LONG" else ((entry - tp2) / entry * 100)
-                send_tg(_format_tp_alert(coin, side, "TP2", tp2, entry, pnl, 2.5))
+                send_tg(_format_tp_alert(coin, side, "TP2", tp2, entry, sl, pnl, 2.5))
                 _record_trade(coin, side, entry, tp2, "TP2", sig["score"])
                 self.transitions += 1
                 return False
             
-            # TP1 觸發
+            # 🥇 TP1 觸發
             tp1_hit = (side == "LONG" and price >= tp1) or (side == "SHORT" and price <= tp1)
             if (tp1_hit or _dev(tp1) > 0.003) and not sig.get("hit_tp1"):
                 sig["hit_tp1"] = True
-                sig["sl"] = entry
+                sig["sl"] = entry  # 移動止損到進場價（保本）
                 sig["status"] = "BE"
                 self._save()
-                send_tg(_format_tp_alert(coin, side, "TP1", tp1, entry, 0.0, 1.0))
+                
+                send_tg(_format_tp_alert(coin, side, "TP1", tp1, entry, sl, 0.0, 1.0))
                 _record_trade(coin, side, entry, tp1, "TP1", sig["score"])
                 self.transitions += 1
                 return False
             
             return False
-        except:
+        except Exception as e:
+            logging.error(f"❌ check_one [{key}] 錯誤: {e}")
             return False
     
+    def send_position_updates(self):
+        """📊 發送所有持倉進度更新"""
+        updates = []
+        for key, sig in self.signals.items():
+            if sig["status"] in ("ACTIVE", "BE", "TRAIL"):
+                price = fetch_price(sig["instId"])
+                if price > 0:
+                    coin = sig["instId"].split("-")[0]
+                    msg = _format_position_update(
+                        coin=coin,
+                        side=sig["side"],
+                        current_price=price,
+                        entry=sig["entry"],
+                        sl=sig["sl"],
+                        tp1=sig["tp1"],
+                        tp2=sig["tp2"],
+                        tp3=sig["tp3"],
+                        hit_tp1=sig.get("hit_tp1", False),
+                        hit_tp2=sig.get("hit_tp2", False),
+                        hit_tp3=sig.get("hit_tp3", False)
+                    )
+                    updates.append(msg)
+        
+        if updates:
+            # 合併所有持倉更新
+            full_msg = "\n\n".join(updates)
+            send_tg(full_msg)
+            logging.info(f"📊 已發送 {len(updates)} 筆持倉更新")
+    
     def get_position_stats(self) -> str:
+        """📋 獲取持倉統計"""
         positions = [
             {**sig, "current_price": fetch_price(sig["instId"])}
             for sig in self.signals.values()
@@ -477,42 +553,30 @@ class SignalTracker:
         
         msg = f"📊 *追蹤中訊號 ({len(positions)} 筆)*\n" + "═" * 30 + "\n\n"
         for i, p in enumerate(positions):
-            msg += _format_position_card(
-                coin=p["instId"].split("-")[0],
-                side=p["side"],
-                score=p.get("score", 0),
-                current=p.get("current_price", p["entry"]),
-                entry=p["entry"],
-                sl=p["sl"],
-                tp1=p["tp1"],
-                tp2=p["tp2"],
-                tp3=p["tp3"],
-                status=p["status"],
-                hit_tp1=p.get("hit_tp1", False),
-                hit_tp2=p.get("hit_tp2", False),
-                hit_tp3=p.get("hit_tp3", False)
+            coin_emoji = "🟠" if "BTC" in p["instId"] else "🔷" if "ETH" in p["instId"] else "🟣"
+            side_emoji = "🟢" if p["side"] == "LONG" else "🔴"
+            pnl = ((p["current_price"] - p["entry"]) / p["entry"] * 100) if p["side"] == "LONG" else ((p["entry"] - p["current_price"]) / p["entry"] * 100)
+            pnl_emoji = "🟢" if pnl >= 0 else "🔴"
+            progress = "🥇" if p.get("hit_tp3") else "🥇🥈🏆" if p.get("hit_tp2") else "🥇🥈" if p.get("hit_tp1") else "⏳"
+            
+            msg += (
+                f"{coin_emoji} *#{p['instId'].split('-')[0]}* · {side_emoji} {p['side']} · {p.get('score', 0)}分\n"
+                f"{' ACTIVE · 持倉中' if p['status'] == 'ACTIVE' else p['status']}\n"
+                f"✅ 當前 `{p['current_price']:.4f}` {pnl_emoji}{pnl:+.2f}%\n"
+                f"🟢 進場 `{p['entry']:.4f}`\n"
+                f"🔴 止損 `{p['sl']:.4f}`\n"
+                f"🥇 TP1 `{p['tp1']:.4f}`\n"
+                f"🥈 TP2 `{p['tp2']:.4f}`\n"
+                f"🏆 TP3 `{p['tp3']:.4f}`\n"
+                f"進度 {progress}"
             )
             if i < len(positions) - 1:
                 msg += "\n\n" + "─" * 30 + "\n\n"
         return msg
-    
-    def status_summary(self) -> str:
-        items = list(self.signals.values())
-        if not items:
-            return "📭 *目前無追蹤中訊號*\n\n🔄 系統持續掃描中"
-        
-        lines = [f"📋 *追蹤中訊號 ({len(items)} 筆)*", "────────────"]
-        for sig in items[:5]:
-            coin = sig["instId"].split("-")[0]
-            arrow = "🟢" if sig["side"] == "LONG" else "🔴"
-            price = fetch_price(sig["instId"])
-            pnl = ((price - sig["entry"]) / sig["entry"] * 100) if price > 0 and sig["status"] != "PENDING" else 0
-            lines.append(f"{arrow} *{coin}* {sig['status']} `{pnl:+.1f}%`")
-        lines.append("────────────\n🤖 Alpha Oracle Pro 持續監控中")
-        return "\n".join(lines)
 
 def _record_trade(coin: str, side: str, entry: float, close_price: float, 
                   close_type: str, score: int):
+    """📝 記錄交易歷史"""
     is_win = close_type in ("TP1", "TP2", "TP3")
     is_be = close_type == "BE"
     pnl = ((close_price - entry) / entry * 100) if side == "LONG" else ((entry - close_price) / entry * 100)
@@ -538,13 +602,15 @@ def _record_trade(coin: str, side: str, entry: float, close_price: float,
         history.append(trade)
         with open(TRADE_HISTORY_FILE, "w") as f:
             json.dump(history, f, indent=2)
-    except:
-        pass
+        logging.info(f"📝 記錄交易: {coin} {close_type}")
+    except Exception as e:
+        logging.error(f"❌ 記錄交易失敗: {e}")
 
 # ─────────────────────────────────────────────────────────
-# 7. 主掃描邏輯（快速版）
+# 7. 主掃描邏輯
 # ─────────────────────────────────────────────────────────
 def run_scan(tracker: SignalTracker) -> int:
+    """🔍 執行掃描"""
     logging.info("🚀 開始掃描...")
     sent = 0
     
@@ -584,13 +650,15 @@ def run_scan(tracker: SignalTracker) -> int:
                 )
                 tracker.add(signal, active=in_zone and price > 0)
                 sent += 1
-        except:
+        except Exception as e:
+            logging.error(f"[{instId}] 掃描失敗: {e}")
             continue
     
+    # 🔹 檢查既有訊號（會自動發送 TP/SL 通知）
     tracker.check_all()
     
-    if tracker.transitions > 0 or tracker.signals:
-        send_tg(tracker.status_summary())
+    # 🔹 發送持倉進度更新
+    tracker.send_position_updates()
     
     logging.info(f"✅ 掃描完成，發送 {sent} 筆訊號")
     return sent
@@ -601,7 +669,7 @@ def run_scan(tracker: SignalTracker) -> int:
 def main():
     try:
         logging.info("=" * 40)
-        logging.info("🤖 Alpha Oracle Pro v10.5 啟動")
+        logging.info("🤖 Alpha Oracle Pro v10.6 啟動")
         logging.info("=" * 40)
         
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
