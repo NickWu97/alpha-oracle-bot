@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v11.1 — SMC/ICT 纯净版
+Alpha Oracle Pro v11.2 — 调试版
 ══════════════════════════════════════════════════════════════════════
 ✨ 功能：
-  ✅ 去除 Flask 依赖（修复 Exit Code 1）
-  ✅ 修复 SMC 循环逻辑（确保能抓取到 OB/FVG）
-  ✅ 严格过滤：只在 OB 或 FVG 区域发送信号
-  ✅ 保留所有高级分析（后台静默计算）
+  ✅ 显示详细扫描日志
+  ✅ 显示为什么没发通知（条件不满足？）
+  ✅ 测试 Telegram 连接
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -37,13 +36,19 @@ def _get_env_int(key, default):
 # 1. 基础配置
 # ─────────────────────────────────────────────────────────
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,  # 🔍 调试模式
     format="%(asctime)s - %(message)s",
     stream=sys.stdout
 )
 
 TG_TOKEN = _get_env("TG_TOKEN")
 CHAT_ID = _get_env("CHAT_ID")
+
+logging.info("=" * 60)
+logging.info("🔍 环境变数检查：")
+logging.info(f"  TG_TOKEN: {'✅ 已设置' if TG_TOKEN else '❌ 未设置'}")
+logging.info(f"  CHAT_ID: {'✅ 已设置' if CHAT_ID else '❌ 未设置'}")
+logging.info("=" * 60)
 
 ALL_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
@@ -57,10 +62,34 @@ _price_cache = {}
 _signal_cooldown = {}
 
 # ─────────────────────────────────────────────────────────
-# 2. 通知系统（简洁版）
+# 2. 测试 Telegram 连接
 # ─────────────────────────────────────────────────────────
+def test_telegram():
+    """🧪 测试 Telegram 连接"""
+    if not TG_TOKEN or not CHAT_ID:
+        logging.error("❌ TG_TOKEN 或 CHAT_ID 未设置！")
+        return False
+    
+    try:
+        msg = "🧪 *Alpha Oracle Pro 测试*\n\n✅ Telegram 连接正常！\n\n请确认您能收到此消息。"
+        r = requests.post(
+            f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
+            json={"chat_id": CHAT_ID, "text": msg, "parse_mode": "Markdown"},
+            timeout=5
+        )
+        if r.status_code == 200:
+            logging.info("✅ Telegram 测试消息发送成功！")
+            return True
+        else:
+            logging.error(f"❌ Telegram API 错误: {r.text}")
+            return False
+    except Exception as e:
+        logging.error(f"❌ Telegram 连接失败: {e}")
+        return False
+
 def send_tg(msg: str, reply_to_id: int = None, buttons: list = None) -> int:
     if not TG_TOKEN or not CHAT_ID:
+        logging.error("❌ 无法发送：TG_TOKEN 或 CHAT_ID 为空")
         return None
     
     payload = {
@@ -83,9 +112,12 @@ def send_tg(msg: str, reply_to_id: int = None, buttons: list = None) -> int:
             timeout=5
         )
         if r.status_code == 200:
+            logging.info("✅ Telegram 消息发送成功")
             return r.json().get("result", {}).get("message_id")
+        else:
+            logging.error(f"❌ Telegram API 错误: {r.text}")
     except Exception as e:
-        logging.error(f"❌ TG 发送失败: {e}")
+        logging.error(f"❌ 发送失败: {e}")
     return None
 
 def _get_order_button(order_id: str) -> list:
@@ -94,10 +126,8 @@ def _get_order_button(order_id: str) -> list:
 def _format_entry_alert(coin: str, side: str, order_id: str, entry: float,
                         sl: float, tp1: float, tp2: float, tp3: float, 
                         score: int, signal_type: str) -> str:
-    """📌 进场通知（简洁版）"""
     direction = "做多 🟢" if side == "LONG" else "做空 🔴"
     grade_emoji = "🔥" if score >= 80 else "✅" if score >= 68 else "⚪"
-    
     sl_pct = (sl - entry) / entry * 100
     
     return (
@@ -120,7 +150,6 @@ def _format_entry_alert(coin: str, side: str, order_id: str, entry: float,
 
 def _format_tp_alert(coin: str, side: str, order_id: str, tp_level: str, price: float, 
                      entry: float, pnl_pct: float, r_mult: float) -> str:
-    """🎯 止盈通知"""
     direction = "做多 🟢" if side == "LONG" else "做空 🔴"
     return (
         f"🎉 *{coin} {tp_level} 达标！*\n"
@@ -133,7 +162,6 @@ def _format_tp_alert(coin: str, side: str, order_id: str, tp_level: str, price: 
 
 def _format_sl_alert(coin: str, side: str, order_id: str, price: float, entry: float, 
                      pnl_pct: float, is_be: bool = False) -> str:
-    """🛑 止损通知"""
     direction = "做多 🟢" if side == "LONG" else "做空 🔴"
     label = "🛡 保本出场" if is_be else "🛑 止损离场"
     r_tag = "`0.0R`" if is_be else "`-1.0R`"
@@ -183,25 +211,16 @@ def fetch_okx_candles(instId: str, tf: str = "15m", limit: int = 100):
 # 4. 高级技术分析（SMC/ICT/OB/FVG）
 # ─────────────────────────────────────────────────────────
 def find_order_blocks(df, lookback: int = 50):
-    """🔍 寻找订单块（OB）- 修复循环逻辑"""
     order_blocks = []
-    
-    # 限制分析范围，避免处理太多历史数据
     limit_idx = max(0, len(df) - lookback)
     
-    # 从新到旧遍历
     for i in range(len(df)-2, limit_idx, -1):
-        if len(order_blocks) >= 3: break # 找到 3 个就停止
+        if len(order_blocks) >= 3: break
         
         current = df[i]
-        prev = df[i+1] # 在 reversed 数组中，+1 是前一根
         
-        # 看涨 OB：大阴线后，价格未跌破其低点
-        if current["c"] < current["o"]: # 阴线
-            # 寻找后续是否有阳线吞没或在此区域停留
-            # 简单逻辑：当前是阴线，且它是最近的一个明显阻力区
+        if current["c"] < current["o"]:
             is_valid = True
-            # 检查后面几根 K 线有没有跌破这个 OB 的低点
             for j in range(i+1, min(i+10, len(df))):
                 if df[j]["l"] < current["l"]:
                     is_valid = False
@@ -209,14 +228,13 @@ def find_order_blocks(df, lookback: int = 50):
             
             if is_valid:
                 order_blocks.append({
-                    "type": "bearish", # 阻力位 OB
+                    "type": "bearish",
                     "high": current["h"],
                     "low": current["l"],
                     "index": i
                 })
         
-        # 看跌 OB：大阳线后，价格未涨破其高点
-        elif current["c"] > current["o"]: # 阳线
+        elif current["c"] > current["o"]:
             is_valid = True
             for j in range(i+1, min(i+10, len(df))):
                 if df[j]["h"] > current["h"]:
@@ -225,7 +243,7 @@ def find_order_blocks(df, lookback: int = 50):
             
             if is_valid:
                 order_blocks.append({
-                    "type": "bullish", # 支撑位 OB
+                    "type": "bullish",
                     "high": current["h"],
                     "low": current["l"],
                     "index": i
@@ -234,7 +252,6 @@ def find_order_blocks(df, lookback: int = 50):
     return order_blocks
 
 def find_fvg(df, lookback: int = 50):
-    """🔍 寻找公允价值缺口（FVG）- 修复循环逻辑"""
     fvgs = []
     limit_idx = max(0, len(df) - lookback)
     
@@ -242,9 +259,8 @@ def find_fvg(df, lookback: int = 50):
         if len(fvgs) >= 3: break
         
         curr = df[i]
-        prev2 = df[i+2] # 前两根
+        prev2 = df[i+2]
         
-        # 看涨 FVG：当前 K 线低点 > 前两根 K 线高点
         if curr["l"] > prev2["h"]:
             fvgs.append({
                 "type": "bullish",
@@ -252,8 +268,6 @@ def find_fvg(df, lookback: int = 50):
                 "bottom": prev2["h"],
                 "index": i
             })
-        
-        # 看跌 FVG：当前 K 线高点 < 前两根 K 线低点
         elif curr["h"] < prev2["l"]:
             fvgs.append({
                 "type": "bearish",
@@ -294,10 +308,9 @@ def calc_rsi(df, period: int = 14) -> float:
     return 100 - (100 / (1 + avg_g / avg_l))
 
 # ─────────────────────────────────────────────────────────
-# 5. 综合评分系统（含 SMC/ICT）
+# 5. 综合评分系统
 # ─────────────────────────────────────────────────────────
 def calc_advanced_score(df, side: str) -> tuple:
-    """📊 高级评分系统（含 OB/FVG）"""
     score = 0
     signals = []
     current_price = df[-1]["c"]
@@ -334,7 +347,6 @@ def calc_advanced_score(df, side: str) -> tuple:
     ob_type = None
     
     for ob in obs:
-        # 检查价格是否在 OB 范围内 (允许 0.1% 误差)
         if ob["low"] * 0.999 <= current_price <= ob["high"] * 1.001:
             if ob["type"] == "bullish" and side == "LONG":
                 in_ob = True
@@ -378,7 +390,7 @@ def calc_advanced_score(df, side: str) -> tuple:
     
     grade = "A+ 极强 🔥" if score >= 85 else "A 强力 ⭐" if score >= 70 else "B+ 观望 ✅"
     
-    return score, grade, signal_type, rsi, st
+    return score, grade, signal_type, rsi, st, in_ob, in_fvg
 
 # ─────────────────────────────────────────────────────────
 # 6. SignalTracker 类
@@ -537,33 +549,42 @@ def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price
     except: pass
 
 # ─────────────────────────────────────────────────────────
-# 7. OKX 主动扫描（只在 OB/FVG 进单）
+# 7. OKX 主动扫描（调试版）
 # ─────────────────────────────────────────────────────────
 def run_okx_scan(tracker: SignalTracker) -> int:
     logging.info("🚀 OKX 开始扫描（SMC/ICT 分析）...")
     sent = 0
+    skipped_no_ob_fvg = 0
     
     for instId in ALL_COINS:
         if sent >= MAX_SIGNALS: break
         key_prefix = f"{instId}_ALL"
-        if key_prefix in _signal_cooldown and time.time() - _signal_cooldown[key_prefix] < 2 * 3600: continue
+        if key_prefix in _signal_cooldown and time.time() - _signal_cooldown[key_prefix] < 2 * 3600: 
+            logging.info(f"⏭️  {instId} 冷却中，跳过")
+            continue
         
         try:
             current_price = fetch_okx_price(instId)
-            if current_price <= 0: continue
+            if current_price <= 0: 
+                logging.warning(f"⚠️  {instId} 无法获取价格")
+                continue
             
             df = fetch_okx_candles(instId)
-            if not df: continue
+            if not df: 
+                logging.warning(f"⚠️  {instId} 无法获取 K 线")
+                continue
             
-            # 🔹 高级评分（含 OB/FVG）
+            logging.info(f"\n📊 分析 {instId} @ {current_price}...")
+            
             best_signal = None
             best_score = 0
             
             for side in ["LONG", "SHORT"]:
-                score, grade, signal_type, rsi, st = calc_advanced_score(df, side)
+                score, grade, signal_type, rsi, st, in_ob, in_fvg = calc_advanced_score(df, side)
+                
+                logging.info(f"  {side}: 评分={score}, 信号={signal_type}, RSI={rsi:.1f}, OB={in_ob}, FVG={in_fvg}")
                 
                 # 🔴 核心逻辑：只在 OB 或 FVG 区域进单
-                # 如果评分达标，且信号类型包含 OB 或 FVG
                 if score >= SCORE_THRESHOLD and ("OB" in signal_type or "FVG" in signal_type):
                     if score > best_score:
                         best_score = score
@@ -583,6 +604,14 @@ def run_okx_scan(tracker: SignalTracker) -> int:
                             "expires": time.time() + SIGNAL_EXPIRE_HOURS * 3600,
                             "source": "OKX"
                         }
+                else:
+                    skipped_no_ob_fvg += 1
+                    reason = []
+                    if score < SCORE_THRESHOLD:
+                        reason.append(f"评分不足 ({score}<{SCORE_THRESHOLD})")
+                    if not in_ob and not in_fvg:
+                        reason.append("不在 OB/FVG 区域")
+                    logging.info(f"    ❌ 跳过: {', '.join(reason)}")
             
             if best_signal:
                 _signal_cooldown[key_prefix] = time.time()
@@ -591,16 +620,24 @@ def run_okx_scan(tracker: SignalTracker) -> int:
                                           best_signal["tp1"], best_signal["tp2"], best_signal["tp3"], 
                                           best_signal["score"], best_signal["signal_type"])
                 msg_id = send_tg(msg)
-                tracker.add(best_signal, active=True, msg_id=msg_id)
-                sent += 1
-                logging.info(f"✅ {instId} {best_signal['side']} {best_signal['signal_type']} 评分:{best_score}")
+                if msg_id:
+                    tracker.add(best_signal, active=True, msg_id=msg_id)
+                    sent += 1
+                    logging.info(f"✅ {instId} {best_signal['side']} {best_signal['signal_type']} 评分:{best_score} - 已发送通知")
+            else:
+                logging.info(f"  ⚠️  {instId} 无符合条件的信号")
         
         except Exception as e:
-            logging.error(f"[{instId}] OKX 扫描失败: {e}")
+            logging.error(f"[{instId}] 扫描失败: {e}")
             continue
     
+    logging.info(f"\n{'='*60}")
+    logging.info(f"📊 扫描总结：")
+    logging.info(f"  发送信号：{sent} 笔")
+    logging.info(f"  跳过（无 OB/FVG）：{skipped_no_ob_fvg} 次")
+    logging.info(f"{'='*60}")
+    
     tracker.check_all()
-    logging.info(f"✅ OKX 扫描完成，发送 {sent} 笔讯号")
     return sent
 
 # ─────────────────────────────────────────────────────────
@@ -610,23 +647,25 @@ def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "okx"
     
     try:
+        # 🔍 先测试 Telegram 连接
+        if mode == "test":
+            if test_telegram():
+                logging.info("✅ Telegram 测试成功！请检查您的 Telegram。")
+            else:
+                logging.error("❌ Telegram 测试失败！请检查 TG_TOKEN 和 CHAT_ID。")
+            return
+        
         logging.info("=" * 60)
-        logging.info("🤖 Alpha Oracle Pro v11.1 SMC/ICT 纯净版启动")
-        logging.info("=" * 60)
-        logging.info("✨ 后台分析：OB + FVG + SMC + ICT + PA + SNR")
-        logging.info("🎯 进单条件：只在 OB 或 FVG 区域")
+        logging.info("🤖 Alpha Oracle Pro v11.2 调试版启动")
         logging.info("=" * 60)
         
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
         
         if mode == "okx":
             run_okx_scan(tracker)
-        
         elif mode == "check":
             tracker.check_all()
-            
         else:
-            logging.info("默认执行 OKX 扫描...")
             run_okx_scan(tracker)
     
     except Exception as e:
