@@ -105,5 +105,27 @@
     "entry_msg_id": 2208,
     "activated_at": 1777055298.7833915,
     "pending_trigger": null
+  },
+  "BTC-USDT-SWAP_LONG_1777061258-03534FE6": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 77532.1,
+    "sl": 77258.1143,
+    "tp1": 77806.0857,
+    "tp2": 78217.0643,
+    "tp3": 78628.0429,
+    "score": 70,
+    "grade": "B+ 合格",
+    "created": 1777061258.9705539,
+    "expires": 1777147658.970554,
+    "order_id": "1777061258-03534FE6",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "entry_msg_id": 2209,
+    "activated_at": 1777061258.9707105,
+    "pending_trigger": null
   }
 }
