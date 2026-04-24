@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.8 — 訂單追蹤增強版 (修復版 + 線層回覆)
+Alpha Oracle Pro v10.8 — 訂單追蹤增強版 (台灣時間版)
 ══════════════════════════════════════════════════════════════════════
 ✨ 功能：
   ✅ 訂單編號正確顯示
   ✅ 止損顯示具體百分比（-X.X%）
   ✅ 線層回覆功能（TP/SL 回覆在進場通知下方）
   ✅ 價格同步驗證（與 OKX 即時價格對齊）
+  ✅ 台灣時間顯示（UTC+8）
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -17,7 +18,7 @@ import logging
 import time
 import sys
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta  # 🔹 新增 timedelta
 
 # ─────────────────────────────────────────────────────────
 # 🔧 環境變數安全解析
@@ -57,7 +58,14 @@ _price_cache = {}
 _signal_cooldown = {}
 
 # ─────────────────────────────────────────────────────────
-# 2. 通知系統（線層回覆版）
+# 🔹 新增：台灣時間輔助函數
+# ─────────────────────────────────────────────────────────
+def get_tw_time() -> str:
+    """🕐 獲取台灣時間字串"""
+    return (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S TW")
+
+# ─────────────────────────────────────────────────────────
+# 2. 通知系統（線層回覆版 + 台灣時間）
 # ─────────────────────────────────────────────────────────
 def send_tg(msg: str, parse_mode: str = "Markdown", reply_to_id: int = None, buttons: list = None) -> int:
     """
@@ -106,11 +114,13 @@ def _get_order_button(order_id: str) -> list:
 
 def _format_entry_alert(coin: str, side: str, order_id: str, price: float, entry: float,
                         sl: float, tp1: float, tp2: float, tp3: float, score: int) -> str:
-    """📌 進場通知（含訂單編號 + 時間戳 + 止損百分比）"""
+    """📌 進場通知（含訂單編號 + 台灣時間 + 止損百分比）"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
     grade = "🔥" if score >= 80 else "✅" if score >= 68 else "⚪"
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    
+    # 🔹 改為台灣時間
+    timestamp = get_tw_time()
     
     tp1_pct = (tp1 - entry) / entry * 100
     tp2_pct = (tp2 - entry) / entry * 100
@@ -121,7 +131,7 @@ def _format_entry_alert(coin: str, side: str, order_id: str, price: float, entry
         f"{emoji} *{coin} 進場提醒* {grade}\n"
         f"────────────\n"
         f"🆔 訂單編號：`{order_id}`\n"
-        f"⏰ 時間：{timestamp}\n"
+        f"⏰ 時間：{timestamp}\n"  # 🔹 現在顯示台灣時間
         f"方向：{direction}\n"
         f"進場價：`{entry:.4f}`\n"
         f"當前價：`{price:.4f}`\n"
@@ -139,16 +149,18 @@ def _format_entry_alert(coin: str, side: str, order_id: str, price: float, entry
 
 def _format_tp_alert(coin: str, side: str, order_id: str, tp_level: str, price: float, 
                      entry: float, sl: float, pnl_pct: float, r_mult: float) -> str:
-    """🎯 止盈通知（含訂單編號 + 時間戳）"""
+    """🎯 止盈通知（含訂單編號 + 台灣時間）"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    
+    # 🔹 改為台灣時間
+    timestamp = get_tw_time()
     
     return (
         f"🎯 *{coin} {tp_level} 達標！*\n"
         f"────────────\n"
         f"🆔 訂單編號：`{order_id}`\n"
-        f"⏰ 時間：{timestamp}\n"
+        f"⏰ 時間：{timestamp}\n"  # 🔹 台灣時間
         f"方向：{direction}\n"
         f"觸發價：`{price:.4f}`\n"
         f"獲利：`+{pnl_pct:.1f}%` (`+{r_mult}R`)\n"
@@ -160,18 +172,20 @@ def _format_tp_alert(coin: str, side: str, order_id: str, tp_level: str, price: 
 
 def _format_sl_alert(coin: str, side: str, order_id: str, price: float, entry: float, 
                      pnl_pct: float, is_be: bool = False) -> str:
-    """🛑 止損通知（含訂單編號 + 時間戳 + 具體百分比）"""
+    """🛑 止損通知（含訂單編號 + 台灣時間 + 具體百分比）"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
     label = "🔒 保本出場" if is_be else "❌ 止損離場"
     r_tag = "`0.0R`" if is_be else "`-1.0R`"
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    
+    # 🔹 改為台灣時間
+    timestamp = get_tw_time()
     
     return (
         f"{label} *{coin}*\n"
         f"────────────\n"
         f"🆔 訂單編號：`{order_id}`\n"
-        f"⏰ 時間：{timestamp}\n"
+        f"⏰ 時間：{timestamp}\n"  # 🔹 台灣時間
         f"方向：{direction}\n"
         f"觸發價：`{price:.4f}`\n"
         f"結果：`{pnl_pct:+.1f}%` {r_tag}\n"  # 🔹 顯示具體百分比
@@ -693,8 +707,8 @@ def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price
     pnl = ((close_price - entry) / entry * 100) if side == "LONG" else ((entry - close_price) / entry * 100)
     
     trade = {
-        "time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
-        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "time": (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M"),  # 🔹 台灣時間
+        "date": (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d"),  # 🔹 台灣時間
         "order_id": order_id,
         "coin": coin,
         "side": side,
@@ -807,7 +821,7 @@ def run_scan(tracker: SignalTracker) -> int:
 def main():
     try:
         logging.info("=" * 40)
-        logging.info("🤖 Alpha Oracle Pro v10.8 線層回覆版啟動")
+        logging.info("🤖 Alpha Oracle Pro v10.8 台灣時間版啟動")
         logging.info("=" * 40)
         
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
