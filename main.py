@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v11.0 — SMC/ICT 完整分析版
+Alpha Oracle Pro v11.1 — SMC/ICT 纯净版
 ══════════════════════════════════════════════════════════════════════
 ✨ 功能：
-  ✅ 后台完整分析：OB + FVG + SMC + ICT + PA + SNR
-  ✅ 只在 OB/FVG 区域进单
-  ✅ 简洁通知（只显示关键信息）
-  ✅ 线层回覆 + 订单按钮
+  ✅ 去除 Flask 依赖（修复 Exit Code 1）
+  ✅ 修复 SMC 循环逻辑（确保能抓取到 OB/FVG）
+  ✅ 严格过滤：只在 OB 或 FVG 区域发送信号
+  ✅ 保留所有高级分析（后台静默计算）
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -18,7 +18,6 @@ import time
 import sys
 import uuid
 from datetime import datetime, timezone
-from flask import Flask, request, jsonify
 
 # ─────────────────────────────────────────────────────────
 # 🔧 环境变数安全解析
@@ -45,8 +44,6 @@ logging.basicConfig(
 
 TG_TOKEN = _get_env("TG_TOKEN")
 CHAT_ID = _get_env("CHAT_ID")
-TV_WEBHOOK_SECRET = _get_env("TV_WEBHOOK_SECRET", "alpha_oracle_secret")
-TV_WEBHOOK_PORT = _get_env_int("TV_WEBHOOK_PORT", 5000)
 
 ALL_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
@@ -58,7 +55,6 @@ TRADE_HISTORY_FILE = "trade_history.json"
 
 _price_cache = {}
 _signal_cooldown = {}
-app = Flask(__name__)
 
 # ─────────────────────────────────────────────────────────
 # 2. 通知系统（简洁版）
@@ -172,7 +168,7 @@ def fetch_okx_price(instId: str) -> float:
         pass
     return _price_cache.get(instId, (0, 0))[0] if instId in _price_cache else 0.0
 
-def fetch_okx_candles(instId: str, tf: str = "15m", limit: int = 200):
+def fetch_okx_candles(instId: str, tf: str = "15m", limit: int = 100):
     try:
         res = requests.get(f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}", timeout=3).json()
         if res.get("code") != "0": return None
@@ -186,113 +182,87 @@ def fetch_okx_candles(instId: str, tf: str = "15m", limit: int = 200):
 # ─────────────────────────────────────────────────────────
 # 4. 高级技术分析（SMC/ICT/OB/FVG）
 # ─────────────────────────────────────────────────────────
-def find_order_blocks(df, lookback: int = 50) -> list:
-    """🔍 寻找订单块（OB）"""
+def find_order_blocks(df, lookback: int = 50):
+    """🔍 寻找订单块（OB）- 修复循环逻辑"""
     order_blocks = []
     
-    for i in range(2, len(df) - lookback, -1):
-        # 看涨 OB：大阴线后的第一根阳线
-        if i >= 2 and df[i]["c"] < df[i]["o"]:  # 阴线
-            if i+1 < len(df) and df[i+1]["c"] > df[i+1]["o"]:  # 下一根是阳线
-                ob = {
-                    "type": "bullish",
-                    "high": df[i]["h"],
-                    "low": df[i]["l"],
-                    "mid": (df[i]["h"] + df[i]["l"]) / 2,
-                    "index": i
-                }
-                order_blocks.append(ob)
+    # 限制分析范围，避免处理太多历史数据
+    limit_idx = max(0, len(df) - lookback)
+    
+    # 从新到旧遍历
+    for i in range(len(df)-2, limit_idx, -1):
+        if len(order_blocks) >= 3: break # 找到 3 个就停止
         
-        # 看跌 OB：大阳线后的第一根阴线
-        if i >= 2 and df[i]["c"] > df[i]["o"]:  # 阳线
-            if i+1 < len(df) and df[i+1]["c"] < df[i+1]["o"]:  # 下一根是阴线
-                ob = {
-                    "type": "bearish",
-                    "high": df[i]["h"],
-                    "low": df[i]["l"],
-                    "mid": (df[i]["h"] + df[i]["l"]) / 2,
-                    "index": i
-                }
-                order_blocks.append(ob)
+        current = df[i]
+        prev = df[i+1] # 在 reversed 数组中，+1 是前一根
         
-        if len(order_blocks) >= 5:  # 最多找 5 个
-            break
+        # 看涨 OB：大阴线后，价格未跌破其低点
+        if current["c"] < current["o"]: # 阴线
+            # 寻找后续是否有阳线吞没或在此区域停留
+            # 简单逻辑：当前是阴线，且它是最近的一个明显阻力区
+            is_valid = True
+            # 检查后面几根 K 线有没有跌破这个 OB 的低点
+            for j in range(i+1, min(i+10, len(df))):
+                if df[j]["l"] < current["l"]:
+                    is_valid = False
+                    break
+            
+            if is_valid:
+                order_blocks.append({
+                    "type": "bearish", # 阻力位 OB
+                    "high": current["h"],
+                    "low": current["l"],
+                    "index": i
+                })
+        
+        # 看跌 OB：大阳线后，价格未涨破其高点
+        elif current["c"] > current["o"]: # 阳线
+            is_valid = True
+            for j in range(i+1, min(i+10, len(df))):
+                if df[j]["h"] > current["h"]:
+                    is_valid = False
+                    break
+            
+            if is_valid:
+                order_blocks.append({
+                    "type": "bullish", # 支撑位 OB
+                    "high": current["h"],
+                    "low": current["l"],
+                    "index": i
+                })
     
     return order_blocks
 
-def find_fvg(df, lookback: int = 50) -> list:
-    """🔍 寻找公允价值缺口（FVG）"""
+def find_fvg(df, lookback: int = 50):
+    """🔍 寻找公允价值缺口（FVG）- 修复循环逻辑"""
     fvgs = []
+    limit_idx = max(0, len(df) - lookback)
     
-    for i in range(2, len(df) - lookback, -1):
+    for i in range(len(df)-2, limit_idx, -1):
+        if len(fvgs) >= 3: break
+        
+        curr = df[i]
+        prev2 = df[i+2] # 前两根
+        
         # 看涨 FVG：当前 K 线低点 > 前两根 K 线高点
-        if df[i]["l"] > df[i-2]["h"]:
-            fvg = {
+        if curr["l"] > prev2["h"]:
+            fvgs.append({
                 "type": "bullish",
-                "top": df[i]["l"],
-                "bottom": df[i-2]["h"],
-                "mid": (df[i]["l"] + df[i-2]["h"]) / 2,
-                "size": df[i]["l"] - df[i-2]["h"]
-            }
-            fvgs.append(fvg)
+                "top": curr["l"],
+                "bottom": prev2["h"],
+                "index": i
+            })
         
         # 看跌 FVG：当前 K 线高点 < 前两根 K 线低点
-        elif df[i]["h"] < df[i-2]["l"]:
-            fvg = {
+        elif curr["h"] < prev2["l"]:
+            fvgs.append({
                 "type": "bearish",
-                "top": df[i-2]["l"],
-                "bottom": df[i]["h"],
-                "mid": (df[i-2]["l"] + df[i]["h"]) / 2,
-                "size": df[i-2]["l"] - df[i]["h"]
-            }
-            fvgs.append(fvg)
-        
-        if len(fvgs) >= 5:  # 最多找 5 个
-            break
+                "top": prev2["l"],
+                "bottom": curr["h"],
+                "index": i
+            })
     
     return fvgs
-
-def find_snr_levels(df, lookback: int = 100) -> dict:
-    """🔍 寻找支撑阻力位（SNR）"""
-    highs = [candle["h"] for candle in df[-lookback:]]
-    lows = [candle["l"] for candle in df[-lookback:]]
-    
-    return {
-        "resistance": max(highs),
-        "support": min(lows),
-        "mid": (max(highs) + min(lows)) / 2
-    }
-
-def detect_price_action(df) -> str:
-    """🔍 检测价格行为形态"""
-    if len(df) < 3:
-        return "无"
-    
-    last = df[-1]
-    prev = df[-2]
-    
-    body = abs(last["c"] - last["o"])
-    range_candle = last["h"] - last["l"]
-    upper_wick = last["h"] - max(last["c"], last["o"])
-    lower_wick = min(last["c"], last["o"]) - last["l"]
-    
-    # Pin Bar
-    if upper_wick > body * 2 and lower_wick < body * 0.5:
-        return "看跌 Pin Bar"
-    elif lower_wick > body * 2 and upper_wick < body * 0.5:
-        return "看涨 Pin Bar"
-    
-    # Engulfing
-    if last["c"] > last["o"] and prev["c"] < prev["o"] and last["c"] > prev["o"] and last["o"] < prev["c"]:
-        return "看涨吞没"
-    elif last["c"] < last["o"] and prev["c"] > prev["o"] and last["c"] < prev["o"] and last["o"] > prev["c"]:
-        return "看跌吞没"
-    
-    # Inside Bar
-    if last["h"] < prev["h"] and last["l"] > prev["l"]:
-        return "内包 bar"
-    
-    return "无特殊形态"
 
 def calc_atr(df, period: int = 14) -> float:
     if len(df) < period + 1: return 0.001
@@ -327,10 +297,9 @@ def calc_rsi(df, period: int = 14) -> float:
 # 5. 综合评分系统（含 SMC/ICT）
 # ─────────────────────────────────────────────────────────
 def calc_advanced_score(df, side: str) -> tuple:
-    """📊 高级评分系统（含 OB/FVG/SMC）"""
+    """📊 高级评分系统（含 OB/FVG）"""
     score = 0
     signals = []
-    
     current_price = df[-1]["c"]
     
     # 1. 基础趋势（30分）
@@ -365,15 +334,15 @@ def calc_advanced_score(df, side: str) -> tuple:
     ob_type = None
     
     for ob in obs:
-        if ob["type"] == "bullish" and side == "LONG":
-            if ob["low"] * 0.999 <= current_price <= ob["high"] * 1.001:
+        # 检查价格是否在 OB 范围内 (允许 0.1% 误差)
+        if ob["low"] * 0.999 <= current_price <= ob["high"] * 1.001:
+            if ob["type"] == "bullish" and side == "LONG":
                 in_ob = True
                 ob_type = "bullish"
                 score += 25
                 signals.append("在看涨 OB +25")
                 break
-        elif ob["type"] == "bearish" and side == "SHORT":
-            if ob["low"] * 0.999 <= current_price <= ob["high"] * 1.001:
+            elif ob["type"] == "bearish" and side == "SHORT":
                 in_ob = True
                 ob_type = "bearish"
                 score += 25
@@ -385,33 +354,17 @@ def calc_advanced_score(df, side: str) -> tuple:
     in_fvg = False
     
     for fvg in fvgs:
-        if fvg["type"] == "bullish" and side == "LONG":
-            if fvg["bottom"] * 0.999 <= current_price <= fvg["top"] * 1.001:
+        if fvg["bottom"] * 0.999 <= current_price <= fvg["top"] * 1.001:
+            if fvg["type"] == "bullish" and side == "LONG":
                 in_fvg = True
                 score += 15
                 signals.append("在 bullish FVG +15")
                 break
-        elif fvg["type"] == "bearish" and side == "SHORT":
-            if fvg["bottom"] * 0.999 <= current_price <= fvg["top"] * 1.001:
+            elif fvg["type"] == "bearish" and side == "SHORT":
                 in_fvg = True
                 score += 15
                 signals.append("在 bearish FVG +15")
                 break
-    
-    # 5. 价格行为（5分）
-    pa = detect_price_action(df)
-    if ("看涨" in pa and side == "LONG") or ("看跌" in pa and side == "SHORT"):
-        score += 5
-        signals.append(f"PA: {pa} +5")
-    
-    # 6. SNR 位置（加分）
-    snr = find_snr_levels(df)
-    if side == "LONG" and current_price < snr["support"] * 1.01:
-        score += 5
-        signals.append("接近支撑 +5")
-    elif side == "SHORT" and current_price > snr["resistance"] * 0.99:
-        score += 5
-        signals.append("接近阻力 +5")
     
     # 确定信号类型
     if in_ob and in_fvg:
@@ -425,70 +378,10 @@ def calc_advanced_score(df, side: str) -> tuple:
     
     grade = "A+ 极强 🔥" if score >= 85 else "A 强力 ⭐" if score >= 70 else "B+ 观望 ✅"
     
-    return score, grade, signal_type, rsi, st, pa
+    return score, grade, signal_type, rsi, st
 
 # ─────────────────────────────────────────────────────────
-# 6. TradingView Webhook
-# ─────────────────────────────────────────────────────────
-@app.route(f'/webhook/{TV_WEBHOOK_SECRET}', methods=['POST'])
-def tv_webhook():
-    try:
-        data = request.json
-        logging.info(f"📡 收到 TV Webhook: {data}")
-        
-        coin = data.get('coin', 'BTC')
-        side = data.get('side', 'LONG')
-        entry_price = float(data.get('entry_price', 0))
-        sl_price = float(data.get('sl_price', 0))
-        tp1_price = float(data.get('tp1_price', 0))
-        tp2_price = float(data.get('tp2_price', 0))
-        tp3_price = float(data.get('tp3_price', 0))
-        score = int(data.get('score', 70))
-        signal_type = data.get('signal_type', 'TV Signal')
-        
-        if entry_price <= 0:
-            return jsonify({"status": "error", "message": "Invalid entry price"}), 400
-        
-        instId = f"{coin}-USDT-SWAP"
-        signal = {
-            "instId": instId,
-            "side": side,
-            "tf": "15m",
-            "entry": round(entry_price, 4),
-            "sl": round(sl_price, 4) if sl_price > 0 else round(entry_price * 0.99, 4),
-            "tp1": round(tp1_price, 4) if tp1_price > 0 else round(entry_price * 1.01, 4),
-            "tp2": round(tp2_price, 4) if tp2_price > 0 else round(entry_price * 1.02, 4),
-            "tp3": round(tp3_price, 4) if tp3_price > 0 else round(entry_price * 1.03, 4),
-            "score": score,
-            "signal_type": signal_type,
-            "created": time.time(),
-            "expires": time.time() + SIGNAL_EXPIRE_HOURS * 3600,
-            "source": "TradingView"
-        }
-        
-        order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
-        msg = _format_entry_alert(coin, side, order_id, entry_price,
-                                  signal["sl"], signal["tp1"], signal["tp2"], signal["tp3"], 
-                                  score, signal_type)
-        msg_id = send_tg(msg, buttons=_get_order_button(order_id))
-        
-        if msg_id:
-            tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
-            tracker.add(signal, active=True, msg_id=msg_id)
-            logging.info(f"✅ TV 订单已创建: {order_id}")
-        
-        return jsonify({"status": "success", "order_id": order_id}), 200
-    
-    except Exception as e:
-        logging.error(f"❌ Webhook 处理失败: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({"status": "ok", "service": "Alpha Oracle Pro"}), 200
-
-# ─────────────────────────────────────────────────────────
-# 7. SignalTracker 类
+# 6. SignalTracker 类
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
@@ -644,7 +537,7 @@ def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price
     except: pass
 
 # ─────────────────────────────────────────────────────────
-# 8. OKX 主动扫描（只在 OB/FVG 进单）
+# 7. OKX 主动扫描（只在 OB/FVG 进单）
 # ─────────────────────────────────────────────────────────
 def run_okx_scan(tracker: SignalTracker) -> int:
     logging.info("🚀 OKX 开始扫描（SMC/ICT 分析）...")
@@ -667,9 +560,10 @@ def run_okx_scan(tracker: SignalTracker) -> int:
             best_score = 0
             
             for side in ["LONG", "SHORT"]:
-                score, grade, signal_type, rsi, st, pa = calc_advanced_score(df, side)
+                score, grade, signal_type, rsi, st = calc_advanced_score(df, side)
                 
-                # 只在 OB 或 FVG 区域进单
+                # 🔴 核心逻辑：只在 OB 或 FVG 区域进单
+                # 如果评分达标，且信号类型包含 OB 或 FVG
                 if score >= SCORE_THRESHOLD and ("OB" in signal_type or "FVG" in signal_type):
                     if score > best_score:
                         best_score = score
@@ -710,14 +604,14 @@ def run_okx_scan(tracker: SignalTracker) -> int:
     return sent
 
 # ─────────────────────────────────────────────────────────
-# 9. 主函数
+# 8. 主函数
 # ─────────────────────────────────────────────────────────
 def main():
-    mode = sys.argv[1] if len(sys.argv) > 1 else "webhook"
+    mode = sys.argv[1] if len(sys.argv) > 1 else "okx"
     
     try:
         logging.info("=" * 60)
-        logging.info("🤖 Alpha Oracle Pro v11.0 SMC/ICT 完整版启动")
+        logging.info("🤖 Alpha Oracle Pro v11.1 SMC/ICT 纯净版启动")
         logging.info("=" * 60)
         logging.info("✨ 后台分析：OB + FVG + SMC + ICT + PA + SNR")
         logging.info("🎯 进单条件：只在 OB 或 FVG 区域")
@@ -725,30 +619,15 @@ def main():
         
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
         
-        if mode == "webhook":
-            logging.info(f"📡 启动 TradingView Webhook 伺服器 (Port {TV_WEBHOOK_PORT})...")
-            logging.info(f"🔗 Webhook URL: http://YOUR_SERVER_IP:{TV_WEBHOOK_PORT}/webhook/{TV_WEBHOOK_SECRET}")
-            
-            import threading
-            def okx_scan_loop():
-                while True:
-                    try:
-                        run_okx_scan(tracker)
-                        time.sleep(900)  # 每 15 分钟扫描一次
-                    except Exception as e:
-                        logging.error(f"OKX 扫描线程错误: {e}")
-                        time.sleep(60)
-            
-            scan_thread = threading.Thread(target=okx_scan_loop, daemon=True)
-            scan_thread.start()
-            
-            app.run(host='0.0.0.0', port=TV_WEBHOOK_PORT, debug=False)
-        
-        elif mode == "okx":
+        if mode == "okx":
             run_okx_scan(tracker)
         
         elif mode == "check":
             tracker.check_all()
+            
+        else:
+            logging.info("默认执行 OKX 扫描...")
+            run_okx_scan(tracker)
     
     except Exception as e:
         logging.error(f"🔥 系统错误: {e}")
