@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.9 — 線程回覆 + 按鈕版
+Alpha Oracle Pro v11.0 — SMC/ICT 完整分析版
 ══════════════════════════════════════════════════════════════════════
 ✨ 功能：
-  ✅ 自動線程回覆：TP/SL 通知會回覆在進場訊息下方
-  ✅ 底部互動按鈕：點擊查詢訂單詳情
-  ✅ 精簡通知排版：更直觀的交易資訊
-  ✅ 訊息 ID 持久化：重啟後依然能正確回覆
+  ✅ 后台完整分析：OB + FVG + SMC + ICT + PA + SNR
+  ✅ 只在 OB/FVG 区域进单
+  ✅ 简洁通知（只显示关键信息）
+  ✅ 线层回覆 + 订单按钮
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -18,9 +18,10 @@ import time
 import sys
 import uuid
 from datetime import datetime, timezone
+from flask import Flask, request, jsonify
 
 # ─────────────────────────────────────────────────────────
-# 🔧 環境變數安全解析
+# 🔧 环境变数安全解析
 # ─────────────────────────────────────────────────────────
 def _get_env(key, default=""):
     val = os.getenv(key)
@@ -34,7 +35,7 @@ def _get_env_int(key, default):
         return default
 
 # ─────────────────────────────────────────────────────────
-# 1. 基礎配置
+# 1. 基础配置
 # ─────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
@@ -44,6 +45,8 @@ logging.basicConfig(
 
 TG_TOKEN = _get_env("TG_TOKEN")
 CHAT_ID = _get_env("CHAT_ID")
+TV_WEBHOOK_SECRET = _get_env("TV_WEBHOOK_SECRET", "alpha_oracle_secret")
+TV_WEBHOOK_PORT = _get_env_int("TV_WEBHOOK_PORT", 5000)
 
 ALL_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
@@ -55,17 +58,12 @@ TRADE_HISTORY_FILE = "trade_history.json"
 
 _price_cache = {}
 _signal_cooldown = {}
+app = Flask(__name__)
 
 # ─────────────────────────────────────────────────────────
-# 2. 通知系統（線程回覆 + 按鈕）
+# 2. 通知系统（简洁版）
 # ─────────────────────────────────────────────────────────
 def send_tg(msg: str, reply_to_id: int = None, buttons: list = None) -> int:
-    """
-    📤 發送 Telegram 通知
-    ✅ 支援 reply_to_message_id (實現線程回覆)
-    ✅ 支援 Inline Keyboard (實現底部按鈕)
-    🔄 返回 message_id，以便後續追蹤
-    """
     if not TG_TOKEN or not CHAT_ID:
         return None
     
@@ -91,92 +89,72 @@ def send_tg(msg: str, reply_to_id: int = None, buttons: list = None) -> int:
         if r.status_code == 200:
             return r.json().get("result", {}).get("message_id")
     except Exception as e:
-        logging.error(f"❌ TG 發送失敗: {e}")
-    
+        logging.error(f"❌ TG 发送失败: {e}")
     return None
 
 def _get_order_button(order_id: str) -> list:
-    """🔘 生成訂單查詢按鈕"""
-    return [{
-        "text": f"🔍 查詢訂單 {order_id[-8:]}",
-        "callback_data": f"order_{order_id}"
-    }]
+    return [{"text": f"🔍 查询订单 {order_id[-8:]}", "callback_data": f"order_{order_id}"}]
 
-def _format_entry_alert(coin: str, side: str, order_id: str, price: float, entry: float,
-                        sl: float, tp1: float, tp2: float, tp3: float, score: int) -> str:
-    """📌 進場通知 (精簡版)"""
+def _format_entry_alert(coin: str, side: str, order_id: str, entry: float,
+                        sl: float, tp1: float, tp2: float, tp3: float, 
+                        score: int, signal_type: str) -> str:
+    """📌 进场通知（简洁版）"""
     direction = "做多 🟢" if side == "LONG" else "做空 🔴"
     grade_emoji = "🔥" if score >= 80 else "✅" if score >= 68 else "⚪"
     
+    sl_pct = (sl - entry) / entry * 100
+    
     return (
-        f"🚀 *{coin} 進場提醒* {grade_emoji}\n"
+        f"🚀 *{coin} 进场提醒* {grade_emoji}\n"
         f"──────────\n"
         f"🆔 `{order_id}`\n"
         f"📊 方向：{direction}\n"
-        f"📌 進場：`{entry:.4f}`\n"
+        f"📌 进场：`{entry:.4f}`\n"
+        f"🎯 信号：{signal_type}\n"
+        f"📈 评分：{score}分\n"
+        f"\n"
         f"🎯 TP1：`{tp1:.4f}` (+{(tp1-entry)/entry*100:.1f}%)\n"
         f"🎯 TP2：`{tp2:.4f}` (+{(tp2-entry)/entry*100:.1f}%)\n"
         f"🎯 TP3：`{tp3:.4f}` (+{(tp3-entry)/entry*100:.1f}%)\n"
-        f"🛑 止損：`{sl:.4f}`\n"
         f"\n"
-        f"📝 評分：{score}分"
+        f"🛑 止损：`{sl:.4f}` ({sl_pct:+.1f}%)\n"
+        f"\n"
+        f"💡 到达 TP1 自动保本，到达 TP2 自动锁利"
     )
 
 def _format_tp_alert(coin: str, side: str, order_id: str, tp_level: str, price: float, 
                      entry: float, pnl_pct: float, r_mult: float) -> str:
-    """🎯 止盈通知 (精簡版)"""
+    """🎯 止盈通知"""
     direction = "做多 🟢" if side == "LONG" else "做空 🔴"
     return (
-        f"🎉 *{coin} {tp_level} 達標！*\n"
+        f"🎉 *{coin} {tp_level} 达标！*\n"
         f"──────────\n"
         f"🆔 `{order_id}`\n"
-        f"💰 獲利：`+{pnl_pct:.1f}%` (`{r_mult}R`)\n"
-        f"💡 建議{'平倉 1/3' if tp_level=='TP1' else '平倉 1/3' if tp_level=='TP2' else '全部平倉'}"
+        f"📊 方向：{direction}\n"
+        f"💰 获利：`+{pnl_pct:.1f}%` (`{r_mult}R`)\n"
+        f"\n💡 建议{'平仓 1/3' if tp_level=='TP1' else '平仓 1/3' if tp_level=='TP2' else '全部平仓'}"
     )
 
 def _format_sl_alert(coin: str, side: str, order_id: str, price: float, entry: float, 
                      pnl_pct: float, is_be: bool = False) -> str:
-    """🛑 止損通知 (精簡版)"""
-    label = "🛡 保本出場" if is_be else "🛑 止損離場"
+    """🛑 止损通知"""
+    direction = "做多 🟢" if side == "LONG" else "做空 🔴"
+    label = "🛡 保本出场" if is_be else "🛑 止损离场"
+    r_tag = "`0.0R`" if is_be else "`-1.0R`"
+    
     return (
         f"{label} *{coin}*\n"
         f"──────────\n"
         f"🆔 `{order_id}`\n"
-        f"💰 結果：`{pnl_pct:+.1f}%`\n"
-        f"{'💡 資金安全，等待下一次' if is_be else '⚠️ 遵守風控，勿攤平'}"
-    )
-
-def _format_order_detail(coin: str, side: str, order_id: str, price: float, entry: float,
-                         sl: float, tp1: float, tp2: float, tp3: float,
-                         hit_tp1: bool, hit_tp2: bool, hit_tp3: bool) -> str:
-    """📊 訂單詳情 (點擊按鈕回覆)"""
-    pnl = ((price - entry) / entry * 100) if side == "LONG" else ((entry - price) / entry * 100)
-    direction = "做多 🟢" if side == "LONG" else "做空 🔴"
-    
-    status_parts = []
-    if hit_tp3: status_parts.append("✅ TP3")
-    elif hit_tp2: status_parts.append("✅ TP2")
-    elif hit_tp1: status_parts.append("✅ TP1")
-    else: status_parts.append("⏳ 持倉中")
-    
-    return (
-        f"📊 *訂單詳情*\n"
-        f"──────────\n"
-        f"🆔 `{order_id}`\n"
-        f"📊 {coin} {direction}\n"
-        f"💰 當前：`{price:.4f}` ({pnl:+.1f}%)\n"
-        f"📌 進場：`{entry:.4f}`\n"
-        f"🛑 止損：`{sl:.4f}`\n"
-        f"🎯 目標：{', '.join(status_parts)}\n"
-        f"🎯 TP1：`{tp1:.4f}`\n"
-        f"🎯 TP2：`{tp2:.4f}`\n"
-        f"🎯 TP3：`{tp3:.4f}`"
+        f"📊 方向：{direction}\n"
+        f"💰 结果：`{pnl_pct:+.1f}%` {r_tag}\n"
+        f"\n💡 {'资金安全，等待下一次 💪' if is_be else '遵守风控，勿加码摊平'}"
     )
 
 # ─────────────────────────────────────────────────────────
-# 3. 數據抓取
+# 3. OKX 数据源
 # ─────────────────────────────────────────────────────────
-def fetch_price(instId: str) -> float:
+def fetch_okx_price(instId: str) -> float:
     now = time.time()
     if instId in _price_cache:
         price, t = _price_cache[instId]
@@ -194,20 +172,128 @@ def fetch_price(instId: str) -> float:
         pass
     return _price_cache.get(instId, (0, 0))[0] if instId in _price_cache else 0.0
 
-def fetch_candles(instId: str, tf: str = "15m", limit: int = 100):
+def fetch_okx_candles(instId: str, tf: str = "15m", limit: int = 200):
     try:
         res = requests.get(f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}", timeout=3).json()
         if res.get("code") != "0": return None
         data = res.get("data", [])
-        if len(data) < 30: return None
+        if len(data) < 50: return None
         confirmed = [row for row in data if row[8] == "1"][::-1]
-        return [{"c": float(row[4]), "h": float(row[2]), "l": float(row[3])} for row in confirmed]
+        return [{"c": float(row[4]), "h": float(row[2]), "l": float(row[3]), "o": float(row[1])} for row in confirmed]
     except:
         return None
 
 # ─────────────────────────────────────────────────────────
-# 4. 技術指標
+# 4. 高级技术分析（SMC/ICT/OB/FVG）
 # ─────────────────────────────────────────────────────────
+def find_order_blocks(df, lookback: int = 50) -> list:
+    """🔍 寻找订单块（OB）"""
+    order_blocks = []
+    
+    for i in range(2, len(df) - lookback, -1):
+        # 看涨 OB：大阴线后的第一根阳线
+        if i >= 2 and df[i]["c"] < df[i]["o"]:  # 阴线
+            if i+1 < len(df) and df[i+1]["c"] > df[i+1]["o"]:  # 下一根是阳线
+                ob = {
+                    "type": "bullish",
+                    "high": df[i]["h"],
+                    "low": df[i]["l"],
+                    "mid": (df[i]["h"] + df[i]["l"]) / 2,
+                    "index": i
+                }
+                order_blocks.append(ob)
+        
+        # 看跌 OB：大阳线后的第一根阴线
+        if i >= 2 and df[i]["c"] > df[i]["o"]:  # 阳线
+            if i+1 < len(df) and df[i+1]["c"] < df[i+1]["o"]:  # 下一根是阴线
+                ob = {
+                    "type": "bearish",
+                    "high": df[i]["h"],
+                    "low": df[i]["l"],
+                    "mid": (df[i]["h"] + df[i]["l"]) / 2,
+                    "index": i
+                }
+                order_blocks.append(ob)
+        
+        if len(order_blocks) >= 5:  # 最多找 5 个
+            break
+    
+    return order_blocks
+
+def find_fvg(df, lookback: int = 50) -> list:
+    """🔍 寻找公允价值缺口（FVG）"""
+    fvgs = []
+    
+    for i in range(2, len(df) - lookback, -1):
+        # 看涨 FVG：当前 K 线低点 > 前两根 K 线高点
+        if df[i]["l"] > df[i-2]["h"]:
+            fvg = {
+                "type": "bullish",
+                "top": df[i]["l"],
+                "bottom": df[i-2]["h"],
+                "mid": (df[i]["l"] + df[i-2]["h"]) / 2,
+                "size": df[i]["l"] - df[i-2]["h"]
+            }
+            fvgs.append(fvg)
+        
+        # 看跌 FVG：当前 K 线高点 < 前两根 K 线低点
+        elif df[i]["h"] < df[i-2]["l"]:
+            fvg = {
+                "type": "bearish",
+                "top": df[i-2]["l"],
+                "bottom": df[i]["h"],
+                "mid": (df[i-2]["l"] + df[i]["h"]) / 2,
+                "size": df[i-2]["l"] - df[i]["h"]
+            }
+            fvgs.append(fvg)
+        
+        if len(fvgs) >= 5:  # 最多找 5 个
+            break
+    
+    return fvgs
+
+def find_snr_levels(df, lookback: int = 100) -> dict:
+    """🔍 寻找支撑阻力位（SNR）"""
+    highs = [candle["h"] for candle in df[-lookback:]]
+    lows = [candle["l"] for candle in df[-lookback:]]
+    
+    return {
+        "resistance": max(highs),
+        "support": min(lows),
+        "mid": (max(highs) + min(lows)) / 2
+    }
+
+def detect_price_action(df) -> str:
+    """🔍 检测价格行为形态"""
+    if len(df) < 3:
+        return "无"
+    
+    last = df[-1]
+    prev = df[-2]
+    
+    body = abs(last["c"] - last["o"])
+    range_candle = last["h"] - last["l"]
+    upper_wick = last["h"] - max(last["c"], last["o"])
+    lower_wick = min(last["c"], last["o"]) - last["l"]
+    
+    # Pin Bar
+    if upper_wick > body * 2 and lower_wick < body * 0.5:
+        return "看跌 Pin Bar"
+    elif lower_wick > body * 2 and upper_wick < body * 0.5:
+        return "看涨 Pin Bar"
+    
+    # Engulfing
+    if last["c"] > last["o"] and prev["c"] < prev["o"] and last["c"] > prev["o"] and last["o"] < prev["c"]:
+        return "看涨吞没"
+    elif last["c"] < last["o"] and prev["c"] > prev["o"] and last["c"] < prev["o"] and last["o"] > prev["c"]:
+        return "看跌吞没"
+    
+    # Inside Bar
+    if last["h"] < prev["h"] and last["l"] > prev["l"]:
+        return "内包 bar"
+    
+    return "无特殊形态"
+
 def calc_atr(df, period: int = 14) -> float:
     if len(df) < period + 1: return 0.001
     tr_values = []
@@ -237,20 +323,172 @@ def calc_rsi(df, period: int = 14) -> float:
     if avg_l == 0: return 100.0
     return 100 - (100 / (1 + avg_g / avg_l))
 
-def calc_score(df, side: str) -> tuple:
+# ─────────────────────────────────────────────────────────
+# 5. 综合评分系统（含 SMC/ICT）
+# ─────────────────────────────────────────────────────────
+def calc_advanced_score(df, side: str) -> tuple:
+    """📊 高级评分系统（含 OB/FVG/SMC）"""
     score = 0
+    signals = []
+    
+    current_price = df[-1]["c"]
+    
+    # 1. 基础趋势（30分）
     st = calc_supertrend(df)
-    if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1): score += 60
-    elif st == 0: score += 30
+    if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1):
+        score += 30
+        signals.append("趋势顺向 +30")
+    elif st == 0:
+        score += 15
+        signals.append("震荡 +15")
     
+    # 2. RSI 动量（25分）
     rsi = calc_rsi(df)
-    if side == "LONG": score += 40 if 30 <= rsi <= 50 else (20 if 50 < rsi < 70 else 0)
-    else: score += 40 if 50 <= rsi <= 70 else (20 if 30 < rsi < 50 else 0)
+    if side == "LONG":
+        if 30 <= rsi <= 50:
+            score += 25
+            signals.append(f"RSI 低档 {rsi:.1f} +25")
+        elif 50 < rsi < 70:
+            score += 15
+            signals.append(f"RSI 中性 {rsi:.1f} +15")
+    else:
+        if 50 <= rsi <= 70:
+            score += 25
+            signals.append(f"RSI 高档 {rsi:.1f} +25")
+        elif 30 < rsi < 50:
+            score += 15
+            signals.append(f"RSI 中性 {rsi:.1f} +15")
     
-    return score, "A+" if score >= 85 else "A" if score >= 70 else "B+"
+    # 3. 订单块 OB（25分）
+    obs = find_order_blocks(df)
+    in_ob = False
+    ob_type = None
+    
+    for ob in obs:
+        if ob["type"] == "bullish" and side == "LONG":
+            if ob["low"] * 0.999 <= current_price <= ob["high"] * 1.001:
+                in_ob = True
+                ob_type = "bullish"
+                score += 25
+                signals.append("在看涨 OB +25")
+                break
+        elif ob["type"] == "bearish" and side == "SHORT":
+            if ob["low"] * 0.999 <= current_price <= ob["high"] * 1.001:
+                in_ob = True
+                ob_type = "bearish"
+                score += 25
+                signals.append("在看跌 OB +25")
+                break
+    
+    # 4. FVG（15分）
+    fvgs = find_fvg(df)
+    in_fvg = False
+    
+    for fvg in fvgs:
+        if fvg["type"] == "bullish" and side == "LONG":
+            if fvg["bottom"] * 0.999 <= current_price <= fvg["top"] * 1.001:
+                in_fvg = True
+                score += 15
+                signals.append("在 bullish FVG +15")
+                break
+        elif fvg["type"] == "bearish" and side == "SHORT":
+            if fvg["bottom"] * 0.999 <= current_price <= fvg["top"] * 1.001:
+                in_fvg = True
+                score += 15
+                signals.append("在 bearish FVG +15")
+                break
+    
+    # 5. 价格行为（5分）
+    pa = detect_price_action(df)
+    if ("看涨" in pa and side == "LONG") or ("看跌" in pa and side == "SHORT"):
+        score += 5
+        signals.append(f"PA: {pa} +5")
+    
+    # 6. SNR 位置（加分）
+    snr = find_snr_levels(df)
+    if side == "LONG" and current_price < snr["support"] * 1.01:
+        score += 5
+        signals.append("接近支撑 +5")
+    elif side == "SHORT" and current_price > snr["resistance"] * 0.99:
+        score += 5
+        signals.append("接近阻力 +5")
+    
+    # 确定信号类型
+    if in_ob and in_fvg:
+        signal_type = "OB + FVG 共振 🔥"
+    elif in_ob:
+        signal_type = f"{'看涨' if ob_type == 'bullish' else '看跌'} OB"
+    elif in_fvg:
+        signal_type = "FVG 回补"
+    else:
+        signal_type = "技术面"
+    
+    grade = "A+ 极强 🔥" if score >= 85 else "A 强力 ⭐" if score >= 70 else "B+ 观望 ✅"
+    
+    return score, grade, signal_type, rsi, st, pa
 
 # ─────────────────────────────────────────────────────────
-# 5. SignalTracker 類（核心升級）
+# 6. TradingView Webhook
+# ─────────────────────────────────────────────────────────
+@app.route(f'/webhook/{TV_WEBHOOK_SECRET}', methods=['POST'])
+def tv_webhook():
+    try:
+        data = request.json
+        logging.info(f"📡 收到 TV Webhook: {data}")
+        
+        coin = data.get('coin', 'BTC')
+        side = data.get('side', 'LONG')
+        entry_price = float(data.get('entry_price', 0))
+        sl_price = float(data.get('sl_price', 0))
+        tp1_price = float(data.get('tp1_price', 0))
+        tp2_price = float(data.get('tp2_price', 0))
+        tp3_price = float(data.get('tp3_price', 0))
+        score = int(data.get('score', 70))
+        signal_type = data.get('signal_type', 'TV Signal')
+        
+        if entry_price <= 0:
+            return jsonify({"status": "error", "message": "Invalid entry price"}), 400
+        
+        instId = f"{coin}-USDT-SWAP"
+        signal = {
+            "instId": instId,
+            "side": side,
+            "tf": "15m",
+            "entry": round(entry_price, 4),
+            "sl": round(sl_price, 4) if sl_price > 0 else round(entry_price * 0.99, 4),
+            "tp1": round(tp1_price, 4) if tp1_price > 0 else round(entry_price * 1.01, 4),
+            "tp2": round(tp2_price, 4) if tp2_price > 0 else round(entry_price * 1.02, 4),
+            "tp3": round(tp3_price, 4) if tp3_price > 0 else round(entry_price * 1.03, 4),
+            "score": score,
+            "signal_type": signal_type,
+            "created": time.time(),
+            "expires": time.time() + SIGNAL_EXPIRE_HOURS * 3600,
+            "source": "TradingView"
+        }
+        
+        order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
+        msg = _format_entry_alert(coin, side, order_id, entry_price,
+                                  signal["sl"], signal["tp1"], signal["tp2"], signal["tp3"], 
+                                  score, signal_type)
+        msg_id = send_tg(msg, buttons=_get_order_button(order_id))
+        
+        if msg_id:
+            tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
+            tracker.add(signal, active=True, msg_id=msg_id)
+            logging.info(f"✅ TV 订单已创建: {order_id}")
+        
+        return jsonify({"status": "success", "order_id": order_id}), 200
+    
+    except Exception as e:
+        logging.error(f"❌ Webhook 处理失败: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "ok", "service": "Alpha Oracle Pro"}), 200
+
+# ─────────────────────────────────────────────────────────
+# 7. SignalTracker 类
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
@@ -280,16 +518,11 @@ class SignalTracker:
             "order_id": order_id,
             "status": "ACTIVE" if active else "PENDING",
             "hit_tp1": False, "hit_tp2": False, "hit_tp3": False,
-            "entry_msg_id": msg_id,  # 🔹 儲存 Telegram 訊息 ID
+            "entry_msg_id": msg_id,
             "activated_at": time.time() if active else None,
         }
         self._save()
         return key
-    
-    def update_signal(self, key: str, **kwargs):
-        if key in self.signals:
-            self.signals[key].update(kwargs)
-            self._save()
     
     def remove(self, key: str):
         if key in self.signals:
@@ -305,7 +538,7 @@ class SignalTracker:
     
     def _check_one(self, key: str, sig: dict) -> bool:
         try:
-            price = fetch_price(sig["instId"])
+            price = fetch_okx_price(sig["instId"])
             if price <= 0: return False
             
             coin = sig["instId"].split("-")[0]
@@ -314,13 +547,11 @@ class SignalTracker:
             entry, sl = sig["entry"], sig["sl"]
             tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
             
-            # 獲取進場訊息 ID 用於回覆
             reply_id = sig.get("entry_msg_id")
             
-            # PENDING: 等待進場
             if status == "PENDING":
                 if time.time() > sig["expires"]:
-                    send_tg(f"⏰ *{coin} 訊號過期*\n🆔 `{order_id}`", reply_to_id=reply_id)
+                    send_tg(f"⏰ *{coin} 讯号过期*\n🆔 `{order_id}`", reply_to_id=reply_id)
                     self.transitions += 1
                     return True
                 
@@ -331,11 +562,11 @@ class SignalTracker:
                 if in_zone:
                     sig["status"] = "ACTIVE"
                     sig["activated_at"] = time.time()
-                    # 🔹 發送進場通知並獲取 Message ID
-                    msg = _format_entry_alert(coin, side, order_id, price, entry, sl, tp1, tp2, tp3, sig["score"])
+                    msg = _format_entry_alert(coin, side, order_id, entry, sl, tp1, tp2, tp3, 
+                                            sig["score"], sig.get("signal_type", "OKX"))
                     new_msg_id = send_tg(msg, reply_to_id=reply_id, buttons=_get_order_button(order_id))
                     if new_msg_id:
-                        sig["entry_msg_id"] = new_msg_id  # 🔹 更新最新訊息 ID
+                        sig["entry_msg_id"] = new_msg_id
                         self._save()
                     self.transitions += 1
                 return False
@@ -344,7 +575,6 @@ class SignalTracker:
             
             def _dev(t): return abs(price - t) / t * 100
             
-            # 🔴 嚴格 SL 觸發
             sl_triggered = (side == "LONG" and price <= sl) or (side == "SHORT" and price >= sl)
             if sl_triggered or (_dev(sl) > 0.003):
                 is_be = status in ("BE", "TRAIL") and abs(sl - entry) < entry * 0.0001
@@ -355,7 +585,6 @@ class SignalTracker:
                 self.transitions += 1
                 return True
             
-            # 🏆 TP3
             tp3_triggered = (side == "LONG" and price >= tp3) or (side == "SHORT" and price <= tp3)
             if (tp3_triggered or _dev(tp3) > 0.003) and not sig.get("hit_tp3"):
                 pnl = ((tp3 - entry) / entry * 100) if side == "LONG" else ((entry - tp3) / entry * 100)
@@ -365,7 +594,6 @@ class SignalTracker:
                 self.transitions += 1
                 return True
             
-            # 🥈 TP2
             tp2_triggered = (side == "LONG" and price >= tp2) or (side == "SHORT" and price <= tp2)
             if (tp2_triggered or _dev(tp2) > 0.003) and not sig.get("hit_tp2"):
                 sig["hit_tp2"] = True
@@ -379,7 +607,6 @@ class SignalTracker:
                 self.transitions += 1
                 return False
             
-            # 🥇 TP1
             tp1_triggered = (side == "LONG" and price >= tp1) or (side == "SHORT" and price <= tp1)
             if (tp1_triggered or _dev(tp1) > 0.003) and not sig.get("hit_tp1"):
                 sig["hit_tp1"] = True
@@ -394,26 +621,8 @@ class SignalTracker:
             
             return False
         except Exception as e:
-            logging.error(f"❌ check_one [{key}] 錯誤: {e}")
+            logging.error(f"❌ check_one [{key}] 错误: {e}")
             return False
-    
-    def query_order(self, order_id: str):
-        """🔍 查詢訂單並回覆"""
-        found = None
-        for key, sig in self.signals.items():
-            if sig.get("order_id") == order_id:
-                found = sig
-                break
-        
-        if found:
-            price = fetch_price(found["instId"])
-            coin = found["instId"].split("-")[0]
-            msg = _format_order_detail(coin, found["side"], order_id, price, found["entry"],
-                                       found["sl"], found["tp1"], found["tp2"], found["tp3"],
-                                       found.get("hit_tp1", False), found.get("hit_tp2", False), found.get("hit_tp3", False))
-            send_tg(msg, reply_to_id=found.get("entry_msg_id"), buttons=_get_order_button(order_id))
-        else:
-            send_tg(f"❌ 找不到訂單 `{order_id}`")
 
 def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price: float, 
                   close_type: str, score: int):
@@ -435,89 +644,114 @@ def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price
     except: pass
 
 # ─────────────────────────────────────────────────────────
-# 6. 主掃描邏輯
+# 8. OKX 主动扫描（只在 OB/FVG 进单）
 # ─────────────────────────────────────────────────────────
-def run_scan(tracker: SignalTracker) -> int:
-    logging.info("🚀 開始掃描...")
+def run_okx_scan(tracker: SignalTracker) -> int:
+    logging.info("🚀 OKX 开始扫描（SMC/ICT 分析）...")
     sent = 0
+    
     for instId in ALL_COINS:
         if sent >= MAX_SIGNALS: break
         key_prefix = f"{instId}_ALL"
         if key_prefix in _signal_cooldown and time.time() - _signal_cooldown[key_prefix] < 2 * 3600: continue
         
         try:
-            current_price = fetch_price(instId)
+            current_price = fetch_okx_price(instId)
             if current_price <= 0: continue
             
-            df = fetch_candles(instId)
+            df = fetch_okx_candles(instId)
             if not df: continue
             
-            signal = None
-            for side in ["LONG", "SHORT"]:
-                score, grade = calc_score(df, side)
-                if score >= SCORE_THRESHOLD:
-                    atr = calc_atr(df)
-                    entry = current_price
-                    sl = entry - atr*1.5 if side == "LONG" else entry + atr*1.5
-                    risk = abs(entry - sl)
-                    signal = {
-                        "instId": instId, "side": side, "tf": "15m",
-                        "entry": round(entry, 4), "sl": round(sl, 4),
-                        "tp1": round(entry + risk if side=="LONG" else entry - risk, 4),
-                        "tp2": round(entry + risk*2.5 if side=="LONG" else entry - risk*2.5, 4),
-                        "tp3": round(entry + risk*4.0 if side=="LONG" else entry - risk*4.0, 4),
-                        "score": score, "grade": grade, "created": time.time(),
-                        "expires": time.time() + SIGNAL_EXPIRE_HOURS * 3600,
-                    }
-                    break
+            # 🔹 高级评分（含 OB/FVG）
+            best_signal = None
+            best_score = 0
             
-            if signal:
-                _signal_cooldown[key_prefix] = time.time()
-                # 🔹 先發送訊息獲取 ID，再添加到追蹤
-                msg = _format_entry_alert(instId.split("-")[0], signal["side"], "PENDING", 
-                                          current_price, signal["entry"], signal["sl"], 
-                                          signal["tp1"], signal["tp2"], signal["tp3"], signal["score"])
-                # 先發送一個暫時的訊息，獲取 ID 後再更新
-                # 實際上為了簡化，我們直接 add，然後在 check_all 裡發送正式通知
-                # 但為了實現 "回覆" 效果，最好先有 "進場" 訊息
-                # 這裡採用策略：生成訊號 -> 發送進場通知 -> 將訊息 ID 存入 SignalTracker
+            for side in ["LONG", "SHORT"]:
+                score, grade, signal_type, rsi, st, pa = calc_advanced_score(df, side)
                 
+                # 只在 OB 或 FVG 区域进单
+                if score >= SCORE_THRESHOLD and ("OB" in signal_type or "FVG" in signal_type):
+                    if score > best_score:
+                        best_score = score
+                        atr = calc_atr(df)
+                        entry = current_price
+                        sl = entry - atr*1.5 if side == "LONG" else entry + atr*1.5
+                        risk = abs(entry - sl)
+                        
+                        best_signal = {
+                            "instId": instId, "side": side, "tf": "15m",
+                            "entry": round(entry, 4), "sl": round(sl, 4),
+                            "tp1": round(entry + risk if side=="LONG" else entry - risk, 4),
+                            "tp2": round(entry + risk*2.5 if side=="LONG" else entry - risk*2.5, 4),
+                            "tp3": round(entry + risk*4.0 if side=="LONG" else entry - risk*4.0, 4),
+                            "score": score, "grade": grade, "signal_type": signal_type,
+                            "created": time.time(),
+                            "expires": time.time() + SIGNAL_EXPIRE_HOURS * 3600,
+                            "source": "OKX"
+                        }
+            
+            if best_signal:
+                _signal_cooldown[key_prefix] = time.time()
+                msg = _format_entry_alert(instId.split("-")[0], best_signal["side"], "PENDING", 
+                                          best_signal["entry"], best_signal["sl"], 
+                                          best_signal["tp1"], best_signal["tp2"], best_signal["tp3"], 
+                                          best_signal["score"], best_signal["signal_type"])
                 msg_id = send_tg(msg)
-                tracker.add(signal, active=True, msg_id=msg_id)
+                tracker.add(best_signal, active=True, msg_id=msg_id)
                 sent += 1
-        except: continue
+                logging.info(f"✅ {instId} {best_signal['side']} {best_signal['signal_type']} 评分:{best_score}")
+        
+        except Exception as e:
+            logging.error(f"[{instId}] OKX 扫描失败: {e}")
+            continue
     
     tracker.check_all()
-    logging.info(f"✅ 掃描完成，發送 {sent} 筆訊號")
+    logging.info(f"✅ OKX 扫描完成，发送 {sent} 笔讯号")
     return sent
 
 # ─────────────────────────────────────────────────────────
-# 7. 主函式
+# 9. 主函数
 # ─────────────────────────────────────────────────────────
 def main():
+    mode = sys.argv[1] if len(sys.argv) > 1 else "webhook"
+    
     try:
-        logging.info("=" * 40)
-        logging.info("🤖 Alpha Oracle Pro v10.9 線程回覆版啟動")
-        logging.info("=" * 40)
+        logging.info("=" * 60)
+        logging.info("🤖 Alpha Oracle Pro v11.0 SMC/ICT 完整版启动")
+        logging.info("=" * 60)
+        logging.info("✨ 后台分析：OB + FVG + SMC + ICT + PA + SNR")
+        logging.info("🎯 进单条件：只在 OB 或 FVG 区域")
+        logging.info("=" * 60)
+        
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
         
-        # 🔹 處理 /stats 命令
-        if len(sys.argv) > 1:
-            cmd = sys.argv[1]
-            if cmd == "/stats":
-                # 簡單顯示追蹤中數量
-                count = len([s for s in tracker.signals.values() if s["status"] not in ("CLOSED",)])
-                send_tg(f"📊 目前追蹤中：{count} 筆訂單")
-                return
-            elif cmd.startswith("order_"):
-                order_id = cmd.split("order_")[1]
-                tracker.query_order(order_id)
-                return
+        if mode == "webhook":
+            logging.info(f"📡 启动 TradingView Webhook 伺服器 (Port {TV_WEBHOOK_PORT})...")
+            logging.info(f"🔗 Webhook URL: http://YOUR_SERVER_IP:{TV_WEBHOOK_PORT}/webhook/{TV_WEBHOOK_SECRET}")
+            
+            import threading
+            def okx_scan_loop():
+                while True:
+                    try:
+                        run_okx_scan(tracker)
+                        time.sleep(900)  # 每 15 分钟扫描一次
+                    except Exception as e:
+                        logging.error(f"OKX 扫描线程错误: {e}")
+                        time.sleep(60)
+            
+            scan_thread = threading.Thread(target=okx_scan_loop, daemon=True)
+            scan_thread.start()
+            
+            app.run(host='0.0.0.0', port=TV_WEBHOOK_PORT, debug=False)
         
-        run_scan(tracker)
-        logging.info("🎉 程式執行完成")
+        elif mode == "okx":
+            run_okx_scan(tracker)
+        
+        elif mode == "check":
+            tracker.check_all()
+    
     except Exception as e:
-        logging.error(f"🔥 系統錯誤: {e}")
+        logging.error(f"🔥 系统错误: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
