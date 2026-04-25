@@ -2,7 +2,6 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
-    # 🕒 每 15 分鐘執行一次
     - cron: "*/15 * * * *"
   workflow_dispatch:
 
@@ -13,51 +12,92 @@ concurrency:
   group: alpha-oracle-${{ github.ref }}
   cancel-in-progress: false
 
+# 🔹 提前相容 Node.js 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   run:
-    name: 🤖 Alpha Oracle Pro
+    name: 🤖 Alpha Oracle Pro v12.0
     runs-on: ubuntu-latest
-    timeout-minutes: 5  # ⚡ 提高一點 buffer，避免 OKX 偶發慢回應被砍
-
+    timeout-minutes: 5
+    
     steps:
-      - name: 📦 下載程式碼
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+      - name: 📦 Checkout
+        uses: actions/checkout@v5
 
-      - name: 🐍 設置 Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 📦 安裝依賴
-        run: pip install requests --quiet
-
-      - name: 🗄️ 初始化檔案
+      - name: 📦 Install Dependencies
         run: |
-          [ -f active_signals.json ]   || echo '{}' > active_signals.json
-          [ -f trade_history.json ]    || echo '[]' > trade_history.json
-          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
+          python -m pip install --upgrade pip
+          pip install requests --quiet
+          echo "✅ 依賴安裝完成"
 
-      - name: 🚀 執行 Alpha Oracle
+      - name: 🗄️ Init Files
+        run: |
+          [ -f active_signals.json ] || echo '{}' > active_signals.json
+          [ -f trade_history.json ] || echo '[]' > trade_history.json
+          [ -f signal_cooldown.json ] || echo '{}' > signal_cooldown.json
+          [ -f config.json ] || echo '{}' > config.json
+          touch alpha_oracle.log
+
+      - name: 🔍 Environment Check
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "3"
-          SETUP_SCORE_THRESHOLD: "68"
-          TZ: Asia/Taipei
         run: |
-          echo "🚀 Alpha Oracle Pro - 繁體中文版"
-          python main.py
+          echo "🔍 環境檢查:"
+          [ -z "$TG_TOKEN" ] && { echo "❌ TG_TOKEN 未設定"; exit 1; }
+          [ -z "$CHAT_ID" ] && { echo "❌ CHAT_ID 未設定"; exit 1; }
+          echo "✅ TG_TOKEN: 已設定 (${#TG_TOKEN} 字元)"
+          echo "✅ CHAT_ID: ${CHAT_ID:0:10}..."
+          
+          RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+            -d "chat_id=${CHAT_ID}" -d "text=🧪 Alpha Oracle Pro v12.0 測試" -d "parse_mode=Markdown")
+          echo "$RESPONSE" | grep -q '"ok":true' && echo "✅ Telegram 連接成功" || { echo "❌ Telegram 失敗"; exit 1; }
 
-      - name: 💾 保存狀態
+      - name: 🚀 Run Alpha Oracle Pro
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TZ: Asia/Taipei
+          PYTHONUNBUFFERED: "1"
+        run: |
+          echo "🚀 Alpha Oracle Pro v12.0 專業精準版啟動"
+          python main.py
+          echo "✅ 執行完成"
+
+      - name: 📋 Show Logs
         if: always()
         run: |
-          git config user.name  "alpha-bot"
+          echo "📝 最後 30 行日誌:"
+          tail -30 alpha_oracle.log 2>/dev/null || echo "❌ 無日誌"
+
+      - name: 💾 Save State
+        if: always()
+        run: |
+          git config user.name "alpha-bot"
           git config user.email "bot@alpha.example"
-          git add -f active_signals.json trade_history.json signal_cooldown.json 2>/dev/null || true
+          git add -f active_signals.json trade_history.json signal_cooldown.json config.json alpha_oracle.log 2>/dev/null || true
           git diff --staged --quiet || {
-            git commit -m "chore: 更新訊號狀態 [skip ci]"
+            git commit -m "chore: 更新狀態 [skip ci]"
             git push --quiet
           }
         continue-on-error: true
+
+      - name: 📦 Upload Debug Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs-${{ github.run_id }}
+          path: |
+            alpha_oracle.log
+            active_signals.json
+            trade_history.json
+            signal_cooldown.json
+            config.json
+          retention-days: 3
