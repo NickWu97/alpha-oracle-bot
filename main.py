@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v11.1 — 精緻專業版 (繁體中文修復版)
+Alpha Oracle Pro v11.1 — 精緻專業版 (Production-Grade, Marketable)
 ══════════════════════════════════════════════════════════════════════
 🆕 v11.1 新增 (相對 v11.0)：
   ✨ 訊息模板精緻化 (信心條、進度條、方向箭頭、emoji 視覺語彙)
@@ -16,7 +16,6 @@ Alpha Oracle Pro v11.1 — 精緻專業版 (繁體中文修復版)
   ✅ 階梯式 TP1→TP2→TP3
   ✅ 觸發訊息顯示真實當下價
   ✅ 線層回覆 (reply_to_id)
-  ✅ 全部繁體中文 + TG 發送錯誤詳細日誌
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -65,17 +64,6 @@ logging.basicConfig(
 TG_TOKEN = _get_env("TG_TOKEN")
 CHAT_ID = _get_env("CHAT_ID")
 
-# 🔍 調試：檢查 TG 設定
-if TG_TOKEN:
-    logging.info(f"✅ TG_TOKEN 已設定 (長度: {len(TG_TOKEN)})")
-else:
-    logging.error("❌ TG_TOKEN 未設定！請檢查 GitHub Secrets")
-
-if CHAT_ID:
-    logging.info(f"✅ CHAT_ID 已設定: {CHAT_ID[:10]}...")
-else:
-    logging.error("❌ CHAT_ID 未設定！請檢查 GitHub Secrets")
-
 ALL_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
 SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
@@ -97,12 +85,10 @@ _signal_cooldown = {}
 # 2. 時間工具
 # ═════════════════════════════════════════════════════════
 def get_tw_time() -> str:
-    """🕐 取得台灣時間字串 (UTC+8)"""
     return (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S TW")
 
 
 def get_tw_date() -> str:
-    """📅 取得台灣日期"""
     return (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d")
 
 
@@ -128,7 +114,6 @@ def _grade_emoji(score: int) -> tuple:
 
 
 def _direction_emoji(side: str) -> str:
-    """📊 方向 Emoji"""
     return "📈 做多 LONG" if side == "LONG" else "📉 做空 SHORT"
 
 
@@ -141,17 +126,11 @@ def _progress_icons(hit_tp1: bool, hit_tp2: bool, hit_tp3: bool) -> str:
 
 
 # ═════════════════════════════════════════════════════════
-# 4. 通知系統 (繁體中文 + 詳細錯誤日誌)
+# 4. 通知系統 (保留 reply_to_id 線層回覆)
 # ═════════════════════════════════════════════════════════
 def send_tg(msg: str, parse_mode: str = "Markdown", reply_to_id: int = None, buttons: list = None) -> int:
-    """
-    📤 發送 Telegram 通知 (繁體中文 + 詳細錯誤日誌)
-    ✅ 支援 reply_to_id (實現線層回覆)
-    ✅ 支援 Inline Keyboard (實現底部按鈕)
-    🔄 返回 message_id，以便後續追蹤
-    """
     if not TG_TOKEN or not CHAT_ID:
-        logging.error("❌ 無法發送：TG_TOKEN 或 CHAT_ID 為空")
+        logging.warning("⚠️ TG_TOKEN / CHAT_ID 未設定")
         return None
 
     payload = {
@@ -166,38 +145,20 @@ def send_tg(msg: str, parse_mode: str = "Markdown", reply_to_id: int = None, but
         payload["reply_markup"] = json.dumps({"inline_keyboard": [buttons]})
 
     try:
-        logging.debug(f"📤 準備發送 TG 訊息 (長度: {len(msg)} 字元)")
         r = requests.post(
             f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
             json=payload,
             timeout=5,
         )
-        
         if r.status_code == 200:
-            msg_id = r.json().get("result", {}).get("message_id")
-            logging.info(f"✅ Telegram 發送成功 (msg_id: {msg_id})")
-            return msg_id
-        else:
-            error_text = r.text[:200] if r.text else "無回應內容"
-            logging.error(f"❌ Telegram API 錯誤 {r.status_code}: {error_text}")
-            logging.error(f"📝 請求內容: chat_id={CHAT_ID[:10]}..., parse_mode={parse_mode}")
-            
-    except requests.exceptions.Timeout:
-        logging.error("❌ Telegram 請求超時 (timeout=5s)")
-    except requests.exceptions.ConnectionError:
-        logging.error("❌ Telegram 連接失敗 (檢查網路或 API 網址)")
-    except requests.exceptions.InvalidURL:
-        logging.error(f"❌ Telegram URL 無效: {TG_TOKEN[:10]}...")
+            return r.json().get("result", {}).get("message_id")
+        logging.warning(f"⚠️ TG API {r.status_code}: {r.text[:200]}")
     except Exception as e:
-        logging.error(f"❌ Telegram 發送異常: {type(e).__name__}: {e}")
-        import traceback
-        logging.error(traceback.format_exc())
-    
+        logging.error(f"❌ TG 發送失敗: {e}")
     return None
 
 
 def _get_order_button(order_id: str) -> list:
-    """🔘 生成訂單查詢按鈕"""
     return [{
         "text": f"🔍 查詢訂單 {order_id[-8:]}",
         "callback_data": f"order_{order_id}",
@@ -205,11 +166,11 @@ def _get_order_button(order_id: str) -> list:
 
 
 # ═════════════════════════════════════════════════════════
-# 5. 訊息模板 (v11.1 精緻版 - 全部繁體中文)
+# 5. 訊息模板 (v11.1 精緻版)
 # ═════════════════════════════════════════════════════════
 def _fmt_entry(coin, side, order_id, price, entry, sl, tp1, tp2, tp3, score,
                funding: float = None):
-    """✨ 進場通知 — 精緻版 (繁體中文)"""
+    """✨ 進場通知 — 精緻版"""
     grade_em, grade_txt = _grade_emoji(score)
     dir_txt = _direction_emoji(side)
     bar = _score_bar(score)
@@ -253,7 +214,7 @@ def _fmt_entry(coin, side, order_id, price, entry, sl, tp1, tp2, tp3, score,
 
 def _fmt_tp(coin, side, order_id, tp_level, trigger_price, entry, pnl_pct, r_mult,
             advice, hit_tp1: bool, hit_tp2: bool, hit_tp3: bool):
-    """✨ 止盈通知 — 精緻版 (繁體中文)"""
+    """✨ 止盈通知 — 精緻版"""
     dir_txt = _direction_emoji(side)
     medal = {"TP1": "🥇", "TP2": "🥈", "TP3": "🏆"}.get(tp_level, "🎯")
     progress = _progress_icons(hit_tp1, hit_tp2, hit_tp3)
@@ -279,7 +240,7 @@ def _fmt_tp(coin, side, order_id, tp_level, trigger_price, entry, pnl_pct, r_mul
 
 def _fmt_sl(coin, side, order_id, trigger_price, entry, pnl_pct, is_be,
             hit_tp1: bool, hit_tp2: bool):
-    """✨ 止損 / 保本通知 — 精緻版 (繁體中文)"""
+    """✨ 止損 / 保本通知 — 精緻版"""
     dir_txt = _direction_emoji(side)
 
     if is_be:
@@ -314,8 +275,7 @@ def _fmt_sl(coin, side, order_id, trigger_price, entry, pnl_pct, is_be,
     )
 
 
-def _fmt_expire(coin, order_id, entry, price, reason: str = "24 小時內未觸發"):
-    """⏰ 訊號過期通知 (繁體中文)"""
+def _fmt_expire(coin, order_id, entry, price, reason: str = "24h 內未觸發"):
     return (
         f"⏰ *{coin} · 訊號過期*\n"
         f"━━━━━━━━━━━━━━━━━━\n"
@@ -328,7 +288,6 @@ def _fmt_expire(coin, order_id, entry, price, reason: str = "24 小時內未觸�
 
 
 def _fmt_slippage(coin, order_id, entry, price, dev_pct):
-    """⚠️ 滑價保護通知 (繁體中文)"""
     return (
         f"⚠️ *{coin} · 滑價保護觸發*\n"
         f"━━━━━━━━━━━━━━━━━━\n"
@@ -344,7 +303,7 @@ def _fmt_slippage(coin, order_id, entry, price, dev_pct):
 # 6. 行情 API
 # ═════════════════════════════════════════════════════════
 def fetch_price(instId: str, retries: int = 2) -> float:
-    """🔍 即時價 — 不用快取，確保觸發判斷新鮮"""
+    """即時價 — 不用快取，確保觸發判斷新鮮"""
     for attempt in range(retries + 1):
         try:
             res = requests.get(
@@ -378,7 +337,6 @@ def fetch_funding_rate(instId: str) -> float:
 
 
 def fetch_candles(instId: str, tf: str = "15m", limit: int = 100):
-    """📊 取 K 線 (只取 confirmed candle)"""
     try:
         res = requests.get(
             f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}",
@@ -404,7 +362,6 @@ def fetch_candles(instId: str, tf: str = "15m", limit: int = 100):
 # 7. 技術指標
 # ═════════════════════════════════════════════════════════
 def calc_atr(df, period: int = 14) -> float:
-    """📐 計算 ATR"""
     if len(df) < period + 1:
         return 0.001
     trs = []
@@ -420,7 +377,6 @@ def calc_atr(df, period: int = 14) -> float:
 
 
 def calc_supertrend(df, period: int = 10) -> int:
-    """📈 計算 Supertrend"""
     if len(df) < period + 2:
         return 0
     atr = calc_atr(df, period)
@@ -434,7 +390,6 @@ def calc_supertrend(df, period: int = 10) -> int:
 
 
 def calc_rsi(df, period: int = 14) -> float:
-    """📊 計算 RSI"""
     if len(df) < period + 1:
         return 50.0
     gains, losses = [], []
@@ -453,7 +408,6 @@ def calc_rsi(df, period: int = 14) -> float:
 
 
 def calc_score(df, side: str) -> tuple:
-    """📊 計算訊號評分"""
     score = 0
     st = calc_supertrend(df)
     if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1):
@@ -479,7 +433,6 @@ def calc_score(df, side: str) -> tuple:
 # 8. 訊號生成
 # ═════════════════════════════════════════════════════════
 def generate_signal(instId, df, current_price):
-    """🎯 生成交易訊號"""
     if df is None or len(df) < 50:
         return None
     atr = calc_atr(df)
@@ -512,14 +465,11 @@ def generate_signal(instId, df, current_price):
 # 9. SignalTracker (嚴格觸發 + anti-wick + 階梯式 TP)
 # ═════════════════════════════════════════════════════════
 class SignalTracker:
-    """🔍 訊號追蹤器 (專業版)"""
-    
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
         self.filepath = filepath
         self.signals = self._load()
 
     def _load(self) -> dict:
-        """📥 載入訊號"""
         try:
             if os.path.exists(self.filepath):
                 with open(self.filepath, "r", encoding="utf-8") as f:
@@ -529,7 +479,6 @@ class SignalTracker:
         return {}
 
     def _save(self):
-        """💾 儲存訊號"""
         try:
             temp = self.filepath + ".tmp"
             with open(temp, "w", encoding="utf-8") as f:
@@ -539,7 +488,6 @@ class SignalTracker:
             logging.error(f"❌ save 失敗: {e}")
 
     def add(self, signal, active=False, entry_msg_id=None):
-        """📌 新增追蹤訊號"""
         order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
         key = f"{signal['instId']}_{signal['side']}_{order_id}"
         self.signals[key] = {
@@ -557,13 +505,11 @@ class SignalTracker:
         return key, order_id
 
     def update_signal(self, key, **kwargs):
-        """🔄 更新訊號數據"""
         if key in self.signals:
             self.signals[key].update(kwargs)
             self._save()
 
     def check_all(self):
-        """🔄 檢查所有訊號"""
         to_remove = []
         for key, sig in list(self.signals.items()):
             try:
@@ -592,13 +538,11 @@ class SignalTracker:
         return False
 
     def _clear_pending(self, sig):
-        """↩️ 取消待確認狀態"""
         if sig.get("pending_trigger"):
             logging.info(f"  ↩️ {sig['order_id']} 回到線內，取消 {sig['pending_trigger']} 待確認")
             sig["pending_trigger"] = None
 
     def _check_one(self, key, sig) -> bool:
-        """🔍 檢查單一訊號 (嚴格觸發 + anti-wick)"""
         price = fetch_price(sig["instId"])
         if price <= 0:
             logging.warning(f"[{sig['instId']}] 無價格，略過")
@@ -666,7 +610,7 @@ class SignalTracker:
                 buttons=_get_order_button(order_id),
             )
             _record_trade(coin, side, order_id, entry, price, "BE" if is_be else "SL", sig["score"])
-            logging.info(f"🔴 {order_id} {'保本' if is_be else '止損'} 確認 @ {price:.4f}")
+            logging.info(f"🔴 {order_id} {'BE' if is_be else 'SL'} 確認 @ {price:.4f}")
             return True
 
         # 📌 TP1 (必須先過 TP1)
@@ -749,7 +693,6 @@ class SignalTracker:
         return False
 
     def get_position_stats(self) -> str:
-        """📋 獲取持倉統計"""
         positions = []
         for sig in self.signals.values():
             if sig["status"] in ("ACTIVE", "BE", "TRAIL", "PENDING"):
@@ -791,7 +734,6 @@ class SignalTracker:
 # 10. 交易歷史 + 戰績
 # ═════════════════════════════════════════════════════════
 def _record_trade(coin, side, order_id, entry, close_price, close_type, score):
-    """📝 記錄交易歷史"""
     is_win = close_type in ("TP1", "TP2", "TP3")
     is_be = close_type == "BE"
     pnl = ((close_price - entry) / entry * 100) if side == "LONG" \
@@ -816,7 +758,7 @@ def _record_trade(coin, side, order_id, entry, close_price, close_type, score):
 
 
 def get_daily_summary(days: int = 1) -> str:
-    """📊 每日戰績 (繁體中文)"""
+    """📊 每日戰績"""
     if not os.path.exists(TRADE_HISTORY_FILE):
         return "📭 *尚無交易紀錄*"
     try:
@@ -860,7 +802,6 @@ def get_daily_summary(days: int = 1) -> str:
 # 11. 主掃描
 # ═════════════════════════════════════════════════════════
 def run_scan(tracker: SignalTracker) -> int:
-    """🔍 執行掃描"""
     logging.info("🚀 開始掃描")
     sent = 0
 
@@ -875,7 +816,6 @@ def run_scan(tracker: SignalTracker) -> int:
         try:
             current_price = fetch_price(instId)
             if current_price <= 0:
-                logging.warning(f"[{instId}] 無法獲取價格")
                 continue
             logging.info(f"[{instId}] 現價 {current_price}")
 
@@ -936,39 +876,29 @@ def run_scan(tracker: SignalTracker) -> int:
 
 
 # ═════════════════════════════════════════════════════════
-# 12. 入口 (一鍵執行所有功能)
+# 12. 入口
 # ═════════════════════════════════════════════════════════
 def main():
-    """🚀 主函式 — 一鍵執行所有功能"""
     try:
-        logging.info("=" * 60)
-        logging.info("🤖 Alpha Oracle Pro v11.1 精緻專業版 (繁體中文)")
-        logging.info("=" * 60)
-        logging.info(f"✨ 自動執行：掃描 + 監控 + 持倉更新")
-        logging.info(f"💬 Telegram 命令：/stats | /daily | /weekly")
-        logging.info("=" * 60)
+        logging.info("=" * 50)
+        logging.info("🤖 Alpha Oracle Pro v11.1 精緻專業版")
+        logging.info("=" * 50)
 
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
 
-        # 🔹 處理 Telegram 命令
         if len(sys.argv) > 1:
             cmd = sys.argv[1]
             if cmd in ("/stats", "/持倉"):
-                logging.info("📋 執行持倉查詢命令")
                 send_tg(tracker.get_position_stats())
                 return
             if cmd in ("/daily", "/戰績"):
-                logging.info("📊 執行每日戰績命令")
                 send_tg(get_daily_summary(1))
                 return
             if cmd in ("/weekly", "/週報"):
-                logging.info("📊 執行每週戰績命令")
                 send_tg(get_daily_summary(7))
                 return
 
-        # 🔹 執行掃描 + 監控 (一鍵整合)
         run_scan(tracker)
-        
         logging.info("🎉 執行完成")
 
     except Exception as e:
