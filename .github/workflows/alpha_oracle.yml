@@ -2,6 +2,7 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
+    # 🕒 每 15 分鐘執行一次
     - cron: "*/15 * * * *"
   
   workflow_dispatch:
@@ -17,154 +18,46 @@ jobs:
   run:
     name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3  # ⚡ 嚴格超時 3 分鐘
     
     steps:
-      - name: 📦 Checkout
+      - name: 📦 下載程式碼
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: 🐍 Python Setup
+      - name: 🐍 設置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 📦 Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests websockets pandas numpy --quiet
+      - name: 📦 安裝依賴
+        run: pip install requests --quiet
 
-      - name: 🗄️ Init Files
+      - name: 🗄️ 初始化檔案
         run: |
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
-          touch alpha_oracle.log
 
-      # 🔍 調試步驟：測試 Telegram 連接
-      - name: 🔍 Test Telegram Connection
+      - name: 🚀 執行 Alpha Oracle
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: |
-          echo "═══════════════════════════════════"
-          echo "🔍 Telegram 連接測試"
-          echo "═══════════════════════════════════"
-          
-          # 檢查 Token 長度
-          TOKEN_LEN=${#TG_TOKEN}
-          echo "📝 TG_TOKEN 長度: $TOKEN_LEN 字元"
-          
-          if [ $TOKEN_LEN -lt 40 ]; then
-            echo "❌ TG_TOKEN 太短，可能不正確！"
-            exit 1
-          fi
-          
-          # 檢查 Chat ID
-          echo "📝 CHAT_ID: $CHAT_ID"
-          
-          if [ -z "$CHAT_ID" ]; then
-            echo "❌ CHAT_ID 為空！"
-            exit 1
-          fi
-          
-          # 測試發送訊息
-          echo ""
-          echo "📤 測試發送 Telegram 訊息..."
-          
-          RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
-            -d "chat_id=${CHAT_ID}" \
-            -d "text=🧪 Alpha Oracle Pro 測試訊息\n\n✅ Telegram 連接正常！\n⏰ 時間: $(date '+%Y-%m-%d %H:%M:%S')" \
-            -d "parse_mode=Markdown")
-          
-          echo "📡 Telegram API 回應:"
-          echo "$RESPONSE" | python3 -m json.tool || echo "$RESPONSE"
-          
-          # 檢查是否成功
-          if echo "$RESPONSE" | grep -q '"ok":true'; then
-            echo ""
-            echo "✅ Telegram 測試成功！請檢查您的 Telegram"
-          else
-            echo ""
-            echo "❌ Telegram 測試失敗！"
-            echo ""
-            echo "可能的原因："
-            echo "  1. TG_TOKEN 錯誤"
-            echo "  2. CHAT_ID 錯誤"
-            echo "  3. Bot 被封鎖或無權限"
-            echo ""
-            echo "請檢查 GitHub Secrets 設定"
-            exit 1
-          fi
-          
-          echo "═══════════════════════════════════"
-
-      # 🚀 執行主程式
-      - name: 🚀 Run Alpha Oracle Pro
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          USE_WEBSOCKET: "false"  # 🔹 先禁用 WebSocket 測試
-          CANDLE_CLOSE_MODE: "false"
-          DAILY_SL_LIMIT: "2"
-          MULTI_TF_CONFIRMATION: "false"
-          VOLUME_CONFIRMATION: "false"
-          CORRELATION_FILTER: "false"
           MAX_SIGNALS: "3"
           SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
-          PYTHONUNBUFFERED: "1"
-        
         run: |
-          echo "🚀 Alpha Oracle Pro v13.0 啟動"
-          echo "═══════════════════════════════════"
-          
-          # 🔹 先發送測試訊息
-          python3 -c "
-          import requests
-          import os
-          
-          token = os.getenv('TG_TOKEN')
-          chat_id = os.getenv('CHAT_ID')
-          
-          msg = '🚀 *Alpha Oracle Pro 已啟動*\n\n⏰ 時間: ' + __import__('datetime').datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-          
-          try:
-              r = requests.post(
-                  f'https://api.telegram.org/bot{token}/sendMessage',
-                  json={'chat_id': chat_id, 'text': msg, 'parse_mode': 'Markdown'},
-                  timeout=5
-              )
-              if r.status_code == 200:
-                  print('✅ 啟動通知發送成功')
-              else:
-                  print(f'❌ 發送失敗: {r.text}')
-          except Exception as e:
-              print(f'❌ 錯誤: {e}')
-          "
-          
-          # 🔹 執行主程式
-          python main.py || echo "⚠️ 主程式執行有警告"
-          
-          echo "═══════════════════════════════════"
-          echo "✅ 執行完成"
+          echo "🚀 Alpha Oracle Pro - 繁體中文版"
+          python main.py
 
-      - name: 📋 Show Logs
-        if: always()
-        run: |
-          echo "📝 最後 50 行日誌："
-          echo "────────────────────"
-          tail -50 alpha_oracle.log || echo "❌ 無日誌檔案"
-
-      - name: 💾 Save State
+      - name: 💾 保存狀態
         if: always()
         run: |
           git config user.name "alpha-bot"
-          git config user.email "bot@alpha-oracle.pro"
-          git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
-          if ! git diff --staged --quiet; then
-            git commit -m "🤖 auto: update state $(date '+%Y-%m-%d %H:%M')"
-            git pull --rebase origin main --quiet || true
-            git push origin main --quiet || git push --force-with-lease origin main --quiet
-          fi
+          git config user.email "bot@alpha.com"
+          git add -f active_signals.json trade_history.json 2>/dev/null || true
+          git diff --staged --quiet || {
+            git commit -m "chore: 更新狀態 [skip ci]"
+            git push --quiet
+          }
         continue-on-error: true
