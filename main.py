@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v12.1 — 風控強化版 + 插針觸發（繁體中文）
+Alpha Oracle Pro v12.2 — 歷史 K 線補抓版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v12.1 新增（平倉精度）：
-  🪡 插針觸發：用最近 K 線高低點，極值觸到平倉價即視為平倉
+✨ v12.2 新增（不再漏插針）：
+  📜 歷史 K 線補抓：每次 _check_one 抓 last_checked_ts 之後所有 K 線依序處理
+     ↳ cron 漏跑、Actions 卡死、訊號活了 3 小時才掃，過去任何插針都不會漏
+  🔒 同幣種未平倉嚴格擋（v12 即有，這版加強日誌）
+  📦 fetch_candles_full：每輪掃描共用 30 秒快取，避免重複打 API
+
+✨ v12.1（平倉精度）：
+  🪡 插針觸發：K 線高低點觸到平倉價即視為平倉
   🔁 TP/SL 順序處理：TP1 → TP2 → TP3 → SL（SL 用更新後的值）
   🔒 BE 保本顯示：到達 TP1 後若 SL 觸發，獨立顯示「🔒 保本出場」`0R`
   🔐 LOCK 鎖利顯示：到達 TP2 後若 SL 觸發，獨立顯示「🔐 鎖利出場」`+1.5R`
@@ -408,6 +414,50 @@ def fetch_candles(instId: str, tf: str = "15m", limit: int = 100) -> list | None
     except Exception as e:
         logging.warning(f"⚠️ 取得 {instId} K 線失敗：{e}")
         return None
+
+
+_candle_full_cache: dict = {}
+
+
+def fetch_candles_full(instId: str, tf: str = "15m", limit: int = 100) -> list:
+    """🪡 抓最近 N 根 K 線（含未收線）並按時間升序排序，每輪掃描共用 30 秒快取
+
+    回傳每筆含：ts(ms 整數)、o/h/l/c/v、confirmed(bool)
+    用於 _check_one 的「歷史插針補抓」：
+      - 訊號自 last_checked_ts 之後的所有 K 線都會被掃過
+      - 即使 cron 漏跑、訊號開了 3 小時才檢查，過去任何插針都不會漏
+    """
+    now = time.time()
+    if instId in _candle_full_cache:
+        candles, t = _candle_full_cache[instId]
+        if now - t < 30:
+            return candles
+    try:
+        res = requests.get(
+            f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}",
+            timeout=8,
+        ).json()
+        if res.get("code") != "0":
+            return _candle_full_cache.get(instId, ([], 0))[0]
+        data = res.get("data", [])
+        candles = [
+            {
+                "ts": int(r[0]),
+                "o": float(r[1]),
+                "h": float(r[2]),
+                "l": float(r[3]),
+                "c": float(r[4]),
+                "v": float(r[5]),
+                "confirmed": r[8] == "1",
+            }
+            for r in data
+        ]
+        candles.sort(key=lambda x: x["ts"])
+        _candle_full_cache[instId] = (candles, now)
+        return candles
+    except Exception as e:
+        logging.warning(f"⚠️ 取得 {instId} 完整 K 線失敗：{e}")
+        return _candle_full_cache.get(instId, ([], 0))[0]
 
 
 def fetch_recent_range(instId: str, bars: int = 2, tf: str = "15m") -> tuple[float, float] | None:
@@ -1103,6 +1153,7 @@ class SignalTracker:
         """新增訊號 → 回傳 (key, order_id)"""
         order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
         key = f"{signal['instId']}_{signal['side']}_{order_id}"
+        now_ts = time.time()
         self.signals[key] = {
             **signal,
             "order_id": order_id,
@@ -1110,8 +1161,10 @@ class SignalTracker:
             "hit_tp1": False,
             "hit_tp2": False,
             "hit_tp3": False,
-            "activated_at": time.time() if active else None,
+            "activated_at": now_ts if active else None,
             "entry_message_id": None,
+            # 🪡 歷史插針補抓的游標（秒）：下次 _check_one 從這之後的 K 線開始掃
+            "last_checked_ts": now_ts if active else None,
         }
         self._save()
         logging.info(f"📌 新增訂單：{order_id} ({signal['instId']} {signal['side']})")
@@ -1149,197 +1202,217 @@ class SignalTracker:
     def _check_one(self, key: str, sig: dict) -> bool:
         """檢查單一訊號 → True 代表結束（要從追蹤移除）
 
-        v12.1：插針觸發版
-          - 用最近 K 線高低點 + 即時價，極值觸到平倉價即視為平倉
-          - TP1 → TP2 → TP3 → SL 順序處理，SL 用更新後的值
-          - SL 觸發時依狀態自動分類：止損 / 保本 / 鎖利
+        v12.2：歷史 K 線補抓版
+          - PENDING：價格進入觸發區間時轉 ACTIVE
+          - ACTIVE/BE/TRAIL：抓 last_checked_ts 之後所有 K 線，依時序逐根處理
+            ↳ 每根 K 線檢查 TP1 → TP2 → TP3 → SL（SL 用更新後的值）
+            ↳ 即便 cron 漏跑、訊號活了 3 小時才檢查，歷史插針也不會漏
+          - SL 觸發時依狀態自動分類：止損(LOSS) / 保本(BE) / 鎖利(LOCK)
         """
         try:
             price = fetch_price(sig["instId"])
             if price <= 0:
                 return False
 
-            # 🪡 抓最近 K 線插針區間（含未收線）
-            rng = fetch_recent_range(sig["instId"], bars=2)
-            if rng:
-                rng_low, rng_high = rng
-            else:
-                rng_low = rng_high = price
-
             sig["current_price"] = price
-            coin = sig["instId"].split("-")[0]
-            order_id = sig.get("order_id", "N/A")
-            side = sig["side"]
             status = sig["status"]
-            entry = sig["entry"]
-            sl = sig["sl"]
-            tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
-            reply_to = sig.get("entry_message_id")
-            kb = _order_keyboard(order_id)
 
             # ── PENDING：等待進場 ──
             if status == "PENDING":
-                if time.time() > sig["expires"]:
-                    send_tg(
-                        f"⏰ *{coin} 訊號過期*\n"
-                        f"🆔 訂單：`{order_id}`\n"
-                        f"進場 `{entry:.4f}` 未觸發，已自動取消"
-                    )
-                    self.transitions += 1
-                    return True
-
-                in_zone = (
-                    side == "LONG"
-                    and entry * (1 - 0.006) <= price <= entry * (1 + 0.002)
-                ) or (
-                    side == "SHORT"
-                    and entry * (1 - 0.002) <= price <= entry * (1 + 0.006)
-                )
-                if in_zone:
-                    sig["status"] = "ACTIVE"
-                    sig["activated_at"] = time.time()
-                    msg_id = send_tg(
-                        _fmt_entry(
-                            coin, side, order_id, price, entry, sl,
-                            tp1, tp2, tp3, sig["score"], sig.get("funding_rate"),
-                        ),
-                        reply_markup=kb,
-                    )
-                    if msg_id:
-                        sig["entry_message_id"] = msg_id
-                    self._save()
-                    self.transitions += 1
-                return False
+                return self._check_pending(sig, price)
 
             if status not in ("ACTIVE", "BE", "TRAIL"):
                 return False
 
-            # ── 計算極值（插針偵測核心）──
-            if side == "LONG":
-                extreme_favor = max(price, rng_high)    # 多單最有利＝最高
-                extreme_against = min(price, rng_low)   # 多單最不利＝最低
-                favor_hit = lambda t: extreme_favor >= t
-                against_hit = lambda t: extreme_against <= t
-            else:
-                extreme_favor = min(price, rng_low)     # 空單最有利＝最低
-                extreme_against = max(price, rng_high)  # 空單最不利＝最高
-                favor_hit = lambda t: extreme_favor <= t
-                against_hit = lambda t: extreme_against >= t
+            # ── 抓 last_checked_ts 之後的所有 K 線，依時序處理 ──
+            all_candles = fetch_candles_full(sig["instId"])
+            last_ts_s = (
+                sig.get("last_checked_ts")
+                or sig.get("activated_at")
+                or sig.get("created")
+                or 0
+            )
+            last_ts_ms = int(last_ts_s * 1000)
+            new_candles = [c for c in all_candles if c["ts"] > last_ts_ms]
 
-            def wick_only(t: float, fav: bool) -> bool:
-                """是否「現價未到，但插針觸及」"""
-                if fav:
-                    if side == "LONG":
-                        return price < t and rng_high >= t
-                    return price > t and rng_low <= t
-                else:
-                    if side == "LONG":
-                        return price > t and rng_low <= t
-                    return price < t and rng_high >= t
+            for c in new_candles:
+                if self._process_candle(sig, c):
+                    return True
 
-            # ── 順序處理 TP1 → TP2 → TP3 → SL（SL 會用更新後的值）──
+            # 把游標推進到最後一根「已收線」K 線（未收線下次再掃）
+            confirmed = [c for c in new_candles if c["confirmed"]]
+            if confirmed:
+                sig["last_checked_ts"] = max(c["ts"] for c in confirmed) / 1000.0
 
-            # 🥇 TP1
-            if not sig.get("hit_tp1") and favor_hit(tp1):
-                sig["hit_tp1"] = True
-                sig["sl"] = entry
-                sig["status"] = "BE"
-                sl = entry  # 更新本地變數，下面 SL 檢查會用到
-                pnl1 = (
-                    (tp1 - entry) / entry * 100
-                    if side == "LONG"
-                    else (entry - tp1) / entry * 100
-                )
-                send_tg(
-                    _fmt_tp(
-                        coin, side, order_id, "TP1", tp1, pnl1, 1.5,
-                        wick_triggered=wick_only(tp1, fav=True),
-                    ),
-                    reply_markup=kb,
-                    reply_to_message_id=reply_to,
-                )
-                record_trade(coin, side, order_id, entry, tp1, "TP1", sig["score"])
-                self._save()
-                self.transitions += 1
-
-            # 🥈 TP2
-            if not sig.get("hit_tp2") and favor_hit(tp2):
-                sig["hit_tp2"] = True
-                sig["sl"] = tp1
-                sig["status"] = "TRAIL"
-                sl = tp1
-                pnl2 = (
-                    (tp2 - entry) / entry * 100
-                    if side == "LONG"
-                    else (entry - tp2) / entry * 100
-                )
-                send_tg(
-                    _fmt_tp(
-                        coin, side, order_id, "TP2", tp2, pnl2, 3.0,
-                        wick_triggered=wick_only(tp2, fav=True),
-                    ),
-                    reply_markup=kb,
-                    reply_to_message_id=reply_to,
-                )
-                record_trade(coin, side, order_id, entry, tp2, "TP2", sig["score"])
-                self._save()
-                self.transitions += 1
-
-            # 🏆 TP3 → 訂單結束
-            if not sig.get("hit_tp3") and favor_hit(tp3):
-                pnl3 = (
-                    (tp3 - entry) / entry * 100
-                    if side == "LONG"
-                    else (entry - tp3) / entry * 100
-                )
-                send_tg(
-                    _fmt_tp(
-                        coin, side, order_id, "TP3", tp3, pnl3, 5.0,
-                        wick_triggered=wick_only(tp3, fav=True),
-                    ),
-                    reply_markup=kb,
-                    reply_to_message_id=reply_to,
-                )
-                record_trade(coin, side, order_id, entry, tp3, "TP3", sig["score"])
-                self.transitions += 1
-                return True
-
-            # 🛑 SL（用更新後的 sl 值）→ 依當前狀態自動分類
-            if against_hit(sl):
-                if sig.get("hit_tp2"):
-                    mode = "LOCK"   # SL 在 TP1 → 鎖利
-                    r_value = 1.5
-                    close_type = "LOCK"
-                elif sig.get("hit_tp1"):
-                    mode = "BE"     # SL 在進場價 → 保本
-                    r_value = 0.0
-                    close_type = "BE"
-                else:
-                    mode = "LOSS"   # 原始 SL → 真實止損
-                    r_value = -1.0
-                    close_type = "SL"
-
-                pnl = (
-                    (sl - entry) / entry * 100
-                    if side == "LONG"
-                    else (entry - sl) / entry * 100
-                )
-                send_tg(
-                    _fmt_sl(
-                        coin, side, order_id, sl, pnl, mode, r_value,
-                        wick_triggered=wick_only(sl, fav=False),
-                    ),
-                    reply_markup=kb,
-                    reply_to_message_id=reply_to,
-                )
-                record_trade(coin, side, order_id, entry, sl, close_type, sig["score"])
-                self.transitions += 1
-                return True
-
+            self._save()
             return False
         except Exception as e:
             logging.error(f"❌ check_one [{key}] 錯誤：{e}")
             return False
+
+    def _check_pending(self, sig: dict, price: float) -> bool:
+        """PENDING 狀態檢查：等待價格進入區間轉 ACTIVE，過期自動取消"""
+        coin = sig["instId"].split("-")[0]
+        order_id = sig.get("order_id", "N/A")
+        side = sig["side"]
+        entry, sl = sig["entry"], sig["sl"]
+        tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
+        kb = _order_keyboard(order_id)
+
+        if time.time() > sig["expires"]:
+            send_tg(
+                f"⏰ *{coin} 訊號過期*\n"
+                f"🆔 訂單：`{order_id}`\n"
+                f"進場 `{entry:.4f}` 未觸發，已自動取消"
+            )
+            self.transitions += 1
+            return True
+
+        in_zone = (
+            side == "LONG"
+            and entry * (1 - 0.006) <= price <= entry * (1 + 0.002)
+        ) or (
+            side == "SHORT"
+            and entry * (1 - 0.002) <= price <= entry * (1 + 0.006)
+        )
+        if in_zone:
+            now_ts = time.time()
+            sig["status"] = "ACTIVE"
+            sig["activated_at"] = now_ts
+            sig["last_checked_ts"] = now_ts
+            msg_id = send_tg(
+                _fmt_entry(
+                    coin, side, order_id, price, entry, sl,
+                    tp1, tp2, tp3, sig["score"], sig.get("funding_rate"),
+                ),
+                reply_markup=kb,
+            )
+            if msg_id:
+                sig["entry_message_id"] = msg_id
+            self._save()
+            self.transitions += 1
+        return False
+
+    def _process_candle(self, sig: dict, candle: dict) -> bool:
+        """對單一 K 線檢查 TP1 → TP2 → TP3 → SL → True 代表訊號結束
+
+        - 用 K 線的 high / low 作極值（自然涵蓋插針）
+        - 多 TP 在同一根 K 線都觸到時，依序更新 SL（TP1→保本、TP2→鎖利）
+        - 處理完所有 TP 後，再用「最終 SL 值」檢查 SL 是否觸發
+        """
+        side = sig["side"]
+        entry = sig["entry"]
+        sl = sig["sl"]
+        tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
+        coin = sig["instId"].split("-")[0]
+        order_id = sig.get("order_id", "N/A")
+        reply_to = sig.get("entry_message_id")
+        kb = _order_keyboard(order_id)
+        ch, cl, cc = candle["h"], candle["l"], candle["c"]
+
+        if side == "LONG":
+            favor_hit = lambda t: ch >= t
+            against_hit = lambda t: cl <= t
+            wick_favor = lambda t: cc < t and ch >= t        # 收盤未到、影線觸及
+            wick_against = lambda t: cc > t and cl <= t      # 收盤未破、影線插針
+        else:
+            favor_hit = lambda t: cl <= t
+            against_hit = lambda t: ch >= t
+            wick_favor = lambda t: cc > t and cl <= t
+            wick_against = lambda t: cc < t and ch >= t
+
+        # 🥇 TP1
+        if not sig.get("hit_tp1") and favor_hit(tp1):
+            sig["hit_tp1"] = True
+            sig["sl"] = entry
+            sig["status"] = "BE"
+            sl = entry
+            pnl = (
+                (tp1 - entry) / entry * 100
+                if side == "LONG"
+                else (entry - tp1) / entry * 100
+            )
+            send_tg(
+                _fmt_tp(
+                    coin, side, order_id, "TP1", tp1, pnl, 1.5,
+                    wick_triggered=wick_favor(tp1),
+                ),
+                reply_markup=kb,
+                reply_to_message_id=reply_to,
+            )
+            record_trade(coin, side, order_id, entry, tp1, "TP1", sig["score"])
+            self._save()
+            self.transitions += 1
+
+        # 🥈 TP2
+        if not sig.get("hit_tp2") and favor_hit(tp2):
+            sig["hit_tp2"] = True
+            sig["sl"] = tp1
+            sig["status"] = "TRAIL"
+            sl = tp1
+            pnl = (
+                (tp2 - entry) / entry * 100
+                if side == "LONG"
+                else (entry - tp2) / entry * 100
+            )
+            send_tg(
+                _fmt_tp(
+                    coin, side, order_id, "TP2", tp2, pnl, 3.0,
+                    wick_triggered=wick_favor(tp2),
+                ),
+                reply_markup=kb,
+                reply_to_message_id=reply_to,
+            )
+            record_trade(coin, side, order_id, entry, tp2, "TP2", sig["score"])
+            self._save()
+            self.transitions += 1
+
+        # 🏆 TP3 → 結束
+        if not sig.get("hit_tp3") and favor_hit(tp3):
+            sig["hit_tp3"] = True
+            pnl = (
+                (tp3 - entry) / entry * 100
+                if side == "LONG"
+                else (entry - tp3) / entry * 100
+            )
+            send_tg(
+                _fmt_tp(
+                    coin, side, order_id, "TP3", tp3, pnl, 5.0,
+                    wick_triggered=wick_favor(tp3),
+                ),
+                reply_markup=kb,
+                reply_to_message_id=reply_to,
+            )
+            record_trade(coin, side, order_id, entry, tp3, "TP3", sig["score"])
+            self.transitions += 1
+            return True
+
+        # 🛑 SL（用更新後的 sl 值）→ 依狀態分類
+        if against_hit(sl):
+            if sig.get("hit_tp2"):
+                mode, r_value, close_type = "LOCK", 1.5, "LOCK"
+            elif sig.get("hit_tp1"):
+                mode, r_value, close_type = "BE", 0.0, "BE"
+            else:
+                mode, r_value, close_type = "LOSS", -1.0, "SL"
+            pnl = (
+                (sl - entry) / entry * 100
+                if side == "LONG"
+                else (entry - sl) / entry * 100
+            )
+            send_tg(
+                _fmt_sl(
+                    coin, side, order_id, sl, pnl, mode, r_value,
+                    wick_triggered=wick_against(sl),
+                ),
+                reply_markup=kb,
+                reply_to_message_id=reply_to,
+            )
+            record_trade(coin, side, order_id, entry, sl, close_type, sig["score"])
+            self.transitions += 1
+            return True
+
+        return False
 
     def send_position_updates(self) -> None:
         """📊 發送所有持倉的進度更新（每輪一次）"""
