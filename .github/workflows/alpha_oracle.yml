@@ -1,74 +1,185 @@
-# ══════════════════════════════════════════════════════════════
-# Alpha Oracle Pro v12 — 主設定檔
-# 所有 ${NAME} 形式會從環境變數讀取；${NAME:default} 可給預設值
-# ══════════════════════════════════════════════════════════════
+name: Alpha Oracle Pro
 
-telegram:
-  token: "${TG_TOKEN}"
-  chat_id: "${CHAT_ID}"
-  # 選填：系統健康警報會發到這個 chat (API 連續失敗、崩潰等)
-  admin_chat_id: "${ADMIN_CHAT_ID:}"
+on:
+  # 🕒 每 15 分鐘自動執行
+  schedule:
+    - cron: "*/15 * * * *"
+  
+  # 🔧 手動觸發
+  workflow_dispatch:
+    inputs:
+      action:
+        description: '執行動作'
+        required: false
+        default: 'scan'
+        type: choice
+        options:
+          - scan
+          - daily
+          - monthly
+          - stats
 
-exchange:
-  name: okx
-  rest_url: "https://www.okx.com"
-  ws_public_url: "wss://ws.okx.com:8443/ws/v5/public"
-  coins:
-    - BTC-USDT-SWAP
-    - ETH-USDT-SWAP
-    - SOL-USDT-SWAP
+# 🔒 權限設定
+permissions:
+  contents: write
 
-signals:
-  max_per_scan: 3
-  score_threshold: 68
-  expire_hours: 24
-  entry_zone_tolerance: 0.006    # 進場區 ±0.6%
-  cooldown_hours: 2              # 同幣種同方向冷卻
+# ⚡ 並發控制
+concurrency:
+  group: alpha-oracle-${{ github.ref }}
+  cancel-in-progress: false
 
-timeframes:
-  entry: "15m"
-  confirmations:                 # 多時框共振
-    - "1H"
-    - "4H"
+jobs:
+  run:
+    name: 🤖 Alpha Oracle Pro
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+      # ─────────────────────────────────────
+      # 📦 1. 下載程式碼
+      # ─────────────────────────────────────
+      - name: 📦 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-scoring:
-  supertrend_weight: 50
-  rsi_weight: 20
-  volume_weight: 15              # 量能加分
-  mtf_weight: 15                 # 多時框共振加分
+      # ─────────────────────────────────────
+      # 🐍 2. Python 環境
+      # ─────────────────────────────────────
+      - name: 🐍 Python Setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-risk:
-  fee_rate: 0.001                # 來回手續費估計 0.1%
-  slippage_limit: 0.01           # PENDING 訊號偏離 >1% 作廢
-  daily_loss_limit_pct: -3.0     # 單日累計 -3% 就暫停
-  daily_sl_limit: 2              # 單日連吃 2 次 SL 就暫停
-  daily_trade_limit: 10
-  max_concurrent: 3
-  correlation_filter: true       # BTC/ETH/SOL 同向時不重複
+      # ─────────────────────────────────────
+      # 📦 3. 安裝依賴
+      # ─────────────────────────────────────
+      - name: 📦 Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests websockets pandas numpy --quiet
+          echo "✅ 依賴安裝完成"
 
-anti_wick:
-  enabled: true
-  confirmations: 2               # TP/SL 需連續 2 tick 過線
-  candle_close_mode: false       # 嚴格模式：用 K 收盤判斷 (而非即時價)
+      # ─────────────────────────────────────
+      # 🗄️ 4. 初始化檔案
+      # ─────────────────────────────────────
+      - name: 🗄️ Init Files
+        run: |
+          [ -f active_signals.json ] || echo '{}' > active_signals.json
+          [ -f trade_history.json ] || echo '[]' > trade_history.json
+          touch alpha_oracle.log
+          echo "✅ 檔案初始化完成"
 
-funding:
-  warn_threshold: 0.0005         # >0.05%/8h 警示
+      # ─────────────────────────────────────
+      # 🔍 5. 環境檢查
+      # ─────────────────────────────────────
+      - name: 🔍 Environment Check
+        run: |
+          echo "📋 環境變數檢查："
+          echo "  TG_TOKEN: ${#TG_TOKEN} 字元"
+          echo "  CHAT_ID: ${CHAT_ID:0:10}..."
+          echo "  執行模式: ${{ github.event.inputs.action || 'scan' }}"
+          echo "  時間: $(date '+%Y-%m-%d %H:%M:%S')"
 
-storage:
-  type: sqlite                   # sqlite | json
-  path: "data/alpha_oracle.db"
+      # ─────────────────────────────────────
+      # 🚀 6. 執行 Alpha Oracle
+      # ─────────────────────────────────────
+      - name: 🚀 Run Alpha Oracle Pro
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          
+          # 🔹 專業版配置
+          USE_WEBSOCKET: "true"
+          CANDLE_CLOSE_MODE: "true"
+          DAILY_SL_LIMIT: "2"
+          MULTI_TF_CONFIRMATION: "true"
+          VOLUME_CONFIRMATION: "true"
+          CORRELATION_FILTER: "true"
+          REPORT_TIME: "22:00"
+          
+          # 🔹 交易配置
+          MAX_SIGNALS: "3"
+          SETUP_SCORE_THRESHOLD: "68"
+          TZ: Asia/Taipei
+          PYTHONUNBUFFERED: "1"
+        
+        run: |
+          echo "🚀 Alpha Oracle Pro v13.0 啟動"
+          echo "══════════════════════════════"
+          
+          # 🔹 決定執行模式
+          ACTION="${{ github.event.inputs.action || 'scan' }}"
+          
+          case $ACTION in
+            scan)
+              echo "📡 執行掃描模式..."
+              python main.py
+              ;;
+            daily)
+              echo "📊 執行每日報告..."
+              python main.py /daily
+              ;;
+            monthly)
+              echo "📊 執行月度報告..."
+              python main.py /monthly
+              ;;
+            stats)
+              echo "📋 執行持倉查詢..."
+              python main.py /stats
+              ;;
+            *)
+              echo "⚠️ 未知模式，執行掃描..."
+              python main.py
+              ;;
+          esac
+          
+          echo "══════════════════════════════"
+          echo "✅ 執行完成"
 
-health:
-  api_failure_threshold: 5       # 連續 N 次 API 失敗就通知 admin
-  heartbeat_interval_sec: 3600   # 每小時心跳到 log
+      # ─────────────────────────────────────
+      # 📋 7. 顯示日誌
+      # ─────────────────────────────────────
+      - name: 📋 Show Logs
+        if: always()
+        run: |
+          echo "📝 最後 30 行日誌："
+          echo "────────────────────"
+          tail -30 alpha_oracle.log || echo "❌ 無日誌檔案"
 
-chart:
-  enabled: true
-  output_dir: "charts"
-  candles: 80                    # 顯示最後 N 根
-  width: 12
-  height: 6
+      # ─────────────────────────────────────
+      # 💾 8. 保存狀態
+      # ─────────────────────────────────────
+      - name: 💾 Save State
+        if: always()
+        run: |
+          git config user.name "alpha-bot"
+          git config user.email "bot@alpha-oracle.pro"
+          
+          # 🔹 添加狀態檔案
+          git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
+          
+          # 🔹 如果有變更則提交
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 auto: update state $(date '+%Y-%m-%d %H:%M')"
+            git pull --rebase origin main --quiet || true
+            git push origin main --quiet || git push --force-with-lease origin main --quiet
+            echo "✅ 狀態已保存"
+          else
+            echo "ℹ️  無變更，跳过保存"
+          fi
+        continue-on-error: true
 
-daemon:
-  scan_interval_sec: 60          # WS daemon 模式每 N 秒檢查一次既有訊號
-  reconnect_delay_sec: 5
+      # ─────────────────────────────────────
+      # 📦 9. 上傳日誌 (失敗時)
+      # ─────────────────────────────────────
+      - name: 📦 Upload Logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs-${{ github.run_id }}
+          path: |
+            alpha_oracle.log
+            active_signals.json
+            trade_history.json
+          retention-days: 3
