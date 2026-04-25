@@ -1,18 +1,14 @@
 name: Alpha Oracle Pro
 
 on:
-  # 🕒 每 15 分鐘自動執行掃描
   schedule:
     - cron: "*/15 * * * *"
   
-  # 🔧 手動觸發（無需選擇選項，一鍵執行）
   workflow_dispatch:
 
-# 🔒 權限設定
 permissions:
   contents: write
 
-# ⚡ 並發控制（避免重複執行）
 concurrency:
   group: alpha-oracle-${{ github.ref }}
   cancel-in-progress: false
@@ -24,47 +20,31 @@ jobs:
     timeout-minutes: 5
     
     steps:
-      # ─────────────────────────────────────
-      # 📦 1. 下載程式碼
-      # ─────────────────────────────────────
       - name: 📦 Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      # ─────────────────────────────────────
-      # 🐍 2. Python 環境設定
-      # ─────────────────────────────────────
       - name: 🐍 Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
+          # 🔹 移除 cache: 'pip' 以避免找不到 requirements.txt 的錯誤
 
-      # ─────────────────────────────────────
-      # 📦 3. 安裝依賴套件
-      # ─────────────────────────────────────
       - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests websockets pandas numpy --quiet
           echo "✅ 依賴套件安裝完成"
 
-      # ─────────────────────────────────────
-      # 🗄️ 4. 初始化檔案
-      # ─────────────────────────────────────
       - name: 🗄️ Initialize Files
         run: |
-          # 初始化狀態檔案
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
           [ -f alpha_oracle.db ] || touch alpha_oracle.db
           touch alpha_oracle.log
           echo "✅ 檔案初始化完成"
 
-      # ─────────────────────────────────────
-      # 🔍 5. 環境變數檢查
-      # ─────────────────────────────────────
       - name: 🔍 Environment Check
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
@@ -74,16 +54,13 @@ jobs:
           echo "🔍 環境變數檢查"
           echo "═══════════════════════════════════"
           
-          # 檢查 TG_TOKEN
           if [ -z "$TG_TOKEN" ]; then
             echo "❌ TG_TOKEN 未設定！"
-            echo "  請到 Settings → Secrets → Actions 設定"
             exit 1
           else
             echo "✅ TG_TOKEN: 已設定 (${#TG_TOKEN} 字元)"
           fi
           
-          # 檢查 CHAT_ID
           if [ -z "$CHAT_ID" ]; then
             echo "❌ CHAT_ID 未設定！"
             exit 1
@@ -91,7 +68,6 @@ jobs:
             echo "✅ CHAT_ID: ${CHAT_ID:0:10}..."
           fi
           
-          # 測試 Telegram 連接
           echo ""
           echo "📤 測試 Telegram 連接..."
           RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
@@ -102,45 +78,28 @@ jobs:
           if echo "$RESPONSE" | grep -q '"ok":true'; then
             echo "✅ Telegram 連接成功"
           else
-            echo "❌ Telegram 連接失敗"
-            echo "📝 API 回應: $RESPONSE"
-            echo ""
-            echo "💡 常見原因："
-            echo "  1. TG_TOKEN 錯誤"
-            echo "  2. CHAT_ID 錯誤 (群組需加 -100)"
-            echo "  3. Bot 被封鎖或未啟動"
+            echo "❌ Telegram 連接失敗: $RESPONSE"
             exit 1
           fi
           
           echo "═══════════════════════════════════"
 
-      # ─────────────────────────────────────
-      # 🚀 6. 執行 Alpha Oracle Pro
-      # ─────────────────────────────────────
       - name: 🚀 Run Alpha Oracle Pro v13.0
         env:
-          # 🔹 Telegram 憑證
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          
-          # 🔹 專業版功能配置
-          USE_WEBSOCKET: "true"              # WebSocket 即時價格
-          CANDLE_CLOSE_MODE: "false"         # K 線收盤確認模式 (過濾插針)
-          DAILY_SL_LIMIT: "2"                # 每日止損限額
-          MULTI_TF_CONFIRMATION: "true"      # 多時框共振確認
-          VOLUME_CONFIRMATION: "true"        # 成交量確認
-          CORRELATION_FILTER: "true"         # 相關性過濾
-          REPORT_TIME: "22:00"               # 每日報告發送時間
-          
-          # 🔹 交易參數
-          MAX_SIGNALS: "3"                   # 每輪最大訊號數
-          SETUP_SCORE_THRESHOLD: "68"        # 評分門檻
-          
-          # 🔹 系統設定
-          TZ: Asia/Taipei                    # 時區設定
-          PYTHONUNBUFFERED: "1"              # 即時輸出日誌
-          PYTHONPATH: "."                    # Python 路徑
-          
+          USE_WEBSOCKET: "true"
+          CANDLE_CLOSE_MODE: "false"
+          DAILY_SL_LIMIT: "2"
+          MULTI_TF_CONFIRMATION: "true"
+          VOLUME_CONFIRMATION: "true"
+          CORRELATION_FILTER: "true"
+          REPORT_TIME: "22:00"
+          MAX_SIGNALS: "3"
+          SETUP_SCORE_THRESHOLD: "68"
+          TZ: Asia/Taipei
+          PYTHONUNBUFFERED: "1"
+          PYTHONPATH: "."
         run: |
           echo "🚀 Alpha Oracle Pro v13.0 專業簡報版啟動"
           echo "═══════════════════════════════════"
@@ -154,7 +113,6 @@ jobs:
           echo "  ⏰ 報告時間: $REPORT_TIME"
           echo "═══════════════════════════════════"
           
-          # 🔹 執行主程式
           python main.py
           
           EXIT_CODE=$?
@@ -169,9 +127,6 @@ jobs:
           
           exit $EXIT_CODE
 
-      # ─────────────────────────────────────
-      # 📋 7. 顯示日誌 (總是執行)
-      # ─────────────────────────────────────
       - name: 📋 Show Logs
         if: always()
         run: |
@@ -180,19 +135,12 @@ jobs:
           tail -30 alpha_oracle.log 2>/dev/null || echo "❌ 無日誌檔案"
           echo "─────────────────────────────"
 
-      # ─────────────────────────────────────
-      # 💾 8. 保存狀態檔案
-      # ─────────────────────────────────────
       - name: 💾 Save State Files
         if: always()
         run: |
           git config user.name "alpha-bot"
           git config user.email "bot@alpha-oracle.pro"
-          
-          # 🔹 添加狀態檔案到 git
           git add -f active_signals.json trade_history.json alpha_oracle.db alpha_oracle.log 2>/dev/null || true
-          
-          # 🔹 如果有變更則提交
           if ! git diff --staged --quiet; then
             git commit -m "🤖 auto: sync state $(date '+%Y-%m-%d %H:%M')"
             git pull --rebase origin main --quiet || true
@@ -203,9 +151,6 @@ jobs:
           fi
         continue-on-error: true
 
-      # ─────────────────────────────────────
-      # 📦 9. 上傳除錯檔案 (失敗時)
-      # ─────────────────────────────────────
       - name: 📦 Upload Debug Artifacts
         if: failure()
         uses: actions/upload-artifact@v4
