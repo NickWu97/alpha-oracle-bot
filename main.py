@@ -58,10 +58,10 @@ MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
 SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
 SIGNAL_EXPIRE_HOURS = 24
 
-# 🔹 專業 R:R 策略配置 (可在此調整)
-TP1_R_MULT = 1.5  # TP1 為風險的 1.5 倍 -> 到達後 SL 移至 Entry
-TP2_R_MULT = 3.0  # TP2 為風險的 3.0 倍 -> 到達後 SL 移至 TP1
-TP3_R_MULT = 5.0  # TP3 為風險的 5.0 倍 -> 到達後全部平倉
+# 🔹 專業 R:R 策略配置
+TP1_R_MULT = 1.5
+TP2_R_MULT = 3.0
+TP3_R_MULT = 5.0
 
 DAILY_SL_LIMIT = _get_env_int("DAILY_SL_LIMIT", 2)
 VOLUME_CONFIRMATION = _get_env_bool("VOLUME_CONFIRMATION", True)
@@ -182,7 +182,6 @@ def _get_order_button(order_id: str) -> list:
 
 def _fmt_entry(coin: str, side: str, order_id: str, entry: float, current_price: float,
                sl: float, tp1: float, tp2: float, tp3: float, score: int) -> str:
-    """📌 進場通知 (繁體中文版)"""
     direction = "做多" if side == "LONG" else "做空"
     grade = "🔥" if score >= 80 else "⭐" if score >= 70 else "✅"
     
@@ -212,7 +211,6 @@ def _fmt_entry(coin: str, side: str, order_id: str, entry: float, current_price:
     )
 
 def _fmt_tp(coin: str, side: str, order_id: str, tp_level: str, trigger_price: float, pnl_pct: float) -> str:
-    """🎯 止盈通知"""
     direction = "做多" if side == "LONG" else "做空"
     medal = {"TP1": "🥇", "TP2": "🥈", "TP3": "🏆"}.get(tp_level, "🎯")
     
@@ -239,7 +237,6 @@ def _fmt_tp(coin: str, side: str, order_id: str, tp_level: str, trigger_price: f
     )
 
 def _fmt_sl(coin: str, side: str, order_id: str, trigger_price: float, pnl_pct: float, is_be: bool) -> str:
-    """🛑 止損通知"""
     direction = "做多" if side == "LONG" else "做空"
     label = "🛡 保本出場" if is_be else "❌ 止損離場"
     tag = "`0.0R`" if is_be else "`-1.0R`"
@@ -271,7 +268,7 @@ def _fmt_daily_report(stats: dict) -> str:
     )
 
 # ─────────────────────────────────────────────────────────
-# 5. 高級技術分析 (SMC/ICT/SNR)
+# 5. 高級技術分析
 # ─────────────────────────────────────────────────────────
 class AdvancedAnalyzer:
     @staticmethod
@@ -379,7 +376,7 @@ def calc_advanced_score(df, side, curr_vol):
     return score, "A+ 極強" if score >= 85 else "A 強力" if score >= 70 else "B+ 觀望", signal_type
 
 # ─────────────────────────────────────────────────────────
-# 7. 訊號生成 (應用 R:R 策略)
+# 7. 訊號生成
 # ─────────────────────────────────────────────────────────
 def generate_signal(instId, df, price, volume):
     if df is None or len(df) < 50: return None
@@ -395,7 +392,6 @@ def generate_signal(instId, df, price, volume):
         sl = entry - atr*1.5 if side == "LONG" else entry + atr*1.5
         risk = abs(entry - sl)
         
-        # 🔹 套用 R:R 策略設定
         tp1 = entry + (risk * TP1_R_MULT) if side == "LONG" else entry - (risk * TP1_R_MULT)
         tp2 = entry + (risk * TP2_R_MULT) if side == "LONG" else entry - (risk * TP2_R_MULT)
         tp3 = entry + (risk * TP3_R_MULT) if side == "LONG" else entry - (risk * TP3_R_MULT)
@@ -410,7 +406,7 @@ def generate_signal(instId, df, price, volume):
     return max(signals, key=lambda x: x["score"]) if signals else None
 
 # ─────────────────────────────────────────────────────────
-# 8. SignalTracker (止損移動邏輯)
+# 8. SignalTracker
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, db):
@@ -499,7 +495,6 @@ class SignalTracker:
         tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
         reply_id = sig.get("entry_msg_id")
         
-        # PENDING → ACTIVE
         if status == "PENDING":
             if time.time() > sig["expires"]:
                 send_tg(f"⏰ *{coin} 過期*\n🆔 `{order_id}`", reply_to_id=reply_id)
@@ -520,7 +515,6 @@ class SignalTracker:
         
         if status not in ("ACTIVE", "BE", "TRAIL"): return False
         
-        # SL 觸發 (優先檢查)
         if (side == "LONG" and price <= sl) or (side == "SHORT" and price >= sl):
             is_be = status in ("BE", "TRAIL") and abs(sl - entry) < entry * 0.0001
             pnl = ((price - entry) / entry * 100) if side == "LONG" else ((entry - price) / entry * 100)
@@ -529,27 +523,24 @@ class SignalTracker:
             _daily_sl_count += 1
             return True
         
-        # TP1 觸發 -> 止損移至進場價 (保本)
         if not sig["hit_tp1"] and ((side == "LONG" and price >= tp1) or (side == "SHORT" and price <= tp1)):
             sig["hit_tp1"] = True
-            sig["sl"] = entry  # 🔹 移動 SL 到開倉價格
+            sig["sl"] = entry
             sig["status"] = "BE"
             pnl = ((price - entry) / entry * 100) if side == "LONG" else ((entry - price) / entry * 100)
             send_tg(_fmt_tp(coin, side, order_id, "TP1", price, pnl), reply_to_id=reply_id, buttons=_get_order_button(order_id))
             _record_trade(db, coin, side, order_id, entry, price, "TP1", sig["score"])
             self.update_signal(key, hit_tp1=True, sl=entry, status="BE")
         
-        # TP2 觸發 -> 止損移至 TP1 (鎖利)
         if sig["hit_tp1"] and not sig["hit_tp2"] and ((side == "LONG" and price >= tp2) or (side == "SHORT" and price <= tp2)):
             sig["hit_tp2"] = True
-            sig["sl"] = tp1  # 🔹 移動 SL 到 TP1 價格
+            sig["sl"] = tp1
             sig["status"] = "TRAIL"
             pnl = ((price - entry) / entry * 100) if side == "LONG" else ((entry - price) / entry * 100)
             send_tg(_fmt_tp(coin, side, order_id, "TP2", price, pnl), reply_to_id=reply_id, buttons=_get_order_button(order_id))
             _record_trade(db, coin, side, order_id, entry, price, "TP2", sig["score"])
             self.update_signal(key, hit_tp2=True, sl=tp1, status="TRAIL")
         
-        # TP3 觸發 -> 全部平倉
         if sig["hit_tp2"] and not sig["hit_tp3"] and ((side == "LONG" and price >= tp3) or (side == "SHORT" and price <= tp3)):
             sig["hit_tp3"] = True
             pnl = ((price - entry) / entry * 100) if side == "LONG" else ((entry - price) / entry * 100)
@@ -572,7 +563,7 @@ def _record_trade(db, coin, side, order_id, entry, close_price, close_type, scor
     except Exception as e: logging.error(f"❌ 記錄失敗: {e}")
 
 # ─────────────────────────────────────────────────────────
-# 9. 價格抓取 (OKX)
+# 9. 價格抓取
 # ─────────────────────────────────────────────────────────
 def fetch_price(instId, retries=2):
     for attempt in range(retries + 1):
@@ -662,7 +653,7 @@ def main():
             elif cmd == "/monthly": send_tg("📊 月度戰報功能開發中"); return
         
         if get_tw_date().endswith("-01") and get_tw_hour() == 22 and get_tw_minute() < 5:
-            pass # 月報邏輯
+            pass
         
         run_scan(tracker, db)
         logging.info("🎉 執行完成")
