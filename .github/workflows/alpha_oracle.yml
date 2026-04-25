@@ -2,6 +2,7 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
+    # 🕒 每 15 分鐘執行一次
     - cron: "*/15 * * * *"
   
   workflow_dispatch:
@@ -15,100 +16,48 @@ concurrency:
 
 jobs:
   run:
-    name: 🤖 Alpha Oracle Pro v15.0
+    name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3  # ⚡ 嚴格超時 3 分鐘
     
     steps:
-      - name: 📦 Checkout
+      - name: 📦 下載程式碼
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: 🐍 Python Setup
+      - name: 🐍 設置 Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 📦 Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests websockets pandas numpy --quiet
-          echo "✅ 依賴安裝完成"
+      - name: 📦 安裝依賴
+        run: pip install requests --quiet
 
-      - name: 🗄️ Init Files
+      - name: 🗄️ 初始化檔案
         run: |
           [ -f active_signals.json ] || echo '{}' > active_signals.json
           [ -f trade_history.json ] || echo '[]' > trade_history.json
-          touch alpha_oracle.log
 
-      - name: 🔍 Environment Check
+      - name: 🚀 執行 Alpha Oracle
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: |
-          echo "🔍 環境變數檢查："
-          if [ -z "$TG_TOKEN" ]; then echo "❌ TG_TOKEN 未設定"; exit 1; fi
-          if [ -z "$CHAT_ID" ]; then echo "❌ CHAT_ID 未設定"; exit 1; fi
-          echo "✅ TG_TOKEN: 已設定 (${#TG_TOKEN} 字元)"
-          echo "✅ CHAT_ID: ${CHAT_ID:0:10}..."
-          
-          RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
-            -d "chat_id=${CHAT_ID}" -d "text=🧪 Alpha Oracle Pro v15.0 測試" -d "parse_mode=Markdown")
-          if echo "$RESPONSE" | grep -q '"ok":true'; then
-            echo "✅ Telegram 連接成功"
-          else
-            echo "❌ Telegram 連接失敗: $RESPONSE"
-            exit 1
-          fi
-
-      - name: 🚀 Run Alpha Oracle Pro
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          USE_WEBSOCKET: "true"
-          CANDLE_CLOSE_MODE: "false"
-          DAILY_SL_LIMIT: "2"
-          MULTI_TF_CONFIRMATION: "true"
-          VOLUME_CONFIRMATION: "true"
-          CORRELATION_FILTER: "true"
-          PRICE_DUAL_SOURCE: "true"
-          REPORT_TIME: "22:00"
           MAX_SIGNALS: "3"
           SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
-          PYTHONUNBUFFERED: "1"
         run: |
-          echo "🚀 Alpha Oracle Pro v15.0 啟動"
+          echo "🚀 Alpha Oracle Pro - 繁體中文版"
           python main.py
-          echo "✅ 執行完成"
 
-      - name: 📋 Show Logs
-        if: always()
-        run: |
-          echo "📝 最後 30 行日誌："
-          tail -30 alpha_oracle.log || echo "❌ 無日誌"
-
-      - name: 💾 Save State
+      - name: 💾 保存狀態
         if: always()
         run: |
           git config user.name "alpha-bot"
-          git config user.email "bot@alpha-oracle.pro"
-          git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
-          if ! git diff --staged --quiet; then
-            git commit -m "🤖 auto: update state $(date '+%Y-%m-%d %H:%M')"
-            git pull --rebase origin main --quiet || true
-            git push origin main --quiet || git push --force-with-lease origin main --quiet
-          fi
+          git config user.email "bot@alpha.com"
+          git add -f active_signals.json trade_history.json 2>/dev/null || true
+          git diff --staged --quiet || {
+            git commit -m "chore: 更新狀態 [skip ci]"
+            git push --quiet
+          }
         continue-on-error: true
-
-      - name: 📦 Upload Logs (on failure)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-logs-${{ github.run_id }}
-          path: |
-            alpha_oracle.log
-            active_signals.json
-            trade_history.json
-          retention-days: 3
