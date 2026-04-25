@@ -31,8 +31,8 @@
     "hit_tp3": false,
     "activated_at": 1777141615.3531349,
     "entry_message_id": 2267,
-    "current_price": 2313.17,
-    "last_checked_ts": 1777151700.0
+    "current_price": 2314.68,
+    "last_checked_ts": 1777154400.0
   },
   "SOL-USDT-SWAP_LONG_1777150634-641DCABD": {
     "instId": "SOL-USDT-SWAP",
@@ -66,7 +66,42 @@
     "hit_tp3": false,
     "activated_at": 1777150634.9187303,
     "entry_message_id": 2285,
-    "last_checked_ts": 1777151700.0,
-    "current_price": 85.75
+    "last_checked_ts": 1777154400.0,
+    "current_price": 85.92
+  },
+  "BTC-USDT-SWAP_LONG_1777155501-093A4136": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 77471.7,
+    "sl": 77356.275,
+    "tp1": 77644.8375,
+    "tp2": 77817.975,
+    "tp3": 78048.825,
+    "score": 90,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 66.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5
+    },
+    "funding_rate": -1.86753529525e-05,
+    "created": 1777155501.842252,
+    "expires": 1777241901.8422523,
+    "order_id": "1777155501-093A4136",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777155501.842419,
+    "entry_message_id": 2292,
+    "last_checked_ts": 1777155501.842419,
+    "current_price": 77471.7
   }
 }
