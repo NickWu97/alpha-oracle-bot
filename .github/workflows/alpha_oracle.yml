@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   run:
-    name: 🤖 Alpha Oracle Pro v14.0
+    name: 🤖 Alpha Oracle Pro v15.0
     runs-on: ubuntu-latest
     timeout-minutes: 5
     
@@ -54,7 +54,7 @@ jobs:
           echo "✅ CHAT_ID: ${CHAT_ID:0:10}..."
           
           RESPONSE=$(curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
-            -d "chat_id=${CHAT_ID}" -d "text=🧪 Alpha Oracle Pro v14.0 測試" -d "parse_mode=Markdown")
+            -d "chat_id=${CHAT_ID}" -d "text=🧪 Alpha Oracle Pro v15.0 測試" -d "parse_mode=Markdown")
           if echo "$RESPONSE" | grep -q '"ok":true'; then
             echo "✅ Telegram 連接成功"
           else
@@ -79,7 +79,7 @@ jobs:
           TZ: Asia/Taipei
           PYTHONUNBUFFERED: "1"
         run: |
-          echo "🚀 Alpha Oracle Pro v14.0 啟動"
+          echo "🚀 Alpha Oracle Pro v15.0 啟動"
           python main.py
           echo "✅ 執行完成"
 
