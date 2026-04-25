@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v10.8 — 訂單追蹤增強版 (修復版)
+Alpha Oracle Pro v10.8 — 訂單追蹤增強版 (技術分析加強)
 ══════════════════════════════════════════════════════════════════════
 ✨ 功能：
   ✅ 訂單編號正確顯示（不再生成臨時訂單號）
-  ✅ 價格同步驗證（與 OKX 即時價格對齊）
+  ✅ 價格同步驗證（與 OKX/TradingView 即時價格對齊）
   ✅ 止損顯示具體百分比（-X.X%）
   ✅ LINE 風格回覆按鈕 + 時間戳
+  ✅ 技術分析：SMC/ICT/SNR/盤口/價格行為（後台執行）
+  ✅ 全部繁體中文通知
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -57,7 +59,7 @@ _price_cache = {}
 _signal_cooldown = {}
 
 # ─────────────────────────────────────────────────────────
-# 2. 通知系統（修復版）
+# 2. 通知系統（繁體中文 + 線層回覆）
 # ─────────────────────────────────────────────────────────
 def send_tg(msg: str, parse_mode: str = "Markdown", reply_markup: dict = None) -> int:
     """📤 發送 Telegram 通知（支援回覆按鈕）🔄 返回 message_id"""
@@ -104,12 +106,12 @@ def _format_entry_alert(coin: str, side: str, order_id: str, price: float, entry
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
     grade = "🔥" if score >= 80 else "✅" if score >= 68 else "⚪"
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S TW")
     
     tp1_pct = (tp1 - entry) / entry * 100
     tp2_pct = (tp2 - entry) / entry * 100
     tp3_pct = (tp3 - entry) / entry * 100
-    sl_pct = (sl - entry) / entry * 100  # 🔹 計算止損百分比
+    sl_pct = (sl - entry) / entry * 100
     
     return (
         f"{emoji} *{coin} 進場提醒* {grade}\n"
@@ -126,7 +128,7 @@ def _format_entry_alert(coin: str, side: str, order_id: str, price: float, entry
         f"  TP2 `{tp2:.4f}` (+{tp2_pct:.1f}%)\n"
         f"  TP3 `{tp3:.4f}` (+{tp3_pct:.1f}%)\n"
         f"\n"
-        f"🛑 止損：`{sl:.4f}` ({sl_pct:+.1f}%)\n"  # 🔹 顯示止損百分比
+        f"🛑 止損：`{sl:.4f}` ({sl_pct:+.1f}%)\n"
         f"\n"
         f"💡 到達 TP1 自動保本，到達 TP2 自動鎖利"
     )
@@ -135,8 +137,7 @@ def _format_tp_alert(coin: str, side: str, order_id: str, tp_level: str, price: 
                      entry: float, sl: float, pnl_pct: float, r_mult: float) -> str:
     """🎯 止盈通知（含訂單編號 + 時間戳）"""
     direction = "做多" if side == "LONG" else "做空"
-    emoji = "🟢" if side == "LONG" else "🔴"
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S TW")
     
     return (
         f"🎯 *{coin} {tp_level} 達標！*\n"
@@ -156,10 +157,9 @@ def _format_sl_alert(coin: str, side: str, order_id: str, price: float, entry: f
                      pnl_pct: float, is_be: bool = False) -> str:
     """🛑 止損通知（含訂單編號 + 時間戳 + 具體百分比）"""
     direction = "做多" if side == "LONG" else "做空"
-    emoji = "🟢" if side == "LONG" else "🔴"
     label = "🔒 保本出場" if is_be else "❌ 止損離場"
     r_tag = "`0.0R`" if is_be else "`-1.0R`"
-    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    timestamp = (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S TW")
     
     return (
         f"{label} *{coin}*\n"
@@ -168,7 +168,7 @@ def _format_sl_alert(coin: str, side: str, order_id: str, price: float, entry: f
         f"⏰ 時間：{timestamp}\n"
         f"方向：{direction}\n"
         f"觸發價：`{price:.4f}`\n"
-        f"結果：`{pnl_pct:+.1f}%` {r_tag}\n"  # 🔹 顯示具體百分比
+        f"結果：`{pnl_pct:+.1f}%` {r_tag}\n"
         f"\n"
         f"💡 {'資金安全，等待下一次機會 💪' if is_be else '遵守風控，勿加碼攤平'}"
     )
@@ -208,10 +208,10 @@ def _format_position_update(coin: str, side: str, order_id: str, current_price: 
     )
 
 # ─────────────────────────────────────────────────────────
-# 3. 數據抓取（價格同步）
+# 3. 價格抓取 (OKX API - 與 TradingView 同源)
 # ─────────────────────────────────────────────────────────
 def fetch_price(instId: str) -> float:
-    """🔍 獲取即時價格（帶快取）"""
+    """🔍 獲取即時價格（帶快取）- 使用 OKX API"""
     now = time.time()
     if instId in _price_cache:
         price, t = _price_cache[instId]
@@ -219,6 +219,7 @@ def fetch_price(instId: str) -> float:
             return price
     
     try:
+        # 🔹 OKX API (TradingView 的數據源之一)
         res = requests.get(
             f"https://www.okx.com/api/v5/market/ticker?instId={instId}",
             timeout=2
@@ -267,7 +268,7 @@ def fetch_candles(instId: str, tf: str = "15m", limit: int = 100):
         return None
 
 # ─────────────────────────────────────────────────────────
-# 4. 技術指標
+# 4. 技術指標 (基礎)
 # ─────────────────────────────────────────────────────────
 def calc_atr(df, period: int = 14) -> float:
     if len(df) < period + 1:
@@ -287,7 +288,7 @@ def calc_atr(df, period: int = 14) -> float:
     atr = sum(tr_values[-period:]) / period
     return atr if atr > 0 else 0.001
 
-def calc_supertrend(df, period: int = 10, mult: float = 3.0) -> int:
+def calc_supertrend(df, period: int = 10) -> int:
     if len(df) < period + 2:
         return 0
     
@@ -331,35 +332,186 @@ def calc_rsi(df, period: int = 14) -> float:
     rsi = 100 - (100 / (1 + rs))
     return rsi
 
-def calc_score(df, side: str) -> tuple:
-    score = 0
+# ─────────────────────────────────────────────────────────
+# 5. 高級技術分析 (後台執行 - SMC/ICT/SNR/盤口/價格行為)
+# ─────────────────────────────────────────────────────────
+def _find_order_blocks(df, lookback: int = 50) -> list:
+    """🧱 尋找訂單塊 (OB) - SMC 核心概念"""
+    obs = []
+    for i in range(len(df)-2, max(0, len(df)-lookback), -1):
+        curr = df[i]
+        # 看跌訂單塊 (陰線後未跌破低點)
+        if curr["c"] < curr["o"]:
+            valid = all(df[j]["l"] >= curr["l"] * 0.999 for j in range(i+1, min(i+10, len(df))))
+            if valid:
+                obs.append({"type": "bearish", "high": curr["h"], "low": curr["l"]})
+        # 看漲訂單塊 (陽線後未突破高點)
+        elif curr["c"] > curr["o"]:
+            valid = all(df[j]["h"] <= curr["h"] * 1.001 for j in range(i+1, min(i+10, len(df))))
+            if valid:
+                obs.append({"type": "bullish", "high": curr["h"], "low": curr["l"]})
+        if len(obs) >= 3:
+            break
+    return obs
+
+def _find_fvg(df, lookback: int = 50) -> list:
+    """⚡ 尋找公允價值缺口 (FVG) - ICT 核心概念"""
+    fvgs = []
+    for i in range(len(df)-2, max(0, len(df)-lookback), -1):
+        curr, prev2 = df[i], df[i+2]
+        # 看漲 FVG (當前低點 > 前兩根高點)
+        if curr["l"] > prev2["h"]:
+            fvgs.append({"type": "bullish", "top": curr["l"], "bottom": prev2["h"]})
+        # 看跌 FVG (當前高點 < 前兩根低點)
+        elif curr["h"] < prev2["l"]:
+            fvgs.append({"type": "bearish", "top": prev2["l"], "bottom": curr["h"]})
+        if len(fvgs) >= 3:
+            break
+    return fvgs
+
+def _find_snr(df, lookback: int = 100) -> dict:
+    """📏 尋找支撐阻力 (SNR)"""
+    highs = [c["h"] for c in df[-lookback:]]
+    lows = [c["l"] for c in df[-lookback:]]
+    return {
+        "resistance": max(highs),
+        "support": min(lows),
+        "mid": (max(highs) + min(lows)) / 2
+    }
+
+def _detect_price_action(df) -> str:
+    """📊 檢測價格行為 (Pin Bar/吞沒/內包)"""
+    if len(df) < 3:
+        return "none"
     
+    last, prev = df[-1], df[-2]
+    body = abs(last["c"] - last["o"])
+    upper = last["h"] - max(last["c"], last["o"])
+    lower = min(last["c"], last["o"]) - last["l"]
+    
+    # Pin Bar 判斷
+    if upper > body * 2 and lower < body * 0.5:
+        return "bearish_pin"  # 看跌吞沒
+    elif lower > body * 2 and upper < body * 0.5:
+        return "bullish_pin"  # 看漲吞沒
+    # 吞沒形態
+    elif last["c"] > last["o"] and prev["c"] < prev["o"] and last["c"] > prev["o"]:
+        return "bullish_engulf"
+    elif last["c"] < last["o"] and prev["c"] > prev["o"] and last["c"] < prev["o"]:
+        return "bearish_engulf"
+    
+    return "none"
+
+def _check_liquidity_sweep(df, side: str) -> bool:
+    """💧 檢測流動性掃蕩 (ICT 概念)"""
+    if len(df) < 10:
+        return False
+    
+    recent = df[-10:]
+    if side == "LONG":
+        # 多頭掃蕩：創新低後快速收回
+        lows = [c["l"] for c in recent]
+        return recent[-1]["l"] < min(lows[:-1]) and recent[-1]["c"] > recent[-1]["o"]
+    else:
+        # 空頭掃蕩：創新高後快速回落
+        highs = [c["h"] for c in recent]
+        return recent[-1]["h"] > max(highs[:-1]) and recent[-1]["c"] < recent[-1]["o"]
+
+def _check_order_flow(df, side: str) -> float:
+    """📈 盤口動能評分 (簡化版)"""
+    if len(df) < 5:
+        return 0.5
+    
+    recent = df[-5:]
+    if side == "LONG":
+        bullish = sum(1 for c in recent if c["c"] > c["o"])
+        return bullish / 5
+    else:
+        bearish = sum(1 for c in recent if c["c"] < c["o"])
+        return bearish / 5
+
+# ─────────────────────────────────────────────────────────
+# 6. 專業評分系統 (整合所有技術分析)
+# ─────────────────────────────────────────────────────────
+def calc_score(df, side: str) -> tuple:
+    """📊 專業評分系統 (後台執行所有技術分析)"""
+    score = 0
+    curr_price = df[-1]["c"]
+    
+    # 1. 趨勢分析 (30 分)
     st = calc_supertrend(df)
     if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1):
-        score += 60
-    elif st == 0:
         score += 30
+    elif st == 0:
+        score += 15
     
+    # 2. RSI 分析 (25 分)
     rsi = calc_rsi(df)
     if side == "LONG":
         if 30 <= rsi <= 50:
-            score += 40
+            score += 25  # RSI 低，適合做多
         elif 50 < rsi < 70:
-            score += 20
+            score += 15
     else:
         if 50 <= rsi <= 70:
-            score += 40
+            score += 25  # RSI 高，適合做空
         elif 30 < rsi < 50:
-            score += 20
+            score += 15
     
+    # 3. 訂單塊分析 (20 分) - SMC
+    obs = _find_order_blocks(df)
+    for ob in obs:
+        if ob["type"] == "bullish" and side == "LONG":
+            if ob["low"] * 0.999 <= curr_price <= ob["high"] * 1.001:
+                score += 20
+                break
+        elif ob["type"] == "bearish" and side == "SHORT":
+            if ob["low"] * 0.999 <= curr_price <= ob["high"] * 1.001:
+                score += 20
+                break
+    
+    # 4. 公允價值缺口分析 (15 分) - ICT
+    fvgs = _find_fvg(df)
+    for fvg in fvgs:
+        if fvg["type"] == "bullish" and side == "LONG":
+            if fvg["bottom"] * 0.999 <= curr_price <= fvg["top"] * 1.001:
+                score += 15
+                break
+        elif fvg["type"] == "bearish" and side == "SHORT":
+            if fvg["bottom"] * 0.999 <= curr_price <= fvg["top"] * 1.001:
+                score += 15
+                break
+    
+    # 5. 支撐阻力分析 (5 分) - SNR
+    snr = _find_snr(df)
+    if side == "LONG" and curr_price < snr["support"] * 1.01:
+        score += 5  # 接近支撐位
+    elif side == "SHORT" and curr_price > snr["resistance"] * 0.99:
+        score += 5  # 接近阻力位
+    
+    # 6. 價格行為分析 (5 分)
+    pa = _detect_price_action(df)
+    if ("bull" in pa and side == "LONG") or ("bear" in pa and side == "SHORT"):
+        score += 5
+    
+    # 7. 流動性掃蕩分析 (5 分) - ICT
+    if _check_liquidity_sweep(df, side):
+        score += 5
+    
+    # 8. 盤口動能分析 (5 分)
+    flow = _check_order_flow(df, side)
+    if flow >= 0.6:
+        score += 5
+    
+    # 確定等級
     grade = "A+ 極強 🔥" if score >= 85 else "A 強力 ⭐" if score >= 70 else "B+ 觀望 ✅"
     return score, grade
 
 # ─────────────────────────────────────────────────────────
-# 5. 訊號生成
+# 7. 訊號生成
 # ─────────────────────────────────────────────────────────
 def generate_signal(instId: str, df, current_price: float):
-    """🎯 生成交易訊號（使用即時價格）"""
+    """🎯 生成交易訊號（使用即時價格 + 專業評分）"""
     if df is None or len(df) < 50:
         return None
     
@@ -399,7 +551,7 @@ def generate_signal(instId: str, df, current_price: float):
     return max(signals, key=lambda x: x["score"]) if signals else None
 
 # ─────────────────────────────────────────────────────────
-# 6. SignalTracker 類（修復訂單編號顯示）
+# 8. SignalTracker 類（訂單追蹤）
 # ─────────────────────────────────────────────────────────
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
@@ -427,13 +579,12 @@ class SignalTracker:
     
     def add(self, signal: dict, active: bool = False) -> tuple:
         """📌 新增追蹤訊號（生成唯一訂單編號）🔄 返回 (key, order_id)"""
-        # 🔹 先生成訂單編號
         order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
         
         key = f"{signal['instId']}_{signal['side']}_{order_id}"
         self.signals[key] = {
             **signal,
-            "order_id": order_id,  # 🔹 儲存訂單編號
+            "order_id": order_id,
             "status": "ACTIVE" if active else "PENDING",
             "hit_tp1": False,
             "hit_tp2": False,
@@ -442,7 +593,7 @@ class SignalTracker:
         }
         self._save()
         logging.info(f"📌 新增訂單：{order_id}")
-        return key, order_id  # 🔹 返回訂單編號供通知使用
+        return key, order_id
     
     def get_order_by_id(self, order_id: str) -> dict:
         """🔍 通過訂單編號查詢訂單"""
@@ -478,7 +629,7 @@ class SignalTracker:
             
             sig["current_price"] = price
             coin = sig["instId"].split("-")[0]
-            order_id = sig.get("order_id", "N/A")  # 🔹 獲取真實訂單編號
+            order_id = sig.get("order_id", "N/A")
             side, status = sig["side"], sig["status"]
             entry, sl = sig["entry"], sig["sl"]
             tp1, tp2, tp3 = sig["tp1"], sig["tp2"], sig["tp3"]
@@ -500,7 +651,6 @@ class SignalTracker:
                     sig["activated_at"] = time.time()
                     self._save()
                     
-                    # 🔹 使用真實訂單編號發送通知
                     msg = _format_entry_alert(coin, side, order_id, price, entry, sl, tp1, tp2, tp3, sig["score"])
                     keyboard = _get_order_keyboard(order_id)
                     send_tg(msg, reply_markup=keyboard)
@@ -661,8 +811,8 @@ def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price
     pnl = ((close_price - entry) / entry * 100) if side == "LONG" else ((entry - close_price) / entry * 100)
     
     trade = {
-        "time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"),
-        "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "time": (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M"),
+        "date": (datetime.now(timezone.utc) + timedelta(hours=8)).strftime("%Y-%m-%d"),
         "order_id": order_id,
         "coin": coin,
         "side": side,
@@ -687,7 +837,7 @@ def _record_trade(coin: str, side: str, order_id: str, entry: float, close_price
         logging.error(f"❌ 記錄交易失敗：{e}")
 
 # ─────────────────────────────────────────────────────────
-# 7. 主掃描邏輯（修復版）
+# 9. 主掃描邏輯
 # ─────────────────────────────────────────────────────────
 def run_scan(tracker: SignalTracker) -> int:
     """🔍 執行掃描（使用即時價格 + 正確訂單編號）"""
@@ -703,7 +853,7 @@ def run_scan(tracker: SignalTracker) -> int:
             continue
         
         try:
-            # 🔹 先獲取即時價格
+            # 🔹 先獲取即時價格 (OKX API)
             current_price = fetch_price(instId)
             if current_price <= 0:
                 logging.warning(f"[{instId}] 無法獲取價格")
@@ -716,12 +866,12 @@ def run_scan(tracker: SignalTracker) -> int:
             if df is None:
                 continue
             
-            # 🔹 使用即時價格生成訊號
+            # 🔹 使用即時價格生成訊號 (含專業技術分析)
             signal = generate_signal(instId, df, current_price)
             if not signal:
                 continue
             
-            # 🔹 先添加到追蹤器獲取真實訂單編號
+            # 🔹 檢查是否在進場區
             in_zone = (
                 (signal["side"] == "LONG" and signal["entry"]*(1-0.006) <= current_price <= signal["entry"]*(1+0.002)) or
                 (signal["side"] == "SHORT" and signal["entry"]*(1-0.002) <= current_price <= signal["entry"]*(1+0.006))
@@ -734,7 +884,7 @@ def run_scan(tracker: SignalTracker) -> int:
             msg = _format_entry_alert(
                 coin=instId.split("-")[0],
                 side=signal["side"],
-                order_id=order_id,  # 🔹 使用真實訂單編號
+                order_id=order_id,
                 price=current_price,
                 entry=signal["entry"],
                 sl=signal["sl"],
@@ -763,7 +913,7 @@ def run_scan(tracker: SignalTracker) -> int:
     return sent
 
 # ─────────────────────────────────────────────────────────
-# 8. 主函式
+# 10. 主函式
 # ─────────────────────────────────────────────────────────
 def main():
     try:
