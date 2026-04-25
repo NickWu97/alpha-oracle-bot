@@ -1,63 +1,74 @@
-name: Alpha Oracle Pro
+# ══════════════════════════════════════════════════════════════
+# Alpha Oracle Pro v12 — 主設定檔
+# 所有 ${NAME} 形式會從環境變數讀取；${NAME:default} 可給預設值
+# ══════════════════════════════════════════════════════════════
 
-on:
-  schedule:
-    # 🕒 每 15 分鐘執行一次
-    - cron: "*/15 * * * *"
-  
-  workflow_dispatch:
+telegram:
+  token: "${TG_TOKEN}"
+  chat_id: "${CHAT_ID}"
+  # 選填：系統健康警報會發到這個 chat (API 連續失敗、崩潰等)
+  admin_chat_id: "${ADMIN_CHAT_ID:}"
 
-permissions:
-  contents: write
+exchange:
+  name: okx
+  rest_url: "https://www.okx.com"
+  ws_public_url: "wss://ws.okx.com:8443/ws/v5/public"
+  coins:
+    - BTC-USDT-SWAP
+    - ETH-USDT-SWAP
+    - SOL-USDT-SWAP
 
-concurrency:
-  group: alpha-oracle-${{ github.ref }}
-  cancel-in-progress: false
+signals:
+  max_per_scan: 3
+  score_threshold: 68
+  expire_hours: 24
+  entry_zone_tolerance: 0.006    # 進場區 ±0.6%
+  cooldown_hours: 2              # 同幣種同方向冷卻
 
-jobs:
-  run:
-    name: 🤖 Alpha Oracle Pro
-    runs-on: ubuntu-latest
-    timeout-minutes: 3  # ⚡ 嚴格超時 3 分鐘
-    
-    steps:
-      - name: 📦 下載程式碼
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+timeframes:
+  entry: "15m"
+  confirmations:                 # 多時框共振
+    - "1H"
+    - "4H"
 
-      - name: 🐍 設置 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+scoring:
+  supertrend_weight: 50
+  rsi_weight: 20
+  volume_weight: 15              # 量能加分
+  mtf_weight: 15                 # 多時框共振加分
 
-      - name: 📦 安裝依賴
-        run: pip install requests --quiet
+risk:
+  fee_rate: 0.001                # 來回手續費估計 0.1%
+  slippage_limit: 0.01           # PENDING 訊號偏離 >1% 作廢
+  daily_loss_limit_pct: -3.0     # 單日累計 -3% 就暫停
+  daily_sl_limit: 2              # 單日連吃 2 次 SL 就暫停
+  daily_trade_limit: 10
+  max_concurrent: 3
+  correlation_filter: true       # BTC/ETH/SOL 同向時不重複
 
-      - name: 🗄️ 初始化檔案
-        run: |
-          [ -f active_signals.json ] || echo '{}' > active_signals.json
-          [ -f trade_history.json ] || echo '[]' > trade_history.json
+anti_wick:
+  enabled: true
+  confirmations: 2               # TP/SL 需連續 2 tick 過線
+  candle_close_mode: false       # 嚴格模式：用 K 收盤判斷 (而非即時價)
 
-      - name: 🚀 執行 Alpha Oracle
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "3"
-          SETUP_SCORE_THRESHOLD: "68"
-          TZ: Asia/Taipei
-        run: |
-          echo "🚀 Alpha Oracle Pro - 繁體中文版"
-          python main.py
+funding:
+  warn_threshold: 0.0005         # >0.05%/8h 警示
 
-      - name: 💾 保存狀態
-        if: always()
-        run: |
-          git config user.name "alpha-bot"
-          git config user.email "bot@alpha.com"
-          git add -f active_signals.json trade_history.json 2>/dev/null || true
-          git diff --staged --quiet || {
-            git commit -m "chore: 更新狀態 [skip ci]"
-            git push --quiet
-          }
-        continue-on-error: true
+storage:
+  type: sqlite                   # sqlite | json
+  path: "data/alpha_oracle.db"
+
+health:
+  api_failure_threshold: 5       # 連續 N 次 API 失敗就通知 admin
+  heartbeat_interval_sec: 3600   # 每小時心跳到 log
+
+chart:
+  enabled: true
+  output_dir: "charts"
+  candles: 80                    # 顯示最後 N 根
+  width: 12
+  height: 6
+
+daemon:
+  scan_interval_sec: 60          # WS daemon 模式每 N 秒檢查一次既有訊號
+  reconnect_delay_sec: 5
