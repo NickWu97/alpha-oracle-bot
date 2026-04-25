@@ -2,8 +2,8 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
+    # 🕒 每 15 分鐘執行一次
     - cron: "*/15 * * * *"
-  
   workflow_dispatch:
 
 permissions:
@@ -15,115 +15,49 @@ concurrency:
 
 jobs:
   run:
-    name: 🤖 Alpha Oracle Pro v10.8
+    name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 5
-    
-    # 🔹 新增：強制使用 Node.js 24 (提前相容性測試)
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-    
+    timeout-minutes: 5  # ⚡ 提高一點 buffer，避免 OKX 偶發慢回應被砍
+
     steps:
-      # ─────────────────────────────────────
-      # 📦 1. 下載程式碼 (使用最新版)
-      # ─────────────────────────────────────
-      - name: 📦 Checkout Repository
-        uses: actions/checkout@v5  # 🔹 升級到 v5 (支援 Node.js 24)
+      - name: 📦 下載程式碼
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      # ─────────────────────────────────────
-      # 🐍 2. Python 環境設定 (使用最新版)
-      # ─────────────────────────────────────
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5  # ✅ v5 已支援 Node.js 24
+      - name: 🐍 設置 Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      # ─────────────────────────────────────
-      # 📦 3. 安裝依賴套件
-      # ─────────────────────────────────────
-      - name: 📦 Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests --quiet
-          echo "✅ 依賴安裝完成"
+      - name: 📦 安裝依賴
+        run: pip install requests --quiet
 
-      # ─────────────────────────────────────
-      # 🗄️ 4. 初始化檔案
-      # ─────────────────────────────────────
-      - name: 🗄️ Initialize Files
+      - name: 🗄️ 初始化檔案
         run: |
-          [ -f active_signals.json ] || echo '{}' > active_signals.json
-          [ -f trade_history.json ] || echo '[]' > trade_history.json
-          touch alpha_oracle.log
-          echo "✅ 檔案初始化完成"
+          [ -f active_signals.json ]   || echo '{}' > active_signals.json
+          [ -f trade_history.json ]    || echo '[]' > trade_history.json
+          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
 
-      # ─────────────────────────────────────
-      # 🔍 5. 環境變數檢查
-      # ─────────────────────────────────────
-      - name: 🔍 Environment Check
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: |
-          echo "🔍 環境變數檢查："
-          if [ -z "$TG_TOKEN" ]; then echo "❌ TG_TOKEN 未設定"; exit 1; fi
-          if [ -z "$CHAT_ID" ]; then echo "❌ CHAT_ID 未設定"; exit 1; fi
-          echo "✅ TG_TOKEN: 已設定 (${#TG_TOKEN} 字元)"
-          echo "✅ CHAT_ID: ${CHAT_ID:0:10}..."
-
-      # ─────────────────────────────────────
-      # 🚀 6. 執行 Alpha Oracle Pro
-      # ─────────────────────────────────────
-      - name: 🚀 Run Alpha Oracle Pro
+      - name: 🚀 執行 Alpha Oracle
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           MAX_SIGNALS: "3"
           SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
-          PYTHONUNBUFFERED: "1"
         run: |
-          echo "🚀 Alpha Oracle Pro v10.8 啟動"
+          echo "🚀 Alpha Oracle Pro - 繁體中文版"
           python main.py
-          echo "✅ 執行完成"
 
-      # ─────────────────────────────────────
-      # 📋 7. 顯示日誌
-      # ─────────────────────────────────────
-      - name: 📋 Show Logs
+      - name: 💾 保存狀態
         if: always()
         run: |
-          echo "📝 最後 30 行日誌："
-          tail -30 alpha_oracle.log 2>/dev/null || echo "❌ 無日誌"
-
-      # ─────────────────────────────────────
-      # 💾 8. 保存狀態檔案
-      # ─────────────────────────────────────
-      - name: 💾 Save State Files
-        if: always()
-        run: |
-          git config user.name "alpha-bot"
-          git config user.email "bot@alpha-oracle.pro"
-          git add -f active_signals.json trade_history.json alpha_oracle.log 2>/dev/null || true
-          if ! git diff --staged --quiet; then
-            git commit -m "🤖 auto: sync state $(date '+%Y-%m-%d %H:%M')"
-            git pull --rebase origin main --quiet || true
-            git push origin main --quiet || git push --force-with-lease origin main --quiet
-          fi
+          git config user.name  "alpha-bot"
+          git config user.email "bot@alpha.example"
+          git add -f active_signals.json trade_history.json signal_cooldown.json 2>/dev/null || true
+          git diff --staged --quiet || {
+            git commit -m "chore: 更新訊號狀態 [skip ci]"
+            git push --quiet
+          }
         continue-on-error: true
-
-      # ─────────────────────────────────────
-      # 📦 9. 上傳除錯檔案 (失敗時)
-      # ─────────────────────────────────────
-      - name: 📦 Upload Debug Artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4  # ✅ v4 已支援 Node.js 24
-        with:
-          name: debug-logs-${{ github.run_id }}
-          path: |
-            alpha_oracle.log
-            active_signals.json
-            trade_history.json
-          retention-days: 3
