@@ -742,13 +742,18 @@ def generate_signal(
     df: list,
     current_price: float,
     funding_rate: float | None = None,
+    score_threshold: int | None = None,
+    atr_max_pct: float = 0.04,
+    signal_expire_hours: int = SIGNAL_EXPIRE_HOURS,
 ) -> dict | None:
     """🎯 生成最佳交易訊號"""
     if df is None or len(df) < 50:
         return None
 
+    threshold = score_threshold if score_threshold is not None else SCORE_THRESHOLD
+
     atr = calc_atr(df)
-    if atr / current_price > 0.04:
+    if atr / current_price > atr_max_pct:
         # 波動過大跳過（止損會被打飛）
         return None
 
@@ -763,7 +768,7 @@ def generate_signal(
             score -= 5
         if side == "SHORT" and funding_penalty_short:
             score -= 5
-        if score < SCORE_THRESHOLD:
+        if score < threshold:
             continue
 
         entry = current_price
@@ -796,7 +801,7 @@ def generate_signal(
                 "detail": detail,
                 "funding_rate": funding_rate,
                 "created": time.time(),
-                "expires": time.time() + SIGNAL_EXPIRE_HOURS * 3600,
+                "expires": time.time() + signal_expire_hours * 3600,
             }
         )
 
@@ -826,20 +831,72 @@ def _save_json(path: str, data) -> None:
         logging.error(f"❌ 寫入 {path} 失敗：{e}")
 
 
-def is_cooling(instId: str) -> bool:
+# ═════════════════════════════════════════════════════════
+# 9.5 配置熱更新與驗證
+# ═════════════════════════════════════════════════════════
+def _deep_merge(base: dict, override: dict) -> dict:
+    """遞迴合併：override 覆蓋 base，但保留 base 中 override 沒覆蓋的鍵"""
+    out = dict(base)
+    for k, v in override.items():
+        if isinstance(v, dict) and isinstance(out.get(k), dict):
+            out[k] = _deep_merge(out[k], v)
+        else:
+            out[k] = v
+    return out
+
+
+def _validate_config(cfg: dict) -> list:
+    """🛡️ 驗證 config 合理性 → 回傳錯誤訊息列表（空代表通過）"""
+    errs = []
+    if not (50 <= cfg.get("score_threshold", 0) <= 100):
+        errs.append("score_threshold 必須在 50–100")
+    if not (1 <= cfg.get("max_signals", 0) <= 10):
+        errs.append("max_signals 必須在 1–10")
+    if cfg.get("cooldown_hours", -1) < 0:
+        errs.append("cooldown_hours 不能為負")
+    if cfg.get("signal_expire_hours", 0) <= 0:
+        errs.append("signal_expire_hours 必須 > 0")
+    pv = cfg.get("price_verification", {})
+    if not (0 < pv.get("max_deviation_pct", 0) < 10):
+        errs.append("price_verification.max_deviation_pct 應在 0–10%")
+    cb = cfg.get("circuit_breaker", {})
+    if cb.get("soft_threshold", 0) >= cb.get("hard_threshold", 99):
+        errs.append("soft_threshold 應 < hard_threshold")
+    for w in cfg.get("blackout_windows_tw", []):
+        try:
+            for k in ("start", "end"):
+                hh, mm = map(int, w[k].split(":"))
+                assert 0 <= hh < 24 and 0 <= mm < 60
+        except Exception:
+            errs.append(f"blackout_windows_tw 時段格式錯誤：{w}")
+    return errs
+
+
+def load_config() -> dict:
+    """🔄 載入 config.json（不存在或驗證失敗則用預設值）"""
+    user_cfg = _load_json(CONFIG_FILE, {})
+    merged = _deep_merge(DEFAULT_CONFIG, user_cfg) if user_cfg else dict(DEFAULT_CONFIG)
+    errs = _validate_config(merged)
+    if errs:
+        logging.warning("⚠️ 配置驗證失敗，全面 fallback 到預設值：" + "; ".join(errs))
+        return dict(DEFAULT_CONFIG)
+    return merged
+
+
+def is_cooling(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> bool:
     """🧊 是否還在冷卻期內（持久化版本）"""
     cd = _load_json(COOLDOWN_FILE, {})
     last = cd.get(instId)
     if last is None:
         return False
-    return (time.time() - float(last)) < COOLDOWN_HOURS * 3600
+    return (time.time() - float(last)) < cooldown_hours * 3600
 
 
-def mark_cooldown(instId: str) -> None:
+def mark_cooldown(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> None:
     cd = _load_json(COOLDOWN_FILE, {})
     cd[instId] = time.time()
     # 順便清除過期紀錄
-    cutoff = time.time() - COOLDOWN_HOURS * 3600 * 3
+    cutoff = time.time() - cooldown_hours * 3600 * 3
     cd = {k: v for k, v in cd.items() if float(v) > cutoff}
     _save_json(COOLDOWN_FILE, cd)
 
@@ -882,6 +939,104 @@ def record_trade(
 
 
 # ═════════════════════════════════════════════════════════
+# 9.7 系統狀態（熔斷紀錄）
+# ═════════════════════════════════════════════════════════
+def get_system_state() -> dict:
+    return _load_json(SYSTEM_STATE_FILE, {})
+
+
+def set_system_state(state: dict) -> None:
+    _save_json(SYSTEM_STATE_FILE, state)
+
+
+# ═════════════════════════════════════════════════════════
+# 9.8 連續虧損熔斷
+# ═════════════════════════════════════════════════════════
+def check_circuit_breaker(cfg: dict) -> tuple[bool, str, int]:
+    """🛑 檢查連續虧損熔斷 → (是否暫停, 訊息, 連敗次數)"""
+    cb = cfg.get("circuit_breaker", {})
+    if not cb.get("enabled", True):
+        return False, "", 0
+
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    # 只看最近 20 筆已結束交易
+    recent = [
+        t for t in history
+        if t.get("close_type") in ("SL", "BE", "TP1", "TP2", "TP3")
+    ][-20:]
+    if not recent:
+        return False, "", 0
+
+    # 從尾巴往前數連敗（SL 計敗、TP1/2/3/BE 中斷連敗）
+    losses = 0
+    last_loss_time: datetime | None = None
+    for t in reversed(recent):
+        if t.get("close_type") == "SL":
+            losses += 1
+            if last_loss_time is None:
+                try:
+                    last_loss_time = datetime.strptime(
+                        t["time"], "%Y-%m-%d %H:%M"
+                    ).replace(tzinfo=TW_TZ)
+                except Exception:
+                    last_loss_time = tw_now()
+        else:
+            break
+
+    if losses == 0 or last_loss_time is None:
+        return False, "", 0
+
+    elapsed_h = (tw_now() - last_loss_time).total_seconds() / 3600
+
+    hard_n = cb.get("hard_threshold", 5)
+    hard_h = cb.get("hard_pause_hours", 24)
+    soft_n = cb.get("soft_threshold", 3)
+    soft_h = cb.get("soft_pause_hours", 4)
+
+    if losses >= hard_n and elapsed_h < hard_h:
+        return (
+            True,
+            f"🚨 *硬熔斷觸發*\n連續 {losses} 次止損，系統暫停 {hard_h} 小時\n"
+            f"剩餘約 `{hard_h - elapsed_h:.1f}` 小時恢復",
+            losses,
+        )
+    if losses >= soft_n and elapsed_h < soft_h:
+        return (
+            True,
+            f"⚠️ *軟熔斷觸發*\n連續 {losses} 次止損，暫停 {soft_h} 小時\n"
+            f"剩餘約 `{soft_h - elapsed_h:.1f}` 小時恢復",
+            losses,
+        )
+    return False, "", losses
+
+
+# ═════════════════════════════════════════════════════════
+# 9.9 關鍵時段過濾
+# ═════════════════════════════════════════════════════════
+def _in_window(cur_min: int, start_min: int, end_min: int) -> bool:
+    """支援跨午夜時段（如 23:50–00:10）"""
+    if start_min <= end_min:
+        return start_min <= cur_min < end_min
+    return cur_min >= start_min or cur_min < end_min
+
+
+def is_blackout_time(cfg: dict) -> tuple[bool, str]:
+    """🕒 檢查當前是否在禁止交易時段（台灣時間）"""
+    windows = cfg.get("blackout_windows_tw", [])
+    now = tw_now()
+    cur_min = now.hour * 60 + now.minute
+    for w in windows:
+        try:
+            sh, sm = map(int, w["start"].split(":"))
+            eh, em = map(int, w["end"].split(":"))
+            if _in_window(cur_min, sh * 60 + sm, eh * 60 + em):
+                return True, w.get("reason", "禁止時段")
+        except Exception:
+            continue
+    return False, ""
+
+
+# ═════════════════════════════════════════════════════════
 # 10. 訊號追蹤
 # ═════════════════════════════════════════════════════════
 class SignalTracker:
@@ -915,6 +1070,18 @@ class SignalTracker:
         if key in self.signals and message_id:
             self.signals[key]["entry_message_id"] = message_id
             self._save()
+
+    def has_open_position(self, instId: str) -> bool:
+        """🔒 該幣種是否還有未結束的訊號（PENDING / ACTIVE / BE / TRAIL）
+
+        用途：避免在平倉前對同一幣種重複開倉。
+        """
+        for sig in self.signals.values():
+            if sig.get("instId") == instId and sig.get("status") in (
+                "PENDING", "ACTIVE", "BE", "TRAIL"
+            ):
+                return True
+        return False
 
     def check_all(self) -> None:
         """檢查所有訊號並發送通知"""
@@ -1149,50 +1316,124 @@ class SignalTracker:
 # 11. 主掃描
 # ═════════════════════════════════════════════════════════
 def run_scan(tracker: SignalTracker) -> int:
-    """🔍 執行掃描"""
+    """🔍 執行掃描（整合 v12 全部風控）"""
     logging.info("🚀 開始掃描...")
-    sent = 0
 
+    # ── 0. 熱載入配置 ──
+    cfg = load_config()
+    max_signals = cfg.get("max_signals", MAX_SIGNALS)
+    score_thr = cfg.get("score_threshold", SCORE_THRESHOLD)
+    cooldown_h = cfg.get("cooldown_hours", COOLDOWN_HOURS)
+    expire_h = cfg.get("signal_expire_hours", SIGNAL_EXPIRE_HOURS)
+    atr_max = cfg.get("atr_max_pct", 0.04)
+    pv_cfg = cfg.get("price_verification", {})
+    pv_enabled = pv_cfg.get("enabled", True)
+    pv_max_dev = pv_cfg.get("max_deviation_pct", 0.5)
+    pv_block_unverified = pv_cfg.get("block_on_unverified", False)
+
+    state = get_system_state()
+
+    # ── 1. 連續虧損熔斷 ──
+    paused, msg, losses = check_circuit_breaker(cfg)
+    if paused:
+        if not state.get("circuit_active"):
+            send_tg(msg)
+            state["circuit_active"] = True
+            state["circuit_since"] = time.time()
+            set_system_state(state)
+        logging.warning(f"🛑 熔斷中（連敗 {losses}）→ 仍持續監控既有訊號")
+        # 熔斷期間不開新單，但要繼續追既有單
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+    else:
+        if state.get("circuit_active"):
+            send_tg("✅ *熔斷已解除*\n系統恢復正常掃描，繼續加油 🚀")
+            state["circuit_active"] = False
+            state["circuit_since"] = None
+            set_system_state(state)
+
+    # ── 2. 關鍵時段過濾 ──
+    blocked, btime_reason = is_blackout_time(cfg)
+    if blocked:
+        logging.info(f"🕒 禁止交易時段（{btime_reason}），不開新單但繼續監控")
+        # 仍要檢查既有訊號的 SL/TP
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
+    # ── 3. 掃描每個幣種 ──
+    sent = 0
     for instId in ALL_COINS:
-        if sent >= MAX_SIGNALS:
+        if sent >= max_signals:
             break
 
-        if is_cooling(instId):
+        # 3.1 🔒 同幣種未平倉不重複開倉（先擋這個，避免冷卻過期後又開新單）
+        if tracker.has_open_position(instId):
+            logging.info(f"[{instId}] 已有未平倉訊號，跳過")
+            continue
+
+        # 3.2 冷卻
+        if is_cooling(instId, cooldown_h):
             logging.info(f"[{instId}] 冷卻中，跳過")
             continue
 
         try:
-            price = fetch_price(instId)
-            if price <= 0:
-                logging.warning(f"[{instId}] 無法取得即時價格")
+            okx_price = fetch_price(instId)
+            if okx_price <= 0:
+                logging.warning(f"[{instId}] 無法取得 OKX 價格")
                 continue
+
+            # 3.3 📡 TradingView 第二來源驗證
+            if pv_enabled:
+                ok, tv_price, diff = verify_price(
+                    instId, okx_price, pv_max_dev, pv_block_unverified
+                )
+                if not ok:
+                    if tv_price is None:
+                        logging.warning(f"[{instId}] TV 無法驗證，根據設定擋下")
+                    else:
+                        send_tg(
+                            f"⚠️ *{instId.split('-')[0]} 價格異常*\n"
+                            f"OKX `{okx_price:.4f}` vs TV `{tv_price:.4f}`\n"
+                            f"偏離 `{diff:.3f}%` > 閾值 `{pv_max_dev}%`\n"
+                            f"⏸ 本輪跳過該幣種"
+                        )
+                    continue
 
             df = fetch_candles(instId)
             if df is None:
                 continue
 
             funding = fetch_funding_rate(instId)
-            signal = generate_signal(instId, df, price, funding)
+            signal = generate_signal(
+                instId,
+                df,
+                okx_price,
+                funding,
+                score_threshold=score_thr,
+                atr_max_pct=atr_max,
+                signal_expire_hours=expire_h,
+            )
             if not signal:
                 continue
 
             in_zone = (
                 signal["side"] == "LONG"
-                and signal["entry"] * (1 - 0.006) <= price <= signal["entry"] * (1 + 0.002)
+                and signal["entry"] * (1 - 0.006) <= okx_price <= signal["entry"] * (1 + 0.002)
             ) or (
                 signal["side"] == "SHORT"
-                and signal["entry"] * (1 - 0.002) <= price <= signal["entry"] * (1 + 0.006)
+                and signal["entry"] * (1 - 0.002) <= okx_price <= signal["entry"] * (1 + 0.006)
             )
 
             key, order_id = tracker.add(signal, active=in_zone)
 
-            # 只在 ACTIVE 狀態時送進場通知，避免與 _check_one 重複
             if in_zone:
                 msg = _fmt_entry(
                     coin=instId.split("-")[0],
                     side=signal["side"],
                     order_id=order_id,
-                    price=price,
+                    price=okx_price,
                     entry=signal["entry"],
                     sl=signal["sl"],
                     tp1=signal["tp1"],
@@ -1205,26 +1446,25 @@ def run_scan(tracker: SignalTracker) -> int:
                 tracker.set_entry_message_id(key, msg_id)
                 logging.info(f"✅ {instId} 進場通知已送出，訂單 {order_id}")
             else:
-                # PENDING 訊號也通知一聲，但區分顯示
                 send_tg(
                     f"📍 *{instId.split('-')[0]} 訊號就位*\n"
                     f"🆔 訂單：`{order_id}`\n"
                     f"⏰ 時間：{tw_ts()}\n"
                     f"方向：{'做多' if signal['side'] == 'LONG' else '做空'}\n"
-                    f"進場價：`{signal['entry']:.4f}`（當前 `{price:.4f}`）\n"
+                    f"進場價：`{signal['entry']:.4f}`（當前 `{okx_price:.4f}`）\n"
                     f"評分：{signal['score']} 分\n\n"
                     f"💡 進入有效區間後會自動觸發進場通知",
                     reply_markup=_order_keyboard(order_id),
                 )
                 logging.info(f"📍 {instId} PENDING 訊號已建立，訂單 {order_id}")
 
-            mark_cooldown(instId)
+            mark_cooldown(instId, cooldown_h)
             sent += 1
         except Exception as e:
             logging.error(f"[{instId}] 掃描失敗：{e}")
             continue
 
-    # 檢查既有訊號 + 持倉更新
+    # ── 4. 既有訊號檢查 + 持倉更新 ──
     tracker.check_all()
     tracker.send_position_updates()
 
