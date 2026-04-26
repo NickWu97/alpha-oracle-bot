@@ -31,8 +31,8 @@
     "hit_tp3": false,
     "activated_at": 1777187441.7113328,
     "entry_message_id": 2311,
-    "last_checked_ts": 1777197600.0,
-    "current_price": 86.53
+    "last_checked_ts": 1777201200.0,
+    "current_price": 86.51
   },
   "ETH-USDT-SWAP_LONG_1777192687-FDA00F03": {
     "instId": "ETH-USDT-SWAP",
@@ -66,7 +66,42 @@
     "hit_tp3": false,
     "activated_at": 1777192687.0898068,
     "entry_message_id": 2314,
-    "last_checked_ts": 1777197600.0,
-    "current_price": 2331.96
+    "last_checked_ts": 1777201200.0,
+    "current_price": 2333.14
+  },
+  "BTC-USDT-SWAP_LONG_1777202592-4EE6F695": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 78018.1,
+    "sl": 77889.6357,
+    "tp1": 78210.7964,
+    "tp2": 78403.4929,
+    "tp3": 78660.4214,
+    "score": 70,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5
+    },
+    "funding_rate": 4.71070995587e-05,
+    "created": 1777202592.9609616,
+    "expires": 1777288992.9609618,
+    "order_id": "1777202592-4EE6F695",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777202592.9610837,
+    "entry_message_id": 2323,
+    "last_checked_ts": 1777202592.9610837,
+    "current_price": 78018.1
   }
 }
