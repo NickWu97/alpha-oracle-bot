@@ -31,8 +31,8 @@
     "hit_tp3": false,
     "activated_at": 1777562553.9640496,
     "entry_message_id": 2427,
-    "last_checked_ts": 1777562553.9640496,
-    "current_price": 76341.3
+    "last_checked_ts": 1777566600.0,
+    "current_price": 76227.7
   },
   "ETH-USDT-SWAP_SHORT_1777562555-0026DC6A": {
     "instId": "ETH-USDT-SWAP",
@@ -66,7 +66,42 @@
     "hit_tp3": false,
     "activated_at": 1777562555.3730357,
     "entry_message_id": 2428,
-    "last_checked_ts": 1777562555.3730357,
-    "current_price": 2262.8
+    "last_checked_ts": 1777566600.0,
+    "current_price": 2256.16
+  },
+  "SOL-USDT-SWAP_SHORT_1777568195-2D46DE63": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 83.03,
+    "sl": 83.5721,
+    "tp1": 82.2168,
+    "tp2": 81.4036,
+    "tp3": 80.3193,
+    "score": 80,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 51.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5
+    },
+    "funding_rate": 4.0059808874e-05,
+    "created": 1777568195.501142,
+    "expires": 1777654595.5011423,
+    "order_id": "1777568195-2D46DE63",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777568195.501175,
+    "entry_message_id": 2432,
+    "last_checked_ts": 1777568195.501175,
+    "current_price": 83.03
   }
 }
