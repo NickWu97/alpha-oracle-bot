@@ -2254,5 +2254,33 @@
     "is_win": true,
     "is_be": false,
     "score": 85
+  },
+  {
+    "time": "2026-04-30 21:05",
+    "date": "2026-04-30",
+    "order_id": "1777534040-BEBD6239",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2252.28,
+    "close": 2252.28,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 85
+  },
+  {
+    "time": "2026-04-30 21:05",
+    "date": "2026-04-30",
+    "order_id": "1777547986-A21CAEBD",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 76104.4,
+    "close": 75890.0286,
+    "close_type": "SL",
+    "pnl": -0.28,
+    "is_win": false,
+    "is_be": false,
+    "score": 80
   }
 ]
