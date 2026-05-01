@@ -2296,5 +2296,47 @@
     "is_win": false,
     "is_be": false,
     "score": 80
+  },
+  {
+    "time": "2026-05-01 12:17",
+    "date": "2026-05-01",
+    "order_id": "1777562553-F197D036",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 76341.3,
+    "close": 76900.0071,
+    "close_type": "TP1",
+    "pnl": 0.73,
+    "is_win": true,
+    "is_be": false,
+    "score": 80
+  },
+  {
+    "time": "2026-05-01 12:17",
+    "date": "2026-05-01",
+    "order_id": "1777562555-0026DC6A",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2262.8,
+    "close": 2277.5407,
+    "close_type": "SL",
+    "pnl": -0.65,
+    "is_win": false,
+    "is_be": false,
+    "score": 75
+  },
+  {
+    "time": "2026-05-01 12:17",
+    "date": "2026-05-01",
+    "order_id": "1777568195-2D46DE63",
+    "coin": "SOL",
+    "side": "SHORT",
+    "entry": 83.03,
+    "close": 83.5721,
+    "close_type": "SL",
+    "pnl": -0.65,
+    "is_win": false,
+    "is_be": false,
+    "score": 80
   }
 ]
