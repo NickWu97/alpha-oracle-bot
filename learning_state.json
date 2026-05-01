@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 0,
+      "win": 1,
       "loss": 4,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 1,
-      "loss": 4,
+      "win": 2,
+      "loss": 5,
       "be": 1,
-      "total": 6
+      "total": 8
     },
     "sess:us": {
       "win": 0,
@@ -25,10 +25,10 @@
       "total": 1
     },
     "coin:SOL": {
-      "win": 0,
+      "win": 1,
       "loss": 0,
       "be": 1,
-      "total": 1
+      "total": 2
     },
     "coin_side:SOL_LONG": {
       "win": 0,
@@ -43,10 +43,10 @@
       "total": 3
     },
     "sess:asia_dawn": {
-      "win": 1,
-      "loss": 4,
+      "win": 2,
+      "loss": 5,
       "be": 0,
-      "total": 5
+      "total": 7
     },
     "coin:DOGE": {
       "win": 0,
@@ -86,9 +86,9 @@
     },
     "rsi_long:70-79": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:BNB": {
       "win": 0,
@@ -125,14 +125,44 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "score:70-79": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ETH_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "rsi_short:50-59": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:SOL_SHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "SOL": {
-      "win": 0,
+      "win": 1,
       "loss": 0,
       "be": 1,
-      "total": 1
+      "total": 2
     },
     "DOGE": {
       "win": 0,
@@ -163,6 +193,12 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -179,7 +215,14 @@
       "side": "LONG",
       "code": "AGAINST_MOMENTUM",
       "title": "💪 持續反向動能"
+    },
+    {
+      "ts": 1777669658.0845196,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "RSI_COLLAPSE",
+      "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1777667944.4270039
+  "updated_at": 1777669659.2374127
 }

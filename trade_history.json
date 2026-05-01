@@ -2604,5 +2604,83 @@
     },
     "mtf": null,
     "regime": null
+  },
+  {
+    "time": "2026-05-02 05:07",
+    "date": "2026-05-02",
+    "order_id": "1777646379-D0D98033",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2305.75,
+    "close": 2290.6032,
+    "close_type": "SL",
+    "pnl": -0.66,
+    "is_win": false,
+    "is_be": false,
+    "score": 70,
+    "funding_rate": -8.24645669688e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 70.8,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5
+    },
+    "features": {
+      "score": 70.0,
+      "rsi": 70.8,
+      "atr_pct": 1.0,
+      "funding": -0.0824645669688,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": null,
+    "regime": null
+  },
+  {
+    "time": "2026-05-02 05:07",
+    "date": "2026-05-02",
+    "order_id": "1777648542-A95A1387",
+    "coin": "SOL",
+    "side": "SHORT",
+    "entry": 84.29,
+    "close": 83.57,
+    "close_type": "TP1",
+    "pnl": 0.85,
+    "is_win": true,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 3.86868895422e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 59.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 59.2,
+      "atr_pct": 1.0,
+      "funding": 0.0386868895422,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": null,
+    "regime": null
   }
 ]
