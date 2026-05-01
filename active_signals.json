@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 76341.3,
-    "sl": 76341.3,
+    "sl": 76900.0071,
     "tp1": 76900.0071,
     "tp2": 77458.7143,
     "tp3": 78203.6571,
@@ -25,14 +25,14 @@
     "created": 1777562553.9639199,
     "expires": 1777648953.96392,
     "order_id": "1777562553-F197D036",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1777562553.9640496,
     "entry_message_id": 2427,
-    "last_checked_ts": 1777617900.0,
-    "current_price": 77027.8
+    "last_checked_ts": 1777625100.0,
+    "current_price": 77308.8
   },
   "ETH-USDT-SWAP_LONG_1777619564-CB803C13": {
     "instId": "ETH-USDT-SWAP",
@@ -66,8 +66,8 @@
     "hit_tp3": false,
     "activated_at": 1777619564.4947689,
     "entry_message_id": 2458,
-    "last_checked_ts": 1777619564.4947689,
-    "current_price": 2277.71
+    "last_checked_ts": 1777625100.0,
+    "current_price": 2284.19
   },
   "SOL-USDT-SWAP_LONG_1777619565-DE382E5C": {
     "instId": "SOL-USDT-SWAP",
@@ -101,7 +101,7 @@
     "hit_tp3": false,
     "activated_at": 1777619565.8282487,
     "entry_message_id": 2459,
-    "last_checked_ts": 1777619565.8282487,
-    "current_price": 83.91
+    "last_checked_ts": 1777625100.0,
+    "current_price": 84.1
   }
 }
