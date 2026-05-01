@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v12.2 — 歷史 K 線補抓版（繁體中文）
+Alpha Oracle Pro v13.0 — 覆盤 + 學習 + 多幣種版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v12.2 新增（不再漏插針）：
-  📜 歷史 K 線補抓：每次 _check_one 抓 last_checked_ts 之後所有 K 線依序處理
-     ↳ cron 漏跑、Actions 卡死、訊號活了 3 小時才掃，過去任何插針都不會漏
-  🔒 同幣種未平倉嚴格擋（v12 即有，這版加強日誌）
-  📦 fetch_candles_full：每輪掃描共用 30 秒快取，避免重複打 API
+✨ v13.0 新增（會自我成長）：
+  🔍 覆盤分析：SL / BE / LOCK 後自動分析「為什麼結算」並送 Telegram
+     ↳ 6 大歸因：趨勢反轉 / RSI 崩盤 / 流動性掃蕩 / 波動激增 / 反向動能 / OB 跌破
+     ↳ 附「下次該怎麼判斷」+ 同類設定歷史勝率
+  🧠 學習機制：每筆交易結算後更新桶（分數/RSI/資金費率/時段/幣種）
+     ↳ 評分時自動套用調整：高勝率組合 +1~+2、低勝率組合 -2~-3，上限 ±10
+     ↳ /learning 命令查看機器人學了什麼
+  📈 12 種幣別：BTC/ETH/SOL/BNB/XRP/DOGE/ADA/AVAX/LINK/DOT/TON/NEAR
+     ↳ 可在 config.json 的 coins 自訂
+
+✨ v12.2 既有：
+  📜 歷史 K 線補抓：抓 last_checked_ts 之後所有 K 線依序處理
+  🔒 同幣種未平倉嚴格擋
+  📦 fetch_candles_full：每輪共用 30 秒快取
 
 ✨ v12.1（平倉精度）：
   🪡 插針觸發：K 線高低點觸到平倉價即視為平倉
@@ -86,7 +95,12 @@ logging.basicConfig(
 TG_TOKEN = _get_env("TG_TOKEN")
 CHAT_ID = _get_env("CHAT_ID")
 
-ALL_COINS = ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"]
+ALL_COINS = [
+    "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
+    "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP",
+    "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP",
+    "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP",
+]
 MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
 SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
 
@@ -98,6 +112,7 @@ TRADE_HISTORY_FILE = "trade_history.json"
 COOLDOWN_FILE = "signal_cooldown.json"
 CONFIG_FILE = "config.json"
 SYSTEM_STATE_FILE = "system_state.json"
+LEARNING_FILE = "learning_state.json"
 
 # 記憶體快取（同一輪執行內共用，跨輪不持久）
 _price_cache: dict = {}
@@ -106,11 +121,21 @@ _price_cache: dict = {}
 # 1.5 預設配置（config.json 不存在時的 fallback）
 # ═════════════════════════════════════════════════════════
 DEFAULT_CONFIG: dict = {
+    "coins": ALL_COINS,                # 可在 config.json 自訂
     "max_signals": 3,
     "score_threshold": 68,
     "cooldown_hours": 2,
     "signal_expire_hours": 24,
-    "atr_max_pct": 0.04,           # ATR/Price 超過此值視為震盪過大
+    "atr_max_pct": 0.04,
+    "post_mortem": {
+        "enabled": True,
+        "loss_only": False,            # False = SL/BE/LOCK 都做覆盤；True = 只 SL
+    },
+    "learning": {
+        "enabled": True,
+        "min_samples": 5,              # 桶內樣本 < 此值不套用
+        "max_score_adjust": 10,        # 最終調整上限 ±N 分
+    },           # ATR/Price 超過此值視為震盪過大
     "price_verification": {
         "enabled": True,
         "max_deviation_pct": 0.5,  # OKX 與 TradingView 偏離 > 0.5% 跳過
@@ -862,6 +887,7 @@ def generate_signal(
     funding_penalty_long = funding_rate and funding_rate > 0.0008
     funding_penalty_short = funding_rate and funding_rate < -0.0008
 
+    coin = instId.split("-")[0]
     candidates = []
     for side in ("LONG", "SHORT"):
         score, grade, detail = calc_score(df, side, current_price)
@@ -869,6 +895,16 @@ def generate_signal(
             score -= 5
         if side == "SHORT" and funding_penalty_short:
             score -= 5
+
+        # 🧠 套用學習調整（依歷史勝率對相同特徵組合微調分數）
+        adjusted_score, learning_notes = apply_learning_adjustment(
+            score, side, detail, funding_rate, coin
+        )
+        if learning_notes:
+            detail["learning_notes"] = learning_notes
+            detail["learning_adjust"] = adjusted_score - score
+        score = adjusted_score
+
         if score < threshold:
             continue
 
@@ -1010,9 +1046,10 @@ def record_trade(
     close_price: float,
     close_type: str,
     score: int,
+    sig_snapshot: dict | None = None,
 ) -> None:
-    """📝 記錄交易歷史"""
-    is_win = close_type in ("TP1", "TP2", "TP3")
+    """📝 記錄交易歷史 + 餵給學習機制"""
+    is_win = close_type in ("TP1", "TP2", "TP3", "LOCK")
     is_be = close_type == "BE"
     pnl = (
         (close_price - entry) / entry * 100
@@ -1032,11 +1069,456 @@ def record_trade(
         "is_win": is_win,
         "is_be": is_be,
         "score": score,
+        # 學習用的特徵（從 sig_snapshot 帶過來）
+        "funding_rate": (sig_snapshot or {}).get("funding_rate"),
+        "detail": (sig_snapshot or {}).get("detail"),
     }
     history = _load_json(TRADE_HISTORY_FILE, [])
     history.append(trade)
     _save_json(TRADE_HISTORY_FILE, history)
     logging.info(f"📝 記錄交易：{coin} {order_id} {close_type}")
+
+    # 🧠 餵給學習機制
+    try:
+        update_learning(trade, sig_snapshot)
+    except Exception as e:
+        logging.warning(f"⚠️ 更新學習狀態失敗：{e}")
+
+
+# ═════════════════════════════════════════════════════════
+# 9.6 學習機制（每筆交易結束後更新桶 → 評分時自動套用調整）
+# ═════════════════════════════════════════════════════════
+def _bucket_score(score: int) -> str:
+    if score >= 90:
+        return "score:90+"
+    if score >= 80:
+        return "score:80-89"
+    if score >= 70:
+        return "score:70-79"
+    return "score:60-69"
+
+
+def _bucket_rsi(rsi: float, side: str) -> str:
+    bucket = int(rsi // 10) * 10
+    return f"rsi_{side.lower()}:{bucket}-{bucket + 9}"
+
+
+def _bucket_funding(fr) -> str:
+    if fr is None:
+        return "fund:none"
+    if fr > 0.0008:
+        return "fund:very_pos"
+    if fr > 0.0001:
+        return "fund:pos"
+    if fr > -0.0001:
+        return "fund:neutral"
+    if fr > -0.0008:
+        return "fund:neg"
+    return "fund:very_neg"
+
+
+def _bucket_session_tw() -> str:
+    """以台灣時間粗分四個交易時段"""
+    h = tw_now().hour
+    if 0 <= h < 6:
+        return "sess:asia_dawn"
+    if 6 <= h < 14:
+        return "sess:asia_day"
+    if 14 <= h < 21:
+        return "sess:europe"
+    return "sess:us"
+
+
+def _signal_buckets(score: int, side: str, detail: dict, funding_rate, coin: str) -> list:
+    """把訊號特徵打成多個桶 → 供學習查詢"""
+    rsi = (detail or {}).get("rsi_value", 50)
+    return [
+        _bucket_score(score),
+        _bucket_rsi(rsi, side),
+        _bucket_funding(funding_rate),
+        _bucket_session_tw(),
+        f"coin:{coin}",
+        f"coin_side:{coin}_{side}",
+    ]
+
+
+def update_learning(trade: dict, sig_snapshot: dict | None = None) -> None:
+    """🧠 每筆交易結束後更新學習桶與按幣種統計"""
+    state = _load_json(LEARNING_FILE, {})
+    state.setdefault("buckets", {})
+    state.setdefault("by_coin", {})
+    state.setdefault("loss_reasons", [])
+    state.setdefault("updated_at", 0)
+
+    score = trade.get("score", 0)
+    coin = trade.get("coin", "?")
+    side = trade.get("side", "?")
+    close_type = trade.get("close_type", "?")
+    funding_rate = trade.get("funding_rate")
+    detail = trade.get("detail") or (sig_snapshot.get("detail") if sig_snapshot else {})
+
+    is_win = close_type in ("TP1", "TP2", "TP3", "LOCK")
+    is_be = close_type == "BE"
+    is_loss = close_type == "SL"
+
+    for b in _signal_buckets(score, side, detail, funding_rate, coin):
+        bd = state["buckets"].setdefault(
+            b, {"win": 0, "loss": 0, "be": 0, "total": 0}
+        )
+        bd["total"] += 1
+        if is_win:
+            bd["win"] += 1
+        elif is_loss:
+            bd["loss"] += 1
+        elif is_be:
+            bd["be"] += 1
+
+    cd = state["by_coin"].setdefault(
+        coin, {"win": 0, "loss": 0, "be": 0, "total": 0}
+    )
+    cd["total"] += 1
+    if is_win:
+        cd["win"] += 1
+    elif is_loss:
+        cd["loss"] += 1
+    elif is_be:
+        cd["be"] += 1
+
+    state["updated_at"] = time.time()
+    _save_json(LEARNING_FILE, state)
+
+
+def apply_learning_adjustment(
+    score: int,
+    side: str,
+    detail: dict,
+    funding_rate,
+    coin: str,
+) -> tuple[int, list]:
+    """🧠 套用學習狀態 → (調整後分數, 套用紀錄)"""
+    cfg = load_config()
+    lcfg = cfg.get("learning", {})
+    if not lcfg.get("enabled", True):
+        return score, []
+
+    state = _load_json(LEARNING_FILE, {})
+    buckets = state.get("buckets", {})
+    min_samples = lcfg.get("min_samples", 5)
+    max_adj = lcfg.get("max_score_adjust", 10)
+
+    notes = []
+    adj_total = 0
+    for b in _signal_buckets(score, side, detail, funding_rate, coin):
+        bd = buckets.get(b)
+        if not bd or bd.get("total", 0) < min_samples:
+            continue
+        wr = bd["win"] / bd["total"]
+        if wr < 0.30:
+            d = -3
+        elif wr < 0.40:
+            d = -2
+        elif wr > 0.70:
+            d = +2
+        elif wr > 0.60:
+            d = +1
+        else:
+            continue
+        adj_total += d
+        notes.append(f"{b} (n={bd['total']}, 勝率 {wr:.0%}) → {d:+d}")
+
+    adj_total = max(-max_adj, min(max_adj, adj_total))
+    return score + adj_total, notes
+
+
+def format_learning_report() -> str:
+    """🧠 /learning 命令 → 顯示機器人學到了什麼"""
+    state = _load_json(LEARNING_FILE, {})
+    buckets = state.get("buckets", {})
+    by_coin = state.get("by_coin", {})
+    loss_reasons = state.get("loss_reasons", [])
+
+    if not buckets and not by_coin:
+        return (
+            "🧠 *機器人學習狀態*\n\n"
+            "📭 目前還沒累積足夠資料\n"
+            "至少需要 5 筆已結束交易才會開始套用學習調整"
+        )
+
+    lines = ["🧠 *機器人學習狀態*", "━━━━━━━━━━━━━━", ""]
+
+    # 1. 按幣種勝率
+    if by_coin:
+        lines.append("📊 *各幣種戰績*：")
+        sorted_coins = sorted(by_coin.items(), key=lambda x: -x[1].get("total", 0))
+        for coin, d in sorted_coins[:12]:
+            n = d.get("total", 0)
+            w = d.get("win", 0)
+            l = d.get("loss", 0)
+            be = d.get("be", 0)
+            wr = w / n * 100 if n else 0
+            lines.append(
+                f"  {coin}: {n} 筆（勝 {w} / 平 {be} / 敗 {l}，勝率 `{wr:.0f}%`）"
+            )
+        lines.append("")
+
+    # 2. 高勝率組合（樣本 ≥ 5）
+    high_wr = [
+        (b, d) for b, d in buckets.items()
+        if d.get("total", 0) >= 5 and d["win"] / d["total"] > 0.6
+    ]
+    if high_wr:
+        lines.append("✅ *高勝率組合（>60%）*：")
+        for b, d in sorted(high_wr, key=lambda x: -x[1]["win"] / x[1]["total"])[:5]:
+            wr = d["win"] / d["total"] * 100
+            lines.append(f"  `{b}` → {d['total']} 筆，勝率 `{wr:.0f}%`")
+        lines.append("")
+
+    # 3. 低勝率組合
+    low_wr = [
+        (b, d) for b, d in buckets.items()
+        if d.get("total", 0) >= 5 and d["win"] / d["total"] < 0.4
+    ]
+    if low_wr:
+        lines.append("⚠️ *低勝率組合（<40%）*：")
+        for b, d in sorted(low_wr, key=lambda x: x[1]["win"] / x[1]["total"])[:5]:
+            wr = d["win"] / d["total"] * 100
+            lines.append(f"  `{b}` → {d['total']} 筆，勝率 `{wr:.0f}%`")
+        lines.append("")
+
+    # 4. 主要止損原因
+    if loss_reasons:
+        from collections import Counter
+        cnt = Counter(r.get("title", "?") for r in loss_reasons[-30:])
+        lines.append("🔍 *最近 30 筆止損主因 TOP3*：")
+        for title, c in cnt.most_common(3):
+            lines.append(f"  {title} × {c}")
+        lines.append("")
+
+    lines.append("💡 _這些統計每筆交易結算後自動更新；下次相似情境的訊號評分會自動微調_")
+    return "\n".join(lines)
+
+
+def record_loss_reason(coin: str, side: str, reasons: list) -> None:
+    """記錄止損主因到 learning_state（供後續查詢）"""
+    state = _load_json(LEARNING_FILE, {})
+    state.setdefault("loss_reasons", [])
+    for r in reasons[:1]:  # 只記第一名主因
+        state["loss_reasons"].append({
+            "ts": time.time(),
+            "coin": coin,
+            "side": side,
+            "code": r.get("code"),
+            "title": r.get("title"),
+        })
+    # 只保留最近 100 筆
+    state["loss_reasons"] = state["loss_reasons"][-100:]
+    _save_json(LEARNING_FILE, state)
+
+
+# ═════════════════════════════════════════════════════════
+# 9.65 覆盤分析（SL/BE/LOCK 後解釋為什麼）
+# ═════════════════════════════════════════════════════════
+def analyze_loss(sig: dict, df_at_loss: list) -> list:
+    """🔍 比較進場附近 vs 出場附近的市況，回推主因（最多 3 名）"""
+    if not df_at_loss or len(df_at_loss) < 20:
+        return [{
+            "code": "INSUFFICIENT",
+            "title": "📋 資料不足",
+            "detail": "進場後 K 線太少，無法詳細分析",
+            "severity": 0,
+        }]
+
+    side = sig["side"]
+    expect = 1 if side == "LONG" else -1
+    n = len(df_at_loss)
+    df_then = df_at_loss[: max(20, n // 3)]
+    df_now = df_at_loss
+
+    reasons = []
+
+    # 1. 趨勢反轉
+    st_then = calc_supertrend(df_then)
+    st_now = calc_supertrend(df_now)
+    if st_then == expect and st_now == -expect:
+        reasons.append({
+            "code": "TREND_REVERSAL",
+            "title": "🔄 趨勢反轉",
+            "detail": f"進場時 Supertrend 順勢（{'多' if expect == 1 else '空'}），止損前已翻向反向",
+            "severity": 30,
+        })
+
+    # 2. RSI 動能崩塌 / 反轉
+    rsi_then = calc_rsi(df_then)
+    rsi_now = calc_rsi(df_now)
+    if side == "LONG" and rsi_then > 45 and rsi_now < 35 and (rsi_then - rsi_now) > 12:
+        reasons.append({
+            "code": "RSI_COLLAPSE",
+            "title": "📉 多頭動能瓦解",
+            "detail": f"RSI 從 {rsi_then:.0f} 急跌至 {rsi_now:.0f}（下跌 {rsi_then - rsi_now:.0f} 分）",
+            "severity": 25,
+        })
+    elif side == "SHORT" and rsi_then < 55 and rsi_now > 65 and (rsi_now - rsi_then) > 12:
+        reasons.append({
+            "code": "RSI_REBOUND",
+            "title": "📈 空頭動能反轉",
+            "detail": f"RSI 從 {rsi_then:.0f} 反彈至 {rsi_now:.0f}（上漲 {rsi_now - rsi_then:.0f} 分）",
+            "severity": 25,
+        })
+
+    # 3. 流動性掃蕩（反向假突破）
+    sweep_dir = "SHORT" if side == "LONG" else "LONG"
+    if detect_liquidity_sweep(df_now[-12:], sweep_dir):
+        reasons.append({
+            "code": "LIQ_SWEEP",
+            "title": "🌊 流動性掃蕩",
+            "detail": "止損前出現反向假突破插針後快速收回，疑似主力掃損",
+            "severity": 22,
+        })
+
+    # 4. 波動率激增
+    atr_then = calc_atr(df_then)
+    atr_now = calc_atr(df_now)
+    if atr_then > 0 and atr_now / atr_then > 1.5:
+        reasons.append({
+            "code": "VOL_SPIKE",
+            "title": "🌪 波動率激增",
+            "detail": f"ATR 從 {atr_then:.4f} 擴張至 {atr_now:.4f}（{(atr_now / atr_then - 1) * 100:.0f}% 增幅）",
+            "severity": 18,
+        })
+
+    # 5. 連續反向 K 線
+    last10 = df_now[-10:]
+    against = sum(
+        1 for b in last10
+        if (side == "LONG" and b["c"] < b["o"]) or (side == "SHORT" and b["c"] > b["o"])
+    )
+    if against >= 7:
+        reasons.append({
+            "code": "AGAINST_MOMENTUM",
+            "title": "💪 持續反向動能",
+            "detail": f"出場前 10 根 K 線中 {against} 根反向收線，趨勢已轉",
+            "severity": 15,
+        })
+
+    # 6. OB / FVG 結構失效
+    ob = find_order_block(df_then, side)
+    if ob:
+        breached = (
+            (side == "LONG" and df_now[-1]["c"] < ob["low"])
+            or (side == "SHORT" and df_now[-1]["c"] > ob["high"])
+        )
+        if breached:
+            reasons.append({
+                "code": "OB_BROKEN",
+                "title": "🧱 訂單塊跌破",
+                "detail": "進場依據的 SMC 訂單塊已被收盤跌破，結構失效",
+                "severity": 20,
+            })
+
+    if not reasons:
+        reasons.append({
+            "code": "NORMAL_NOISE",
+            "title": "📊 正常波動",
+            "detail": "未偵測到明確的趨勢反轉或結構破壞，可能是 ATR 範圍內的正常雜訊掃損",
+            "severity": 5,
+        })
+
+    reasons.sort(key=lambda x: -x["severity"])
+    return reasons[:3]
+
+
+def _generate_lessons(reasons: list) -> list:
+    """根據主因產生「下次該怎麼判斷」的建議"""
+    advice_map = {
+        "TREND_REVERSAL": "進場後若 Supertrend 翻向反向，建議立即減倉或主動出場，不要等止損",
+        "RSI_COLLAPSE": "RSI 從中性區（>45）急跌到超賣（<35）通常代表動能轉換，可作為提前離場信號",
+        "RSI_REBOUND": "RSI 從中性區（<55）反彈到超買（>65）通常代表空頭動能瓦解，提早平倉避損",
+        "LIQ_SWEEP": "插針型止損若反向 K 隨後出現，多半是主力誘多/誘空，下次可把 SL 拉遠 0.2 ATR",
+        "VOL_SPIKE": "ATR 突然擴張代表進入高波動區，建議該幣種暫停 1–2 小時或縮小倉位",
+        "AGAINST_MOMENTUM": "反向 K 連續 7 根以上 = 趨勢明確，應比原訂 SL 更早主動止損鎖損",
+        "OB_BROKEN": "SMC 訂單塊一旦收盤跌破代表結構失效，這時繼續抱單虧損會放大",
+        "NORMAL_NOISE": "本次屬正常波動雜訊，可能 SL 設得太緊，下次 ATR×1.5 → ATR×1.8 會更穩",
+        "INSUFFICIENT": "進場後資料不足，無法詳細歸因",
+    }
+    out = []
+    seen = set()
+    for r in reasons[:2]:
+        code = r.get("code")
+        if code in seen or code not in advice_map:
+            continue
+        seen.add(code)
+        out.append(advice_map[code])
+    return out
+
+
+def _fmt_postmortem(
+    sig: dict,
+    mode: str,
+    reasons: list,
+    lessons: list,
+    similar_stats: tuple | None = None,
+) -> str:
+    """🔍 覆盤分析訊息"""
+    coin = sig["instId"].split("-")[0]
+    order_id = sig.get("order_id", "N/A")
+    side = sig["side"]
+    direction = "做多" if side == "LONG" else "做空"
+    label = (
+        "❌ 止損"
+        if mode == "LOSS"
+        else "🔒 保本"
+        if mode == "BE"
+        else "🔐 鎖利"
+        if mode == "LOCK"
+        else "🎯 止盈"
+    )
+
+    lines = [
+        f"🔍 *{coin} 覆盤分析*",
+        f"━━━━━━━━━━━━━━",
+        f"🆔 訂單：`{order_id}`",
+        f"⏰ 時間：{tw_ts()}",
+        f"方向：{direction}　結算：{label}",
+        f"原始評分：{sig.get('score', 0)} 分",
+        "",
+        "📋 *主要原因（依嚴重度）*：",
+    ]
+    for i, r in enumerate(reasons, 1):
+        lines.append(f"{i}. {r['title']}")
+        lines.append(f"   _{r['detail']}_")
+
+    if lessons:
+        lines.append("")
+        lines.append("💡 *下次該怎麼判斷*：")
+        for l in lessons:
+            lines.append(f"  • {l}")
+
+    if similar_stats:
+        n, w, l, be = similar_stats
+        if n >= 3:
+            wr = w / n * 100
+            lines.append("")
+            lines.append(
+                f"📊 同類設定歷史：{n} 筆（勝 {w} / 平 {be} / 敗 {l}，勝率 `{wr:.0f}%`）"
+            )
+
+    lines.append("")
+    lines.append("🧠 _此次主因已寫入學習資料，下次相似情況評分自動調整_")
+    return "\n".join(lines)
+
+
+def get_similar_stats(score: int, side: str, detail: dict, funding_rate, coin: str) -> tuple:
+    """從學習狀態取「同類設定」的歷史勝負"""
+    state = _load_json(LEARNING_FILE, {})
+    buckets = state.get("buckets", {})
+    # 取「coin_side」這個最具體的桶
+    key = f"coin_side:{coin}_{side}"
+    bd = buckets.get(key, {})
+    n = bd.get("total", 0)
+    w = bd.get("win", 0)
+    l = bd.get("loss", 0)
+    be = bd.get("be", 0)
+    return (n, w, l, be)
 
 
 # ═════════════════════════════════════════════════════════
@@ -1174,6 +1656,49 @@ class SignalTracker:
         if key in self.signals and message_id:
             self.signals[key]["entry_message_id"] = message_id
             self._save()
+
+    def _send_postmortem(self, sig: dict, mode: str) -> None:
+        """🔍 SL/BE/LOCK 後送覆盤分析訊息（並寫入 loss_reasons）"""
+        try:
+            cfg = load_config()
+            pm_cfg = cfg.get("post_mortem", {})
+            if not pm_cfg.get("enabled", True):
+                return
+            if mode != "LOSS" and pm_cfg.get("loss_only", False):
+                return
+
+            activated_at = sig.get("activated_at") or sig.get("created") or 0
+            all_candles = fetch_candles_full(sig["instId"], limit=100)
+            df_at_loss = [
+                {"ts": c["ts"], "o": c["o"], "h": c["h"], "l": c["l"], "c": c["c"], "v": c["v"]}
+                for c in all_candles
+                if (c["ts"] / 1000) >= (activated_at - 900)  # 進場前 15 分作為基準
+            ]
+            if len(df_at_loss) < 10:
+                return
+
+            reasons = analyze_loss(sig, df_at_loss)
+            lessons = _generate_lessons(reasons)
+
+            coin = sig["instId"].split("-")[0]
+            similar = get_similar_stats(
+                sig.get("score", 0),
+                sig["side"],
+                sig.get("detail", {}),
+                sig.get("funding_rate"),
+                coin,
+            )
+
+            msg = _fmt_postmortem(sig, mode, reasons, lessons, similar)
+            send_tg(
+                msg,
+                reply_to_message_id=sig.get("entry_message_id"),
+            )
+
+            if mode == "LOSS":
+                record_loss_reason(coin, sig["side"], reasons)
+        except Exception as e:
+            logging.error(f"❌ 覆盤分析失敗：{e}")
 
     def has_open_position(self, instId: str) -> bool:
         """🔒 該幣種是否還有未結束的訊號（PENDING / ACTIVE / BE / TRAIL）
@@ -1340,7 +1865,7 @@ class SignalTracker:
                 reply_markup=kb,
                 reply_to_message_id=reply_to,
             )
-            record_trade(coin, side, order_id, entry, tp1, "TP1", sig["score"])
+            record_trade(coin, side, order_id, entry, tp1, "TP1", sig["score"], sig)
             self._save()
             self.transitions += 1
 
@@ -1363,7 +1888,7 @@ class SignalTracker:
                 reply_markup=kb,
                 reply_to_message_id=reply_to,
             )
-            record_trade(coin, side, order_id, entry, tp2, "TP2", sig["score"])
+            record_trade(coin, side, order_id, entry, tp2, "TP2", sig["score"], sig)
             self._save()
             self.transitions += 1
 
@@ -1383,7 +1908,7 @@ class SignalTracker:
                 reply_markup=kb,
                 reply_to_message_id=reply_to,
             )
-            record_trade(coin, side, order_id, entry, tp3, "TP3", sig["score"])
+            record_trade(coin, side, order_id, entry, tp3, "TP3", sig["score"], sig)
             self.transitions += 1
             return True
 
@@ -1408,7 +1933,9 @@ class SignalTracker:
                 reply_markup=kb,
                 reply_to_message_id=reply_to,
             )
-            record_trade(coin, side, order_id, entry, sl, close_type, sig["score"])
+            record_trade(coin, side, order_id, entry, sl, close_type, sig["score"], sig)
+            # 🔍 覆盤分析
+            self._send_postmortem(sig, mode)
             self.transitions += 1
             return True
 
@@ -1485,6 +2012,7 @@ def run_scan(tracker: SignalTracker) -> int:
 
     # ── 0. 熱載入配置 ──
     cfg = load_config()
+    coins = cfg.get("coins", ALL_COINS)
     max_signals = cfg.get("max_signals", MAX_SIGNALS)
     score_thr = cfg.get("score_threshold", SCORE_THRESHOLD)
     cooldown_h = cfg.get("cooldown_hours", COOLDOWN_HOURS)
@@ -1528,7 +2056,7 @@ def run_scan(tracker: SignalTracker) -> int:
 
     # ── 3. 掃描每個幣種 ──
     sent = 0
-    for instId in ALL_COINS:
+    for instId in coins:
         if sent >= max_signals:
             break
 
@@ -1648,10 +2176,15 @@ def main() -> None:
 
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
 
-        # /stats 或 /持倉 命令
-        if len(sys.argv) > 1 and sys.argv[1] in ("/stats", "/持倉", "stats"):
-            send_tg(tracker.get_position_stats())
-            return
+        # 命令處理
+        if len(sys.argv) > 1:
+            cmd = sys.argv[1]
+            if cmd in ("/stats", "/持倉", "stats"):
+                send_tg(tracker.get_position_stats())
+                return
+            if cmd in ("/learning", "/學習", "/coach", "learning"):
+                send_tg(format_learning_report())
+                return
 
         run_scan(tracker)
         logging.info("🎉 程式執行完成")
