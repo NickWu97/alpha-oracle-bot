@@ -1,9 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v13.0 — 覆盤 + 學習 + 多幣種版（繁體中文）
+Alpha Oracle Pro v14.0 — 專業交易員養成版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v13.0 新增（會自我成長）：
+✨ v14.0 新增（變專業）：
+  🕒 多時框共振：1H + 4H Supertrend 確認，最高 +15 分（反向 -10）
+  📊 量能確認：最後 K 量 vs 前 20 期均量，最高 +8 分（沒量 -10 直接淘汰）
+  🌐 市場狀態識別：ADX 趨勢/震盪/過渡，震盪市門檻自動 +5
+  🎯 動態 TP：固定 R 倍 TP 落在強 S/R 前方時自動校正
+  📰 新聞事件過濾：NFP / CPI 自動規則 + 自訂事件清單
+  🌀 進場時機：偵測回測影線 K 加 +3 分
+  🧬 KNN 學習：每筆訊號向量化，找最相似 10 筆歷史交易看勝率
+  📈 日報 / 月報：/daily 與 /monthly 命令，含各幣種績效、連勝連敗
+  📁 backtest.py：獨立回測腳本（讀歷史 K 線重跑策略）
+  📡 websocket_monitor.py：常駐 WS 監控（部署 Railway/Fly.io）
+
+✨ v13.1 既有：
+  ⚡ monitor 模式 + 高頻 cron workflow（30 秒一次）
+  ⚡ monitor 模式：輕量、只追既有訊號，不生成新訊號
+     ↳ 用法：python main.py monitor [polls] [interval]
+     ↳ 搭配 alpha-oracle-monitor.yml 每 3 分鐘 cron + 一次 3 輪 = ~30 秒檢查一次
+     ↳ TP/SL 通知延遲從 15 分鐘壓到 ~30 秒
+  📁 新檔 alpha-oracle-monitor.yml：高頻監控專用 workflow
+
+✨ v13.0（會自我成長）：
   🔍 覆盤分析：SL / BE / LOCK 後自動分析「為什麼結算」並送 Telegram
      ↳ 6 大歸因：趨勢反轉 / RSI 崩盤 / 流動性掃蕩 / 波動激增 / 反向動能 / OB 跌破
      ↳ 附「下次該怎麼判斷」+ 同類設定歷史勝率
@@ -133,8 +153,17 @@ DEFAULT_CONFIG: dict = {
     },
     "learning": {
         "enabled": True,
-        "min_samples": 5,              # 桶內樣本 < 此值不套用
-        "max_score_adjust": 10,        # 最終調整上限 ±N 分
+        "knn_enabled": True,           # 進階 KNN 學習（找最相似歷史交易）
+        "min_samples": 5,
+        "max_score_adjust": 10,
+    },
+    "news_blackouts": [
+        # 用戶可自訂事件，例如：
+        # {"start": "2026-05-07T20:30:00+08:00", "end": "2026-05-07T22:30:00+08:00", "reason": "FOMC 會議"}
+    ],
+    "auto_news_blackout": {
+        "nfp": True,                   # 每月第一週五 21:25–22:30 (TW)
+        "cpi": True,                   # 每月 10–16 日 21:25–22:30 (TW)
     },           # ATR/Price 超過此值視為震盪過大
     "price_verification": {
         "enabled": True,
@@ -769,10 +798,187 @@ def calc_momentum_ratio(df: list, side: str, n: int = 5) -> bool:
 
 
 # ═════════════════════════════════════════════════════════
+# 6.5 v14 新指標：ADX / 多時框 / 量能 / 市場狀態 / 進場時機
+# ═════════════════════════════════════════════════════════
+def calc_adx(df: list, period: int = 14) -> float:
+    """📐 ADX 趨勢強度：>25 強趨勢、<18 震盪、中間過渡"""
+    if len(df) < period * 2 + 1:
+        return 0.0
+    plus_dm, minus_dm, trs = [], [], []
+    for i in range(1, len(df)):
+        up = df[i]["h"] - df[i - 1]["h"]
+        dn = df[i - 1]["l"] - df[i]["l"]
+        plus_dm.append(up if (up > dn and up > 0) else 0)
+        minus_dm.append(dn if (dn > up and dn > 0) else 0)
+        tr = max(
+            df[i]["h"] - df[i]["l"],
+            abs(df[i]["h"] - df[i - 1]["c"]),
+            abs(df[i]["l"] - df[i - 1]["c"]),
+        )
+        trs.append(tr)
+    if len(trs) < period:
+        return 0.0
+    atr = sum(trs[-period:]) / period
+    if atr == 0:
+        return 0.0
+    plus_di = 100 * sum(plus_dm[-period:]) / period / atr
+    minus_di = 100 * sum(minus_dm[-period:]) / period / atr
+    s = plus_di + minus_di
+    if s == 0:
+        return 0.0
+    return 100 * abs(plus_di - minus_di) / s
+
+
+def detect_market_regime(df: list) -> dict:
+    """🌐 判斷市場狀態：trend / range / transitional + 是否高波動"""
+    adx = calc_adx(df)
+    atr = calc_atr(df)
+    price = df[-1]["c"] if df else 1
+    atr_pct = atr / price * 100 if price else 0
+    if adx > 25:
+        regime = "trend"
+    elif adx < 18:
+        regime = "range"
+    else:
+        regime = "transitional"
+    return {
+        "regime": regime,
+        "adx": round(adx, 1),
+        "atr_pct": round(atr_pct, 3),
+        "volatile": atr_pct > 2.5,
+    }
+
+
+_mtf_cache: dict = {}
+
+
+def fetch_mtf_trend(instId: str) -> dict:
+    """🕒 抓 1H 與 4H 的 K 線判斷大趨勢（30 秒快取）"""
+    now = time.time()
+    if instId in _mtf_cache:
+        data, t = _mtf_cache[instId]
+        if now - t < 30:
+            return data
+    out = {}
+    for tf in ("1H", "4H"):
+        df = fetch_candles(instId, tf=tf, limit=50)
+        if df:
+            st = calc_supertrend(df)
+            out[tf] = {
+                "supertrend": st,
+                "trend": "up" if st == 1 else "down" if st == -1 else "side",
+                "rsi": round(calc_rsi(df), 1),
+            }
+        else:
+            out[tf] = {"supertrend": 0, "trend": "side", "rsi": 50}
+    _mtf_cache[instId] = (out, now)
+    return out
+
+
+def calc_mtf_alignment(mtf: dict, side: str) -> tuple[int, str]:
+    """🎯 多時框共振評分（最高 +15）→ (分數, 說明)"""
+    expect = 1 if side == "LONG" else -1
+    h1 = mtf.get("1H", {}).get("supertrend", 0)
+    h4 = mtf.get("4H", {}).get("supertrend", 0)
+    score = 0
+    if h1 == expect:
+        score += 8
+    elif h1 == -expect:
+        score -= 5
+    if h4 == expect:
+        score += 7
+    elif h4 == -expect:
+        score -= 5
+    score = max(-15, min(15, score))
+
+    align_desc = []
+    align_desc.append(f"1H={'順' if h1 == expect else '反' if h1 == -expect else '中'}")
+    align_desc.append(f"4H={'順' if h4 == expect else '反' if h4 == -expect else '中'}")
+    return score, " / ".join(align_desc)
+
+
+def calc_volume_quality(df: list, lookback: int = 20) -> tuple[float, int]:
+    """📊 成交量確認：最後 K 線量 vs 前 N 期均量 → (倍數, 評分 -10~+8)"""
+    if len(df) < lookback + 1:
+        return 1.0, 0
+    seg = df[-(lookback + 1):-1]
+    avg = sum(c["v"] for c in seg) / lookback
+    if avg <= 0:
+        return 1.0, 0
+    ratio = df[-1]["v"] / avg
+    if ratio >= 2.0:
+        s = 8
+    elif ratio >= 1.5:
+        s = 5
+    elif ratio >= 1.0:
+        s = 2
+    elif ratio >= 0.5:
+        s = 0
+    else:
+        s = -10  # 沒量的訊號直接扣，過濾假突破
+    return round(ratio, 2), s
+
+
+def adjust_tp_by_sr(
+    entry: float, side: str, tp_levels: list, df: list
+) -> tuple[list, list]:
+    """🎯 動態 TP：若固定 R 倍 TP 落在強 S/R 前方，把 TP 拉到關鍵位前
+
+    回傳：(調整後 TP 列表, 調整紀錄)
+    """
+    sup, res = calc_snr(df, lookback=100)
+    out = list(tp_levels)
+    notes = []
+    if side == "LONG":
+        for i, tp in enumerate(out):
+            if tp > res * 1.001:
+                # TP 高過阻力 0.1% 以上 → 拉到阻力前 0.2%
+                new_tp = res * 0.998
+                if new_tp > entry:
+                    notes.append(
+                        f"TP{i + 1} 由 {tp:.4f} 校正到 {new_tp:.4f}（避開阻力 {res:.4f}）"
+                    )
+                    out[i] = new_tp
+    else:
+        for i, tp in enumerate(out):
+            if tp < sup * 0.999:
+                new_tp = sup * 1.002
+                if new_tp < entry:
+                    notes.append(
+                        f"TP{i + 1} 由 {tp:.4f} 校正到 {new_tp:.4f}（避開支撐 {sup:.4f}）"
+                    )
+                    out[i] = new_tp
+    return out, notes
+
+
+def detect_pullback(df: list, side: str) -> bool:
+    """🌀 偵測回測進場：最後一根 K 出現方向反轉影線 + 收線回升"""
+    if len(df) < 3:
+        return False
+    last = df[-1]
+    body = abs(last["c"] - last["o"])
+    if body == 0:
+        return False
+    upper = last["h"] - max(last["c"], last["o"])
+    lower = min(last["c"], last["o"]) - last["l"]
+    if side == "LONG":
+        return lower > body * 1.2 and last["c"] > last["o"]
+    return upper > body * 1.2 and last["c"] < last["o"]
+
+
+# ═════════════════════════════════════════════════════════
 # 7. 評分系統（規格 100 分制）
 # ═════════════════════════════════════════════════════════
-def calc_score(df: list, side: str, current_price: float) -> tuple[int, str, dict]:
-    """總分 = 趨勢30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5 = 100"""
+def calc_score(
+    df: list,
+    side: str,
+    current_price: float,
+    mtf: dict | None = None,
+    instId: str | None = None,
+) -> tuple[int, str, dict]:
+    """總分 = 趨勢30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5 + MTF15 + Volume8 = 最高 138
+    （高於 100 是因為 v14 新增 MTF + Volume 加權，門檻仍預設 68）
+    """
     detail = {}
     score = 0
 
@@ -848,6 +1054,21 @@ def calc_score(df: list, side: str, current_price: float) -> tuple[int, str, dic
     detail["mom"] = 5 if calc_momentum_ratio(df, side) else 0
     score += detail["mom"]
 
+    # 🎯 MTF 多時框共振 (-15 ~ +15)
+    if mtf is None and instId:
+        mtf = fetch_mtf_trend(instId)
+    if mtf:
+        mtf_score, mtf_desc = calc_mtf_alignment(mtf, side)
+        score += mtf_score
+        detail["mtf"] = mtf_score
+        detail["mtf_desc"] = mtf_desc
+
+    # 📊 成交量 (-10 ~ +8)
+    vol_ratio, vol_score = calc_volume_quality(df)
+    score += vol_score
+    detail["volume"] = vol_score
+    detail["volume_ratio"] = vol_ratio
+
     grade = (
         "A+ 極強 🔥"
         if score >= 85
@@ -888,18 +1109,44 @@ def generate_signal(
     funding_penalty_short = funding_rate and funding_rate < -0.0008
 
     coin = instId.split("-")[0]
+
+    # 🌐 市場狀態識別（趨勢/震盪）→ 影響門檻
+    regime_info = detect_market_regime(df)
+    if regime_info["regime"] == "range":
+        threshold += 5  # 震盪市要求更嚴格
+    if regime_info["volatile"]:
+        threshold += 3  # 高波動加碼提高門檻
+
+    # 🕒 多時框抓一次給兩個方向共用
+    mtf = fetch_mtf_trend(instId)
+
     candidates = []
     for side in ("LONG", "SHORT"):
-        score, grade, detail = calc_score(df, side, current_price)
+        score, grade, detail = calc_score(df, side, current_price, mtf=mtf)
         if side == "LONG" and funding_penalty_long:
             score -= 5
         if side == "SHORT" and funding_penalty_short:
             score -= 5
 
-        # 🧠 套用學習調整（依歷史勝率對相同特徵組合微調分數）
-        adjusted_score, learning_notes = apply_learning_adjustment(
+        # 註記市場狀態到 detail
+        detail["regime"] = regime_info["regime"]
+        detail["adx"] = regime_info["adx"]
+        detail["atr_pct"] = regime_info["atr_pct"]
+
+        # 🌀 進場時機：有回測 K 線 +3 分
+        if detect_pullback(df, side):
+            score += 3
+            detail["pullback"] = True
+
+        # 🧠 統計學習（桶 + KNN 雙路）
+        adj_simple, notes_simple = apply_learning_adjustment(
             score, side, detail, funding_rate, coin
         )
+        adj_knn, notes_knn = apply_knn_learning(
+            score, side, detail, funding_rate, coin, mtf, regime_info
+        )
+        adjusted_score = adj_simple + (adj_knn - score)
+        learning_notes = notes_simple + notes_knn
         if learning_notes:
             detail["learning_notes"] = learning_notes
             detail["learning_adjust"] = adjusted_score - score
@@ -915,13 +1162,14 @@ def generate_signal(
 
         # ✅ 規格倍率：1.5R / 3.0R / 5.0R
         if side == "LONG":
-            tp1 = entry + risk * 1.5
-            tp2 = entry + risk * 3.0
-            tp3 = entry + risk * 5.0
+            tp_levels = [entry + risk * 1.5, entry + risk * 3.0, entry + risk * 5.0]
         else:
-            tp1 = entry - risk * 1.5
-            tp2 = entry - risk * 3.0
-            tp3 = entry - risk * 5.0
+            tp_levels = [entry - risk * 1.5, entry - risk * 3.0, entry - risk * 5.0]
+
+        # 🎯 動態 TP 校正（避開強 S/R）
+        tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
+        if tp_notes:
+            detail["tp_adjust_notes"] = tp_notes
 
         candidates.append(
             {
@@ -930,13 +1178,15 @@ def generate_signal(
                 "tf": "15m",
                 "entry": round(entry, 4),
                 "sl": round(sl, 4),
-                "tp1": round(tp1, 4),
-                "tp2": round(tp2, 4),
-                "tp3": round(tp3, 4),
+                "tp1": round(tp_levels[0], 4),
+                "tp2": round(tp_levels[1], 4),
+                "tp3": round(tp_levels[2], 4),
                 "score": score,
                 "grade": grade,
                 "detail": detail,
                 "funding_rate": funding_rate,
+                "mtf_snapshot": mtf,
+                "regime_snapshot": regime_info,
                 "created": time.time(),
                 "expires": time.time() + signal_expire_hours * 3600,
             }
@@ -1056,6 +1306,15 @@ def record_trade(
         if side == "LONG"
         else (entry - close_price) / entry * 100
     )
+    snap = sig_snapshot or {}
+    detail = snap.get("detail", {}) or {}
+    funding_rate = snap.get("funding_rate")
+    mtf = snap.get("mtf_snapshot")
+    regime = snap.get("regime_snapshot")
+
+    # 🧬 進場時的特徵向量（給 KNN 學習查相似度用）
+    features = vectorize_signal(score, side, detail, funding_rate, mtf, regime)
+
     trade = {
         "time": tw_now().strftime("%Y-%m-%d %H:%M"),
         "date": tw_now().strftime("%Y-%m-%d"),
@@ -1069,9 +1328,11 @@ def record_trade(
         "is_win": is_win,
         "is_be": is_be,
         "score": score,
-        # 學習用的特徵（從 sig_snapshot 帶過來）
-        "funding_rate": (sig_snapshot or {}).get("funding_rate"),
-        "detail": (sig_snapshot or {}).get("detail"),
+        "funding_rate": funding_rate,
+        "detail": detail,
+        "features": features,        # 🧬 KNN 用
+        "mtf": mtf,                  # 進場時 1H/4H 趨勢
+        "regime": regime,            # 進場時市場狀態
     }
     history = _load_json(TRADE_HISTORY_FILE, [])
     history.append(trade)
@@ -1230,6 +1491,136 @@ def apply_learning_adjustment(
     return score + adj_total, notes
 
 
+def _summarize_trades(trades: list) -> dict:
+    n = len(trades)
+    if n == 0:
+        return {"n": 0}
+    win = sum(1 for t in trades if t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK"))
+    loss = sum(1 for t in trades if t.get("close_type") == "SL")
+    be = sum(1 for t in trades if t.get("close_type") == "BE")
+    pnl = sum(t.get("pnl", 0) for t in trades)
+    pnls = [t.get("pnl", 0) for t in trades]
+    avg = pnl / n if n else 0
+    biggest_win = max(pnls) if pnls else 0
+    biggest_loss = min(pnls) if pnls else 0
+    return {
+        "n": n,
+        "win": win,
+        "loss": loss,
+        "be": be,
+        "wr": win / n * 100 if n else 0,
+        "pnl": pnl,
+        "avg": avg,
+        "max_win": biggest_win,
+        "max_loss": biggest_loss,
+    }
+
+
+def format_daily_report(date: str | None = None) -> str:
+    """📊 日報：當天交易概覽 + 績效"""
+    if date is None:
+        date = tw_now().strftime("%Y-%m-%d")
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    today = [t for t in history if t.get("date") == date]
+    s = _summarize_trades(today)
+    if s["n"] == 0:
+        return f"📭 *日報 {date}*\n當日尚無交易紀錄"
+
+    lines = [
+        f"📊 *日報 {date}*",
+        "━━━━━━━━━━━━━━",
+        f"交易筆數：{s['n']}",
+        f"勝 / 平 / 敗：{s['win']} / {s['be']} / {s['loss']}",
+        f"勝率：`{s['wr']:.0f}%`",
+        f"總 PnL：`{s['pnl']:+.2f}%`",
+        f"平均：`{s['avg']:+.2f}%/筆`",
+        f"最大獲利：`{s['max_win']:+.2f}%`　最大虧損：`{s['max_loss']:+.2f}%`",
+        "",
+    ]
+
+    # 各幣種表現
+    by_coin = {}
+    for t in today:
+        c = t.get("coin", "?")
+        by_coin.setdefault(c, []).append(t)
+    if by_coin:
+        lines.append("💎 *各幣種表現*：")
+        for c, ts in sorted(by_coin.items(), key=lambda x: -sum(t.get("pnl", 0) for t in x[1])):
+            sub = _summarize_trades(ts)
+            lines.append(
+                f"  {c}: {sub['n']} 筆 (勝 {sub['win']}/敗 {sub['loss']}) "
+                f"PnL `{sub['pnl']:+.2f}%`"
+            )
+
+    return "\n".join(lines)
+
+
+def format_monthly_report(year_month: str | None = None) -> str:
+    """📈 月報：當月績效 + 學習進展"""
+    if year_month is None:
+        year_month = tw_now().strftime("%Y-%m")
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    month = [t for t in history if t.get("date", "").startswith(year_month)]
+    s = _summarize_trades(month)
+    if s["n"] == 0:
+        return f"📭 *月報 {year_month}*\n本月尚無交易紀錄"
+
+    lines = [
+        f"📈 *月報 {year_month}*",
+        "━━━━━━━━━━━━━━",
+        f"總交易：{s['n']} 筆",
+        f"勝 / 平 / 敗：{s['win']} / {s['be']} / {s['loss']}",
+        f"勝率：`{s['wr']:.0f}%`",
+        f"總 PnL：`{s['pnl']:+.2f}%`",
+        f"平均：`{s['avg']:+.2f}%/筆`",
+        f"最大獲利：`{s['max_win']:+.2f}%`　最大虧損：`{s['max_loss']:+.2f}%`",
+        "",
+    ]
+
+    # 連勝 / 連敗
+    cur_streak = 0
+    streak_type = None
+    max_win_streak = 0
+    max_loss_streak = 0
+    for t in month:
+        ct = t.get("close_type")
+        is_w = ct in ("TP1", "TP2", "TP3", "LOCK")
+        is_l = ct == "SL"
+        if is_w:
+            if streak_type == "win":
+                cur_streak += 1
+            else:
+                streak_type = "win"
+                cur_streak = 1
+            max_win_streak = max(max_win_streak, cur_streak)
+        elif is_l:
+            if streak_type == "loss":
+                cur_streak += 1
+            else:
+                streak_type = "loss"
+                cur_streak = 1
+            max_loss_streak = max(max_loss_streak, cur_streak)
+
+    lines.append(f"🔥 最大連勝：{max_win_streak}　❄️ 最大連敗：{max_loss_streak}")
+    lines.append("")
+
+    # 各幣種
+    by_coin = {}
+    for t in month:
+        c = t.get("coin", "?")
+        by_coin.setdefault(c, []).append(t)
+    if by_coin:
+        lines.append("💎 *各幣種表現*：")
+        ranked = sorted(by_coin.items(), key=lambda x: -sum(t.get("pnl", 0) for t in x[1]))
+        for c, ts in ranked:
+            sub = _summarize_trades(ts)
+            lines.append(
+                f"  {c}: {sub['n']} 筆 · 勝率 `{sub['wr']:.0f}%` · PnL `{sub['pnl']:+.2f}%`"
+            )
+
+    return "\n".join(lines)
+
+
 def format_learning_report() -> str:
     """🧠 /learning 命令 → 顯示機器人學到了什麼"""
     state = _load_json(LEARNING_FILE, {})
@@ -1296,6 +1687,87 @@ def format_learning_report() -> str:
 
     lines.append("💡 _這些統計每筆交易結算後自動更新；下次相似情境的訊號評分會自動微調_")
     return "\n".join(lines)
+
+
+def vectorize_signal(
+    score: int,
+    side: str,
+    detail: dict,
+    funding_rate,
+    mtf: dict | None = None,
+    regime: dict | None = None,
+) -> dict:
+    """🧬 把訊號特徵打成向量（給 KNN 用）"""
+    rsi = (detail or {}).get("rsi_value", 50)
+    return {
+        "score": float(score),
+        "rsi": float(rsi),
+        "atr_pct": float((detail or {}).get("atr_pct", 1.0)),
+        "funding": float(funding_rate or 0) * 1000,
+        "vol_ratio": float((detail or {}).get("volume_ratio", 1.0)),
+        "adx": float((regime or {}).get("adx", 20)),
+        "mtf_h1": 1.0 if (mtf or {}).get("1H", {}).get("supertrend") == (1 if side == "LONG" else -1) else 0.0,
+        "mtf_h4": 1.0 if (mtf or {}).get("4H", {}).get("supertrend") == (1 if side == "LONG" else -1) else 0.0,
+        "side": 1.0 if side == "LONG" else 0.0,
+    }
+
+
+_FEATURE_SCALE = {
+    "score": 30, "rsi": 50, "atr_pct": 3, "funding": 2,
+    "vol_ratio": 3, "adx": 50, "mtf_h1": 1, "mtf_h4": 1, "side": 1,
+}
+
+
+def find_similar_trades(features: dict, history: list, k: int = 10) -> list:
+    """🧬 KNN：找最相似的 k 筆有特徵的歷史交易（歐式距離，已歸一化）"""
+    candidates = []
+    for t in history:
+        f = t.get("features")
+        if not f:
+            continue
+        d2 = 0.0
+        for key, scale in _FEATURE_SCALE.items():
+            diff = (features.get(key, 0) - f.get(key, 0)) / max(scale, 1)
+            d2 += diff * diff
+        candidates.append((d2, t))
+    candidates.sort(key=lambda x: x[0])
+    return [t for _, t in candidates[:k]]
+
+
+def apply_knn_learning(
+    score: int,
+    side: str,
+    detail: dict,
+    funding_rate,
+    coin: str,
+    mtf: dict | None,
+    regime: dict | None,
+) -> tuple[int, list]:
+    """🧬 KNN 學習：找最相似的 10 筆歷史交易，看勝率 → (調整後分數, 紀錄)"""
+    cfg = load_config()
+    if not cfg.get("learning", {}).get("knn_enabled", True):
+        return score, []
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    if len(history) < 10:
+        return score, []
+    feat = vectorize_signal(score, side, detail, funding_rate, mtf, regime)
+    similar = find_similar_trades(feat, history, k=10)
+    if len(similar) < 3:
+        return score, []
+    wins = sum(1 for t in similar if t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK"))
+    losses = sum(1 for t in similar if t.get("close_type") == "SL")
+    n = len(similar)
+    wr = wins / n
+    notes = [f"🧬 KNN：{n} 筆最相似訊號 → 勝 {wins} / 敗 {losses} (勝率 {wr:.0%})"]
+    if wr < 0.30:
+        return score - 8, notes + ["KNN 低勝率 → -8"]
+    if wr < 0.40:
+        return score - 4, notes + ["KNN 偏低勝率 → -4"]
+    if wr > 0.70:
+        return score + 5, notes + ["KNN 高勝率 → +5"]
+    if wr > 0.60:
+        return score + 3, notes + ["KNN 中高勝率 → +3"]
+    return score, notes
 
 
 def record_loss_reason(coin: str, side: str, reasons: list) -> None:
@@ -1601,6 +2073,41 @@ def _in_window(cur_min: int, start_min: int, end_min: int) -> bool:
     if start_min <= end_min:
         return start_min <= cur_min < end_min
     return cur_min >= start_min or cur_min < end_min
+
+
+def is_in_news_window(cfg: dict) -> tuple[bool, str]:
+    """📰 新聞事件時段檢查（自訂事件 + NFP 自動規則）"""
+    now = tw_now()
+
+    # 1. config 中的自訂事件
+    for nb in cfg.get("news_blackouts", []):
+        try:
+            start = datetime.fromisoformat(nb["start"])
+            end = datetime.fromisoformat(nb["end"])
+            if start.tzinfo is None:
+                start = start.replace(tzinfo=TW_TZ)
+                end = end.replace(tzinfo=TW_TZ)
+            if start <= now <= end:
+                return True, nb.get("reason", "新聞事件")
+        except Exception:
+            continue
+
+    # 2. NFP 自動規則：每月第一個週五 21:25–22:30（台灣時間）
+    auto = cfg.get("auto_news_blackout", {})
+    if auto.get("nfp", True):
+        if now.weekday() == 4 and now.day <= 7:
+            cur = now.hour * 60 + now.minute
+            if 21 * 60 + 25 <= cur < 22 * 60 + 30:
+                return True, "NFP 非農（自動偵測）"
+
+    # 3. CPI 約莫每月中旬 21:25–22:30
+    if auto.get("cpi", True):
+        if 10 <= now.day <= 16:
+            cur = now.hour * 60 + now.minute
+            if 21 * 60 + 25 <= cur < 22 * 60 + 30:
+                return True, "CPI 數據時段（自動偵測）"
+
+    return False, ""
 
 
 def is_blackout_time(cfg: dict) -> tuple[bool, str]:
@@ -2006,6 +2513,38 @@ class SignalTracker:
 # ═════════════════════════════════════════════════════════
 # 11. 主掃描
 # ═════════════════════════════════════════════════════════
+def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: int = 30) -> None:
+    """🔔 高頻監控模式 — 只檢查既有訊號的 PENDING 進場 / TP / SL，不生成新訊號
+
+    in_run_polls: 一次 cron 執行內輪詢幾次（搭配 poll_interval 秒間隔）
+      預設 1 次 = 純靠 cron 頻率；設成 3 + interval=20 → 一次 cron 內 1 分鐘內掃 3 次
+
+    用法：python main.py monitor
+    建議搭配 monitor-only.yml workflow（每 3 分鐘 cron）
+    """
+    if not tracker.signals:
+        logging.info("📭 無追蹤中訊號，monitor 跳過")
+        return
+
+    n = len(tracker.signals)
+    logging.info(f"🔔 monitor 模式啟動，追蹤中 {n} 筆訊號 × {in_run_polls} 輪")
+
+    total_transitions = 0
+    for poll_idx in range(in_run_polls):
+        if not tracker.signals:
+            logging.info("📭 所有訊號已結束，提早收工")
+            break
+        try:
+            tracker.check_all()
+            total_transitions += tracker.transitions
+            if poll_idx < in_run_polls - 1:
+                time.sleep(poll_interval)
+        except Exception as e:
+            logging.error(f"❌ monitor poll {poll_idx + 1} 出錯：{e}")
+
+    logging.info(f"✅ monitor 完成，{in_run_polls} 輪共觸發 {total_transitions} 次狀態變動")
+
+
 def run_scan(tracker: SignalTracker) -> int:
     """🔍 執行掃描（整合 v12 全部風控）"""
     logging.info("🚀 開始掃描...")
@@ -2049,7 +2588,14 @@ def run_scan(tracker: SignalTracker) -> int:
     blocked, btime_reason = is_blackout_time(cfg)
     if blocked:
         logging.info(f"🕒 禁止交易時段（{btime_reason}），不開新單但繼續監控")
-        # 仍要檢查既有訊號的 SL/TP
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
+    # ── 2.5 新聞事件時段過濾 ──
+    in_news, news_reason = is_in_news_window(cfg)
+    if in_news:
+        logging.info(f"📰 新聞事件時段（{news_reason}），不開新單但繼續監控")
         tracker.check_all()
         tracker.send_position_updates()
         return 0
@@ -2184,6 +2730,21 @@ def main() -> None:
                 return
             if cmd in ("/learning", "/學習", "/coach", "learning"):
                 send_tg(format_learning_report())
+                return
+            if cmd in ("/daily", "/日報", "daily"):
+                date = sys.argv[2] if len(sys.argv) > 2 else None
+                send_tg(format_daily_report(date))
+                return
+            if cmd in ("/monthly", "/月報", "monthly"):
+                ym = sys.argv[2] if len(sys.argv) > 2 else None
+                send_tg(format_monthly_report(ym))
+                return
+            if cmd in ("monitor", "/monitor", "/監控"):
+                # 高頻輕量監控模式（只追既有訊號）
+                # 可選：python main.py monitor 3 20 → 一次 cron 內掃 3 次、每次間隔 20s
+                polls = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+                interval = int(sys.argv[3]) if len(sys.argv) > 3 else 30
+                run_monitor(tracker, in_run_polls=polls, poll_interval=interval)
                 return
 
         run_scan(tracker)
