@@ -59,9 +59,11 @@ jobs:
         run: |
           git config user.name  "alpha-bot"
           git config user.email "bot@alpha.example"
+          # 先 rebase 避免跟 monitor workflow 衝突
+          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
           git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json learning_state.json 2>/dev/null || true
           git diff --staged --quiet || {
             git commit -m "chore: 更新訊號狀態 [skip ci]"
-            git push --quiet
+            git push --quiet || git push --force-with-lease --quiet || true
           }
         continue-on-error: true
