@@ -1,5 +1,12 @@
 {
-  "_comment": "Alpha Oracle Pro v12 配置檔（熱更新，無需重新部署）。把這個檔案提交到 repo 即生效；不存在時程式會 fallback 到 DEFAULT_CONFIG。",
+  "_comment": "Alpha Oracle Pro v13.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
+
+  "coins": [
+    "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
+    "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP",
+    "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP",
+    "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"
+  ],
 
   "max_signals": 3,
   "score_threshold": 68,
@@ -7,15 +14,26 @@
   "signal_expire_hours": 24,
   "atr_max_pct": 0.04,
 
+  "post_mortem": {
+    "_comment": "SL/BE/LOCK 後自動覆盤 + 寫入學習資料",
+    "enabled": true,
+    "loss_only": false
+  },
+
+  "learning": {
+    "_comment": "min_samples 桶內樣本下限；max_score_adjust 調整上限 ±N 分",
+    "enabled": true,
+    "min_samples": 5,
+    "max_score_adjust": 10
+  },
+
   "price_verification": {
-    "_comment": "OKX vs TradingView 雙來源驗證",
     "enabled": true,
     "max_deviation_pct": 0.5,
     "block_on_unverified": false
   },
 
   "circuit_breaker": {
-    "_comment": "連續虧損熔斷：以 trade_history.json 中最後 SL 起算",
     "enabled": true,
     "soft_threshold": 3,
     "soft_pause_hours": 4,
