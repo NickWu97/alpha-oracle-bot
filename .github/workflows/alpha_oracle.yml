@@ -17,7 +17,7 @@ jobs:
   run:
     name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 5  # ⚡ 提高一點 buffer，避免 OKX 偶發慢回應被砍
+    timeout-minutes: 5
 
     steps:
       - name: 📦 下載程式碼
@@ -40,8 +40,6 @@ jobs:
           [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
           [ -f system_state.json ]     || echo '{}' > system_state.json
           [ -f learning_state.json ]   || echo '{}' > learning_state.json
-          # config.json 不存在時不自動建立，由程式 fallback 到 DEFAULT_CONFIG
-          # 想自訂時把 config.json 提交進 repo 即可
 
       - name: 🚀 執行 Alpha Oracle
         env:
@@ -59,7 +57,6 @@ jobs:
         run: |
           git config user.name  "alpha-bot"
           git config user.email "bot@alpha.example"
-          # 先 rebase 避免跟 monitor workflow 衝突
           git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
           git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json learning_state.json 2>/dev/null || true
           git diff --staged --quiet || {
