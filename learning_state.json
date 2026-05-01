@@ -127,10 +127,10 @@
       "total": 1
     },
     "score:70-79": {
-      "win": 0,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "coin:ETH": {
       "win": 0,
@@ -145,16 +145,40 @@
       "total": 1
     },
     "rsi_short:50-59": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "coin_side:SOL_SHORT": {
       "win": 1,
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "fund:neg": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "sess:asia_day": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:NEAR": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:NEAR_SHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -199,6 +223,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "NEAR": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -224,5 +254,5 @@
       "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1777669659.2374127
+  "updated_at": 1777673146.597158
 }

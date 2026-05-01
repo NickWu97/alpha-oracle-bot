@@ -2682,5 +2682,221 @@
     },
     "mtf": null,
     "regime": null
+  },
+  {
+    "time": "2026-05-02 06:05",
+    "date": "2026-05-02",
+    "order_id": "1777669655-28ED2E6D",
+    "coin": "NEAR",
+    "side": "SHORT",
+    "entry": 1.285,
+    "close": 1.2846,
+    "close_type": "TP1",
+    "pnl": 0.03,
+    "is_win": true,
+    "is_be": false,
+    "score": 76,
+    "funding_rate": -0.0005831396478207,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 55.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.06,
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.355,
+      "learning_notes": [
+        "score:80-89 (n=5, 勝率 0%) → -3",
+        "sess:asia_dawn (n=5, 勝率 20%) → -3"
+      ],
+      "learning_adjust": -6,
+      "tp_adjust_notes": [
+        "TP1 由 1.2747 校正到 1.2846（避開支撐 1.2820）",
+        "TP2 由 1.2644 校正到 1.2846（避開支撐 1.2820）",
+        "TP3 由 1.2507 校正到 1.2846（避開支撐 1.2820）"
+      ]
+    },
+    "features": {
+      "score": 76.0,
+      "rsi": 55.6,
+      "atr_pct": 0.355,
+      "funding": -0.5831396478206999,
+      "vol_ratio": 1.06,
+      "adx": 6.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 25.0
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.355,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-02 06:05",
+    "date": "2026-05-02",
+    "order_id": "1777669655-28ED2E6D",
+    "coin": "NEAR",
+    "side": "SHORT",
+    "entry": 1.285,
+    "close": 1.2846,
+    "close_type": "TP2",
+    "pnl": 0.03,
+    "is_win": true,
+    "is_be": false,
+    "score": 76,
+    "funding_rate": -0.0005831396478207,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 55.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.06,
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.355,
+      "learning_notes": [
+        "score:80-89 (n=5, 勝率 0%) → -3",
+        "sess:asia_dawn (n=5, 勝率 20%) → -3"
+      ],
+      "learning_adjust": -6,
+      "tp_adjust_notes": [
+        "TP1 由 1.2747 校正到 1.2846（避開支撐 1.2820）",
+        "TP2 由 1.2644 校正到 1.2846（避開支撐 1.2820）",
+        "TP3 由 1.2507 校正到 1.2846（避開支撐 1.2820）"
+      ]
+    },
+    "features": {
+      "score": 76.0,
+      "rsi": 55.6,
+      "atr_pct": 0.355,
+      "funding": -0.5831396478206999,
+      "vol_ratio": 1.06,
+      "adx": 6.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 25.0
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.355,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-02 06:05",
+    "date": "2026-05-02",
+    "order_id": "1777669655-28ED2E6D",
+    "coin": "NEAR",
+    "side": "SHORT",
+    "entry": 1.285,
+    "close": 1.2846,
+    "close_type": "TP3",
+    "pnl": 0.03,
+    "is_win": true,
+    "is_be": false,
+    "score": 76,
+    "funding_rate": -0.0005831396478207,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 55.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.06,
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.355,
+      "learning_notes": [
+        "score:80-89 (n=5, 勝率 0%) → -3",
+        "sess:asia_dawn (n=5, 勝率 20%) → -3"
+      ],
+      "learning_adjust": -6,
+      "tp_adjust_notes": [
+        "TP1 由 1.2747 校正到 1.2846（避開支撐 1.2820）",
+        "TP2 由 1.2644 校正到 1.2846（避開支撐 1.2820）",
+        "TP3 由 1.2507 校正到 1.2846（避開支撐 1.2820）"
+      ]
+    },
+    "features": {
+      "score": 76.0,
+      "rsi": 55.6,
+      "atr_pct": 0.355,
+      "funding": -0.5831396478206999,
+      "vol_ratio": 1.06,
+      "adx": 6.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 25.0
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.355,
+      "volatile": false
+    }
   }
 ]
