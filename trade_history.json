@@ -2526,5 +2526,83 @@
       "liq": 0,
       "mom": 0
     }
+  },
+  {
+    "time": "2026-05-02 04:39",
+    "date": "2026-05-02",
+    "order_id": "1777646380-36169886",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 619.8,
+    "close": 617.7321,
+    "close_type": "SL",
+    "pnl": -0.33,
+    "is_win": false,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 8.71088110257e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 70.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 70.0,
+      "atr_pct": 1.0,
+      "funding": 0.0871088110257,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": null,
+    "regime": null
+  },
+  {
+    "time": "2026-05-02 04:39",
+    "date": "2026-05-02",
+    "order_id": "1777657301-4D190AC0",
+    "coin": "LINK",
+    "side": "SHORT",
+    "entry": 9.21,
+    "close": 9.1338,
+    "close_type": "TP1",
+    "pnl": 0.83,
+    "is_win": true,
+    "is_be": false,
+    "score": 95,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5
+    },
+    "features": {
+      "score": 95.0,
+      "rsi": 32.5,
+      "atr_pct": 1.0,
+      "funding": 0.1,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": null,
+    "regime": null
   }
 ]

@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 4
+      "total": 5
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 0,
-      "loss": 3,
+      "win": 1,
+      "loss": 4,
       "be": 1,
-      "total": 4
+      "total": 6
     },
     "sess:us": {
       "win": 0,
@@ -43,10 +43,10 @@
       "total": 3
     },
     "sess:asia_dawn": {
-      "win": 0,
-      "loss": 3,
+      "win": 1,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 5
     },
     "coin:DOGE": {
       "win": 0,
@@ -83,6 +83,48 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsi_long:70-79": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:BNB": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BNB_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "score:90+": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "rsi_short:30-39": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin:LINK": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:LINK_SHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -109,6 +151,18 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "BNB": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "LINK": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -118,7 +172,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1777667940.8233178,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1777657309.537424
+  "updated_at": 1777667944.4270039
 }
