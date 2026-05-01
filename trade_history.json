@@ -2448,5 +2448,57 @@
       "liq": 0,
       "mom": 0
     }
+  },
+  {
+    "time": "2026-05-02 00:31",
+    "date": "2026-05-02",
+    "order_id": "1777646382-03BFED54",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.1094,
+    "close": 0.1084,
+    "close_type": "SL",
+    "pnl": -0.91,
+    "is_win": false,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": -1.7292926885e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0
+    }
+  },
+  {
+    "time": "2026-05-02 00:31",
+    "date": "2026-05-02",
+    "order_id": "1777648548-099C4D6B",
+    "coin": "DOT",
+    "side": "LONG",
+    "entry": 1.213,
+    "close": 1.202,
+    "close_type": "SL",
+    "pnl": -0.91,
+    "is_win": false,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 66.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0
+    }
   }
 ]
