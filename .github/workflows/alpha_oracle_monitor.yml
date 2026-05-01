@@ -1,1 +1,72 @@
+name: Alpha Oracle Monitor (高頻監控)
 
+# 🔔 此 workflow 只負責「檢查既有訊號的 PENDING 進場 / TP / SL」
+#   - 每 3 分鐘 cron + 一次 cron 內輪詢 3 輪（每 20 秒一次）
+#   - 等於每 ~30 秒檢查一次價格，把 TP/SL 通知延遲壓到最低
+#   - 不會生成新訊號（那是 alpha_oracle.yml 的事）
+#
+# ⚠️ 注意：高頻 cron 會耗 GitHub Actions 配額
+#   - 私有 repo 免費額度只有 2000 min/月，本 workflow 約用 6000+ min/月，會超
+#   - 公開 repo 免 GitHub Actions 完全免費（敏感資料用 Secrets 仍是加密）
+#   - 想省配額：把 cron 改成 "*/5 * * * *" 或把 polls 改成 1
+
+on:
+  schedule:
+    - cron: "*/3 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 跟主 workflow 共用同一個 concurrency group → 不會打架
+concurrency:
+  group: alpha-oracle-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    name: 🔔 Monitor
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: 📦 下載程式碼
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 🐍 設置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 安裝依賴
+        run: pip install --quiet requests tradingview-ta
+
+      - name: 🗄️ 初始化狀態檔案
+        run: |
+          [ -f active_signals.json ]   || echo '{}' > active_signals.json
+          [ -f trade_history.json ]    || echo '[]' > trade_history.json
+          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
+          [ -f system_state.json ]     || echo '{}' > system_state.json
+          [ -f learning_state.json ]   || echo '{}' > learning_state.json
+
+      - name: ⚡ 執行高頻監控（3 輪 × 20s = 一次 cron 約 1 分鐘掃 3 次）
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TZ: Asia/Taipei
+        run: python main.py monitor 3 20
+
+      - name: 💾 保存狀態
+        if: always()
+        run: |
+          git config user.name  "alpha-bot"
+          git config user.email "bot@alpha.example"
+          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
+          git add -f active_signals.json trade_history.json system_state.json learning_state.json 2>/dev/null || true
+          git diff --staged --quiet || {
+            git commit -m "chore: monitor 更新訊號狀態 [skip ci]"
+            git push --quiet || git push --force-with-lease --quiet || true
+          }
+        continue-on-error: true
