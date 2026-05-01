@@ -1,1 +1,60 @@
+name: Alpha Oracle 日報 / 月報
 
+# 📊 每日台灣時間 23:55 推日報（= UTC 15:55）
+# 📈 每月 1 號台灣時間 00:05 推上個月月報（= UTC 上月最後一天 16:05）
+
+on:
+  schedule:
+    - cron: "55 15 * * *"   # 每天 UTC 15:55 = TW 23:55
+    - cron: "5 16 28-31 * *"  # 每月底 UTC 16:05 推月報
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  daily:
+    name: 📊 推日報
+    if: github.event.schedule == '55 15 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet requests tradingview-ta
+      - name: 推送日報
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TZ: Asia/Taipei
+        run: python main.py daily
+
+  monthly:
+    name: 📈 推月報
+    if: github.event.schedule == '5 16 28-31 * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet requests tradingview-ta
+      - name: 確認是當月最後一天
+        id: check
+        run: |
+          # 只有「明天是 1 號」時才推月報
+          if [ $(date -u -d 'tomorrow' +'%d') = "01" ]; then
+            echo "is_last_day=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_last_day=false" >> $GITHUB_OUTPUT
+          fi
+      - name: 推送月報
+        if: steps.check.outputs.is_last_day == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TZ: Asia/Taipei
+        run: python main.py monthly
