@@ -1,5 +1,5 @@
 {
-  "_comment": "Alpha Oracle Pro v13.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
+  "_comment": "Alpha Oracle Pro v14.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
 
   "coins": [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
@@ -15,14 +15,13 @@
   "atr_max_pct": 0.04,
 
   "post_mortem": {
-    "_comment": "SL/BE/LOCK 後自動覆盤 + 寫入學習資料",
     "enabled": true,
     "loss_only": false
   },
 
   "learning": {
-    "_comment": "min_samples 桶內樣本下限；max_score_adjust 調整上限 ±N 分",
     "enabled": true,
+    "knn_enabled": true,
     "min_samples": 5,
     "max_score_adjust": 10
   },
@@ -47,5 +46,12 @@
     { "start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）" },
     { "start": "21:25", "end": "21:45", "reason": "美股開盤波動" },
     { "start": "02:00", "end": "02:30", "reason": "FOMC 公布時段" }
-  ]
+  ],
+
+  "news_blackouts": [],
+
+  "auto_news_blackout": {
+    "nfp": true,
+    "cpi": true
+  }
 }
