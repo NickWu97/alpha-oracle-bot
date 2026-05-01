@@ -39,6 +39,7 @@ jobs:
           [ -f trade_history.json ]    || echo '[]' > trade_history.json
           [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
           [ -f system_state.json ]     || echo '{}' > system_state.json
+          [ -f learning_state.json ]   || echo '{}' > learning_state.json
           # config.json 不存在時不自動建立，由程式 fallback 到 DEFAULT_CONFIG
           # 想自訂時把 config.json 提交進 repo 即可
 
@@ -58,7 +59,7 @@ jobs:
         run: |
           git config user.name  "alpha-bot"
           git config user.email "bot@alpha.example"
-          git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json 2>/dev/null || true
+          git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json learning_state.json 2>/dev/null || true
           git diff --staged --quiet || {
             git commit -m "chore: 更新訊號狀態 [skip ci]"
             git push --quiet
