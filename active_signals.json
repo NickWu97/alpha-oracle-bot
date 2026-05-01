@@ -31,8 +31,8 @@
     "hit_tp3": false,
     "activated_at": 1777646379.195478,
     "entry_message_id": 2481,
-    "last_checked_ts": 1777652100.0,
-    "current_price": 2302.61
+    "last_checked_ts": 1777655700.0,
+    "current_price": 2308.01
   },
   "BNB-USDT-SWAP_LONG_1777646380-36169886": {
     "instId": "BNB-USDT-SWAP",
@@ -66,8 +66,8 @@
     "hit_tp3": false,
     "activated_at": 1777646380.6563938,
     "entry_message_id": 2482,
-    "last_checked_ts": 1777652100.0,
-    "current_price": 619.6
+    "last_checked_ts": 1777655700.0,
+    "current_price": 619.9
   },
   "SOL-USDT-SWAP_SHORT_1777648542-A95A1387": {
     "instId": "SOL-USDT-SWAP",
@@ -101,43 +101,8 @@
     "hit_tp3": false,
     "activated_at": 1777648542.0919144,
     "entry_message_id": 2489,
-    "last_checked_ts": 1777652100.0,
-    "current_price": 84.22
-  },
-  "AVAX-USDT-SWAP_LONG_1777648545-605EAF42": {
-    "instId": "AVAX-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 9.196,
-    "sl": 9.138,
-    "tp1": 9.2829,
-    "tp2": 9.3699,
-    "tp3": 9.4858,
-    "score": 80,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 69.5,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0
-    },
-    "funding_rate": 0.0001,
-    "created": 1777648545.6953485,
-    "expires": 1777734945.6953487,
-    "order_id": "1777648545-605EAF42",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1777648545.6955707,
-    "entry_message_id": 2490,
-    "last_checked_ts": 1777652100.0,
-    "current_price": 9.152
+    "last_checked_ts": 1777655700.0,
+    "current_price": 84.11
   },
   "BTC-USDT-SWAP_SHORT_1777653063-48C93FC8": {
     "instId": "BTC-USDT-SWAP",
@@ -171,8 +136,8 @@
     "hit_tp3": false,
     "activated_at": 1777653063.6613379,
     "entry_message_id": 2498,
-    "last_checked_ts": 1777653063.6613379,
-    "current_price": 78264.5
+    "last_checked_ts": 1777655700.0,
+    "current_price": 78449.4
   },
   "XRP-USDT-SWAP_SHORT_1777653065-A2768E59": {
     "instId": "XRP-USDT-SWAP",
@@ -206,8 +171,8 @@
     "hit_tp3": false,
     "activated_at": 1777653065.2294395,
     "entry_message_id": 2499,
-    "last_checked_ts": 1777653065.2294395,
-    "current_price": 1.394
+    "last_checked_ts": 1777655700.0,
+    "current_price": 1.392
   },
   "ADA-USDT-SWAP_SHORT_1777653066-4751E77D": {
     "instId": "ADA-USDT-SWAP",
@@ -241,7 +206,112 @@
     "hit_tp3": false,
     "activated_at": 1777653066.7494726,
     "entry_message_id": 2500,
-    "last_checked_ts": 1777653066.7494726,
-    "current_price": 0.2491
+    "last_checked_ts": 1777655700.0,
+    "current_price": 0.2498
+  },
+  "DOGE-USDT-SWAP_SHORT_1777657299-7DAC359C": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.109,
+    "sl": 0.1099,
+    "tp1": 0.1075,
+    "tp2": 0.106,
+    "tp3": 0.104,
+    "score": 75,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 31.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5
+    },
+    "funding_rate": -1.41401906565e-05,
+    "created": 1777657299.5591714,
+    "expires": 1777743699.5591717,
+    "order_id": "1777657299-7DAC359C",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777657299.559197,
+    "entry_message_id": 2510,
+    "last_checked_ts": 1777657299.559197,
+    "current_price": 0.10902
+  },
+  "LINK-USDT-SWAP_SHORT_1777657301-4D190AC0": {
+    "instId": "LINK-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 9.21,
+    "sl": 9.2608,
+    "tp1": 9.1338,
+    "tp2": 9.0576,
+    "tp3": 8.9561,
+    "score": 95,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5
+    },
+    "funding_rate": 0.0001,
+    "created": 1777657301.2259035,
+    "expires": 1777743701.225904,
+    "order_id": "1777657301-4D190AC0",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777657301.2259293,
+    "entry_message_id": 2511,
+    "last_checked_ts": 1777657301.2259293,
+    "current_price": 9.209
+  },
+  "DOT-USDT-SWAP_SHORT_1777657302-0BFE65E1": {
+    "instId": "DOT-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.213,
+    "sl": 1.2247,
+    "tp1": 1.1955,
+    "tp2": 1.178,
+    "tp3": 1.1546,
+    "score": 75,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5
+    },
+    "funding_rate": 9.5805532243e-06,
+    "created": 1777657302.6281288,
+    "expires": 1777743702.628129,
+    "order_id": "1777657302-0BFE65E1",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777657302.6281552,
+    "entry_message_id": 2512,
+    "last_checked_ts": 1777657302.6281552,
+    "current_price": 1.213
   }
 }
