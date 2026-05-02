@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.0 — 專業交易員養成版（繁體中文）
+Alpha Oracle Pro v14.1 — 高勝率精選版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.0 新增（變專業）：
+✨ v14.1 新增（精選 + 風控強化）：
+  📊 進場通知顯示「為什麼 N 分」分數細項拆解
+  💼 倉位大小建議：依分數推薦 0.5x / 1.0x / 1.5x
+  ⏸️ 自動暫停爛幣：過去 7 天勝率 < 30% 自動暫停 24h
+  ⚖️ R:R 最低門檻：TP1 < 1.5R 自動拒絕（避免動態 TP 校過頭）
+  ❄️ 連敗冷靜期：連 2 敗後 30 分鐘不開新單
+
+✨ v14.0（專業交易員養成）：
   🕒 多時框共振：1H + 4H Supertrend 確認，最高 +15 分（反向 -10）
   📊 量能確認：最後 K 量 vs 前 20 期均量，最高 +8 分（沒量 -10 直接淘汰）
   🌐 市場狀態識別：ADX 趨勢/震盪/過渡，震盪市門檻自動 +5
@@ -164,6 +171,30 @@ DEFAULT_CONFIG: dict = {
     "auto_news_blackout": {
         "nfp": True,                   # 每月第一週五 21:25–22:30 (TW)
         "cpi": True,                   # 每月 10–16 日 21:25–22:30 (TW)
+    },
+    # ── v14.1 新增：高勝率篩選 + 風控強化 ──
+    "show_score_breakdown": True,      # 進場通知顯示分數細項拆解
+    "coin_auto_pause": {               # 自動暫停爛幣
+        "enabled": True,
+        "days": 7,                     # 過去 N 天
+        "min_trades": 5,               # 至少 N 筆才判定
+        "max_winrate": 0.30,           # 勝率低於此值就暫停
+        "pause_hours": 24,
+    },
+    "position_sizing": {               # 倉位大小建議
+        "enabled": True,
+        "tiers": [
+            {"min_score": 95, "multiplier": 1.5, "label": "🔥 強訊號加大倉"},
+            {"min_score": 85, "multiplier": 1.0, "label": "標準倉"},
+            {"min_score": 80, "multiplier": 0.5, "label": "謹慎小倉"},
+            {"min_score": 0,  "multiplier": 0.5, "label": "標準倉"},
+        ],
+    },
+    "min_rr_ratio": 1.5,               # TP1 至少要有 1.5R 才接，否則拒絕
+    "cooling_off": {                   # 連敗冷靜期
+        "enabled": True,
+        "loss_threshold": 2,           # 連 N 敗後啟動冷靜
+        "period_minutes": 30,          # 冷靜 N 分鐘
     },           # ATR/Price 超過此值視為震盪過大
     "price_verification": {
         "enabled": True,
@@ -243,6 +274,66 @@ def _order_keyboard(order_id: str) -> dict:
 
 
 # ═════════════════════════════════════════════════════════
+# 2.5 v14.1 倉位建議 + 分數細項格式化
+# ═════════════════════════════════════════════════════════
+def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, str]:
+    """💰 根據分數推薦倉位倍數"""
+    if cfg is None:
+        cfg = load_config()
+    ps_cfg = cfg.get("position_sizing", {})
+    if not ps_cfg.get("enabled", True):
+        return 1.0, "標準倉"
+    tiers = ps_cfg.get("tiers", DEFAULT_CONFIG["position_sizing"]["tiers"])
+    for tier in tiers:
+        if score >= tier.get("min_score", 0):
+            return tier.get("multiplier", 1.0), tier.get("label", "標準倉")
+    return 1.0, "標準倉"
+
+
+def _format_score_breakdown(detail: dict | None) -> str:
+    """📊 產生「為什麼 N 分」的分數細項拆解"""
+    if not detail:
+        return ""
+    lines = ["", "📊 *評分細項：*"]
+    base_items = [
+        ("🌊 趨勢", "trend", 30),
+        ("📊 RSI", "rsi", 25),
+        ("🧱 OB", "ob", 20),
+        ("⚡ FVG", "fvg", 15),
+        ("📏 SNR", "snr", 5),
+        ("📊 PA", "pa", 5),
+        ("💧 流動性", "liq", 5),
+        ("📈 動能", "mom", 5),
+    ]
+    for name, key, max_v in base_items:
+        v = detail.get(key, 0)
+        lines.append(f"  {name}：`{v}/{max_v}`")
+
+    if "mtf" in detail:
+        mtf_v = detail["mtf"]
+        mtf_desc = detail.get("mtf_desc", "")
+        sign = "+" if mtf_v >= 0 else ""
+        lines.append(f"  🕒 MTF（{mtf_desc}）：`{sign}{mtf_v}`")
+    if "volume" in detail:
+        vol_v = detail["volume"]
+        vol_r = detail.get("volume_ratio", 0)
+        sign = "+" if vol_v >= 0 else ""
+        lines.append(f"  📊 量能（{vol_r}×）：`{sign}{vol_v}`")
+    if detail.get("pullback"):
+        lines.append(f"  🌀 回測進場：`+3`")
+    if "regime" in detail:
+        regime_zh = {"trend": "趨勢市", "range": "震盪市", "transitional": "過渡"}.get(
+            detail["regime"], detail["regime"]
+        )
+        lines.append(f"  🌐 市場狀態：{regime_zh}（ADX `{detail.get('adx', 0)}`）")
+    if "learning_adjust" in detail and detail["learning_adjust"] != 0:
+        adj = detail["learning_adjust"]
+        sign = "+" if adj >= 0 else ""
+        lines.append(f"  🧬 學習調整：`{sign}{adj}`")
+    return "\n".join(lines)
+
+
+# ═════════════════════════════════════════════════════════
 # 3. 通知格式
 # ═════════════════════════════════════════════════════════
 def _fmt_entry(
@@ -257,8 +348,9 @@ def _fmt_entry(
     tp3: float,
     score: int,
     funding_rate: float | None = None,
+    detail: dict | None = None,
 ) -> str:
-    """📌 進場通知"""
+    """📌 進場通知（含分數細項 + 倉位建議）"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
     grade = "🔥 A+ 極強" if score >= 85 else "⭐ A 強力" if score >= 70 else "✅ B+ 合格"
@@ -272,6 +364,22 @@ def _fmt_entry(
     if funding_rate is not None:
         funding_line = f"💰 資金費率：`{funding_rate * 100:+.4f}%`\n"
 
+    # 倉位建議
+    cfg = load_config()
+    pos_mult, pos_label = suggest_position_size(score, cfg)
+    pos_line = f"💼 建議倉位：`{pos_mult}x` ({pos_label})\n"
+
+    # R:R 顯示（TP1 實際倍數）
+    risk = abs(entry - sl)
+    tp1_r = abs(tp1 - entry) / risk if risk > 0 else 0
+    tp2_r = abs(tp2 - entry) / risk if risk > 0 else 0
+    tp3_r = abs(tp3 - entry) / risk if risk > 0 else 0
+
+    # 分數細項
+    breakdown = ""
+    if cfg.get("show_score_breakdown", True):
+        breakdown = _format_score_breakdown(detail)
+
     return (
         f"{emoji} *{coin} 進場提醒* {grade}\n"
         f"━━━━━━━━━━━━━━\n"
@@ -281,11 +389,14 @@ def _fmt_entry(
         f"進場價：`{entry:.4f}`\n"
         f"當前價：`{price:.4f}`\n"
         f"評分：*{score} 分*\n"
-        f"{funding_line}\n"
+        f"{pos_line}"
+        f"{funding_line}"
+        f"{breakdown}\n"
+        f"\n"
         f"🎯 止盈目標：\n"
-        f"  TP1 `{tp1:.4f}` ({tp1_pct:+.2f}%)\n"
-        f"  TP2 `{tp2:.4f}` ({tp2_pct:+.2f}%)\n"
-        f"  TP3 `{tp3:.4f}` ({tp3_pct:+.2f}%)\n"
+        f"  TP1 `{tp1:.4f}` ({tp1_pct:+.2f}% / `{tp1_r:.1f}R`)\n"
+        f"  TP2 `{tp2:.4f}` ({tp2_pct:+.2f}% / `{tp2_r:.1f}R`)\n"
+        f"  TP3 `{tp3:.4f}` ({tp3_pct:+.2f}% / `{tp3_r:.1f}R`)\n"
         f"\n"
         f"🛑 止損：`{sl:.4f}` ({sl_pct:+.2f}%)\n"
         f"\n"
@@ -1170,6 +1281,16 @@ def generate_signal(
         tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
         if tp_notes:
             detail["tp_adjust_notes"] = tp_notes
+
+        # ⚖️ R:R 最低門檻 — TP1 至少要有 N R，否則拒絕（加 0.02 容差避免浮點誤差）
+        cfg_rr = load_config()
+        min_rr = cfg_rr.get("min_rr_ratio", 1.5)
+        actual_tp1_r = abs(tp_levels[0] - entry) / max(risk, 1e-9)
+        if actual_tp1_r < min_rr - 0.02:
+            logging.info(
+                f"[{instId}] {side} 訊號 R:R={actual_tp1_r:.2f} < {min_rr}，拒絕"
+            )
+            continue
 
         candidates.append(
             {
@@ -2066,6 +2187,79 @@ def check_circuit_breaker(cfg: dict) -> tuple[bool, str, int]:
 
 
 # ═════════════════════════════════════════════════════════
+# 9.85 v14.1 自動暫停爛幣 + 連敗冷靜期
+# ═════════════════════════════════════════════════════════
+def is_coin_underperforming(coin: str, cfg: dict) -> tuple[bool, str]:
+    """⏸️ 檢查單一幣種過去 N 天是否表現太差，要自動暫停"""
+    cap_cfg = cfg.get("coin_auto_pause", {})
+    if not cap_cfg.get("enabled", True):
+        return False, ""
+
+    days = cap_cfg.get("days", 7)
+    min_trades = cap_cfg.get("min_trades", 5)
+    max_wr = cap_cfg.get("max_winrate", 0.30)
+
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    cutoff_ts = time.time() - days * 86400
+
+    recent = []
+    for t in history:
+        if t.get("coin") != coin:
+            continue
+        try:
+            t_dt = datetime.strptime(t["time"], "%Y-%m-%d %H:%M").replace(tzinfo=TW_TZ)
+            if t_dt.timestamp() > cutoff_ts:
+                recent.append(t)
+        except Exception:
+            continue
+
+    if len(recent) < min_trades:
+        return False, ""
+
+    wins = sum(1 for t in recent if t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK"))
+    wr = wins / len(recent)
+    if wr < max_wr:
+        return True, (
+            f"{coin} 過去 {days} 天 {len(recent)} 筆，"
+            f"勝率 `{wr:.0%}` < `{max_wr:.0%}` → 暫停 {cap_cfg.get('pause_hours', 24)}h"
+        )
+    return False, ""
+
+
+def check_cooling_off(cfg: dict) -> tuple[bool, int, str]:
+    """❄️ 連敗冷靜期 → (是否冷靜中, 剩餘秒數, 說明)"""
+    co_cfg = cfg.get("cooling_off", {})
+    if not co_cfg.get("enabled", True):
+        return False, 0, ""
+
+    threshold = co_cfg.get("loss_threshold", 2)
+    period_min = co_cfg.get("period_minutes", 30)
+
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    closed = [t for t in history if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
+    if len(closed) < threshold:
+        return False, 0, ""
+
+    last_n = closed[-threshold:]
+    if not all(t.get("close_type") == "SL" for t in last_n):
+        return False, 0, ""
+
+    try:
+        last_sl_dt = datetime.strptime(last_n[-1]["time"], "%Y-%m-%d %H:%M").replace(tzinfo=TW_TZ)
+    except Exception:
+        return False, 0, ""
+
+    elapsed = (tw_now() - last_sl_dt).total_seconds()
+    cooling_sec = period_min * 60
+    if elapsed < cooling_sec:
+        remaining = int(cooling_sec - elapsed)
+        return True, remaining, (
+            f"連 {threshold} 敗冷靜期，剩餘 `{remaining // 60}` 分鐘後恢復開新單"
+        )
+    return False, 0, ""
+
+
+# ═════════════════════════════════════════════════════════
 # 9.9 關鍵時段過濾
 # ═════════════════════════════════════════════════════════
 def _in_window(cur_min: int, start_min: int, end_min: int) -> bool:
@@ -2316,6 +2510,7 @@ class SignalTracker:
                 _fmt_entry(
                     coin, side, order_id, price, entry, sl,
                     tp1, tp2, tp3, sig["score"], sig.get("funding_rate"),
+                    detail=sig.get("detail"),
                 ),
                 reply_markup=kb,
             )
@@ -2600,15 +2795,30 @@ def run_scan(tracker: SignalTracker) -> int:
         tracker.send_position_updates()
         return 0
 
+    # ── 2.7 連敗冷靜期 ──
+    cooling, remaining_sec, cool_msg = check_cooling_off(cfg)
+    if cooling:
+        logging.info(f"❄️ {cool_msg}")
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
     # ── 3. 掃描每個幣種 ──
     sent = 0
     for instId in coins:
         if sent >= max_signals:
             break
 
-        # 3.1 🔒 同幣種未平倉不重複開倉（先擋這個，避免冷卻過期後又開新單）
+        # 3.1 🔒 同幣種未平倉不重複開倉
         if tracker.has_open_position(instId):
             logging.info(f"[{instId}] 已有未平倉訊號，跳過")
+            continue
+
+        # 3.15 ⏸️ 自動暫停爛幣
+        coin_name = instId.split("-")[0]
+        bad, bad_reason = is_coin_underperforming(coin_name, cfg)
+        if bad:
+            logging.info(f"[{instId}] 爛幣自動暫停：{bad_reason}")
             continue
 
         # 3.2 冷卻
@@ -2679,6 +2889,7 @@ def run_scan(tracker: SignalTracker) -> int:
                     tp3=signal["tp3"],
                     score=signal["score"],
                     funding_rate=funding,
+                    detail=signal.get("detail"),
                 )
                 msg_id = send_tg(msg, reply_markup=_order_keyboard(order_id))
                 tracker.set_entry_message_id(key, msg_id)
