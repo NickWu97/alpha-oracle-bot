@@ -2,7 +2,6 @@ name: Alpha Oracle Pro
 
 on:
   schedule:
-    # 🕒 每 15 分鐘執行一次
     - cron: "*/15 * * * *"
   workflow_dispatch:
 
