@@ -134,5 +134,205 @@
       "atr_pct": 0.104,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 04:56",
+    "date": "2026-05-03",
+    "order_id": "1777750946-CCD9FDB4",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 84.23,
+    "close": 84.0479,
+    "close_type": "SL",
+    "pnl": -0.22,
+    "is_win": false,
+    "is_be": false,
+    "score": 100,
+    "funding_rate": -1.35298376484e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.69,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "trend",
+      "adx": 50.7,
+      "atr_pct": 0.144
+    },
+    "features": {
+      "score": 100.0,
+      "rsi": 59.6,
+      "atr_pct": 0.144,
+      "funding": -0.0135298376484,
+      "vol_ratio": 0.69,
+      "adx": 50.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 50.7,
+      "atr_pct": 0.144,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 04:56",
+    "date": "2026-05-03",
+    "order_id": "1777753529-FE70CFB0",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 618.2,
+    "close": 618.4606,
+    "close_type": "TP2",
+    "pnl": 0.04,
+    "is_win": true,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": 9.89930302359e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.64,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "transitional",
+      "adx": 18.8,
+      "atr_pct": 0.104,
+      "tp_adjust_notes": [
+        "TP2 由 621.0929 校正到 618.4606（避開阻力 619.7000）",
+        "TP3 由 623.0214 校正到 618.4606（避開阻力 619.7000）"
+      ]
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 57.9,
+      "atr_pct": 0.104,
+      "funding": 0.0989930302359,
+      "vol_ratio": 0.64,
+      "adx": 18.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 77.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.9
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.8,
+      "atr_pct": 0.104,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 04:56",
+    "date": "2026-05-03",
+    "order_id": "1777753529-FE70CFB0",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 618.2,
+    "close": 618.4606,
+    "close_type": "TP3",
+    "pnl": 0.04,
+    "is_win": true,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": 9.89930302359e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.64,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "transitional",
+      "adx": 18.8,
+      "atr_pct": 0.104,
+      "tp_adjust_notes": [
+        "TP2 由 621.0929 校正到 618.4606（避開阻力 619.7000）",
+        "TP3 由 623.0214 校正到 618.4606（避開阻力 619.7000）"
+      ]
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 57.9,
+      "atr_pct": 0.104,
+      "funding": 0.0989930302359,
+      "vol_ratio": 0.64,
+      "adx": 18.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 77.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.9
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.8,
+      "atr_pct": 0.104,
+      "volatile": false
+    }
   }
 ]

@@ -62,74 +62,8 @@
     "hit_tp3": false,
     "activated_at": 1777746910.324989,
     "entry_message_id": 2836,
-    "last_checked_ts": 1777752000.0,
-    "current_price": 2308.83
-  },
-  "SOL-USDT-SWAP_LONG_1777750946-CCD9FDB4": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 84.23,
-    "sl": 84.0479,
-    "tp1": 84.5032,
-    "tp2": 84.7764,
-    "tp3": 85.1407,
-    "score": 100,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 59.6,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 0,
-      "volume_ratio": 0.69,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "regime": "trend",
-      "adx": 50.7,
-      "atr_pct": 0.144
-    },
-    "funding_rate": -1.35298376484e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 66.5
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 59.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 50.7,
-      "atr_pct": 0.144,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 83.88,
-      "high": 84.01
-    },
-    "created": 1777750946.5602634,
-    "expires": 1777837346.5602639,
-    "order_id": "1777750946-CCD9FDB4",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1777750946.560911,
-    "entry_message_id": 2841,
-    "last_checked_ts": 1777752000.0,
-    "current_price": 84.11
+    "last_checked_ts": 1777753800.0,
+    "current_price": 2310.55
   },
   "LINK-USDT-SWAP_LONG_1777750956-E79EB3EC": {
     "instId": "LINK-USDT-SWAP",
@@ -198,77 +132,7 @@
     "hit_tp3": false,
     "activated_at": 1777750956.0844953,
     "entry_message_id": 2842,
-    "last_checked_ts": 1777752000.0,
-    "current_price": 9.16
-  },
-  "BNB-USDT-SWAP_LONG_1777753529-FE70CFB0": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 618.2,
-    "sl": 617.2357,
-    "tp1": 619.6464,
-    "tp2": 618.4606,
-    "tp3": 618.4606,
-    "score": 90,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 15,
-      "rsi_value": 57.9,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 0,
-      "volume_ratio": 0.64,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "regime": "transitional",
-      "adx": 18.8,
-      "atr_pct": 0.104,
-      "tp_adjust_notes": [
-        "TP2 由 621.0929 校正到 618.4606（避開阻力 619.7000）",
-        "TP3 由 623.0214 校正到 618.4606（避開阻力 619.7000）"
-      ]
-    },
-    "funding_rate": 9.89930302359e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 77.1
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 56.9
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 18.8,
-      "atr_pct": 0.104,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 617.2,
-      "high": 618.0
-    },
-    "created": 1777753529.5782619,
-    "expires": 1777839929.578262,
-    "order_id": "1777753529-FE70CFB0",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1777753529.5789611,
-    "entry_message_id": 2846,
-    "last_checked_ts": 1777753529.5789611,
-    "current_price": 618.2
+    "last_checked_ts": 1777753800.0,
+    "current_price": 9.167
   }
 }
