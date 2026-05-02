@@ -334,5 +334,141 @@
       "atr_pct": 0.104,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 05:32",
+    "date": "2026-05-03",
+    "order_id": "1777750956-E79EB3EC",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 9.166,
+    "close": 9.1846,
+    "close_type": "TP2",
+    "pnl": 0.2,
+    "is_win": true,
+    "is_be": false,
+    "score": 93,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.3,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "range",
+      "adx": 3.4,
+      "atr_pct": 0.176,
+      "tp_adjust_notes": [
+        "TP2 由 9.2386 校正到 9.1846（避開阻力 9.2030）",
+        "TP3 由 9.2871 校正到 9.1846（避開阻力 9.2030）"
+      ]
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 50.0,
+      "atr_pct": 0.176,
+      "funding": 0.1,
+      "vol_ratio": 0.3,
+      "adx": 3.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.0
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 53.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 3.4,
+      "atr_pct": 0.176,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 05:32",
+    "date": "2026-05-03",
+    "order_id": "1777750956-E79EB3EC",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 9.166,
+    "close": 9.1846,
+    "close_type": "TP3",
+    "pnl": 0.2,
+    "is_win": true,
+    "is_be": false,
+    "score": 93,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.3,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "range",
+      "adx": 3.4,
+      "atr_pct": 0.176,
+      "tp_adjust_notes": [
+        "TP2 由 9.2386 校正到 9.1846（避開阻力 9.2030）",
+        "TP3 由 9.2871 校正到 9.1846（避開阻力 9.2030）"
+      ]
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 50.0,
+      "atr_pct": 0.176,
+      "funding": 0.1,
+      "vol_ratio": 0.3,
+      "adx": 3.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.0
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 53.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 3.4,
+      "atr_pct": 0.176,
+      "volatile": false
+    }
   }
 ]

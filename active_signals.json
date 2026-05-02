@@ -62,78 +62,8 @@
     "hit_tp3": false,
     "activated_at": 1777746910.324989,
     "entry_message_id": 2836,
-    "last_checked_ts": 1777754700.0,
-    "current_price": 2310.37
-  },
-  "LINK-USDT-SWAP_LONG_1777750956-E79EB3EC": {
-    "instId": "LINK-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 9.166,
-    "sl": 9.1418,
-    "tp1": 9.2023,
-    "tp2": 9.1846,
-    "tp3": 9.1846,
-    "score": 93,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 50.0,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 8,
-      "mtf_desc": "1H=順 / 4H=中",
-      "volume": -10,
-      "volume_ratio": 0.3,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "regime": "range",
-      "adx": 3.4,
-      "atr_pct": 0.176,
-      "tp_adjust_notes": [
-        "TP2 由 9.2386 校正到 9.1846（避開阻力 9.2030）",
-        "TP3 由 9.2871 校正到 9.1846（避開阻力 9.2030）"
-      ]
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 63.0
-      },
-      "4H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 53.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 3.4,
-      "atr_pct": 0.176,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 9.116,
-      "high": 9.131
-    },
-    "created": 1777750956.0838163,
-    "expires": 1777837356.0838165,
-    "order_id": "1777750956-E79EB3EC",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1777750956.0844953,
-    "entry_message_id": 2842,
-    "last_checked_ts": 1777754700.0,
-    "current_price": 9.163
+    "last_checked_ts": 1777756500.0,
+    "current_price": 2313.24
   },
   "DOGE-USDT-SWAP_LONG_1777756080-58F3EC63": {
     "instId": "DOGE-USDT-SWAP",
@@ -207,8 +137,8 @@
     "hit_tp3": false,
     "activated_at": 1777756080.4467556,
     "entry_message_id": 2854,
-    "last_checked_ts": 1777756080.4467556,
-    "current_price": 0.10845
+    "last_checked_ts": 1777756500.0,
+    "current_price": 0.10829
   },
   "AVAX-USDT-SWAP_LONG_1777756083-C4978A1D": {
     "instId": "AVAX-USDT-SWAP",
@@ -279,7 +209,7 @@
     "hit_tp3": false,
     "activated_at": 1777756083.3162253,
     "entry_message_id": 2855,
-    "last_checked_ts": 1777756083.3162253,
-    "current_price": 9.173
+    "last_checked_ts": 1777756500.0,
+    "current_price": 9.178
   }
 }
