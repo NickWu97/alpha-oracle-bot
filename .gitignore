@@ -1,9 +1,7 @@
 # ═══════════════════════════════════════════════
 # 🔒 Alpha Oracle Pro - .gitignore（公開 repo 安全網）
 # ═══════════════════════════════════════════════
-# 任何含有個資 / Token / 密碼的檔案都不能進 git history
 
-# 環境變數檔（含 TG_TOKEN、CHAT_ID）
 .env
 .env.*
 *.env
@@ -13,7 +11,6 @@ credentials.json
 credentials.*
 .credentials/
 
-# 本機臨時 / 備份檔
 *.bak
 *.swp
 *.tmp
@@ -22,7 +19,6 @@ credentials.*
 Thumbs.db
 desktop.ini
 
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -35,17 +31,14 @@ env/
 .coverage
 htmlcov/
 
-# IDE
 .vscode/
 .idea/
 *.sublime-*
 
-# Logs
 *.log
 logs/
 log/
 
-# Local 測試 / 個人筆記
 notes.md
 notes.txt
 TODO.md
@@ -53,13 +46,9 @@ debug.txt
 private_*.json
 local_*.json
 
-# 別誤推會員資料 / 私密回測結果
 my_trades.csv
 my_*.json
 personal_*.json
 
-# Fly.io 本機快取
 .fly/
-
-# Docker 本機快取
 .docker/
