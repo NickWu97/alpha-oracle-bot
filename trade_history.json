@@ -5487,5 +5487,44 @@
       "atr_pct": 0.248,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-02 23:27",
+    "date": "2026-05-02",
+    "order_id": "1777653065-A2768E59",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.394,
+    "close": 1.394,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 70,
+    "funding_rate": 4.95296662515e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 65.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5
+    },
+    "features": {
+      "score": 70.0,
+      "rsi": 65.6,
+      "atr_pct": 1.0,
+      "funding": 0.0495296662515,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": null,
+    "regime": null
   }
 ]
