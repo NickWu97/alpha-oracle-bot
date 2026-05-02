@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 18,
-      "loss": 7,
+      "loss": 8,
       "be": 1,
-      "total": 26
+      "total": 27
     },
     "sess:us": {
       "win": 0,
@@ -128,9 +128,9 @@
     },
     "score:70-79": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "coin:ETH": {
       "win": 0,
@@ -212,15 +212,15 @@
     },
     "coin:TON": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:TON_SHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOGE_SHORT": {
       "win": 1,
@@ -236,15 +236,21 @@
     },
     "sess:europe": {
       "win": 5,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:AVAX_SHORT": {
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "rsi_short:70-79": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -304,9 +310,9 @@
     },
     "TON": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     }
   },
   "loss_reasons": [
@@ -332,5 +338,5 @@
       "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1777703230.4083815
+  "updated_at": 1777708770.7363691
 }
