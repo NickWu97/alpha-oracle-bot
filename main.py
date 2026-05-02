@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.2 — 進階智能版（繁體中文）
+Alpha Oracle Pro v14.3 — 健康監控 + 指標審查版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.2 新增（5 大進化）：
+✨ v14.3 新增：
+  🩺 健康監控：24h 沒送 TG / 連 5 次失敗 → 自動發警報（6h 不重複）
+  🔬 指標審查（/audit）：神級 vs 一般、MTF 順勢 vs 中性、量能、市況、方向
+     ↳ 用實際勝率驗證每個指標是否真的有效（✅⚠️❌ 三級判讀）
+  📦 工作流合併：alpha_oracle.yml 一檔包 Pro + Monitor 兩個 Job
+
+✨ v14.2（進階智能 5 項）：
   📊 訊號方向統計 + 自動偏向高勝率方向（/direction 命令）
   🎯 神級訊號特別標記：95+ 分用 🎯🎯🎯 醒目標題
   🪜 EMA 多週期排列：20/50/200 完美排列 +5、逆 200 -5
@@ -287,6 +293,13 @@ def send_tg(
             timeout=8,
         )
         if r.status_code == 200:
+            # 🩺 健康監控：紀錄最後一次成功送 TG 的時間
+            try:
+                _state = _load_json(SYSTEM_STATE_FILE, {})
+                _state["last_tg_sent"] = time.time()
+                _save_json(SYSTEM_STATE_FILE, _state)
+            except Exception:
+                pass
             return r.json().get("result", {}).get("message_id")
         logging.error(f"❌ TG API 回應碼 {r.status_code}: {r.text[:200]}")
     except Exception as e:
@@ -2248,6 +2261,76 @@ def set_system_state(state: dict) -> None:
     _save_json(SYSTEM_STATE_FILE, state)
 
 
+def check_health() -> tuple[bool, str]:
+    """🩺 系統健康檢查 → (有問題?, 訊息)
+
+    觸發條件：
+      1. 超過 24 小時沒成功送過任何 TG 訊息
+      2. 連續 5 次掃描異常結束
+    （6 小時內不重複警報）
+    """
+    state = get_system_state()
+    last_tg = state.get("last_tg_sent", 0)
+    last_warn = state.get("last_health_warning", 0)
+    fail_count = state.get("scan_failure_count", 0)
+
+    # 6h 內不重複警報
+    if time.time() - last_warn < 6 * 3600:
+        return False, ""
+
+    # 條件 1：24h 沒送過 TG
+    if last_tg > 0:
+        hours_since = (time.time() - last_tg) / 3600
+        if hours_since > 24:
+            state["last_health_warning"] = time.time()
+            set_system_state(state)
+            return True, (
+                f"⚠️ *系統健康警報*\n"
+                f"━━━━━━━━━━━━━━\n"
+                f"⏰ 時間：{tw_ts()}\n"
+                f"\n"
+                f"已超過 *{hours_since:.0f} 小時*沒發出任何訊號 / 通知\n"
+                f"\n"
+                f"💡 可能原因：\n"
+                f"  • TG_TOKEN 失效\n"
+                f"  • OKX API 異常\n"
+                f"  • 訊號全被學習機制 / 風控過濾\n"
+                f"  • GitHub Actions 配額耗盡\n"
+                f"\n"
+                f"請檢查 GitHub Actions 頁面與 Telegram bot 狀態"
+            )
+
+    # 條件 2：連續失敗 5 次
+    if fail_count >= 5:
+        state["last_health_warning"] = time.time()
+        set_system_state(state)
+        return True, (
+            f"⚠️ *系統健康警報*\n"
+            f"━━━━━━━━━━━━━━\n"
+            f"⏰ 時間：{tw_ts()}\n"
+            f"\n"
+            f"主掃描已連續失敗 *{fail_count} 次*\n"
+            f"\n"
+            f"💡 請進 GitHub Actions 查最近一次失敗的 log，或 @ 我幫你 debug"
+        )
+    return False, ""
+
+
+def increment_failure_count() -> None:
+    """掃描失敗時呼叫 → 失敗計數 +1"""
+    state = get_system_state()
+    state["scan_failure_count"] = state.get("scan_failure_count", 0) + 1
+    set_system_state(state)
+
+
+def reset_failure_count() -> None:
+    """掃描成功時呼叫 → 重置失敗計數"""
+    state = get_system_state()
+    if state.get("scan_failure_count", 0) > 0:
+        state["scan_failure_count"] = 0
+        set_system_state(state)
+
+
 # ═════════════════════════════════════════════════════════
 # 9.8 連續虧損熔斷
 # ═════════════════════════════════════════════════════════
@@ -2425,6 +2508,140 @@ def format_direction_stats() -> str:
     else:
         lines.append("")
         lines.append("⚖️ 系統未偏好方向（資料不足或勝率接近）")
+    return "\n".join(lines)
+
+
+def format_audit_report() -> str:
+    """🔬 指標有效性審查 — 把交易切成「滿足 X 條件 vs 不滿足」對比勝率
+
+    驗證 v14 加的所有評分項是否真的有效：
+      - 神級訊號（95+）vs 一般（80-94）
+      - MTF 1H 順勢 vs 中性 / 反向
+      - 高量能（≥1.5×）vs 低量能（<1×）
+      - 多頭 vs 空頭
+      - 趨勢市 vs 震盪市
+      - EMA 完美排列 vs 其他
+    """
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    closed = [
+        t for t in history
+        if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3", "OB_FAIL")
+    ]
+    n_closed = len(closed)
+    if n_closed < 10:
+        return (
+            f"📭 *指標有效性審查*\n\n"
+            f"資料不足（{n_closed} 筆 < 10）。\n"
+            f"至少累積 10 筆已結束交易才能審查指標效度。"
+        )
+
+    def stats(trades):
+        n = len(trades)
+        if n == 0:
+            return None
+        wins = sum(1 for t in trades if t["close_type"] in ("TP1", "TP2", "TP3", "LOCK"))
+        return {"n": n, "wr": wins / n * 100}
+
+    def _verdict(diff_pct: float) -> str:
+        if diff_pct > 10:
+            return "✅"
+        if diff_pct > 0:
+            return "⚠️"
+        return "❌"
+
+    overall = stats(closed)
+    lines = [
+        f"🔬 *指標有效性審查*",
+        f"━━━━━━━━━━━━━━",
+        f"樣本：{n_closed} 筆已結束交易",
+        f"整體勝率：`{overall['wr']:.0f}%`",
+        f"",
+    ]
+
+    sections = []
+
+    # 1️⃣ 神級訊號（95+）vs 一般（80-94）
+    god = [t for t in closed if t.get("score", 0) >= 95]
+    normal = [t for t in closed if 80 <= t.get("score", 0) < 95]
+    if len(god) >= 2 and len(normal) >= 5:
+        g = stats(god)
+        nm = stats(normal)
+        diff = g["wr"] - nm["wr"]
+        sections.append(
+            f"{_verdict(diff)} *神級訊號 vs 一般*\n"
+            f"  神級（95+）：{g['n']} 筆 / `{g['wr']:.0f}%`\n"
+            f"  一般（80-94）：{nm['n']} 筆 / `{nm['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
+        )
+
+    # 2️⃣ MTF 1H 順勢 vs 中性
+    mtf_aligned = [t for t in closed if (t.get("features") or {}).get("mtf_h1", 0) == 1.0]
+    mtf_other = [t for t in closed if (t.get("features") or {}).get("mtf_h1", 1.0) == 0.0]
+    if len(mtf_aligned) >= 3 and len(mtf_other) >= 3:
+        a = stats(mtf_aligned)
+        o = stats(mtf_other)
+        diff = a["wr"] - o["wr"]
+        sections.append(
+            f"{_verdict(diff)} *MTF 1H 順勢 vs 中性*\n"
+            f"  順勢：{a['n']} 筆 / `{a['wr']:.0f}%`\n"
+            f"  中性：{o['n']} 筆 / `{o['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
+        )
+
+    # 3️⃣ 高量能 vs 低量能
+    high_vol = [t for t in closed if (t.get("features") or {}).get("vol_ratio", 1.0) >= 1.5]
+    low_vol = [t for t in closed if (t.get("features") or {}).get("vol_ratio", 1.0) < 1.0]
+    if len(high_vol) >= 3 and len(low_vol) >= 3:
+        h = stats(high_vol)
+        l = stats(low_vol)
+        diff = h["wr"] - l["wr"]
+        sections.append(
+            f"{_verdict(diff)} *高量能 vs 低量能*\n"
+            f"  高量（≥1.5×）：{h['n']} 筆 / `{h['wr']:.0f}%`\n"
+            f"  低量（<1×）：{l['n']} 筆 / `{l['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
+        )
+
+    # 4️⃣ ADX 趨勢市 vs 震盪市
+    trend_mkt = [t for t in closed if (t.get("regime") or {}).get("regime") == "trend"]
+    range_mkt = [t for t in closed if (t.get("regime") or {}).get("regime") == "range"]
+    if len(trend_mkt) >= 3 and len(range_mkt) >= 3:
+        t_st = stats(trend_mkt)
+        r_st = stats(range_mkt)
+        diff = t_st["wr"] - r_st["wr"]
+        sections.append(
+            f"{_verdict(diff)} *趨勢市 vs 震盪市*\n"
+            f"  趨勢市（ADX>25）：{t_st['n']} 筆 / `{t_st['wr']:.0f}%`\n"
+            f"  震盪市（ADX<18）：{r_st['n']} 筆 / `{r_st['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
+        )
+
+    # 5️⃣ 多空方向
+    longs = [t for t in closed if t.get("side") == "LONG"]
+    shorts = [t for t in closed if t.get("side") == "SHORT"]
+    if longs and shorts:
+        l_st = stats(longs)
+        s_st = stats(shorts)
+        diff = l_st["wr"] - s_st["wr"]
+        balance_emoji = "✅" if abs(diff) < 10 else "⚠️" if abs(diff) < 20 else "❌"
+        sections.append(
+            f"{balance_emoji} *方向平衡*\n"
+            f"  LONG：{l_st['n']} 筆 / `{l_st['wr']:.0f}%`\n"
+            f"  SHORT：{s_st['n']} 筆 / `{s_st['wr']:.0f}%`\n"
+            f"  差異：`{diff:+.0f}%`"
+        )
+
+    if sections:
+        lines.append("\n\n".join(sections))
+        lines.append("")
+    else:
+        lines.append("各項分組樣本不足，需累積更多交易")
+        lines.append("")
+
+    lines.append("💡 *判讀標準*")
+    lines.append("  ✅ = 該項指標有效（差異 > 10%）")
+    lines.append("  ⚠️ = 邊際有效（差異 0–10%）")
+    lines.append("  ❌ = 反向關係（建議降權或關閉）")
     return "\n".join(lines)
 
 
@@ -3021,6 +3238,11 @@ def run_scan(tracker: SignalTracker) -> int:
     """🔍 執行掃描（整合 v12 全部風控）"""
     logging.info("🚀 開始掃描...")
 
+    # 🩺 健康監控（先檢查自己是否異常）
+    unhealthy, health_msg = check_health()
+    if unhealthy:
+        send_tg(health_msg)
+
     # ── 0. 熱載入配置 ──
     cfg = load_config()
     coins = cfg.get("coins", ALL_COINS)
@@ -3201,6 +3423,8 @@ def run_scan(tracker: SignalTracker) -> int:
     tracker.send_position_updates()
 
     logging.info(f"✅ 掃描完成，本輪新增 {sent} 筆訊號")
+    # 🩺 重置失敗計數
+    reset_failure_count()
     return sent
 
 
@@ -3236,6 +3460,9 @@ def main() -> None:
             if cmd in ("/direction", "/方向", "direction"):
                 send_tg(format_direction_stats())
                 return
+            if cmd in ("/audit", "/審查", "audit"):
+                send_tg(format_audit_report())
+                return
             if cmd in ("monitor", "/monitor", "/監控"):
                 # 高頻輕量監控模式（只追既有訊號）
                 # 可選：python main.py monitor 3 20 → 一次 cron 內掃 3 次、每次間隔 20s
@@ -3249,6 +3476,11 @@ def main() -> None:
 
     except Exception as e:
         logging.error(f"🔥 系統錯誤：{e}")
+        # 🩺 失敗計數 +1（觸發健康警報）
+        try:
+            increment_failure_count()
+        except Exception:
+            pass
         import traceback
 
         traceback.print_exc()
