@@ -1,5 +1,5 @@
 {
-  "_comment": "Alpha Oracle Pro v14.1 配置（高勝率精選版）",
+  "_comment": "Alpha Oracle Pro v14.2 配置（進階智能版）",
 
   "coins": [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
@@ -17,10 +17,7 @@
 
   "show_score_breakdown": true,
 
-  "post_mortem": {
-    "enabled": true,
-    "loss_only": false
-  },
+  "post_mortem": { "enabled": true, "loss_only": false },
 
   "learning": {
     "enabled": true,
@@ -47,10 +44,35 @@
     ]
   },
 
-  "cooling_off": {
+  "cooling_off": { "enabled": true, "loss_threshold": 2, "period_minutes": 30 },
+
+  "direction_bias": {
     "enabled": true,
-    "loss_threshold": 2,
-    "period_minutes": 30
+    "min_diff_pct": 15,
+    "min_samples": 10,
+    "bonus": 3,
+    "penalty": 3
+  },
+
+  "god_signal": { "enabled": true, "min_score": 95 },
+
+  "ema_alignment": {
+    "enabled": true,
+    "periods": [20, 50, 200],
+    "perfect_bonus": 5,
+    "partial_bonus": 3,
+    "against_penalty": 5
+  },
+
+  "overheating": {
+    "enabled": true,
+    "win_streak_threshold": 3,
+    "cooldown_hours": 4
+  },
+
+  "ob_invalidation": {
+    "enabled": true,
+    "break_buffer_pct": 0.2
   },
 
   "price_verification": {
@@ -77,8 +99,5 @@
 
   "news_blackouts": [],
 
-  "auto_news_blackout": {
-    "nfp": true,
-    "cpi": true
-  }
+  "auto_news_blackout": { "nfp": true, "cpi": true }
 }
