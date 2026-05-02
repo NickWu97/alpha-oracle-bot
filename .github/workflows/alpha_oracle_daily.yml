@@ -1,11 +1,5 @@
 name: Alpha Oracle 日報 / 月報
 
-# 📊 每天 TW 00:00 推「昨日」日報
-# 📈 每月 1 號 TW 00:00 順便推「上個月」月報
-#
-# Cron 用 UTC：UTC 16:00 = TW 00:00（隔天）
-# GitHub Actions cron 會有 5–15 分鐘的排隊延遲（平台限制無解）
-
 on:
   schedule:
     - cron: "0 16 * * *"
