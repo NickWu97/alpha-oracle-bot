@@ -1,22 +1,27 @@
 name: Alpha Oracle Monitor (高頻監控)
 
+# 🔔 每 1 分鐘掃一次，盡量不漏插針
+# ⚠️ GitHub Actions cron 不是精準的，會有 30s–5min 排隊延遲
+# 🔧 真正秒級偵測請部署 websocket_monitor.py 到 Fly.io
+
 on:
   schedule:
-    - cron: "*/3 * * * *"
+    - cron: "* * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+# cancel-in-progress: true 讓新 cron 起來時殺掉沒跑完的舊 cron，避免堵塞
 concurrency:
   group: alpha-oracle-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   monitor:
     name: 🔔 Monitor
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 2
 
     steps:
       - name: 📦 下載程式碼
@@ -45,7 +50,8 @@ jobs:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           TZ: Asia/Taipei
-        run: python main.py monitor 3 20
+        run: python main.py monitor 1 0
+        # 1 0 = 一次 cron 內只跑 1 輪、不等待（cron 本身已經 1 分鐘就會再跑）
 
       - name: 💾 保存狀態
         if: always()
