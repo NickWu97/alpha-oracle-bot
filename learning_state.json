@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 6,
+      "win": 9,
       "loss": 5,
       "be": 1,
-      "total": 12
+      "total": 15
     },
     "sess:us": {
       "win": 0,
@@ -127,10 +127,10 @@
       "total": 1
     },
     "score:70-79": {
-      "win": 4,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 5
+      "total": 8
     },
     "coin:ETH": {
       "win": 0,
@@ -163,10 +163,10 @@
       "total": 6
     },
     "sess:asia_day": {
-      "win": 10,
+      "win": 13,
       "loss": 0,
       "be": 0,
-      "total": 10
+      "total": 13
     },
     "coin:NEAR": {
       "win": 6,
@@ -199,6 +199,24 @@
       "total": 1
     },
     "coin_side:BNB_SHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "rsi_short:40-49": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:TON": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:TON_SHORT": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -259,6 +277,12 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "TON": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -284,5 +308,5 @@
       "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1777678329.9483018
+  "updated_at": 1777684488.6344073
 }

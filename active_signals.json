@@ -31,8 +31,8 @@
     "hit_tp3": false,
     "activated_at": 1777648542.0919144,
     "entry_message_id": 2489,
-    "last_checked_ts": 1777679100.0,
-    "current_price": 83.64
+    "last_checked_ts": 1777683600.0,
+    "current_price": 83.83
   },
   "BTC-USDT-SWAP_SHORT_1777653063-48C93FC8": {
     "instId": "BTC-USDT-SWAP",
@@ -66,8 +66,8 @@
     "hit_tp3": false,
     "activated_at": 1777653063.6613379,
     "entry_message_id": 2498,
-    "last_checked_ts": 1777679100.0,
-    "current_price": 78212.6
+    "last_checked_ts": 1777683600.0,
+    "current_price": 78323.3
   },
   "XRP-USDT-SWAP_SHORT_1777653065-A2768E59": {
     "instId": "XRP-USDT-SWAP",
@@ -101,7 +101,7 @@
     "hit_tp3": false,
     "activated_at": 1777653065.2294395,
     "entry_message_id": 2499,
-    "last_checked_ts": 1777679100.0,
+    "last_checked_ts": 1777683600.0,
     "current_price": 1.386
   },
   "ADA-USDT-SWAP_SHORT_1777653066-4751E77D": {
@@ -136,8 +136,8 @@
     "hit_tp3": false,
     "activated_at": 1777653066.7494726,
     "entry_message_id": 2500,
-    "last_checked_ts": 1777679100.0,
-    "current_price": 0.2478
+    "last_checked_ts": 1777683600.0,
+    "current_price": 0.2483
   },
   "DOGE-USDT-SWAP_SHORT_1777657299-7DAC359C": {
     "instId": "DOGE-USDT-SWAP",
@@ -171,8 +171,8 @@
     "hit_tp3": false,
     "activated_at": 1777657299.559197,
     "entry_message_id": 2510,
-    "last_checked_ts": 1777679100.0,
-    "current_price": 0.10856
+    "last_checked_ts": 1777683600.0,
+    "current_price": 0.10871
   },
   "LINK-USDT-SWAP_SHORT_1777657301-4D190AC0": {
     "instId": "LINK-USDT-SWAP",
@@ -206,8 +206,8 @@
     "hit_tp3": false,
     "activated_at": 1777657301.2259293,
     "entry_message_id": 2511,
-    "last_checked_ts": 1777679100.0,
-    "current_price": 9.082
+    "last_checked_ts": 1777683600.0,
+    "current_price": 9.106
   },
   "DOT-USDT-SWAP_SHORT_1777657302-0BFE65E1": {
     "instId": "DOT-USDT-SWAP",
@@ -241,77 +241,7 @@
     "hit_tp3": false,
     "activated_at": 1777657302.6281552,
     "entry_message_id": 2512,
-    "last_checked_ts": 1777679100.0,
-    "current_price": 1.201
-  },
-  "TON-USDT-SWAP_SHORT_1777669654-AF733FFF": {
-    "instId": "TON-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 1.323,
-    "sl": 1.3287,
-    "tp1": 1.3145,
-    "tp2": 1.3146,
-    "tp3": 1.3146,
-    "score": 70,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 42.9,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "volume": 0,
-      "volume_ratio": 0.88,
-      "regime": "transitional",
-      "adx": 22.2,
-      "atr_pct": 0.286,
-      "pullback": true,
-      "learning_notes": [
-        "fund:neutral (n=6, 勝率 17%) → -3",
-        "sess:asia_dawn (n=5, 勝率 20%) → -3"
-      ],
-      "learning_adjust": -6,
-      "tp_adjust_notes": [
-        "TP2 由 1.3060 校正到 1.3146（避開支撐 1.3120）",
-        "TP3 由 1.2946 校正到 1.3146（避開支撐 1.3120）"
-      ]
-    },
-    "funding_rate": 5.9312079683e-06,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 41.3
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 44.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 22.2,
-      "atr_pct": 0.286,
-      "volatile": false
-    },
-    "created": 1777669654.0097115,
-    "expires": 1777756054.0097122,
-    "order_id": "1777669654-AF733FFF",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1777669654.0097857,
-    "entry_message_id": 2559,
-    "last_checked_ts": 1777679100.0,
-    "current_price": 1.317
+    "last_checked_ts": 1777683600.0,
+    "current_price": 1.208
   }
 }
