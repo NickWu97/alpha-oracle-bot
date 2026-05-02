@@ -470,5 +470,483 @@
       "atr_pct": 0.176,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 05:58",
+    "date": "2026-05-03",
+    "order_id": "1777746910-9893C913",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2309.66,
+    "close": 2316.4743,
+    "close_type": "TP1",
+    "pnl": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": -2.95960183418e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.98,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "trend",
+      "adx": 28.2,
+      "atr_pct": 0.131
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 57.5,
+      "atr_pct": 0.131,
+      "funding": -0.0295960183418,
+      "vol_ratio": 0.98,
+      "adx": 28.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.2,
+      "atr_pct": 0.131,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 05:58",
+    "date": "2026-05-03",
+    "order_id": "1777746910-9893C913",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2309.66,
+    "close": 2323.2886,
+    "close_type": "TP2",
+    "pnl": 0.59,
+    "is_win": true,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": -2.95960183418e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.98,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "trend",
+      "adx": 28.2,
+      "atr_pct": 0.131
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 57.5,
+      "atr_pct": 0.131,
+      "funding": -0.0295960183418,
+      "vol_ratio": 0.98,
+      "adx": 28.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.2,
+      "atr_pct": 0.131,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 05:58",
+    "date": "2026-05-03",
+    "order_id": "1777746910-9893C913",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2309.66,
+    "close": 2332.3743,
+    "close_type": "TP3",
+    "pnl": 0.98,
+    "is_win": true,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": -2.95960183418e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.98,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "trend",
+      "adx": 28.2,
+      "atr_pct": 0.131
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 57.5,
+      "atr_pct": 0.131,
+      "funding": -0.0295960183418,
+      "vol_ratio": 0.98,
+      "adx": 28.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.2,
+      "atr_pct": 0.131,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 05:58",
+    "date": "2026-05-03",
+    "order_id": "1777756080-58F3EC63",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.1085,
+    "close": 0.109,
+    "close_type": "TP1",
+    "pnl": 0.46,
+    "is_win": true,
+    "is_be": false,
+    "score": 116,
+    "funding_rate": -9.2942068252e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.5,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.58,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "range",
+      "adx": 6.9,
+      "atr_pct": 0.224,
+      "learning_notes": [
+        "score:90+ (n=5, 勝率 80%) → +2",
+        "fund:neutral (n=5, 勝率 80%) → +2",
+        "sess:asia_dawn (n=5, 勝率 80%) → +2"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP3 由 0.1103 校正到 0.1094（避開阻力 0.1096）"
+      ]
+    },
+    "features": {
+      "score": 116.0,
+      "rsi": 47.5,
+      "atr_pct": 0.224,
+      "funding": -0.0092942068252,
+      "vol_ratio": 0.58,
+      "adx": 6.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 6.9,
+      "atr_pct": 0.224,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 05:58",
+    "date": "2026-05-03",
+    "order_id": "1777756080-58F3EC63",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.1085,
+    "close": 0.1085,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 116,
+    "funding_rate": -9.2942068252e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.5,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.58,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "range",
+      "adx": 6.9,
+      "atr_pct": 0.224,
+      "learning_notes": [
+        "score:90+ (n=5, 勝率 80%) → +2",
+        "fund:neutral (n=5, 勝率 80%) → +2",
+        "sess:asia_dawn (n=5, 勝率 80%) → +2"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP3 由 0.1103 校正到 0.1094（避開阻力 0.1096）"
+      ]
+    },
+    "features": {
+      "score": 116.0,
+      "rsi": 47.5,
+      "atr_pct": 0.224,
+      "funding": -0.0092942068252,
+      "vol_ratio": 0.58,
+      "adx": 6.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 6.9,
+      "atr_pct": 0.224,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 05:58",
+    "date": "2026-05-03",
+    "order_id": "1777756083-C4978A1D",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.173,
+    "close": 9.213,
+    "close_type": "TP1",
+    "pnl": 0.44,
+    "is_win": true,
+    "is_be": false,
+    "score": 99,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 62.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.59,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "range",
+      "adx": 11.3,
+      "atr_pct": 0.194,
+      "learning_notes": [
+        "score:90+ (n=5, 勝率 80%) → +2",
+        "fund:neutral (n=5, 勝率 80%) → +2",
+        "sess:asia_dawn (n=5, 勝率 80%) → +2"
+      ],
+      "learning_adjust": 6
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 62.5,
+      "atr_pct": 0.194,
+      "funding": 0.1,
+      "vol_ratio": 0.59,
+      "adx": 11.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.4
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 52.3
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 11.3,
+      "atr_pct": 0.194,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 05:58",
+    "date": "2026-05-03",
+    "order_id": "1777756083-C4978A1D",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.173,
+    "close": 9.173,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 99,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 62.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.59,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "range",
+      "adx": 11.3,
+      "atr_pct": 0.194,
+      "learning_notes": [
+        "score:90+ (n=5, 勝率 80%) → +2",
+        "fund:neutral (n=5, 勝率 80%) → +2",
+        "sess:asia_dawn (n=5, 勝率 80%) → +2"
+      ],
+      "learning_adjust": 6
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 62.5,
+      "atr_pct": 0.194,
+      "funding": 0.1,
+      "vol_ratio": 0.59,
+      "adx": 11.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.4
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 52.3
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 11.3,
+      "atr_pct": 0.194,
+      "volatile": false
+    }
   }
 ]

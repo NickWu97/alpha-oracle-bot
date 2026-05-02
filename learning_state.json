@@ -1,28 +1,28 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 6,
+      "win": 8,
       "loss": 1,
-      "be": 0,
-      "total": 7
+      "be": 2,
+      "total": 11
     },
     "rsi_long:40-49": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 4
     },
     "fund:neutral": {
-      "win": 6,
+      "win": 11,
       "loss": 1,
-      "be": 0,
-      "total": 7
+      "be": 2,
+      "total": 14
     },
     "sess:asia_dawn": {
-      "win": 6,
+      "win": 11,
       "loss": 1,
-      "be": 0,
-      "total": 7
+      "be": 2,
+      "total": 14
     },
     "coin:BTC": {
       "win": 2,
@@ -37,10 +37,10 @@
       "total": 2
     },
     "rsi_long:50-59": {
-      "win": 4,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 5
+      "total": 8
     },
     "coin:SOL": {
       "win": 0,
@@ -77,6 +77,54 @@
       "loss": 0,
       "be": 0,
       "total": 2
+    },
+    "score:80-89": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:ETH": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:ETH_LONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:DOGE": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "coin_side:DOGE_LONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "rsi_long:60-69": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "coin:AVAX": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "coin_side:AVAX_LONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
     }
   },
   "by_coin": {
@@ -103,8 +151,26 @@
       "loss": 0,
       "be": 0,
       "total": 2
+    },
+    "ETH": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "DOGE": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "AVAX": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
     }
   },
   "loss_reasons": [],
-  "updated_at": 1777757574.8210304
+  "updated_at": 1777759118.179602
 }
