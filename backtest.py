@@ -21,6 +21,7 @@ import os
 import logging
 from typing import Optional
 
+# 重用 main.py 的所有指標與訊號邏輯
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import main as bot
 
@@ -75,13 +76,14 @@ def simulate_trade(entry_idx: int, candles: list, signal: dict) -> dict:
     tp1, tp2, tp3 = signal["tp1"], signal["tp2"], signal["tp3"]
     hit_tp1 = hit_tp2 = False
 
-    max_lookahead = min(96, len(candles) - entry_idx - 1)
+    max_lookahead = min(96, len(candles) - entry_idx - 1)  # 最多看 24 小時
     for j in range(entry_idx + 1, entry_idx + 1 + max_lookahead):
         c = candles[j]
+        # 同一根 K：先 TP1 → TP2 → TP3 → SL（用更新後的 SL）
         if side == "LONG":
             if not hit_tp1 and c["h"] >= tp1:
                 hit_tp1 = True
-                sl = entry
+                sl = entry  # 移到 BE
             if not hit_tp2 and c["h"] >= tp2:
                 hit_tp2 = True
                 sl = tp1
@@ -120,6 +122,7 @@ def backtest_coin(instId: str, total_bars: int = 500) -> dict:
         return {"instId": instId, "n": 0}
     print(f"  ✅ 取得 {len(candles)} 根 K 線")
 
+    # patch fetch_mtf_trend：給回測用，直接用同 K 線推算 1H/4H 趨勢（簡化）
     bot._mtf_cache = {}
     orig_fetch_mtf = bot.fetch_mtf_trend
     bot.fetch_mtf_trend = lambda x: {
@@ -128,7 +131,7 @@ def backtest_coin(instId: str, total_bars: int = 500) -> dict:
     }
 
     trades = []
-    last_signal_idx = -10
+    last_signal_idx = -10  # 簡單冷卻：8 根 K 線（2 小時）內不重複開
     for i in range(50, len(candles) - 1):
         if i - last_signal_idx < 8:
             continue
@@ -169,6 +172,7 @@ def backtest_coin(instId: str, total_bars: int = 500) -> dict:
     timeout = sum(1 for t in trades if t["close_type"] == "TIMEOUT")
     total_r = sum(t["pnl_r"] for t in trades)
 
+    # 計算最大回撤
     eq = 0.0
     peak = 0.0
     max_dd = 0.0
@@ -203,6 +207,7 @@ def main():
             r = backtest_coin(c, 500)
             all_results.append(r)
 
+        # 彙總
         total_n = sum(r.get("n", 0) for r in all_results)
         total_r = sum(r.get("total_r", 0) for r in all_results)
         total_win = sum(r.get("win", 0) for r in all_results)
