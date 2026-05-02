@@ -3802,5 +3802,154 @@
       "atr_pct": 0.186,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-02 13:54",
+    "date": "2026-05-02",
+    "order_id": "1777657299-7DAC359C",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.109,
+    "close": 0.1075,
+    "close_type": "TP1",
+    "pnl": 1.38,
+    "is_win": true,
+    "is_be": false,
+    "score": 75,
+    "funding_rate": -1.41401906565e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 31.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5
+    },
+    "features": {
+      "score": 75.0,
+      "rsi": 31.9,
+      "atr_pct": 1.0,
+      "funding": -0.0141401906565,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": null,
+    "regime": null
+  },
+  {
+    "time": "2026-05-02 13:54",
+    "date": "2026-05-02",
+    "order_id": "1777657302-0BFE65E1",
+    "coin": "DOT",
+    "side": "SHORT",
+    "entry": 1.213,
+    "close": 1.1955,
+    "close_type": "TP1",
+    "pnl": 1.44,
+    "is_win": true,
+    "is_be": false,
+    "score": 75,
+    "funding_rate": 9.5805532243e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5
+    },
+    "features": {
+      "score": 75.0,
+      "rsi": 32.4,
+      "atr_pct": 1.0,
+      "funding": 0.0095805532243,
+      "vol_ratio": 1.0,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": null,
+    "regime": null
+  },
+  {
+    "time": "2026-05-02 13:54",
+    "date": "2026-05-02",
+    "order_id": "1777693862-C0739518",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2302.95,
+    "close": 2296.1904,
+    "close_type": "SL",
+    "pnl": -0.29,
+    "is_win": false,
+    "is_be": false,
+    "score": 109,
+    "funding_rate": -4.57338070066e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 69.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.13,
+      "regime": "trend",
+      "adx": 79.3,
+      "atr_pct": 0.196,
+      "learning_notes": [
+        "sess:asia_day (n=13, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP3 由 2336.7482 校正到 2320.3500（避開阻力 2325.0000）"
+      ]
+    },
+    "features": {
+      "score": 109.0,
+      "rsi": 69.7,
+      "atr_pct": 0.196,
+      "funding": -0.0457338070066,
+      "vol_ratio": 1.13,
+      "adx": 79.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 79.3,
+      "atr_pct": 0.196,
+      "volatile": false
+    }
   }
 ]
