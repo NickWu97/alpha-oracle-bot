@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.1 — 高勝率精選版（繁體中文）
+Alpha Oracle Pro v14.2 — 進階智能版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.1 新增（精選 + 風控強化）：
+✨ v14.2 新增（5 大進化）：
+  📊 訊號方向統計 + 自動偏向高勝率方向（/direction 命令）
+  🎯 神級訊號特別標記：95+ 分用 🎯🎯🎯 醒目標題
+  🪜 EMA 多週期排列：20/50/200 完美排列 +5、逆 200 -5
+  🔥 過熱保護：某幣連 3 勝後暫停一輪避免過度依賴
+  🧱 OB 失效退場：進場依據的訂單塊收盤被破 → 主動提前退場
+
+✨ v14.1（高勝率精選 + 風控強化）：
   📊 進場通知顯示「為什麼 N 分」分數細項拆解
   💼 倉位大小建議：依分數推薦 0.5x / 1.0x / 1.5x
   ⏸️ 自動暫停爛幣：過去 7 天勝率 < 30% 自動暫停 24h
@@ -195,6 +202,34 @@ DEFAULT_CONFIG: dict = {
         "enabled": True,
         "loss_threshold": 2,           # 連 N 敗後啟動冷靜
         "period_minutes": 30,          # 冷靜 N 分鐘
+    },
+    # ── v14.2 新增：方向偏好 / 神級訊號 / EMA / 過熱 / OB 失效 ──
+    "direction_bias": {                # 自動偏好高勝率方向
+        "enabled": True,
+        "min_diff_pct": 15,            # LONG/SHORT 勝率差 ≥ N% 才啟動偏好
+        "min_samples": 10,             # 至少各 N 筆才信
+        "bonus": 3,                    # 順勢方向加分
+        "penalty": 3,                  # 逆勢方向扣分
+    },
+    "god_signal": {                    # 神級訊號特別標記
+        "enabled": True,
+        "min_score": 95,
+    },
+    "ema_alignment": {                 # 多時框 EMA 排列
+        "enabled": True,
+        "periods": [20, 50, 200],
+        "perfect_bonus": 5,            # 完美排列加分
+        "partial_bonus": 3,            # 部分排列加分
+        "against_penalty": 5,          # 逆 EMA200 扣分
+    },
+    "overheating": {                   # 過度集中保護
+        "enabled": True,
+        "win_streak_threshold": 3,     # 連 N 勝後啟動保護
+        "cooldown_hours": 4,
+    },
+    "ob_invalidation": {               # OB / FVG 失效退場
+        "enabled": True,
+        "break_buffer_pct": 0.2,       # 收盤跌破 OB 邊緣 N% → 視為失效
     },           # ATR/Price 超過此值視為震盪過大
     "price_verification": {
         "enabled": True,
@@ -353,7 +388,20 @@ def _fmt_entry(
     """📌 進場通知（含分數細項 + 倉位建議）"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
-    grade = "🔥 A+ 極強" if score >= 85 else "⭐ A 強力" if score >= 70 else "✅ B+ 合格"
+
+    # 🎯 神級訊號特別標記
+    cfg_god = load_config().get("god_signal", {})
+    god_threshold = cfg_god.get("min_score", 95)
+    is_god = cfg_god.get("enabled", True) and score >= god_threshold
+
+    if is_god:
+        grade = "🎯🎯🎯 *神級訊號* 🎯🎯🎯"
+    elif score >= 85:
+        grade = "🔥 A+ 極強"
+    elif score >= 70:
+        grade = "⭐ A 強力"
+    else:
+        grade = "✅ B+ 合格"
 
     tp1_pct = (tp1 - entry) / entry * 100 * (1 if side == "LONG" else -1)
     tp2_pct = (tp2 - entry) / entry * 100 * (1 if side == "LONG" else -1)
@@ -909,6 +957,59 @@ def calc_momentum_ratio(df: list, side: str, n: int = 5) -> bool:
 
 
 # ═════════════════════════════════════════════════════════
+# 6.4 v14.2 EMA 多週期排列
+# ═════════════════════════════════════════════════════════
+def calc_ema(df: list, period: int) -> float:
+    """EMA 計算（種子用 SMA）"""
+    if len(df) < period:
+        return df[-1]["c"] if df else 0.0
+    closes = [c["c"] for c in df]
+    multiplier = 2.0 / (period + 1)
+    ema = sum(closes[:period]) / period
+    for c in closes[period:]:
+        ema = c * multiplier + ema * (1 - multiplier)
+    return ema
+
+
+def calc_ema_alignment(df: list, side: str, cfg: dict | None = None) -> tuple[int, str]:
+    """🪜 EMA 多週期排列評分 → (分數 -5~+5, 描述)
+
+    多頭完美排列：價格 > EMA20 > EMA50 > EMA200
+    空頭完美排列：價格 < EMA20 < EMA50 < EMA200
+    """
+    if cfg is None:
+        cfg = load_config()
+    ec = cfg.get("ema_alignment", {})
+    if not ec.get("enabled", True):
+        return 0, ""
+    periods = ec.get("periods", [20, 50, 200])
+    if len(df) < max(periods) + 5:
+        return 0, "EMA 資料不足"
+
+    p_short, p_mid, p_long = periods[0], periods[1], periods[2]
+    ema_s = calc_ema(df, p_short)
+    ema_m = calc_ema(df, p_mid)
+    ema_l = calc_ema(df, p_long)
+    price = df[-1]["c"]
+
+    if side == "LONG":
+        if price > ema_s > ema_m > ema_l:
+            return ec.get("perfect_bonus", 5), f"多頭完美排列（價>{p_short}>{p_mid}>{p_long}）"
+        if price > ema_s > ema_m:
+            return ec.get("partial_bonus", 3), "短中期多頭"
+        if price < ema_l:
+            return -ec.get("against_penalty", 5), "在 EMA200 之下，逆大趨勢"
+    else:
+        if price < ema_s < ema_m < ema_l:
+            return ec.get("perfect_bonus", 5), f"空頭完美排列（價<{p_short}<{p_mid}<{p_long}）"
+        if price < ema_s < ema_m:
+            return ec.get("partial_bonus", 3), "短中期空頭"
+        if price > ema_l:
+            return -ec.get("against_penalty", 5), "在 EMA200 之上，逆大趨勢"
+    return 0, "EMA 未明確排列"
+
+
+# ═════════════════════════════════════════════════════════
 # 6.5 v14 新指標：ADX / 多時框 / 量能 / 市場狀態 / 進場時機
 # ═════════════════════════════════════════════════════════
 def calc_adx(df: list, period: int = 14) -> float:
@@ -1180,6 +1281,24 @@ def calc_score(
     detail["volume"] = vol_score
     detail["volume_ratio"] = vol_ratio
 
+    # 🪜 EMA 多週期排列 (-5 ~ +5)
+    ema_score, ema_desc = calc_ema_alignment(df, side)
+    score += ema_score
+    detail["ema"] = ema_score
+    detail["ema_desc"] = ema_desc
+
+    # 📊 方向偏好調整（從歷史學習）
+    bias_dir, bias_amount, bias_note = get_direction_bias()
+    if bias_dir:
+        if bias_dir == side:
+            score += bias_amount
+            detail["direction_bias"] = bias_amount
+            detail["direction_bias_note"] = bias_note
+        elif bias_dir == ("SHORT" if side == "LONG" else "LONG"):
+            score -= bias_amount
+            detail["direction_bias"] = -bias_amount
+            detail["direction_bias_note"] = bias_note
+
     grade = (
         "A+ 極強 🔥"
         if score >= 85
@@ -1292,6 +1411,9 @@ def generate_signal(
             )
             continue
 
+        # 🧱 把 OB 區間存進訊號（給失效退場用）
+        ob_zone = find_order_block(df, side)
+
         candidates.append(
             {
                 "instId": instId,
@@ -1308,6 +1430,7 @@ def generate_signal(
                 "funding_rate": funding_rate,
                 "mtf_snapshot": mtf,
                 "regime_snapshot": regime_info,
+                "ob_zone": ob_zone,            # 🧱 OB 失效退場用
                 "created": time.time(),
                 "expires": time.time() + signal_expire_hours * 3600,
             }
@@ -2226,6 +2349,121 @@ def is_coin_underperforming(coin: str, cfg: dict) -> tuple[bool, str]:
     return False, ""
 
 
+def get_direction_bias() -> tuple[str | None, int, str]:
+    """📊 從歷史交易算出多空方向偏好 → (偏好方向, 加分量, 說明)"""
+    cfg = load_config()
+    db_cfg = cfg.get("direction_bias", {})
+    if not db_cfg.get("enabled", True):
+        return None, 0, ""
+
+    min_diff = db_cfg.get("min_diff_pct", 15)
+    min_samples = db_cfg.get("min_samples", 10)
+    bonus = db_cfg.get("bonus", 3)
+
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    closed = [t for t in history if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
+
+    longs = [t for t in closed if t.get("side") == "LONG"]
+    shorts = [t for t in closed if t.get("side") == "SHORT"]
+    if len(longs) < min_samples or len(shorts) < min_samples:
+        return None, 0, ""
+
+    long_wins = sum(1 for t in longs if t["close_type"] in ("TP1", "TP2", "TP3", "LOCK"))
+    short_wins = sum(1 for t in shorts if t["close_type"] in ("TP1", "TP2", "TP3", "LOCK"))
+    long_wr = long_wins / len(longs) * 100
+    short_wr = short_wins / len(shorts) * 100
+    diff = long_wr - short_wr
+
+    if abs(diff) < min_diff:
+        return None, 0, ""
+    preferred = "LONG" if diff > 0 else "SHORT"
+    return preferred, bonus, f"{preferred} 歷史勝率 {long_wr if preferred == 'LONG' else short_wr:.0f}% 較高（差 {abs(diff):.0f}%）"
+
+
+def format_direction_stats() -> str:
+    """📊 方向勝率統計報表（給 /direction 命令用）"""
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    closed = [t for t in history if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")]
+    longs = [t for t in closed if t.get("side") == "LONG"]
+    shorts = [t for t in closed if t.get("side") == "SHORT"]
+
+    def calc_stats(trades):
+        n = len(trades)
+        if n == 0:
+            return None
+        wins = sum(1 for t in trades if t["close_type"] in ("TP1", "TP2", "TP3", "LOCK"))
+        loss = sum(1 for t in trades if t["close_type"] == "SL")
+        be = sum(1 for t in trades if t["close_type"] == "BE")
+        pnl = sum(t.get("pnl", 0) for t in trades)
+        return {"n": n, "win": wins, "loss": loss, "be": be, "wr": wins / n * 100, "pnl": pnl}
+
+    l = calc_stats(longs)
+    s = calc_stats(shorts)
+
+    lines = ["📊 *方向勝率統計*", "━━━━━━━━━━━━━━"]
+    if l:
+        lines.append(
+            f"🟢 LONG：{l['n']} 筆（勝 {l['win']} / 平 {l['be']} / 敗 {l['loss']}）"
+        )
+        lines.append(f"   勝率 `{l['wr']:.0f}%` · PnL `{l['pnl']:+.2f}%`")
+    else:
+        lines.append("🟢 LONG：暫無資料")
+    if s:
+        lines.append(
+            f"🔴 SHORT：{s['n']} 筆（勝 {s['win']} / 平 {s['be']} / 敗 {s['loss']}）"
+        )
+        lines.append(f"   勝率 `{s['wr']:.0f}%` · PnL `{s['pnl']:+.2f}%`")
+    else:
+        lines.append("🔴 SHORT：暫無資料")
+
+    bias_dir, bias_amount, bias_note = get_direction_bias()
+    if bias_dir:
+        lines.append("")
+        lines.append(f"🎯 *系統當前偏好：{bias_dir}*")
+        lines.append(f"   {bias_note}")
+        lines.append(f"   下次同方向訊號 +{bias_amount} / 反方向 -{bias_amount}")
+    else:
+        lines.append("")
+        lines.append("⚖️ 系統未偏好方向（資料不足或勝率接近）")
+    return "\n".join(lines)
+
+
+def is_coin_overheating(coin: str, cfg: dict) -> tuple[bool, str]:
+    """🔥 過度集中保護：某幣連 N 勝後暫停一輪"""
+    oh_cfg = cfg.get("overheating", {})
+    if not oh_cfg.get("enabled", True):
+        return False, ""
+
+    threshold = oh_cfg.get("win_streak_threshold", 3)
+    cooldown_h = oh_cfg.get("cooldown_hours", 4)
+
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    coin_closed = [
+        t for t in history
+        if t.get("coin") == coin
+        and t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")
+    ]
+    if len(coin_closed) < threshold:
+        return False, ""
+
+    last_n = coin_closed[-threshold:]
+    if not all(t["close_type"] in ("TP1", "TP2", "TP3", "LOCK") for t in last_n):
+        return False, ""
+
+    try:
+        last_win_dt = datetime.strptime(last_n[-1]["time"], "%Y-%m-%d %H:%M").replace(tzinfo=TW_TZ)
+    except Exception:
+        return False, ""
+
+    elapsed_h = (tw_now() - last_win_dt).total_seconds() / 3600
+    if elapsed_h < cooldown_h:
+        remaining = cooldown_h - elapsed_h
+        return True, (
+            f"{coin} 已連 {threshold} 勝，暫停一輪避免過度依賴（剩餘 `{remaining:.1f}h`）"
+        )
+    return False, ""
+
+
 def check_cooling_off(cfg: dict) -> tuple[bool, int, str]:
     """❄️ 連敗冷靜期 → (是否冷靜中, 剩餘秒數, 說明)"""
     co_cfg = cfg.get("cooling_off", {})
@@ -2548,6 +2786,45 @@ class SignalTracker:
             wick_favor = lambda t: cc > t and cl <= t
             wick_against = lambda t: cc < t and ch >= t
 
+        # 🧱 OB 失效退場（僅在還沒到 TP1 前檢查）
+        if not sig.get("hit_tp1"):
+            ob_zone = sig.get("ob_zone")
+            cfg_oi = load_config().get("ob_invalidation", {})
+            if ob_zone and cfg_oi.get("enabled", True):
+                buf = cfg_oi.get("break_buffer_pct", 0.2) / 100
+                ob_low = ob_zone.get("low", 0)
+                ob_high = ob_zone.get("high", 0)
+                # LONG：OB low 收盤被擊穿 → 失效
+                # SHORT：OB high 收盤被突破 → 失效
+                broken = (
+                    side == "LONG" and cc < ob_low * (1 - buf)
+                ) or (
+                    side == "SHORT" and cc > ob_high * (1 + buf)
+                )
+                if broken:
+                    pnl = (
+                        (cc - entry) / entry * 100
+                        if side == "LONG"
+                        else (entry - cc) / entry * 100
+                    )
+                    send_tg(
+                        f"⚠️ *{coin} OB 失效，主動退場*\n"
+                        f"━━━━━━━━━━━━━━\n"
+                        f"🆔 訂單：`{order_id}`\n"
+                        f"⏰ 時間：{tw_ts()}\n"
+                        f"方向：{'做多' if side == 'LONG' else '做空'}\n"
+                        f"退場價：`{cc:.4f}`\n"
+                        f"結算：`{pnl:+.2f}%`\n"
+                        f"\n"
+                        f"💡 進場依據的 SMC 訂單塊已被收盤跌破\n"
+                        f"   結構失效，提前退場避免擴大虧損",
+                        reply_markup=kb,
+                        reply_to_message_id=reply_to,
+                    )
+                    record_trade(coin, side, order_id, entry, cc, "OB_FAIL", sig["score"], sig)
+                    self.transitions += 1
+                    return True
+
         # 🥇 TP1
         if not sig.get("hit_tp1") and favor_hit(tp1):
             sig["hit_tp1"] = True
@@ -2821,6 +3098,12 @@ def run_scan(tracker: SignalTracker) -> int:
             logging.info(f"[{instId}] 爛幣自動暫停：{bad_reason}")
             continue
 
+        # 3.17 🔥 過熱保護（連勝後暫停一輪）
+        hot, hot_reason = is_coin_overheating(coin_name, cfg)
+        if hot:
+            logging.info(f"[{instId}] 過熱保護：{hot_reason}")
+            continue
+
         # 3.2 冷卻
         if is_cooling(instId, cooldown_h):
             logging.info(f"[{instId}] 冷卻中，跳過")
@@ -2949,6 +3232,9 @@ def main() -> None:
             if cmd in ("/monthly", "/月報", "monthly"):
                 ym = sys.argv[2] if len(sys.argv) > 2 else None
                 send_tg(format_monthly_report(ym))
+                return
+            if cmd in ("/direction", "/方向", "direction"):
+                send_tg(format_direction_stats())
                 return
             if cmd in ("monitor", "/monitor", "/監控"):
                 # 高頻輕量監控模式（只追既有訊號）
