@@ -15,14 +15,14 @@
     "fund:neutral": {
       "win": 22,
       "loss": 10,
-      "be": 1,
-      "total": 33
+      "be": 3,
+      "total": 35
     },
     "sess:us": {
       "win": 4,
       "loss": 2,
-      "be": 1,
-      "total": 7
+      "be": 3,
+      "total": 9
     },
     "coin:SOL": {
       "win": 1,
@@ -39,8 +39,8 @@
     "rsi_long:60-69": {
       "win": 1,
       "loss": 5,
-      "be": 0,
-      "total": 6
+      "be": 1,
+      "total": 7
     },
     "sess:asia_dawn": {
       "win": 2,
@@ -51,8 +51,8 @@
     "coin:DOGE": {
       "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 3
     },
     "coin_side:DOGE_LONG": {
       "win": 0,
@@ -105,14 +105,14 @@
     "score:90+": {
       "win": 16,
       "loss": 4,
-      "be": 0,
-      "total": 20
+      "be": 1,
+      "total": 21
     },
     "rsi_short:30-39": {
       "win": 12,
       "loss": 0,
-      "be": 0,
-      "total": 12
+      "be": 1,
+      "total": 13
     },
     "coin:LINK": {
       "win": 1,
@@ -129,8 +129,8 @@
     "score:70-79": {
       "win": 10,
       "loss": 3,
-      "be": 0,
-      "total": 13
+      "be": 1,
+      "total": 14
     },
     "coin:ETH": {
       "win": 1,
@@ -213,8 +213,8 @@
     "coin:TON": {
       "win": 4,
       "loss": 1,
-      "be": 0,
-      "total": 5
+      "be": 1,
+      "total": 6
     },
     "coin_side:TON_SHORT": {
       "win": 3,
@@ -225,8 +225,8 @@
     "coin_side:DOGE_SHORT": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "coin_side:DOT_SHORT": {
       "win": 1,
@@ -255,8 +255,8 @@
     "coin_side:TON_LONG": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "rsi_long:50-59": {
       "win": 1,
@@ -275,8 +275,8 @@
     "DOGE": {
       "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 3
     },
     "DOT": {
       "win": 1,
@@ -323,8 +323,8 @@
     "TON": {
       "win": 4,
       "loss": 1,
-      "be": 0,
-      "total": 5
+      "be": 1,
+      "total": 6
     }
   },
   "loss_reasons": [
@@ -357,5 +357,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1777729212.7135222
+  "updated_at": 1777732421.9085653
 }
