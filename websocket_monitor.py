@@ -40,6 +40,7 @@ except ImportError:
     print("請先安裝：pip install websockets")
     sys.exit(1)
 
+# 重用 main.py 的 SignalTracker / 通知 / 訊號處理邏輯
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import main as bot
 
@@ -80,23 +81,28 @@ async def subscribe_tickers(coins: list):
             await asyncio.sleep(10)
 
 
+# 每個 instId 的最後處理時間（避免每 tick 都重打 OKX K 線 API）
 _last_process: dict = {}
 
 
 async def on_price_update(instId: str, price: float):
     """每收到一筆即時價就檢查相關訊號"""
+    # 把即時價推進 main 的快取（讓 _check_one 拿到最新價）
     bot._price_cache[instId] = (price, time.time())
 
+    # 限頻：同一個 instId 每 5 秒最多處理一次
     now = time.time()
     if now - _last_process.get(instId, 0) < 5:
         return
     _last_process[instId] = now
 
+    # 開新 tracker（每次重新讀 active_signals 檔）
     tracker = bot.SignalTracker(bot.ACTIVE_SIGNALS_FILE)
     related = [k for k, s in tracker.signals.items() if s.get("instId") == instId]
     if not related:
         return
 
+    # 只處理該 instId 的訊號
     to_remove = []
     for key in related:
         sig = tracker.signals.get(key)
