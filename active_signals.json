@@ -1,74 +1,4 @@
 {
-  "BTC-USDT-SWAP_LONG_1777746908-41ABBA19": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 78400.2,
-    "sl": 78277.9929,
-    "tp1": 78583.5107,
-    "tp2": 78431.6224,
-    "tp3": 78431.6224,
-    "score": 95,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 15,
-      "rsi_value": 48.8,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 0,
-      "volume_ratio": 0.86,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "regime": "range",
-      "adx": 7.8,
-      "atr_pct": 0.104,
-      "tp_adjust_notes": [
-        "TP2 由 78766.8214 校正到 78431.6224（避開阻力 78588.8000）",
-        "TP3 由 79011.2357 校正到 78431.6224（避開阻力 78588.8000）"
-      ]
-    },
-    "funding_rate": -1.51662668285e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 49.4
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 81.8
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 7.8,
-      "atr_pct": 0.104,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 78317.5,
-      "high": 78399.9
-    },
-    "created": 1777746908.3713746,
-    "expires": 1777833308.3713748,
-    "order_id": "1777746908-41ABBA19",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1777746908.3754792,
-    "entry_message_id": 2835,
-    "last_checked_ts": 1777746908.3754792,
-    "current_price": 78400.2
-  },
   "ETH-USDT-SWAP_LONG_1777746910-9893C913": {
     "instId": "ETH-USDT-SWAP",
     "side": "LONG",
@@ -132,7 +62,7 @@
     "hit_tp3": false,
     "activated_at": 1777746910.324989,
     "entry_message_id": 2836,
-    "last_checked_ts": 1777746910.324989,
-    "current_price": 2309.66
+    "last_checked_ts": 1777749300.0,
+    "current_price": 2309.62
   }
 }
