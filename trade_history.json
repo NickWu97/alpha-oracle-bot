@@ -5999,5 +5999,73 @@
       "atr_pct": 0.22,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 02:27",
+    "date": "2026-05-03",
+    "order_id": "1777733111-F27934D9",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.114,
+    "close": 9.114,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 89,
+    "funding_rate": -1.6090622141e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 53.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": -5,
+      "mtf_desc": "1H=中 / 4H=反",
+      "volume": 2,
+      "volume_ratio": 1.17,
+      "regime": "range",
+      "adx": 9.6,
+      "atr_pct": 0.182,
+      "learning_notes": [
+        "score:80-89 (n=13, 勝率 62%) → +1",
+        "fund:neutral (n=35, 勝率 63%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 89.0,
+      "rsi": 53.3,
+      "atr_pct": 0.182,
+      "funding": -0.016090622141,
+      "vol_ratio": 1.17,
+      "adx": 9.6,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 55.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.7
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 9.6,
+      "atr_pct": 0.182,
+      "volatile": false
+    }
   }
 ]
