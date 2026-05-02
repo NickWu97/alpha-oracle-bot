@@ -1,15 +1,5 @@
 name: Alpha Oracle Monitor (高頻監控)
 
-# 🔔 此 workflow 只負責「檢查既有訊號的 PENDING 進場 / TP / SL」
-#   - 每 3 分鐘 cron + 一次 cron 內輪詢 3 輪（每 20 秒一次）
-#   - 等於每 ~30 秒檢查一次價格，把 TP/SL 通知延遲壓到最低
-#   - 不會生成新訊號（那是 alpha_oracle.yml 的事）
-#
-# ⚠️ 注意：高頻 cron 會耗 GitHub Actions 配額
-#   - 私有 repo 免費額度只有 2000 min/月，本 workflow 約用 6000+ min/月，會超
-#   - 公開 repo 免 GitHub Actions 完全免費（敏感資料用 Secrets 仍是加密）
-#   - 想省配額：把 cron 改成 "*/5 * * * *" 或把 polls 改成 1
-
 on:
   schedule:
     - cron: "*/3 * * * *"
@@ -18,7 +8,6 @@ on:
 permissions:
   contents: write
 
-# 跟主 workflow 共用同一個 concurrency group → 不會打架
 concurrency:
   group: alpha-oracle-${{ github.ref }}
   cancel-in-progress: false
@@ -51,7 +40,7 @@ jobs:
           [ -f system_state.json ]     || echo '{}' > system_state.json
           [ -f learning_state.json ]   || echo '{}' > learning_state.json
 
-      - name: ⚡ 執行高頻監控（3 輪 × 20s = 一次 cron 約 1 分鐘掃 3 次）
+      - name: ⚡ 執行高頻監控
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
