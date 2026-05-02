@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 4,
+      "win": 6,
       "loss": 4,
       "be": 1,
-      "total": 9
+      "total": 11
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 9,
-      "loss": 5,
+      "win": 11,
+      "loss": 6,
       "be": 1,
-      "total": 15
+      "total": 18
     },
     "sess:us": {
       "win": 0,
@@ -74,27 +74,27 @@
     },
     "coin:AVAX": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:AVAX_LONG": {
-      "win": 0,
-      "loss": 1,
-      "be": 0,
-      "total": 1
-    },
-    "rsi_long:70-79": {
       "win": 0,
       "loss": 2,
       "be": 0,
       "total": 2
     },
+    "rsi_long:70-79": {
+      "win": 0,
+      "loss": 3,
+      "be": 0,
+      "total": 3
+    },
     "coin:BNB": {
-      "win": 3,
+      "win": 5,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 6
     },
     "coin_side:BNB_LONG": {
       "win": 0,
@@ -128,9 +128,9 @@
     },
     "score:70-79": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin:ETH": {
       "win": 0,
@@ -163,10 +163,10 @@
       "total": 6
     },
     "sess:asia_day": {
-      "win": 13,
-      "loss": 0,
+      "win": 15,
+      "loss": 1,
       "be": 0,
-      "total": 13
+      "total": 16
     },
     "coin:NEAR": {
       "win": 6,
@@ -181,10 +181,10 @@
       "total": 6
     },
     "rsi_short:60-69": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 3
     },
     "coin:XRP": {
       "win": 1,
@@ -199,10 +199,10 @@
       "total": 1
     },
     "coin_side:BNB_SHORT": {
-      "win": 3,
+      "win": 5,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 5
     },
     "rsi_short:40-49": {
       "win": 3,
@@ -244,15 +244,15 @@
     },
     "AVAX": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "BNB": {
-      "win": 3,
+      "win": 5,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 6
     },
     "LINK": {
       "win": 1,
@@ -308,5 +308,5 @@
       "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1777684488.6344073
+  "updated_at": 1777696994.6958215
 }
