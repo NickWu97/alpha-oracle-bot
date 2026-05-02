@@ -2,21 +2,21 @@
   "buckets": {
     "score:90+": {
       "win": 8,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 11
+      "total": 12
     },
     "rsi_long:40-49": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 4
+      "total": 5
     },
     "fund:neutral": {
       "win": 14,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 17
+      "total": 18
     },
     "sess:asia_dawn": {
       "win": 11,
@@ -128,9 +128,9 @@
     },
     "sess:asia_day": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:XRP": {
       "win": 3,
@@ -143,6 +143,18 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin:ADA": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ADA_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -193,8 +205,14 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "ADA": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1777762862.8561218
+  "updated_at": 1777765326.4308825
 }

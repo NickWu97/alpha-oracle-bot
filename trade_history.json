@@ -1170,5 +1170,80 @@
       "atr_pct": 0.195,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 07:42",
+    "date": "2026-05-03",
+    "order_id": "1777762423-BECC2994",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.251,
+    "close": 0.25,
+    "close_type": "SL",
+    "pnl": -0.4,
+    "is_win": false,
+    "is_be": false,
+    "score": 99,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 47.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.62,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "trend",
+      "adx": 31.7,
+      "atr_pct": 0.271,
+      "learning_notes": [
+        "score:90+ (n=11, 勝率 73%) → +2",
+        "fund:neutral (n=14, 勝率 79%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP2 由 0.2541 校正到 0.2523（避開阻力 0.2528）",
+        "TP3 由 0.2561 校正到 0.2523（避開阻力 0.2528）"
+      ]
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 47.6,
+      "atr_pct": 0.271,
+      "funding": 0.1,
+      "vol_ratio": 0.62,
+      "adx": 31.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 74.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.6
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.7,
+      "atr_pct": 0.271,
+      "volatile": false
+    }
   }
 ]
