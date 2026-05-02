@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 8,
-      "loss": 4,
+      "win": 9,
+      "loss": 5,
       "be": 1,
-      "total": 13
+      "total": 15
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 22,
-      "loss": 10,
-      "be": 4,
-      "total": 36
+      "win": 24,
+      "loss": 11,
+      "be": 5,
+      "total": 40
     },
     "sess:us": {
       "win": 4,
@@ -37,16 +37,16 @@
       "total": 1
     },
     "rsi_long:60-69": {
-      "win": 1,
-      "loss": 5,
-      "be": 1,
-      "total": 7
-    },
-    "sess:asia_dawn": {
       "win": 2,
       "loss": 5,
-      "be": 0,
-      "total": 7
+      "be": 1,
+      "total": 8
+    },
+    "sess:asia_dawn": {
+      "win": 4,
+      "loss": 7,
+      "be": 1,
+      "total": 12
     },
     "coin:DOGE": {
       "win": 1,
@@ -63,8 +63,8 @@
     "coin:DOT": {
       "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 3
     },
     "coin_side:DOT_LONG": {
       "win": 0,
@@ -73,16 +73,16 @@
       "total": 1
     },
     "coin:AVAX": {
-      "win": 3,
+      "win": 4,
       "loss": 4,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:AVAX_LONG": {
-      "win": 0,
+      "win": 1,
       "loss": 3,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsi_long:70-79": {
       "win": 0,
@@ -91,28 +91,28 @@
       "total": 3
     },
     "coin:BNB": {
-      "win": 9,
+      "win": 10,
       "loss": 2,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "coin_side:BNB_LONG": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "score:90+": {
-      "win": 16,
+      "win": 17,
       "loss": 4,
       "be": 1,
-      "total": 21
+      "total": 22
     },
     "rsi_short:30-39": {
       "win": 12,
-      "loss": 0,
-      "be": 1,
-      "total": 13
+      "loss": 1,
+      "be": 2,
+      "total": 15
     },
     "coin:LINK": {
       "win": 1,
@@ -128,9 +128,9 @@
     },
     "score:70-79": {
       "win": 10,
-      "loss": 3,
-      "be": 2,
-      "total": 15
+      "loss": 4,
+      "be": 3,
+      "total": 17
     },
     "coin:ETH": {
       "win": 1,
@@ -146,9 +146,9 @@
     },
     "rsi_short:50-59": {
       "win": 9,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin_side:SOL_SHORT": {
       "win": 1,
@@ -158,9 +158,9 @@
     },
     "fund:neg": {
       "win": 12,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "sess:asia_day": {
       "win": 17,
@@ -170,15 +170,15 @@
     },
     "coin:NEAR": {
       "win": 12,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "coin_side:NEAR_SHORT": {
       "win": 12,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "rsi_short:60-69": {
       "win": 3,
@@ -212,15 +212,15 @@
     },
     "coin:TON": {
       "win": 4,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 6
+      "total": 7
     },
     "coin_side:TON_SHORT": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin_side:DOGE_SHORT": {
       "win": 1,
@@ -231,8 +231,8 @@
     "coin_side:DOT_SHORT": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "sess:europe": {
       "win": 11,
@@ -259,10 +259,10 @@
       "total": 2
     },
     "rsi_long:50-59": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 2
     }
   },
   "by_coin": {
@@ -281,20 +281,20 @@
     "DOT": {
       "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 3
     },
     "AVAX": {
-      "win": 3,
+      "win": 4,
       "loss": 4,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "BNB": {
-      "win": 9,
+      "win": 10,
       "loss": 2,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "LINK": {
       "win": 1,
@@ -310,9 +310,9 @@
     },
     "NEAR": {
       "win": 12,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "XRP": {
       "win": 1,
@@ -322,9 +322,9 @@
     },
     "TON": {
       "win": 4,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 6
+      "total": 7
     }
   },
   "loss_reasons": [
@@ -357,5 +357,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1777735656.3664443
+  "updated_at": 1777738290.1702502
 }
