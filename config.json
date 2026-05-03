@@ -26,6 +26,13 @@
     "min_leverage": 2
   },
 
+  "daily_limits": {
+    "enabled": true,
+    "max_concurrent_positions": 2,
+    "daily_loss_limit_pct": 5.0,
+    "max_daily_signals": 6
+  },
+
   "post_mortem": {
     "enabled": true,
     "loss_only": false
