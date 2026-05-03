@@ -328,5 +328,137 @@
       "atr_pct": 0.145,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 19:38",
+    "date": "2026-05-03",
+    "order_id": "1777796128-81103959",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 616.9,
+    "close": 616.9,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 93,
+    "funding_rate": 4.64098951994e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 0,
+      "mtf_desc": "1H=中 / 4H=中",
+      "volume": 2,
+      "volume_ratio": 1.46,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "transitional",
+      "adx": 21.7,
+      "atr_pct": 0.145
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 58.9,
+      "atr_pct": 0.145,
+      "funding": 0.0464098951994,
+      "vol_ratio": 1.46,
+      "adx": 21.7,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 42.7
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 53.8
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 21.7,
+      "atr_pct": 0.145,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-03 19:38",
+    "date": "2026-05-03",
+    "order_id": "1777805826-7C8AE9CB",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 78373.3,
+    "close": 78581.9232,
+    "close_type": "TP1",
+    "pnl": 0.27,
+    "is_win": true,
+    "is_be": false,
+    "score": 106,
+    "funding_rate": -1.5725814064e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.54,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "trend",
+      "adx": 34.5,
+      "atr_pct": 0.118
+    },
+    "features": {
+      "score": 106.0,
+      "rsi": 59.3,
+      "atr_pct": 0.118,
+      "funding": -0.0015725814064,
+      "vol_ratio": 0.54,
+      "adx": 34.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 75.6
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 34.5,
+      "atr_pct": 0.118,
+      "volatile": false
+    }
   }
 ]
