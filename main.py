@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.4 — VWAP + R:R 修復版（繁體中文）
+Alpha Oracle Pro v14.5 — 資金管理 + 覆盤強化版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.4 新增 / 修復：
+✨ v14.5 新增 / 修復：
+  💵 資金 / 槓桿 / 損益試算：依 $100 資金、$20 風險自動算槓桿與各 TP 美元損益
+  🔍 覆盤訊息保證送達：資料不足 / 例外時也送 fallback，不再靜默失敗
+  🧱 OB 失效退場現在也會送覆盤分析
+
+✨ v14.4：
   🪙 VWAP 量加權均價：背後評分加 ±3（不顯示給用戶，避免訊息太亂）
   🛡️ 預設關閉「評分細項顯示」：進場通知更乾淨（show_score_breakdown=False）
   🔧 修復 TP 順序 bug：原 dynamic TP 校正會讓 TP3 ≤ TP2（DOGE/NEAR 案例）
@@ -195,6 +200,14 @@ DEFAULT_CONFIG: dict = {
     # ── v14.1 新增：高勝率篩選 + 風控強化 ──
     "show_score_breakdown": False,     # 進場通知顯示分數細項拆解（預設關閉，太雜亂）
     "fixed_rr_mode": True,             # 固定 1.5R/3R/5R（預設）；關閉改用動態 TP 校正
+    # 💵 倉位 / 槓桿 / 損益試算
+    "capital_management": {
+        "enabled": True,
+        "capital_per_trade_usd": 100,  # 標準單筆資金
+        "max_loss_usd": 20,            # 最大可接受虧損（含手續費的緩衝）
+        "max_leverage": 50,            # 上限槓桿（避免極短 SL 算出超高槓桿）
+        "min_leverage": 2,             # 下限（避免極遠 SL 算出 0.x 槓桿）
+    },
     "coin_auto_pause": {               # 自動暫停爛幣
         "enabled": True,
         "days": 7,                     # 過去 N 天
@@ -346,6 +359,71 @@ def suggest_position_size(score: int, cfg: dict | None = None) -> tuple[float, s
     return 1.0, "標準倉"
 
 
+def calc_position_sizing(
+    entry: float,
+    sl: float,
+    tp1: float,
+    tp2: float,
+    tp3: float,
+    side: str,
+    pos_multiplier: float = 1.0,
+    cfg: dict | None = None,
+) -> dict | None:
+    """💵 根據資金 / 風險上限算槓桿、倉位、各 TP 美元損益
+
+    邏輯：
+      effective_capital = base_capital × pos_multiplier
+      effective_max_loss = base_max_loss × pos_multiplier  （風險比例不變）
+      leverage = (effective_max_loss / effective_capital) ÷ SL距離
+              = max_loss / capital ÷ SL距離（與 multiplier 無關）
+      position_value = effective_capital × leverage
+    """
+    if cfg is None:
+        cfg = load_config()
+    cm = cfg.get("capital_management", {})
+    if not cm.get("enabled", True):
+        return None
+
+    base_cap = cm.get("capital_per_trade_usd", 100)
+    base_max_loss = cm.get("max_loss_usd", 20)
+    max_lev = cm.get("max_leverage", 50)
+    min_lev = cm.get("min_leverage", 2)
+
+    sl_dist_pct = abs(entry - sl) / entry
+    if sl_dist_pct <= 0:
+        return None
+
+    # 風險比 = 損失 / 資金（不會被 multiplier 改變）
+    risk_ratio = base_max_loss / base_cap
+    required_lev = risk_ratio / sl_dist_pct
+    leverage = max(min_lev, min(max_lev, round(required_lev)))
+
+    # 依 multiplier 縮放實際資金與容忍損失
+    capital = base_cap * pos_multiplier
+    max_loss = base_max_loss * pos_multiplier
+
+    position_value = capital * leverage
+    contracts = position_value / entry
+
+    def _pnl(target_price):
+        if side == "LONG":
+            return position_value * (target_price - entry) / entry
+        return position_value * (entry - target_price) / entry
+
+    return {
+        "capital_usd": round(capital, 2),
+        "max_loss_usd": round(max_loss, 2),
+        "leverage": int(leverage),
+        "position_value_usd": round(position_value, 2),
+        "contracts": round(contracts, 4),
+        "sl_loss_usd": round(abs(_pnl(sl)), 2),
+        "tp1_profit_usd": round(_pnl(tp1), 2),
+        "tp2_profit_usd": round(_pnl(tp2), 2),
+        "tp3_profit_usd": round(_pnl(tp3), 2),
+        "pos_multiplier": pos_multiplier,
+    }
+
+
 def _format_score_breakdown(detail: dict | None) -> str:
     """📊 產生「為什麼 N 分」的分數細項拆解"""
     if not detail:
@@ -438,6 +516,22 @@ def _fmt_entry(
     pos_mult, pos_label = suggest_position_size(score, cfg)
     pos_line = f"💼 建議倉位：`{pos_mult}x` ({pos_label})\n"
 
+    # 💵 倉位 / 槓桿 / 損益試算
+    sizing = calc_position_sizing(entry, sl, tp1, tp2, tp3, side, pos_mult, cfg)
+    sizing_block = ""
+    if sizing:
+        sizing_block = (
+            f"\n"
+            f"💵 *資金試算（資金 `${sizing['capital_usd']}` / 風險 `${sizing['max_loss_usd']}`）*\n"
+            f"  槓桿：`{sizing['leverage']}x`\n"
+            f"  名目倉位：`${sizing['position_value_usd']:,.0f}`\n"
+            f"  數量：`{sizing['contracts']:,.4f} {coin}`\n"
+            f"  🛑 止損損失：`-${sizing['sl_loss_usd']:.2f}`\n"
+            f"  🥇 TP1 獲利：`+${sizing['tp1_profit_usd']:.2f}`\n"
+            f"  🥈 TP2 獲利：`+${sizing['tp2_profit_usd']:.2f}`\n"
+            f"  🏆 TP3 獲利：`+${sizing['tp3_profit_usd']:.2f}`\n"
+        )
+
     # R:R 顯示（TP1 實際倍數）
     risk = abs(entry - sl)
     tp1_r = abs(tp1 - entry) / risk if risk > 0 else 0
@@ -460,6 +554,7 @@ def _fmt_entry(
         f"評分：*{score} 分*\n"
         f"{pos_line}"
         f"{funding_line}"
+        f"{sizing_block}"
         f"{breakdown}\n"
         f"\n"
         f"🎯 止盈目標：\n"
@@ -2898,29 +2993,47 @@ class SignalTracker:
             self._save()
 
     def _send_postmortem(self, sig: dict, mode: str) -> None:
-        """🔍 SL/BE/LOCK 後送覆盤分析訊息（並寫入 loss_reasons）"""
+        """🔍 SL/BE/LOCK/OB_FAIL 後送覆盤分析訊息（不再靜默失敗）"""
+        coin = sig.get("instId", "?").split("-")[0]
+        order_id = sig.get("order_id", "?")
+
         try:
             cfg = load_config()
             pm_cfg = cfg.get("post_mortem", {})
             if not pm_cfg.get("enabled", True):
                 return
-            if mode != "LOSS" and pm_cfg.get("loss_only", False):
-                return
+            if mode == "LOCK" and pm_cfg.get("loss_only", False):
+                return  # LOCK 不算敗，loss_only 模式下跳過
 
             activated_at = sig.get("activated_at") or sig.get("created") or 0
             all_candles = fetch_candles_full(sig["instId"], limit=100)
             df_at_loss = [
                 {"ts": c["ts"], "o": c["o"], "h": c["h"], "l": c["l"], "c": c["c"], "v": c["v"]}
                 for c in all_candles
-                if (c["ts"] / 1000) >= (activated_at - 900)  # 進場前 15 分作為基準
+                if (c["ts"] / 1000) >= (activated_at - 900)
             ]
+
+            # 🛡️ 資料不足也要送，避免「為什麼沒原因？」
             if len(df_at_loss) < 10:
+                send_tg(
+                    f"🔍 *{coin} 覆盤*\n"
+                    f"━━━━━━━━━━━━━━\n"
+                    f"🆔 訂單：`{order_id}`\n"
+                    f"⏰ 時間：{tw_ts()}\n"
+                    f"\n"
+                    f"📋 *結論：進場後資料太少（僅 {len(df_at_loss)} 根 K 線）*\n"
+                    f"\n"
+                    f"💡 可能原因：\n"
+                    f"  • 訊號剛開沒多久就被插針掃損\n"
+                    f"  • 進場時間距現在 < 15 分鐘\n"
+                    f"\n"
+                    f"建議手動翻 K 線看是哪根 K 觸發 SL，並注意是否高波動時段",
+                    reply_to_message_id=sig.get("entry_message_id"),
+                )
                 return
 
             reasons = analyze_loss(sig, df_at_loss)
             lessons = _generate_lessons(reasons)
-
-            coin = sig["instId"].split("-")[0]
             similar = get_similar_stats(
                 sig.get("score", 0),
                 sig["side"],
@@ -2930,15 +3043,26 @@ class SignalTracker:
             )
 
             msg = _fmt_postmortem(sig, mode, reasons, lessons, similar)
-            send_tg(
-                msg,
-                reply_to_message_id=sig.get("entry_message_id"),
-            )
+            send_tg(msg, reply_to_message_id=sig.get("entry_message_id"))
 
             if mode == "LOSS":
                 record_loss_reason(coin, sig["side"], reasons)
         except Exception as e:
             logging.error(f"❌ 覆盤分析失敗：{e}")
+            # 🛡️ 例外也送 fallback，不再靜默
+            try:
+                send_tg(
+                    f"🔍 *{coin} 覆盤錯誤*\n"
+                    f"━━━━━━━━━━━━━━\n"
+                    f"🆔 訂單：`{order_id}`\n"
+                    f"\n"
+                    f"⚠️ 覆盤分析發生例外：`{str(e)[:120]}`\n"
+                    f"\n"
+                    f"訂單已正常平倉，請手動檢視 K 線。",
+                    reply_to_message_id=sig.get("entry_message_id"),
+                )
+            except Exception:
+                pass
 
     def has_open_position(self, instId: str) -> bool:
         """🔒 該幣種是否還有未結束的訊號（PENDING / ACTIVE / BE / TRAIL）
@@ -3123,6 +3247,8 @@ class SignalTracker:
                         reply_to_message_id=reply_to,
                     )
                     record_trade(coin, side, order_id, entry, cc, "OB_FAIL", sig["score"], sig)
+                    # 🔍 OB 失效也送覆盤分析
+                    self._send_postmortem(sig, "LOSS")
                     self.transitions += 1
                     return True
 
