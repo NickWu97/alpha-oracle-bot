@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 2325.09,
-    "sl": 2317.2686,
+    "sl": 2325.09,
     "tp1": 2336.8221,
     "tp2": 2348.5543,
     "tp3": 2364.1971,
@@ -65,14 +65,14 @@
     "created": 1777827933.2755077,
     "expires": 1777914333.275508,
     "order_id": "1777827933-89740B0F",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1777827933.2765763,
     "entry_message_id": 2954,
-    "last_checked_ts": 1777833000.0,
-    "current_price": 2331.37
+    "last_checked_ts": 1777835700.0,
+    "current_price": 2333.4
   },
   "BNB-USDT-SWAP_LONG_1777827935-53EFF931": {
     "instId": "BNB-USDT-SWAP",
@@ -145,7 +145,7 @@
     "hit_tp3": false,
     "activated_at": 1777827935.3462365,
     "entry_message_id": 2955,
-    "last_checked_ts": 1777833000.0,
-    "current_price": 619.1
+    "last_checked_ts": 1777835700.0,
+    "current_price": 619.2
   }
 }
