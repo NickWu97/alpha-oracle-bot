@@ -1767,5 +1767,80 @@
       "atr_pct": 0.415,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-03 13:58",
+    "date": "2026-05-03",
+    "order_id": "1777784288-D0FFF276",
+    "coin": "BNB",
+    "side": "SHORT",
+    "entry": 615.2,
+    "close": 616.1,
+    "close_type": "SL",
+    "pnl": -0.15,
+    "is_win": false,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": -2.9276324132e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 44.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.23,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "regime": "trend",
+      "adx": 31.0,
+      "atr_pct": 0.097,
+      "learning_notes": [
+        "score:80-89 (n=7, 勝率 86%) → +2",
+        "fund:neutral (n=25, 勝率 68%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8,
+      "tp_adjust_notes": [
+        "TP2 由 612.5000 校正到 614.9274（避開支撐 613.7000）",
+        "TP3 由 610.7000 校正到 614.9274（避開支撐 613.7000）"
+      ]
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 44.0,
+      "atr_pct": 0.097,
+      "funding": -0.0029276324132,
+      "vol_ratio": 0.23,
+      "adx": 31.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 46.2
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 45.6
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.0,
+      "atr_pct": 0.097,
+      "volatile": false
+    }
   }
 ]

@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 11,
-      "loss": 4,
+      "loss": 5,
       "be": 2,
-      "total": 18
+      "total": 19
     },
     "rsi_long:40-49": {
       "win": 3,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 17,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 25
+      "total": 26
     },
     "sess:asia_dawn": {
       "win": 11,
@@ -56,9 +56,9 @@
     },
     "coin:BNB": {
       "win": 2,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:BNB_LONG": {
       "win": 2,
@@ -128,9 +128,9 @@
     },
     "sess:asia_day": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "coin:XRP": {
       "win": 3,
@@ -164,9 +164,9 @@
     },
     "rsi_short:40-49": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:NEAR": {
       "win": 3,
@@ -179,6 +179,12 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin_side:BNB_SHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -196,9 +202,9 @@
     },
     "BNB": {
       "win": 2,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "LINK": {
       "win": 2,
@@ -259,5 +265,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1777783907.9109862
+  "updated_at": 1777787931.5718656
 }
