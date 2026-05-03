@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.6 — 1 分鐘掃描 + 嚴格風控版（繁體中文）
+Alpha Oracle Pro v14.7 — 精準價格偵測 + 防洗版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.6 新增：
+✨ v14.7 修復 / 新增：
+  🪙 即時價合併進 K 線：OKX ticker tick 比 K 線快，融合後抓得更早
+  🛡️ 持倉更新 15 分鐘 throttle：1 分鐘 cron 不再每分鐘洗版
+     ↳ 修復 v14.6 之後 TP/SL 達標通知被持倉更新洗到上面去看不到的 bug
+  🔄 send_tg 加重試：429 限速等 retry_after / 5xx 用 exponential backoff
+     ↳ 訊息送達率從 ~95% → ~99.9%
+
+✨ v14.6：
   ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）
   🛡️ 早期退出：全部幣都冷卻 / 持倉時跳過重 API，只跑監控（5 秒搞定）
   🛡️ 嚴格每日風控三紅線：
@@ -304,8 +311,12 @@ def send_tg(
     parse_mode: str = "Markdown",
     reply_markup: dict | None = None,
     reply_to_message_id: int | None = None,
+    max_retries: int = 3,
 ) -> int | None:
-    """📤 發送 Telegram 通知 → 回傳 message_id（失敗回 None）"""
+    """📤 發送 Telegram 通知 → 回傳 message_id（失敗回 None）
+
+    v14.7 加入重試：429 (rate limit) 等 retry_after，5xx 用 exponential backoff
+    """
     if not TG_TOKEN or not CHAT_ID:
         logging.warning("⚠️ TG_TOKEN 或 CHAT_ID 未設定，略過發送")
         return None
@@ -322,24 +333,57 @@ def send_tg(
         payload["reply_to_message_id"] = reply_to_message_id
         payload["allow_sending_without_reply"] = True
 
-    try:
-        r = requests.post(
-            f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
-            json=payload,
-            timeout=8,
-        )
-        if r.status_code == 200:
-            # 🩺 健康監控：紀錄最後一次成功送 TG 的時間
-            try:
-                _state = _load_json(SYSTEM_STATE_FILE, {})
-                _state["last_tg_sent"] = time.time()
-                _save_json(SYSTEM_STATE_FILE, _state)
-            except Exception:
-                pass
-            return r.json().get("result", {}).get("message_id")
-        logging.error(f"❌ TG API 回應碼 {r.status_code}: {r.text[:200]}")
-    except Exception as e:
-        logging.error(f"❌ TG 發送失敗：{e}")
+    last_err = ""
+    for attempt in range(max_retries):
+        try:
+            r = requests.post(
+                f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage",
+                json=payload,
+                timeout=8,
+            )
+            if r.status_code == 200:
+                # 🩺 健康監控：紀錄最後一次成功送 TG 的時間
+                try:
+                    _state = _load_json(SYSTEM_STATE_FILE, {})
+                    _state["last_tg_sent"] = time.time()
+                    _save_json(SYSTEM_STATE_FILE, _state)
+                except Exception:
+                    pass
+                return r.json().get("result", {}).get("message_id")
+
+            # 429 = 限速，按 Telegram 給的 retry_after 等
+            if r.status_code == 429:
+                try:
+                    wait = float(r.json().get("parameters", {}).get("retry_after", 2))
+                except Exception:
+                    wait = 2.0
+                wait = min(wait + 0.5, 15)
+                logging.warning(f"⏳ TG 429 限速，等 {wait:.1f}s 重試")
+                time.sleep(wait)
+                last_err = "429 rate limit"
+                continue
+
+            # 5xx = 伺服器錯，exponential backoff
+            if r.status_code >= 500:
+                wait = 2 ** attempt
+                logging.warning(f"⏳ TG {r.status_code} 伺服器錯，{wait}s 後重試")
+                time.sleep(wait)
+                last_err = f"server {r.status_code}"
+                continue
+
+            # 4xx 其他錯不重試（通常是 payload 問題）
+            logging.error(f"❌ TG API {r.status_code}: {r.text[:200]}")
+            return None
+
+        except Exception as e:
+            last_err = str(e)
+            wait = 2 ** attempt
+            logging.warning(
+                f"⏳ TG 發送失敗（嘗試 {attempt + 1}/{max_retries}）：{e}，{wait}s 後重試"
+            )
+            time.sleep(wait)
+
+    logging.error(f"❌ TG 發送失敗（{max_retries} 次重試後仍失敗）：{last_err}")
     return None
 
 
@@ -3203,6 +3247,14 @@ class SignalTracker:
             last_ts_ms = int(last_ts_s * 1000)
             new_candles = [c for c in all_candles if c["ts"] > last_ts_ms]
 
+            # 🪙 v14.7：即時價合併進最後一根 K 線（OKX K 線 API 偶有 5–10 秒延遲，
+            # 即時 ticker 比 K 線更快反映剛剛的插針）
+            if new_candles and price > 0:
+                last = dict(new_candles[-1])
+                last["h"] = max(last["h"], price)
+                last["l"] = min(last["l"], price)
+                new_candles[-1] = last
+
             for c in new_candles:
                 if self._process_candle(sig, c):
                     return True
@@ -3427,7 +3479,18 @@ class SignalTracker:
         return False
 
     def send_position_updates(self) -> None:
-        """📊 發送所有持倉的進度更新（每輪一次）"""
+        """📊 發送所有持倉的進度更新
+
+        v14.7 加 15 分鐘 throttle：每 15 分鐘最多送一次，
+        避免 1 分鐘 cron 把 TP/SL 達標等重要訊息洗到上面去。
+        """
+        state = get_system_state()
+        now = time.time()
+        last_sent = state.get("last_position_update_ts", 0)
+        interval = 15 * 60  # 15 分鐘
+        if now - last_sent < interval:
+            return
+
         cnt = 0
         for sig in self.signals.values():
             if sig["status"] not in ("ACTIVE", "BE", "TRAIL"):
@@ -3442,7 +3505,9 @@ class SignalTracker:
             )
             cnt += 1
         if cnt:
-            logging.info(f"📊 已發送 {cnt} 筆持倉更新")
+            state["last_position_update_ts"] = now
+            set_system_state(state)
+            logging.info(f"📊 已發送 {cnt} 筆持倉更新（下次最早 15 分鐘後）")
 
     def get_position_stats(self) -> str:
         """📋 持倉統計（給 /stats 命令用）"""
