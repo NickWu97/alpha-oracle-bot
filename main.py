@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.3 — 健康監控 + 指標審查版（繁體中文）
+Alpha Oracle Pro v14.4 — VWAP + R:R 修復版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.3 新增：
+✨ v14.4 新增 / 修復：
+  🪙 VWAP 量加權均價：背後評分加 ±3（不顯示給用戶，避免訊息太亂）
+  🛡️ 預設關閉「評分細項顯示」：進場通知更乾淨（show_score_breakdown=False）
+  🔧 修復 TP 順序 bug：原 dynamic TP 校正會讓 TP3 ≤ TP2（DOGE/NEAR 案例）
+  🎯 改成預設「固定 R:R」(1.5R/3R/5R)：可預期、永遠單調遞增
+     ↳ 想用動態 TP 改 config: fixed_rr_mode=false（已修好 collapse bug）
+
+✨ v14.3：
   🩺 健康監控：24h 沒送 TG / 連 5 次失敗 → 自動發警報（6h 不重複）
   🔬 指標審查（/audit）：神級 vs 一般、MTF 順勢 vs 中性、量能、市況、方向
      ↳ 用實際勝率驗證每個指標是否真的有效（✅⚠️❌ 三級判讀）
@@ -186,7 +193,8 @@ DEFAULT_CONFIG: dict = {
         "cpi": True,                   # 每月 10–16 日 21:25–22:30 (TW)
     },
     # ── v14.1 新增：高勝率篩選 + 風控強化 ──
-    "show_score_breakdown": True,      # 進場通知顯示分數細項拆解
+    "show_score_breakdown": False,     # 進場通知顯示分數細項拆解（預設關閉，太雜亂）
+    "fixed_rr_mode": True,             # 固定 1.5R/3R/5R（預設）；關閉改用動態 TP 校正
     "coin_auto_pause": {               # 自動暫停爛幣
         "enabled": True,
         "days": 7,                     # 過去 N 天
@@ -436,9 +444,9 @@ def _fmt_entry(
     tp2_r = abs(tp2 - entry) / risk if risk > 0 else 0
     tp3_r = abs(tp3 - entry) / risk if risk > 0 else 0
 
-    # 分數細項
+    # 分數細項（預設關閉，太雜亂）
     breakdown = ""
-    if cfg.get("show_score_breakdown", True):
+    if cfg.get("show_score_breakdown", False):
         breakdown = _format_score_breakdown(detail)
 
     return (
@@ -1149,31 +1157,99 @@ def adjust_tp_by_sr(
 ) -> tuple[list, list]:
     """🎯 動態 TP：若固定 R 倍 TP 落在強 S/R 前方，把 TP 拉到關鍵位前
 
+    ⚠️ 修復 v14.4 collapse bug：校正後若 TP 順序亂掉（TP3 ≤ TP2），
+       自動回復原值或強制保留最小間距，確保 TP1 < TP2 < TP3（LONG）/
+       TP1 > TP2 > TP3（SHORT）
+
     回傳：(調整後 TP 列表, 調整紀錄)
     """
     sup, res = calc_snr(df, lookback=100)
     out = list(tp_levels)
     notes = []
+
     if side == "LONG":
+        ceiling = res * 0.998
         for i, tp in enumerate(out):
-            if tp > res * 1.001:
-                # TP 高過阻力 0.1% 以上 → 拉到阻力前 0.2%
-                new_tp = res * 0.998
-                if new_tp > entry:
+            if tp > res * 1.001 and ceiling > entry:
+                notes.append(
+                    f"TP{i + 1} 由 {tp:.4f} 校正到 {ceiling:.4f}（避開阻力 {res:.4f}）"
+                )
+                out[i] = ceiling
+        # 強制 TP1 < TP2 < TP3：若校正後重疊，回復原值
+        for i in range(1, len(out)):
+            if out[i] <= out[i - 1]:
+                if tp_levels[i] > out[i - 1]:
                     notes.append(
-                        f"TP{i + 1} 由 {tp:.4f} 校正到 {new_tp:.4f}（避開阻力 {res:.4f}）"
+                        f"TP{i + 1} 校正後 ≤ TP{i}，回復原值 {tp_levels[i]:.4f}"
                     )
-                    out[i] = new_tp
+                    out[i] = tp_levels[i]
+                else:
+                    out[i] = out[i - 1] * 1.001
+                    notes.append(f"TP{i + 1} 強制 +0.1% 維持順序")
     else:
+        floor = sup * 1.002
         for i, tp in enumerate(out):
-            if tp < sup * 0.999:
-                new_tp = sup * 1.002
-                if new_tp < entry:
+            if tp < sup * 0.999 and floor < entry:
+                notes.append(
+                    f"TP{i + 1} 由 {tp:.4f} 校正到 {floor:.4f}（避開支撐 {sup:.4f}）"
+                )
+                out[i] = floor
+        # 強制 TP1 > TP2 > TP3
+        for i in range(1, len(out)):
+            if out[i] >= out[i - 1]:
+                if tp_levels[i] < out[i - 1]:
                     notes.append(
-                        f"TP{i + 1} 由 {tp:.4f} 校正到 {new_tp:.4f}（避開支撐 {sup:.4f}）"
+                        f"TP{i + 1} 校正後 ≥ TP{i}，回復原值 {tp_levels[i]:.4f}"
                     )
-                    out[i] = new_tp
+                    out[i] = tp_levels[i]
+                else:
+                    out[i] = out[i - 1] * 0.999
+                    notes.append(f"TP{i + 1} 強制 -0.1% 維持順序")
+
     return out, notes
+
+
+def calc_vwap(df: list, lookback: int = 20) -> float:
+    """🪙 VWAP 量加權均價（典型 HLC/3 × Volume / sum(V)）"""
+    if not df:
+        return 0.0
+    seg = df[-lookback:] if len(df) >= lookback else df
+    total_pv = sum((c["h"] + c["l"] + c["c"]) / 3 * c["v"] for c in seg)
+    total_v = sum(c["v"] for c in seg)
+    return total_pv / total_v if total_v > 0 else seg[-1]["c"]
+
+
+def calc_vwap_score(df: list, side: str, lookback: int = 20) -> tuple[int, str]:
+    """🪙 VWAP 偏離評分 → (-3 ~ +3, 描述)
+
+    多單：價在 VWAP 上方 = 多頭強勢 +3
+    空單：價在 VWAP 下方 = 空頭強勢 +3
+    逆勢時扣分
+    """
+    if len(df) < 5:
+        return 0, ""
+    vwap = calc_vwap(df, lookback)
+    price = df[-1]["c"]
+    if vwap <= 0:
+        return 0, ""
+    dist_pct = (price - vwap) / vwap * 100
+
+    if side == "LONG":
+        if dist_pct > 0.3:
+            return 3, f"價於 VWAP 上方 {dist_pct:.2f}%"
+        if dist_pct > 0:
+            return 1, "價略高於 VWAP"
+        if dist_pct < -0.3:
+            return -3, f"價於 VWAP 下方 {abs(dist_pct):.2f}% 多頭弱勢"
+        return 0, "價接近 VWAP"
+    else:
+        if dist_pct < -0.3:
+            return 3, f"價於 VWAP 下方 {abs(dist_pct):.2f}%"
+        if dist_pct < 0:
+            return 1, "價略低於 VWAP"
+        if dist_pct > 0.3:
+            return -3, f"價於 VWAP 上方 {dist_pct:.2f}% 空頭弱勢"
+        return 0, "價接近 VWAP"
 
 
 def detect_pullback(df: list, side: str) -> bool:
@@ -1300,6 +1376,12 @@ def calc_score(
     detail["ema"] = ema_score
     detail["ema_desc"] = ema_desc
 
+    # 🪙 VWAP 偏離（背後評分用，不顯示給用戶 → _ 前綴）
+    vwap_score, vwap_desc = calc_vwap_score(df, side)
+    score += vwap_score
+    detail["_vwap"] = vwap_score
+    detail["_vwap_desc"] = vwap_desc
+
     # 📊 方向偏好調整（從歷史學習）
     bias_dir, bias_amount, bias_note = get_direction_bias()
     if bias_dir:
@@ -1409,10 +1491,12 @@ def generate_signal(
         else:
             tp_levels = [entry - risk * 1.5, entry - risk * 3.0, entry - risk * 5.0]
 
-        # 🎯 動態 TP 校正（避開強 S/R）
-        tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
-        if tp_notes:
-            detail["tp_adjust_notes"] = tp_notes
+        # 🎯 動態 TP 校正（預設關閉 → 固定 1.5R/3R/5R 不動）
+        cfg_rr_mode = load_config()
+        if not cfg_rr_mode.get("fixed_rr_mode", True):
+            tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
+            if tp_notes:
+                detail["tp_adjust_notes"] = tp_notes
 
         # ⚖️ R:R 最低門檻 — TP1 至少要有 N R，否則拒絕（加 0.02 容差避免浮點誤差）
         cfg_rr = load_config()
