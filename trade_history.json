@@ -1080,5 +1080,298 @@
       "atr_pct": 0.113,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-04 06:33",
+    "date": "2026-05-04",
+    "order_id": "1777845391-89CF0F0D",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 78742.2,
+    "close": 79090.2589,
+    "close_type": "TP1",
+    "pnl": 0.44,
+    "is_win": true,
+    "is_be": false,
+    "score": 95,
+    "funding_rate": -1.2804891009e-06,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 51.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.3,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 0,
+      "_vwap_desc": "價接近 VWAP",
+      "regime": "trend",
+      "adx": 26.7,
+      "atr_pct": 0.197,
+      "learning_notes": [
+        "score:80-89 (n=7, 勝率 71%) → +2",
+        "rsi_long:50-59 (n=10, 勝率 80%) → +2",
+        "fund:neutral (n=15, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 8
+    },
+    "features": {
+      "score": 95.0,
+      "rsi": 51.6,
+      "atr_pct": 0.197,
+      "funding": -0.0012804891009,
+      "vol_ratio": 1.3,
+      "adx": 26.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 76.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 70.4
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 26.7,
+      "atr_pct": 0.197,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-04 06:33",
+    "date": "2026-05-04",
+    "order_id": "1777845395-0B61CD8B",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 84.04,
+    "close": 84.4675,
+    "close_type": "TP1",
+    "pnl": 0.51,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 6.06917600118e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 43.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 3.33,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": -3,
+      "_vwap_desc": "價於 VWAP 下方 0.40% 多頭弱勢",
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.226,
+      "learning_notes": [
+        "score:80-89 (n=7, 勝率 71%) → +2",
+        "fund:neutral (n=15, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 6
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 43.0,
+      "atr_pct": 0.226,
+      "funding": 0.0606917600118,
+      "vol_ratio": 3.33,
+      "adx": 0.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 68.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.226,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-04 06:33",
+    "date": "2026-05-04",
+    "order_id": "1777845395-0B61CD8B",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 84.04,
+    "close": 84.895,
+    "close_type": "TP2",
+    "pnl": 1.02,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 6.06917600118e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 43.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 3.33,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": -3,
+      "_vwap_desc": "價於 VWAP 下方 0.40% 多頭弱勢",
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.226,
+      "learning_notes": [
+        "score:80-89 (n=7, 勝率 71%) → +2",
+        "fund:neutral (n=15, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 6
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 43.0,
+      "atr_pct": 0.226,
+      "funding": 0.0606917600118,
+      "vol_ratio": 3.33,
+      "adx": 0.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 68.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.226,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-04 06:33",
+    "date": "2026-05-04",
+    "order_id": "1777845395-0B61CD8B",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 84.04,
+    "close": 84.4675,
+    "close_type": "LOCK",
+    "pnl": 0.51,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 6.06917600118e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 43.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 3.33,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": -3,
+      "_vwap_desc": "價於 VWAP 下方 0.40% 多頭弱勢",
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.226,
+      "learning_notes": [
+        "score:80-89 (n=7, 勝率 71%) → +2",
+        "fund:neutral (n=15, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 0 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 6
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 43.0,
+      "atr_pct": 0.226,
+      "funding": 0.0606917600118,
+      "vol_ratio": 3.33,
+      "adx": 0.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 68.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 0.0,
+      "atr_pct": 0.226,
+      "volatile": false
+    }
   }
 ]
