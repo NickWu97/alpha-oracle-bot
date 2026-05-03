@@ -1,78 +1,10 @@
 {
-  "ETH-USDT-SWAP_LONG_1777796126-032AFCEB": {
-    "instId": "ETH-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 2310.21,
-    "sl": 2305.1282,
-    "tp1": 2317.8327,
-    "tp2": 2325.4554,
-    "tp3": 2335.6189,
-    "score": 103,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 69.1,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 7,
-      "mtf_desc": "1H=中 / 4H=順",
-      "volume": 0,
-      "volume_ratio": 0.7,
-      "ema": 0,
-      "ema_desc": "EMA 資料不足",
-      "_vwap": 1,
-      "_vwap_desc": "價略高於 VWAP",
-      "regime": "trend",
-      "adx": 52.9,
-      "atr_pct": 0.147
-    },
-    "funding_rate": 4.74717207727e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 53.2
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 71.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 52.9,
-      "atr_pct": 0.147,
-      "volatile": false
-    },
-    "ob_zone": {
-      "low": 2298.5,
-      "high": 2300.95
-    },
-    "created": 1777796126.4025905,
-    "expires": 1777882526.4025908,
-    "order_id": "1777796126-032AFCEB",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1777796126.4032047,
-    "entry_message_id": 2919,
-    "last_checked_ts": 1777797000.0,
-    "current_price": 2307.65
-  },
   "BNB-USDT-SWAP_LONG_1777796128-81103959": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 616.9,
-    "sl": 615.5607,
+    "sl": 616.9,
     "tp1": 618.9089,
     "tp2": 620.9179,
     "tp3": 623.5964,
@@ -126,13 +58,13 @@
     "created": 1777796128.7918541,
     "expires": 1777882528.7918546,
     "order_id": "1777796128-81103959",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1777796128.7925348,
     "entry_message_id": 2920,
-    "last_checked_ts": 1777797000.0,
-    "current_price": 617.4
+    "last_checked_ts": 1777801500.0,
+    "current_price": 618.4
   }
 }
