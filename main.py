@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.5 — 資金管理 + 覆盤強化版（繁體中文）
+Alpha Oracle Pro v14.6 — 1 分鐘掃描 + 嚴格風控版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.5 新增 / 修復：
+✨ v14.6 新增：
+  ⚡ 主掃描改 1 分鐘 cron（合併 Pro + Monitor 成單一 job）
+  🛡️ 早期退出：全部幣都冷卻 / 持倉時跳過重 API，只跑監控（5 秒搞定）
+  🛡️ 嚴格每日風控三紅線：
+     ① 同時持倉數上限（預設 2 個）
+     ② 當日累計 PnL < -5% 停止開新單到隔天
+     ③ 一天最多 6 筆訊號
+
+✨ v14.5：
   💵 資金 / 槓桿 / 損益試算：依 $100 資金、$20 風險自動算槓桿與各 TP 美元損益
   🔍 覆盤訊息保證送達：資料不足 / 例外時也送 fallback，不再靜默失敗
   🧱 OB 失效退場現在也會送覆盤分析
@@ -207,6 +215,13 @@ DEFAULT_CONFIG: dict = {
         "max_loss_usd": 20,            # 最大可接受虧損（含手續費的緩衝）
         "max_leverage": 50,            # 上限槓桿（避免極短 SL 算出超高槓桿）
         "min_leverage": 2,             # 下限（避免極遠 SL 算出 0.x 槓桿）
+    },
+    # 🛡️ v14.6 嚴格風控：每日上限 + 同時持倉數
+    "daily_limits": {
+        "enabled": True,
+        "max_concurrent_positions": 2,  # 同時最多 N 個倉位
+        "daily_loss_limit_pct": 5.0,    # 當日累計 PnL < -N% 停止開新單
+        "max_daily_signals": 6,         # 一天最多開 N 筆新訊號
     },
     "coin_auto_pause": {               # 自動暫停爛幣
         "enabled": True,
@@ -2894,6 +2909,70 @@ def check_cooling_off(cfg: dict) -> tuple[bool, int, str]:
 
 
 # ═════════════════════════════════════════════════════════
+# 9.87 v14.6 嚴格每日風控
+# ═════════════════════════════════════════════════════════
+def get_today_stats() -> dict:
+    """📊 今日交易統計（依台灣時間日期）"""
+    today_str = tw_now().strftime("%Y-%m-%d")
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    today_trades = [t for t in history if t.get("date") == today_str]
+    closed = [
+        t for t in today_trades
+        if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3", "OB_FAIL")
+    ]
+    return {
+        "trades_count": len(today_trades),
+        "closed_count": len(closed),
+        "pnl_pct": sum(t.get("pnl", 0) for t in closed),
+        "wins": sum(1 for t in closed if t.get("close_type") in ("TP1", "TP2", "TP3", "LOCK")),
+        "losses": sum(1 for t in closed if t.get("close_type") == "SL"),
+    }
+
+
+def check_daily_limits(cfg: dict, tracker) -> tuple[bool, str]:
+    """🛡️ 每日風控檢查 → (是否暫停, 訊息)
+
+    三條紅線：
+      1. 同時持倉數上限（max_concurrent_positions）
+      2. 當日損失上限（daily_loss_limit_pct）
+      3. 每日訊號數上限（max_daily_signals）
+    """
+    dl_cfg = cfg.get("daily_limits", {})
+    if not dl_cfg.get("enabled", True):
+        return False, ""
+
+    stats = get_today_stats()
+
+    # ① 同時持倉數
+    max_concurrent = dl_cfg.get("max_concurrent_positions", 2)
+    open_count = sum(
+        1 for s in tracker.signals.values()
+        if s.get("status") in ("PENDING", "ACTIVE", "BE", "TRAIL")
+    )
+    if open_count >= max_concurrent:
+        return True, (
+            f"📦 持倉數已達上限：開單中 *{open_count}* / 上限 *{max_concurrent}*"
+        )
+
+    # ② 當日累計損失
+    loss_limit = dl_cfg.get("daily_loss_limit_pct", 5.0)
+    if stats["pnl_pct"] < -loss_limit:
+        return True, (
+            f"⚠️ 當日 PnL `{stats['pnl_pct']:.2f}%` 已跌破停損紅線 `-{loss_limit}%`"
+            f"（{stats['losses']} 敗 / {stats['wins']} 勝），停止開新單到隔天"
+        )
+
+    # ③ 每日訊號數
+    max_daily = dl_cfg.get("max_daily_signals", 6)
+    if stats["trades_count"] >= max_daily:
+        return True, (
+            f"📊 今日訊號數 *{stats['trades_count']}* 已達上限 *{max_daily}*，停止開新單"
+        )
+
+    return False, ""
+
+
+# ═════════════════════════════════════════════════════════
 # 9.9 關鍵時段過濾
 # ═════════════════════════════════════════════════════════
 def _in_window(cur_min: int, start_min: int, end_min: int) -> bool:
@@ -3512,34 +3591,42 @@ def run_scan(tracker: SignalTracker) -> int:
         tracker.send_position_updates()
         return 0
 
-    # ── 3. 掃描每個幣種 ──
-    sent = 0
+    # ── 2.8 🛡️ 每日風控紅線（持倉數 / 累計損失 / 訊號數）──
+    limit_hit, limit_msg = check_daily_limits(cfg, tracker)
+    if limit_hit:
+        logging.info(f"🛡️ {limit_msg}")
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
+    # ── 2.9 ⚡ 早期退出：所有幣種都不可開單時跳過重 API 呼叫 ──
+    eligible_coins = []
     for instId in coins:
+        if tracker.has_open_position(instId):
+            continue
+        if is_cooling(instId, cooldown_h):
+            continue
+        cn = instId.split("-")[0]
+        if is_coin_underperforming(cn, cfg)[0]:
+            continue
+        if is_coin_overheating(cn, cfg)[0]:
+            continue
+        eligible_coins.append(instId)
+
+    if not eligible_coins:
+        logging.info(f"📭 所有 {len(coins)} 幣種都不可開單（冷卻 / 持倉 / 暫停），僅跑監控")
+        tracker.check_all()
+        tracker.send_position_updates()
+        reset_failure_count()
+        return 0
+
+    # ── 3. 掃描可開單的幣種（已篩選過冷卻 / 持倉 / 暫停 / 過熱）──
+    sent = 0
+    logging.info(f"🎯 可開單幣種：{len(eligible_coins)} 個 → {[c.split('-')[0] for c in eligible_coins]}")
+    for instId in eligible_coins:
         if sent >= max_signals:
             break
-
-        # 3.1 🔒 同幣種未平倉不重複開倉
-        if tracker.has_open_position(instId):
-            logging.info(f"[{instId}] 已有未平倉訊號，跳過")
-            continue
-
-        # 3.15 ⏸️ 自動暫停爛幣
         coin_name = instId.split("-")[0]
-        bad, bad_reason = is_coin_underperforming(coin_name, cfg)
-        if bad:
-            logging.info(f"[{instId}] 爛幣自動暫停：{bad_reason}")
-            continue
-
-        # 3.17 🔥 過熱保護（連勝後暫停一輪）
-        hot, hot_reason = is_coin_overheating(coin_name, cfg)
-        if hot:
-            logging.info(f"[{instId}] 過熱保護：{hot_reason}")
-            continue
-
-        # 3.2 冷卻
-        if is_cooling(instId, cooldown_h):
-            logging.info(f"[{instId}] 冷卻中，跳過")
-            continue
 
         try:
             okx_price = fetch_price(instId)
