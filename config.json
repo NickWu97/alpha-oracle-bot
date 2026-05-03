@@ -18,6 +18,14 @@
   "show_score_breakdown": false,
   "fixed_rr_mode": true,
 
+  "capital_management": {
+    "enabled": true,
+    "capital_per_trade_usd": 100,
+    "max_loss_usd": 20,
+    "max_leverage": 50,
+    "min_leverage": 2
+  },
+
   "post_mortem": {
     "enabled": true,
     "loss_only": false
