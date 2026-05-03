@@ -64,7 +64,143 @@
     "hit_tp3": false,
     "activated_at": 1777796128.7925348,
     "entry_message_id": 2920,
-    "last_checked_ts": 1777801500.0,
-    "current_price": 618.4
+    "last_checked_ts": 1777804200.0,
+    "current_price": 617.6
+  },
+  "BTC-USDT-SWAP_LONG_1777805826-7C8AE9CB": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 78373.3,
+    "sl": 78234.2179,
+    "tp1": 78581.9232,
+    "tp2": 78790.5464,
+    "tp3": 79068.7107,
+    "score": 106,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.54,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "trend",
+      "adx": 34.5,
+      "atr_pct": 0.118
+    },
+    "funding_rate": -1.5725814064e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 75.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 34.5,
+      "atr_pct": 0.118,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 78350.0,
+      "high": 78419.8
+    },
+    "created": 1777805826.723837,
+    "expires": 1777892226.723837,
+    "order_id": "1777805826-7C8AE9CB",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777805826.724525,
+    "entry_message_id": 2930,
+    "last_checked_ts": 1777805826.724525,
+    "current_price": 78373.3
+  },
+  "SOL-USDT-SWAP_LONG_1777805828-6CFCD027": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 83.77,
+    "sl": 83.5707,
+    "tp1": 84.0689,
+    "tp2": 84.3679,
+    "tp3": 84.7664,
+    "score": 86,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 57.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 0,
+      "mtf_desc": "1H=中 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.77,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "transitional",
+      "adx": 20.0,
+      "atr_pct": 0.158
+    },
+    "funding_rate": -3.78670372128e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 44.8
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 60.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 20.0,
+      "atr_pct": 0.158,
+      "volatile": false
+    },
+    "ob_zone": {
+      "low": 83.83,
+      "high": 83.91
+    },
+    "created": 1777805828.833964,
+    "expires": 1777892228.8339643,
+    "order_id": "1777805828-6CFCD027",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777805828.8346665,
+    "entry_message_id": 2931,
+    "last_checked_ts": 1777805828.8346665,
+    "current_price": 83.77
   }
 }
