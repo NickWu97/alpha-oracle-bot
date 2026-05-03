@@ -15,9 +15,13 @@
   "atr_max_pct": 0.04,
   "min_rr_ratio": 1.5,
 
-  "show_score_breakdown": true,
+  "show_score_breakdown": false,
+  "fixed_rr_mode": true,
 
-  "post_mortem": { "enabled": true, "loss_only": false },
+  "post_mortem": {
+    "enabled": true,
+    "loss_only": false
+  },
 
   "learning": {
     "enabled": true,
@@ -44,7 +48,11 @@
     ]
   },
 
-  "cooling_off": { "enabled": true, "loss_threshold": 2, "period_minutes": 30 },
+  "cooling_off": {
+    "enabled": true,
+    "loss_threshold": 2,
+    "period_minutes": 30
+  },
 
   "direction_bias": {
     "enabled": true,
@@ -54,7 +62,10 @@
     "penalty": 3
   },
 
-  "god_signal": { "enabled": true, "min_score": 95 },
+  "god_signal": {
+    "enabled": true,
+    "min_score": 95
+  },
 
   "ema_alignment": {
     "enabled": true,
@@ -99,5 +110,8 @@
 
   "news_blackouts": [],
 
-  "auto_news_blackout": { "nfp": true, "cpi": true }
+  "auto_news_blackout": {
+    "nfp": true,
+    "cpi": true
+  }
 }
