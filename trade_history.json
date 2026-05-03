@@ -724,5 +724,71 @@
       "atr_pct": 0.158,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-04 00:09",
+    "date": "2026-05-04",
+    "order_id": "1777805828-6CFCD027",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 83.77,
+    "close": 84.0689,
+    "close_type": "LOCK",
+    "pnl": 0.36,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": -3.78670372128e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 57.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 0,
+      "mtf_desc": "1H=中 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.77,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "transitional",
+      "adx": 20.0,
+      "atr_pct": 0.158
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 57.1,
+      "atr_pct": 0.158,
+      "funding": -0.0378670372128,
+      "vol_ratio": 0.77,
+      "adx": 20.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 44.8
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 60.4
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.0,
+      "atr_pct": 0.158,
+      "volatile": false
+    }
   }
 ]
