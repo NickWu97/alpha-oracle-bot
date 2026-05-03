@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 4,
+      "win": 5,
       "loss": 2,
       "be": 2,
-      "total": 8
+      "total": 9
     },
     "rsi_short:50-59": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 5,
+      "win": 6,
       "loss": 1,
       "be": 2,
-      "total": 8
+      "total": 9
     },
     "sess:europe": {
       "win": 5,
@@ -25,10 +25,10 @@
       "total": 9
     },
     "coin:BTC": {
-      "win": 2,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:BTC_SHORT": {
       "win": 0,
@@ -79,10 +79,10 @@
       "total": 2
     },
     "rsi_long:50-59": {
-      "win": 4,
+      "win": 5,
       "loss": 0,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "coin:BNB": {
       "win": 1,
@@ -97,10 +97,10 @@
       "total": 2
     },
     "coin_side:BTC_LONG": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "score:80-89": {
       "win": 1,
@@ -119,14 +119,20 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "sess:us": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "BTC": {
-      "win": 2,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "AVAX": {
       "win": 0,
@@ -154,5 +160,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1777811621.3116837
+  "updated_at": 1777816547.9693868
 }
