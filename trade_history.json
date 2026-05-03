@@ -863,5 +863,222 @@
       "atr_pct": 0.224,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-04 05:06",
+    "date": "2026-05-04",
+    "order_id": "1777827933-89740B0F",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2325.09,
+    "close": 2325.09,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 85,
+    "funding_rate": 4.31035089283e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 55.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.29,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.224,
+      "learning_notes": [
+        "rsi_long:50-59 (n=8, 勝率 88%) → +2",
+        "fund:neutral (n=11, 勝率 73%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 55.8,
+      "atr_pct": 0.224,
+      "funding": 0.0431035089283,
+      "vol_ratio": 0.29,
+      "adx": 29.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 76.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.224,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-04 05:06",
+    "date": "2026-05-04",
+    "order_id": "1777827935-53EFF931",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 618.9,
+    "close": 620.475,
+    "close_type": "TP1",
+    "pnl": 0.25,
+    "is_win": true,
+    "is_be": false,
+    "score": 83,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 67.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.31,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "trend",
+      "adx": 40.0,
+      "atr_pct": 0.113,
+      "learning_notes": [
+        "fund:neutral (n=11, 勝率 73%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 67.4,
+      "atr_pct": 0.113,
+      "funding": 0.1,
+      "vol_ratio": 0.31,
+      "adx": 40.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 74.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 40.0,
+      "atr_pct": 0.113,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-04 05:06",
+    "date": "2026-05-04",
+    "order_id": "1777827935-53EFF931",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 618.9,
+    "close": 618.9,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 83,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 67.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.31,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 1,
+      "_vwap_desc": "價略高於 VWAP",
+      "regime": "trend",
+      "adx": 40.0,
+      "atr_pct": 0.113,
+      "learning_notes": [
+        "fund:neutral (n=11, 勝率 73%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 67.4,
+      "atr_pct": 0.113,
+      "funding": 0.1,
+      "vol_ratio": 0.31,
+      "adx": 40.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 74.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 40.0,
+      "atr_pct": 0.113,
+      "volatile": false
+    }
   }
 ]
