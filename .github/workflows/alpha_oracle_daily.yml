@@ -1,72 +1,60 @@
 name: Alpha Oracle 日報 / 月報
 
+# 📊 每日台灣時間 23:55 推日報（= UTC 15:55）
+# 📈 每月 1 號台灣時間 00:05 推上個月月報（= UTC 上月最後一天 16:05）
+
 on:
   schedule:
-    - cron: "0 16 * * *"
+    - cron: "55 15 * * *"   # 每天 UTC 15:55 = TW 23:55
+    - cron: "5 16 28-31 * *"  # 每月底 UTC 16:05 推月報
   workflow_dispatch:
-    inputs:
-      date:
-        description: "手動推日報的日期（YYYY-MM-DD，留空則推昨天）"
-        required: false
-      month:
-        description: "手動推月報的月份（YYYY-MM，留空則跳過月報）"
-        required: false
 
 permissions:
   contents: read
 
 jobs:
-  reports:
-    name: 📊 日報 / 月報
+  daily:
+    name: 📊 推日報
+    if: github.event.schedule == '55 15 * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 3
-
+    timeout-minutes: 2
     steps:
-      - name: 📦 下載程式碼
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: 🐍 設置 Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: 📦 安裝依賴
-        run: pip install --quiet requests tradingview-ta
-
-      - name: 📊 推送日報（昨天）
+      - run: pip install --quiet requests tradingview-ta
+      - name: 推送日報
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           TZ: Asia/Taipei
-        run: |
-          if [ -n "${{ github.event.inputs.date }}" ]; then
-            TARGET_DATE="${{ github.event.inputs.date }}"
-            echo "🔧 手動指定日期：$TARGET_DATE"
-          else
-            TARGET_DATE=$(TZ=Asia/Taipei date -d 'yesterday' +'%Y-%m-%d')
-            echo "📅 自動選定昨日：$TARGET_DATE"
-          fi
-          python main.py daily "$TARGET_DATE"
+        run: python main.py daily
 
-      - name: 📈 推送月報（每月 1 號自動 / 手動指定）
+  monthly:
+    name: 📈 推月報
+    if: github.event.schedule == '5 16 28-31 * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install --quiet requests tradingview-ta
+      - name: 確認是當月最後一天
+        id: check
+        run: |
+          # 只有「明天是 1 號」時才推月報
+          if [ $(date -u -d 'tomorrow' +'%d') = "01" ]; then
+            echo "is_last_day=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_last_day=false" >> $GITHUB_OUTPUT
+          fi
+      - name: 推送月報
+        if: steps.check.outputs.is_last_day == 'true' || github.event_name == 'workflow_dispatch'
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           TZ: Asia/Taipei
-        run: |
-          MANUAL_MONTH="${{ github.event.inputs.month }}"
-          if [ -n "$MANUAL_MONTH" ]; then
-            echo "🔧 手動指定月份：$MANUAL_MONTH"
-            python main.py monthly "$MANUAL_MONTH"
-          else
-            TODAY_DAY=$(TZ=Asia/Taipei date +'%d')
-            if [ "$TODAY_DAY" = "01" ]; then
-              LAST_MONTH=$(TZ=Asia/Taipei date -d 'yesterday' +'%Y-%m')
-              echo "🎉 今天 TW 是 1 號，自動推上月月報：$LAST_MONTH"
-              python main.py monthly "$LAST_MONTH"
-            else
-              echo "今天不是 1 號（TW 日：$TODAY_DAY），跳過月報"
-            fi
-          fi
+        run: python main.py monthly
