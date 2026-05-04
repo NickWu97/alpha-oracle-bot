@@ -1,133 +1,196 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle WebSocket 即時監控（常駐服務）
+Alpha Oracle Pro - WebSocket 即時監控
 ══════════════════════════════════════════════════════════════════════
-為什麼要這個檔案：
-  GitHub Actions cron 是「短命進程」，無法保持 WebSocket 長連線。
-  把這個檔案部署到 Railway / Fly.io / Render / VPS 等可持久執行的平台，
-  就能做到「秒級」TP/SL 偵測（不再有 cron 延遲）。
-
-部署選項：
-  ─ Railway：新增 Service → 連結 GitHub repo → 設定 Start Command:
-        python websocket_monitor.py
-  ─ Fly.io：fly launch → fly deploy
-  ─ Render：Web Service → Start: python websocket_monitor.py
-  ─ VPS：nohup python websocket_monitor.py > ws.log 2>&1 &
-
-需要的環境變數：
-  TG_TOKEN, CHAT_ID
-
-需要的依賴：
-  pip install websockets requests tradingview-ta
-
-注意：
-  - 這個服務跟 GitHub Actions 共用同一份 active_signals.json
-  - 為了避免衝突，建議只讓「其中一邊」做 TP/SL 觸發（這個檔做即時偵測）
-  - 訊號生成（generate_signal）仍交給 GitHub Actions 每 15 分跑一次
-══════════════════════════════════════════════════════════════════════
+功能：
+  - 即時價格監控
+  - 快速觸發止盈止損
+  - 減少 API 延遲
+  - 補充 GitHub Actions 掃描間隔
 """
-import asyncio
 import json
-import os
-import sys
 import time
+import threading
+import websocket
 import logging
+from datetime import datetime
+from typing import Dict, List, Optional
 
-try:
-    import websockets
-except ImportError:
-    print("請先安裝：pip install websockets")
-    sys.exit(1)
-
-# 重用 main.py 的 SignalTracker / 通知 / 訊號處理邏輯
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import main as bot
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(message)s",
-    stream=sys.stdout,
+    format="%(asctime)s - %(message)s"
 )
 
-OKX_WS_URL = "wss://ws.okx.com:8443/ws/v5/public"
 
-
-async def subscribe_tickers(coins: list):
-    """訂閱 OKX 即時 ticker，價格變動即觸發訊號檢查"""
-    while True:
+class WebSocketMonitor:
+    """WebSocket 監控器"""
+    
+    def __init__(self, config: dict):
+        self.config = config
+        self.coins = config.get("coins", [])
+        self.ws_connections: Dict[str, websocket.WebSocketApp] = {}
+        self.active_signals = self._load_active_signals()
+        self.running = False
+        
+    def _load_active_signals(self) -> dict:
+        """載入活躍訊號"""
         try:
-            async with websockets.connect(OKX_WS_URL, ping_interval=20) as ws:
-                args = [{"channel": "tickers", "instId": c} for c in coins]
-                sub_msg = {"op": "subscribe", "args": args}
-                await ws.send(json.dumps(sub_msg))
-                logging.info(f"✅ 訂閱 {len(coins)} 個幣種的 OKX 即時 ticker")
-
-                async for raw in ws:
-                    try:
-                        msg = json.loads(raw)
-                    except Exception:
-                        continue
-                    if msg.get("event") == "subscribe":
-                        continue
-                    data = msg.get("data") or []
-                    for tick in data:
-                        instId = tick.get("instId")
-                        last = float(tick.get("last", 0))
-                        if instId and last > 0:
-                            await on_price_update(instId, last)
-        except Exception as e:
-            logging.error(f"❌ WebSocket 連線中斷：{e}，10 秒後重連")
-            await asyncio.sleep(10)
-
-
-# 每個 instId 的最後處理時間（避免每 tick 都重打 OKX K 線 API）
-_last_process: dict = {}
-
-
-async def on_price_update(instId: str, price: float):
-    """每收到一筆即時價就檢查相關訊號"""
-    # 把即時價推進 main 的快取（讓 _check_one 拿到最新價）
-    bot._price_cache[instId] = (price, time.time())
-
-    # 限頻：同一個 instId 每 5 秒最多處理一次
-    now = time.time()
-    if now - _last_process.get(instId, 0) < 5:
-        return
-    _last_process[instId] = now
-
-    # 開新 tracker（每次重新讀 active_signals 檔）
-    tracker = bot.SignalTracker(bot.ACTIVE_SIGNALS_FILE)
-    related = [k for k, s in tracker.signals.items() if s.get("instId") == instId]
-    if not related:
-        return
-
-    # 只處理該 instId 的訊號
-    to_remove = []
-    for key in related:
-        sig = tracker.signals.get(key)
-        if not sig:
-            continue
+            with open("active_signals.json", "r", encoding="utf-8") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return {}
+    
+    def connect_to_okx(self, instId: str):
+        """連接到 OKX WebSocket"""
+        channel = f"tickers/{instId}"
+        ws_url = "wss://ws.okx.com:8443/ws/v5/public"
+        
+        def on_message(ws, message):
+            self._handle_message(instId, message)
+        
+        def on_error(ws, error):
+            logging.error(f"❌ {instId} WebSocket 錯誤：{error}")
+        
+        def on_close(ws, close_status_code, close_msg):
+            logging.info(f"🔌 {instId} WebSocket 已關閉")
+            if self.running:
+                time.sleep(5)
+                self.connect_to_okx(instId)  # 自動重連
+        
+        def on_open(ws):
+            logging.info(f"🔗 {instId} WebSocket 已連接")
+            # 訂閱頻道
+            subscribe_msg = {
+                "op": "subscribe",
+                "args": [
+                    {
+                        "channel": channel,
+                        "instId": instId
+                    }
+                ]
+            }
+            ws.send(json.dumps(subscribe_msg))
+        
+        ws = websocket.WebSocketApp(
+            ws_url,
+            on_open=on_open,
+            on_message=on_message,
+            on_error=on_error,
+            on_close=on_close
+        )
+        
+        self.ws_connections[instId] = ws
+        
+        # 在後台執行
+        ws_thread = threading.Thread(target=ws.run_forever, daemon=True)
+        ws_thread.start()
+    
+    def _handle_message(self, instId: str, message: str):
+        """處理 WebSocket 訊息"""
         try:
-            if tracker._check_one(key, sig):
-                to_remove.append(key)
+            data = json.loads(message)
+            
+            if data.get("event") == "subscribe":
+                logging.info(f"✅ {instId} 訂閱成功")
+                return
+            
+            if data.get("arg", {}).get("channel") == f"tickers/{instId}":
+                for ticker in data.get("data", []):
+                    last_price = float(ticker.get("last", 0))
+                    if last_price > 0:
+                        self._check_signals(instId, last_price)
+                        
         except Exception as e:
-            logging.error(f"❌ check_one 錯誤 [{key}]：{e}")
-    for key in to_remove:
-        tracker.signals.pop(key, None)
-    if to_remove:
-        tracker._save()
-        logging.info(f"⚡ {instId} 訊號平倉：{len(to_remove)} 筆")
+            logging.error(f"⚠️ 處理訊息失敗：{e}")
+    
+    def _check_signals(self, instId: str, current_price: float):
+        """檢查是否觸發訊號"""
+        for key, sig in self.active_signals.items():
+            if sig.get("instId") != instId:
+                continue
+            
+            if sig.get("status") not in ("PENDING", "ACTIVE", "BE", "TRAIL"):
+                continue
+            
+            # 檢查 TP/SL
+            side = sig.get("side")
+            entry = sig.get("entry")
+            sl = sig.get("sl")
+            tp1 = sig.get("tp1")
+            tp2 = sig.get("tp2")
+            tp3 = sig.get("tp3")
+            
+            # 檢查是否觸發
+            triggered = None
+            
+            if side == "LONG":
+                if current_price >= tp3 and not sig.get("hit_tp3"):
+                    triggered = "TP3"
+                elif current_price >= tp2 and not sig.get("hit_tp2"):
+                    triggered = "TP2"
+                elif current_price >= tp1 and not sig.get("hit_tp1"):
+                    triggered = "TP1"
+                elif current_price <= sl:
+                    triggered = "SL"
+            else:  # SHORT
+                if current_price <= tp3 and not sig.get("hit_tp3"):
+                    triggered = "TP3"
+                elif current_price <= tp2 and not sig.get("hit_tp2"):
+                    triggered = "TP2"
+                elif current_price <= tp1 and not sig.get("hit_tp1"):
+                    triggered = "TP1"
+                elif current_price >= sl:
+                    triggered = "SL"
+            
+            if triggered:
+                logging.info(
+                    f"🎯 {instId} {triggered} 觸發！"
+                    f" 價格：{current_price:.4f}"
+                )
+                # 這裡可以發送 Telegram 通知或觸發其他動作
+    
+    def start(self):
+        """啟動監控"""
+        logging.info("=" * 50)
+        logging.info("📡 WebSocket 監控啟動")
+        logging.info(f"⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        logging.info("=" * 50)
+        
+        self.running = True
+        
+        # 連接所有幣種
+        for instId in self.coins:
+            time.sleep(0.5)  # 避免連接太快
+            self.connect_to_okx(instId)
+        
+        # 保持運行
+        try:
+            while self.running:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            logging.info("🛑 收到停止訊號，關閉監控...")
+            self.stop()
+    
+    def stop(self):
+        """停止監控"""
+        self.running = False
+        for instId, ws in self.ws_connections.items():
+            ws.close()
+        logging.info("✅ 所有 WebSocket 連接已關閉")
 
 
-async def main_loop():
-    cfg = bot.load_config()
-    coins = cfg.get("coins", bot.ALL_COINS)
-    logging.info(f"🔔 WebSocket 監控啟動，幣種：{', '.join(coins)}")
-    await subscribe_tickers(coins)
+def load_config() -> dict:
+    """載入配置"""
+    try:
+        with open("config.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"coins": ["BTC-USDT-SWAP", "ETH-USDT-SWAP"]}
 
 
 if __name__ == "__main__":
-    if not bot.TG_TOKEN or not bot.CHAT_ID:
-        print("⚠️ 環境變數 TG_TOKEN / CHAT_ID 未設定，通知將無法送出")
-    asyncio.run(main_loop())
+    config = load_config()
+    monitor = WebSocketMonitor(config)
+    monitor.start()
