@@ -1,7 +1,81 @@
 {
-  "buckets": {},
-  "by_coin": {},
+  "buckets": {
+    "score:90+": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "rsi_long:40-49": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "fund:neutral": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 2
+    },
+    "sess:europe": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 2
+    },
+    "coin:XRP": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:XRP_LONG": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "score:80-89": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "rsi_short:40-49": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:ADA": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ADA_SHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    }
+  },
+  "by_coin": {
+    "XRP": {
+      "win": 0,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "ADA": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    }
+  },
   "loss_reasons": [],
-  "updated_at": 0,
+  "updated_at": 1777893218.950294,
   "weight_decay": 0.95
 }

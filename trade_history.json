@@ -1,1 +1,134 @@
-[]
+[
+  {
+    "time": "2026-05-04 19:13",
+    "date": "2026-05-04",
+    "order_id": "1777885669-602EEC44",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.412,
+    "close": 1.394,
+    "close_type": "OB_FAIL",
+    "pnl": -1.27,
+    "is_win": false,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 48.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.55,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 0,
+      "_vwap_desc": "價接近 VWAP",
+      "regime": "trend",
+      "adx": 30.8,
+      "atr_pct": 0.344
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 48.0,
+      "atr_pct": 0.344,
+      "funding": 0.1,
+      "vol_ratio": 0.55,
+      "adx": 30.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.6
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.8,
+      "atr_pct": 0.344,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-04 19:13",
+    "date": "2026-05-04",
+    "order_id": "1777885672-44AD0FCD",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.2516,
+    "close": 0.2528,
+    "close_type": "SL",
+    "pnl": -0.48,
+    "is_win": false,
+    "is_be": false,
+    "score": 83,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 41.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": -5,
+      "mtf_desc": "1H=中 / 4H=反",
+      "volume": 0,
+      "volume_ratio": 0.7,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 0.45%",
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.324
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 41.9,
+      "atr_pct": 0.324,
+      "funding": 0.1,
+      "vol_ratio": 0.7,
+      "adx": 24.6,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 54.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.0
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.324,
+      "volatile": false
+    }
+  }
+]
