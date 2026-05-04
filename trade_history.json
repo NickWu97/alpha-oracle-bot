@@ -130,5 +130,167 @@
       "atr_pct": 0.324,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-04 23:04",
+    "date": "2026-05-04",
+    "order_id": "1777899342-08437E5E",
+    "coin": "NEAR",
+    "side": "SHORT",
+    "entry": 1.254,
+    "close": 1.2671,
+    "close_type": "SL",
+    "pnl": -1.04,
+    "is_win": false,
+    "score": 88,
+    "funding_rate": -6.73285857921e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.36,
+      "ema": 0,
+      "ema_desc": "EMA 資料不足",
+      "_vwap": 3,
+      "_vwap_desc": "價於 VWAP 下方 0.48%",
+      "regime": "trend",
+      "adx": 26.5,
+      "atr_pct": 0.694
+    },
+    "features": {
+      "score": 88.0,
+      "rsi": 37.1,
+      "atr_pct": 0.694,
+      "funding": -0.06732858579209999,
+      "vol_ratio": 1.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.6
+      }
+    }
+  },
+  {
+    "time": "2026-05-04 23:04",
+    "date": "2026-05-04",
+    "order_id": "1777903659-611F7278",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 78571.3,
+    "close": 78949.2143,
+    "close_type": "SL",
+    "pnl": -0.48,
+    "is_win": false,
+    "score": 88,
+    "funding_rate": -3.5945775635e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.9,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.54,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.321
+    },
+    "features": {
+      "score": 88.0,
+      "rsi": 58.9,
+      "atr_pct": 0.321,
+      "funding": -0.035945775635,
+      "vol_ratio": 0.54,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 52.8
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 53.6
+      }
+    }
+  },
+  {
+    "time": "2026-05-04 23:04",
+    "date": "2026-05-04",
+    "order_id": "1777903661-CBB422B0",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2330.81,
+    "close": 2344.2832,
+    "close_type": "SL",
+    "pnl": -0.58,
+    "is_win": false,
+    "score": 88,
+    "funding_rate": -1.43805733654e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 62.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "volume": -10,
+      "vol_ratio": 0.49,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.385
+    },
+    "features": {
+      "score": 88.0,
+      "rsi": 62.2,
+      "atr_pct": 0.385,
+      "funding": -0.0143805733654,
+      "vol_ratio": 0.49,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 54.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 58.6
+      }
+    }
   }
 ]
