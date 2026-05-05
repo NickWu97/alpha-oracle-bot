@@ -1,5 +1,5 @@
 {
-  "_comment": "Alpha Oracle Pro v14.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
+  "_comment": "Alpha Oracle Pro v15.1 — 保留 v14.3 完整功能 + 砍掉反效果項",
 
   "coins": [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
@@ -8,15 +8,35 @@
     "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"
   ],
 
-  "max_signals": 3,
-  "score_threshold": 68,
-  "cooldown_hours": 2,
+  "max_signals_per_scan": 2,
+  "score_threshold": 75,
+  "cooldown_hours": 3,
   "signal_expire_hours": 24,
   "atr_max_pct": 0.04,
+  "min_rr_ratio": 1.5,
+  "show_score_breakdown": false,
 
-  "post_mortem": {
+  "capital_management": {
+    "capital_per_trade_usd": 100,
+    "max_loss_usd": 20,
+    "max_leverage": 50,
+    "min_leverage": 2
+  },
+
+  "daily_limits": {
+    "max_concurrent_positions": 2,
+    "daily_loss_limit_pct": 5.0
+  },
+
+  "circuit_breaker": {
+    "loss_threshold": 3,
+    "pause_hours": 24
+  },
+
+  "price_verification": {
     "enabled": true,
-    "loss_only": false
+    "max_deviation_pct": 0.5,
+    "block_on_unverified": false
   },
 
   "learning": {
@@ -26,18 +46,9 @@
     "max_score_adjust": 10
   },
 
-  "price_verification": {
+  "post_mortem": {
     "enabled": true,
-    "max_deviation_pct": 0.5,
-    "block_on_unverified": false
-  },
-
-  "circuit_breaker": {
-    "enabled": true,
-    "soft_threshold": 3,
-    "soft_pause_hours": 4,
-    "hard_threshold": 5,
-    "hard_pause_hours": 24
+    "loss_only": false
   },
 
   "blackout_windows_tw": [
@@ -48,10 +59,10 @@
     { "start": "02:00", "end": "02:30", "reason": "FOMC 公布時段" }
   ],
 
-  "news_blackouts": [],
-
   "auto_news_blackout": {
     "nfp": true,
     "cpi": true
-  }
+  },
+
+  "news_blackouts": []
 }
