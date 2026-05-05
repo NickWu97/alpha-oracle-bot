@@ -1,32 +1,22 @@
-name: Alpha Oracle (1 分鐘掃描)
-
-# 🤖 v14.6 改為「每 1 分鐘」整合掃描：
-#   每次 cron：
-#     1. 早期退出：所有幣都在冷卻 / 持倉 → 只跑 monitor (TP/SL 檢查)
-#     2. 否則：完整訊號生成 + 監控 + 學習更新
-#   實際耗時：5–60 秒不等（看有幾個幣種值得掃）
-#
-# ⚠️ 公開 repo 才扛得住 1-min cron 的配額消耗
+name: Alpha Oracle Pro
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
-# 同 group 排隊（避免併發寫入狀態檔衝突）
-# cancel-in-progress: false 讓掃描跑完不被殺
 concurrency:
   group: alpha-oracle-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  scan:
-    name: 🤖 Alpha Oracle 主掃描
+  run:
+    name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
 
     steps:
       - name: 📦 下載程式碼
@@ -54,11 +44,11 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "2"
-          SETUP_SCORE_THRESHOLD: "80"
+          MAX_SIGNALS: "3"
+          SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
         run: |
-          echo "🚀 Alpha Oracle - 1 分鐘整合掃描"
+          echo "🚀 Alpha Oracle Pro - 繁體中文版"
           python main.py
 
       - name: 💾 保存狀態
