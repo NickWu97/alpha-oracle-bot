@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 14,
-      "loss": 10,
+      "loss": 12,
       "be": 4,
-      "total": 28
+      "total": 30
     },
     "sess:us": {
       "win": 0,
@@ -110,9 +110,9 @@
     },
     "rsi_short:30-39": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "coin:LINK": {
       "win": 1,
@@ -128,15 +128,15 @@
     },
     "score:70-79": {
       "win": 7,
-      "loss": 5,
+      "loss": 7,
       "be": 1,
-      "total": 13
+      "total": 15
     },
     "coin:ETH": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin_side:ETH_LONG": {
       "win": 3,
@@ -206,9 +206,9 @@
     },
     "rsi_short:40-49": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:TON": {
       "win": 3,
@@ -230,15 +230,15 @@
     },
     "coin:BTC": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:BTC_SHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:ADA": {
       "win": 0,
@@ -259,6 +259,12 @@
       "total": 1
     },
     "coin_side:DOT_SHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ETH_SHORT": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -304,9 +310,9 @@
     },
     "ETH": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "NEAR": {
       "win": 9,
@@ -328,9 +334,9 @@
     },
     "BTC": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "ADA": {
       "win": 0,
@@ -390,5 +396,5 @@
       "title": "📈 空頭動能反轉"
     }
   ],
-  "updated_at": 1777969657.590417
+  "updated_at": 1777979565.505485
 }

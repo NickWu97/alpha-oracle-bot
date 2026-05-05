@@ -4519,5 +4519,120 @@
       "atr_pct": 0.354,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-05 19:12",
+    "date": "2026-05-05",
+    "order_id": "1777974845-3258BBCD",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 80539.1,
+    "close": 80740.1964,
+    "close_type": "SL",
+    "pnl": -0.25,
+    "is_win": false,
+    "score": 77,
+    "funding_rate": 3.09322809089e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 31.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": -10,
+      "mtf_desc": "1H=反 / 4H=反",
+      "volume": 0,
+      "vol_ratio": 0.71,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.166,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 3 (勝率 30%)",
+        "偏低 -4",
+        "rsi_short:30-39 (n=10, 勝率 70%) → +1"
+      ],
+      "learning_adjust": -3
+    },
+    "features": {
+      "score": 77.0,
+      "rsi": 31.3,
+      "atr_pct": 0.166,
+      "funding": 0.030932280908899996,
+      "vol_ratio": 0.71,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 66.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 65.4
+      }
+    }
+  },
+  {
+    "time": "2026-05-05 19:12",
+    "date": "2026-05-05",
+    "order_id": "1777974847-1BDC0D9C",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2368.3,
+    "close": 2378.29,
+    "close_type": "SL",
+    "pnl": -0.42,
+    "is_win": false,
+    "score": 76,
+    "funding_rate": -3.8502668777e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 42.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": -10,
+      "mtf_desc": "1H=反 / 4H=反",
+      "volume": 0,
+      "vol_ratio": 1.0,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.281,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 3 (勝率 30%)",
+        "偏低 -4"
+      ],
+      "learning_adjust": -4
+    },
+    "features": {
+      "score": 76.0,
+      "rsi": 42.4,
+      "atr_pct": 0.281,
+      "funding": -0.0038502668777,
+      "vol_ratio": 1.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 59.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 63.3
+      }
+    }
   }
 ]
