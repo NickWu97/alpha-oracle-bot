@@ -4985,5 +4985,63 @@
         "rsi": 67.9
       }
     }
+  },
+  {
+    "time": "2026-05-06 01:04",
+    "date": "2026-05-06",
+    "order_id": "1777991363-E680942B",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2382.01,
+    "close": 2369.4957,
+    "close_type": "SL",
+    "pnl": -0.53,
+    "is_win": false,
+    "score": 92,
+    "funding_rate": -2.1708869626e-06,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 5,
+      "vol_ratio": 1.81,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.35,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 10 (勝率 100%)",
+        "高勝率 +5",
+        "score:90+ (n=17, 勝率 94%) → +2"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 92.0,
+      "rsi": 57.1,
+      "atr_pct": 0.35,
+      "funding": -0.0021708869626,
+      "vol_ratio": 1.81,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 80.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 67.5
+      }
+    }
   }
 ]

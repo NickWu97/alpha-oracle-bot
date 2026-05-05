@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 20,
-      "loss": 12,
+      "loss": 13,
       "be": 4,
-      "total": 36
+      "total": 37
     },
     "sess:us": {
       "win": 0,
@@ -104,9 +104,9 @@
     },
     "score:90+": {
       "win": 16,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 17
+      "total": 18
     },
     "rsi_short:30-39": {
       "win": 7,
@@ -134,15 +134,15 @@
     },
     "coin:ETH": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:ETH_LONG": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "rsi_short:50-59": {
       "win": 7,
@@ -269,6 +269,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsi_long:50-59": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -310,9 +316,9 @@
     },
     "ETH": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "NEAR": {
       "win": 9,
@@ -394,7 +400,21 @@
       "side": "SHORT",
       "code": "RSI_REBOUND",
       "title": "📈 空頭動能反轉"
+    },
+    {
+      "ts": 1778000643.3972235,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "SHORT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1777987269.652865
+  "updated_at": 1778000642.614941,
+  "score_buckets": {
+    "90+": {
+      "win": 0,
+      "loss": 1,
+      "total": 1
+    }
+  }
 }
