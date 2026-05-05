@@ -1,1 +1,124 @@
-{}
+{
+  "BTC-USDT-SWAP_LONG_1777991361-E8689B8D": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 81356.3,
+    "sl": 80981.7286,
+    "tp1": 81918.1571,
+    "tp2": 82480.0143,
+    "tp3": 83229.1571,
+    "score": 92,
+    "grade": "⭐ A 強力",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 59.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 5,
+      "vol_ratio": 1.63,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.307,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 10 (勝率 100%)",
+        "高勝率 +5",
+        "score:90+ (n=17, 勝率 94%) → +2"
+      ],
+      "learning_adjust": 7
+    },
+    "funding_rate": -7.681677861e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 82.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 71.0
+      }
+    },
+    "ob_zone": {
+      "low": 81144.0,
+      "high": 81275.0
+    },
+    "created": 1777991361.1815622,
+    "expires": 1778077761.1815624,
+    "order_id": "1777991361-E8689B8D",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777991361.1831574,
+    "last_checked_ts": 1777991361.1831574,
+    "entry_message_id": 3052
+  },
+  "ETH-USDT-SWAP_LONG_1777991363-E680942B": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 2382.01,
+    "sl": 2369.4957,
+    "tp1": 2400.7814,
+    "tp2": 2419.5529,
+    "tp3": 2444.5814,
+    "score": 92,
+    "grade": "⭐ A 強力",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 57.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 5,
+      "vol_ratio": 1.81,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.35,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 10 (勝率 100%)",
+        "高勝率 +5",
+        "score:90+ (n=17, 勝率 94%) → +2"
+      ],
+      "learning_adjust": 7
+    },
+    "funding_rate": -2.1708869626e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 80.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 67.5
+      }
+    },
+    "ob_zone": {
+      "low": 2383.78,
+      "high": 2388.88
+    },
+    "created": 1777991363.452064,
+    "expires": 1778077763.4520643,
+    "order_id": "1777991363-E680942B",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1777991363.4536626,
+    "last_checked_ts": 1777991363.4536626,
+    "entry_message_id": 3053
+  }
+}
