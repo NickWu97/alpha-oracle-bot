@@ -1,8 +1,8 @@
-name: Alpha Oracle Pro
+name: Alpha Oracle (1 分鐘掃描)
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "* * * * *"
   workflow_dispatch:
 
 permissions:
@@ -13,10 +13,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  run:
-    name: 🤖 Alpha Oracle Pro
+  scan:
+    name: 🤖 Alpha Oracle 主掃描
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3
 
     steps:
       - name: 📦 下載程式碼
@@ -44,12 +44,8 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "3"
-          SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
-        run: |
-          echo "🚀 Alpha Oracle Pro - 繁體中文版"
-          python main.py
+        run: python main.py
 
       - name: 💾 保存狀態
         if: always()
