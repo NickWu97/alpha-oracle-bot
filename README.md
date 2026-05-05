@@ -1,54 +1,44 @@
 # Alpha Oracle Pro
 
-Cryptocurrency perpetual swap signal bot with a self-improving learning system.
+Cryptocurrency perpetual swap signal bot with self-improving learning system.
 
 ## Features
 
-- Multi-timeframe technical analysis: 15-minute plus 1-hour and 4-hour confluence
-- Smart Money Concepts: Order Blocks, FVG, Liquidity Sweeps
-- Volume confirmation and ADX-based market regime detection
-- Dynamic stop loss and take profit with break-even and trailing logic
+- Multi-timeframe technical analysis (15m + 1H + 4H confluence)
+- Smart Money Concepts (Order Blocks, FVG, Liquidity Sweeps)
+- Volume confirmation, EMA alignment
+- Fixed R:R (1.5R / 3R / 5R) with break-even and trailing stops
 - KNN-based learning from historical trades
-- Multi-source price verification across two exchanges
+- Multi-source price verification (OKX + TradingView)
 - Automatic post-mortem analysis on every loss
-- Daily and monthly performance reports
+- Daily / monthly performance reports
+- Capital management with auto-leverage calculation
 
 ## Stack
 
 - Python 3.11
-- Runs on GitHub Actions on a cron schedule
-- Optional persistent WebSocket monitor for real-time TP and SL detection
+- Runs on GitHub Actions (1-min cron)
 - Telegram bot for notifications
 
 ## Setup
 
 1. Fork or clone this repository
-2. Set the required GitHub Secrets:
-   - `TG_TOKEN` for the Telegram bot token
-   - `CHAT_ID` for the Telegram chat ID
-3. Push to enable the GitHub Actions workflows
-4. Optional: customise `config.json` for thresholds, coin list, blackout windows
+2. Set GitHub Secrets:
+   - `TG_TOKEN` — Telegram bot token
+   - `CHAT_ID` — Telegram chat ID
+3. Push to enable GitHub Actions workflows
+4. Optional: customize `config.json`
 
-## Usage
+## Commands
 
-Run via the bundled entrypoint:
-
-- `python -m main` runs the main signal scan
-- `python -m main monitor` runs the lightweight monitor mode
-- `python -m main daily` sends the daily report
-- `python -m main monthly` sends the monthly report
-- `python -m main /learning` shows what the bot has learned
-
-The standalone backtest tool is invoked as a script in the repo root.
-
-## Workflows
-
-| File | Purpose | Schedule |
-|---|---|---|
-| `alpha_oracle.yml` | Full scan and signal generation | Every 15 minutes |
-| `alpha_oracle_monitor.yml` | Lightweight TP and SL monitor | Every 3 minutes |
-| `alpha_oracle_daily.yml` | Daily and monthly reports | Daily at 00:00 Asia/Taipei |
+- `python main.py` — main scan
+- `python main.py monitor` — lightweight monitor
+- `python main.py daily [YYYY-MM-DD]` — daily report
+- `python main.py monthly [YYYY-MM]` — monthly report
+- `python main.py /learning` — learning state
+- `python main.py /audit` — indicator effectiveness audit
+- `python main.py /stats` — current positions
 
 ## License
 
-For personal use only. Not financial advice. Use at your own risk.
+For personal use only. Not financial advice.
