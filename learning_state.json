@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 20,
-      "loss": 13,
+      "loss": 14,
       "be": 4,
-      "total": 37
+      "total": 38
     },
     "sess:us": {
       "win": 0,
@@ -104,9 +104,9 @@
     },
     "score:90+": {
       "win": 16,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 18
+      "total": 19
     },
     "rsi_short:30-39": {
       "win": 7,
@@ -230,9 +230,9 @@
     },
     "coin:BTC": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:BTC_SHORT": {
       "win": 0,
@@ -271,6 +271,12 @@
       "total": 1
     },
     "rsi_long:50-59": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "coin_side:BTC_LONG": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -340,9 +346,9 @@
     },
     "BTC": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "ADA": {
       "win": 0,
@@ -407,14 +413,21 @@
       "side": "LONG",
       "code": "SHORT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778020766.5009656,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "AGAINST_K",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1778000642.614941,
+  "updated_at": 1778020765.7412648,
   "score_buckets": {
     "90+": {
       "win": 0,
-      "loss": 1,
-      "total": 1
+      "loss": 2,
+      "total": 2
     }
   }
 }
