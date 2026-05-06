@@ -4519,5 +4519,221 @@
       "atr_pct": 0.354,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-07 02:12",
+    "date": "2026-05-07",
+    "order_id": "1778089953-46EB7409",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2348.7,
+    "close": 2348.688,
+    "close_type": "TP1",
+    "pnl": 0.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 6.99875517211e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 45.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.42,
+      "regime": "range",
+      "adx": 14.0,
+      "atr_pct": 0.393,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 由 2327.8730 校正到 2348.6880（避開支撐 2344.0000）",
+        "TP2 由 2307.0461 校正到 2348.6880（避開支撐 2344.0000）",
+        "TP3 由 2279.2768 校正到 2348.6880（避開支撐 2344.0000）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 45.6,
+      "atr_pct": 0.393,
+      "funding": 0.06998755172110001,
+      "vol_ratio": 0.42,
+      "adx": 14.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 49.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 14.0,
+      "atr_pct": 0.393,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 02:12",
+    "date": "2026-05-07",
+    "order_id": "1778089953-46EB7409",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2348.7,
+    "close": 2348.688,
+    "close_type": "TP2",
+    "pnl": 0.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 6.99875517211e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 45.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.42,
+      "regime": "range",
+      "adx": 14.0,
+      "atr_pct": 0.393,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 由 2327.8730 校正到 2348.6880（避開支撐 2344.0000）",
+        "TP2 由 2307.0461 校正到 2348.6880（避開支撐 2344.0000）",
+        "TP3 由 2279.2768 校正到 2348.6880（避開支撐 2344.0000）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 45.6,
+      "atr_pct": 0.393,
+      "funding": 0.06998755172110001,
+      "vol_ratio": 0.42,
+      "adx": 14.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 49.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 14.0,
+      "atr_pct": 0.393,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 02:12",
+    "date": "2026-05-07",
+    "order_id": "1778089953-46EB7409",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2348.7,
+    "close": 2348.688,
+    "close_type": "TP3",
+    "pnl": 0.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 6.99875517211e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 45.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.42,
+      "regime": "range",
+      "adx": 14.0,
+      "atr_pct": 0.393,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 由 2327.8730 校正到 2348.6880（避開支撐 2344.0000）",
+        "TP2 由 2307.0461 校正到 2348.6880（避開支撐 2344.0000）",
+        "TP3 由 2279.2768 校正到 2348.6880（避開支撐 2344.0000）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 45.6,
+      "atr_pct": 0.393,
+      "funding": 0.06998755172110001,
+      "vol_ratio": 0.42,
+      "adx": 14.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 49.1
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 14.0,
+      "atr_pct": 0.393,
+      "volatile": false
+    }
   }
 ]

@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 6,
+      "win": 9,
       "loss": 5,
       "be": 2,
-      "total": 13
+      "total": 16
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 14,
+      "win": 17,
       "loss": 10,
       "be": 4,
-      "total": 28
+      "total": 31
     },
     "sess:us": {
       "win": 0,
@@ -43,10 +43,10 @@
       "total": 6
     },
     "sess:asia_dawn": {
-      "win": 8,
+      "win": 11,
       "loss": 9,
       "be": 3,
-      "total": 20
+      "total": 23
     },
     "coin:DOGE": {
       "win": 0,
@@ -133,10 +133,10 @@
       "total": 13
     },
     "coin:ETH": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "coin_side:ETH_LONG": {
       "win": 3,
@@ -205,10 +205,10 @@
       "total": 5
     },
     "rsi_short:40-49": {
-      "win": 3,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "coin:TON": {
       "win": 3,
@@ -257,6 +257,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin_side:ETH_SHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -297,10 +303,10 @@
       "total": 2
     },
     "ETH": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "NEAR": {
       "win": 9,
@@ -384,5 +390,5 @@
       "title": "🔄 趨勢反轉"
     }
   ],
-  "updated_at": 1778087337.9899857
+  "updated_at": 1778091135.4253414
 }
