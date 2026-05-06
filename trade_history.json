@@ -4735,5 +4735,75 @@
       "atr_pct": 0.393,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-07 06:04",
+    "date": "2026-05-07",
+    "order_id": "1778089960-75D72367",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2658,
+    "close": 0.2687,
+    "close_type": "TP1",
+    "pnl": 1.09,
+    "is_win": true,
+    "is_be": false,
+    "score": 75,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 60.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.22,
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.488,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP3 由 0.2756 校正到 0.2732（避開阻力 0.2737）"
+      ]
+    },
+    "features": {
+      "score": 75.0,
+      "rsi": 60.8,
+      "atr_pct": 0.488,
+      "funding": 0.1,
+      "vol_ratio": 0.22,
+      "adx": 33.3,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 58.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 71.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.488,
+      "volatile": false
+    }
   }
 ]
