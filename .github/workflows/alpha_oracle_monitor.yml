@@ -1,0 +1,61 @@
+name: Alpha Oracle Monitor (高頻監控)
+
+on:
+  schedule:
+    - cron: "*/3 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: alpha-oracle-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    name: 🔔 Monitor
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: 📦 下載程式碼
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 🐍 設置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 安裝依賴
+        run: pip install --quiet requests tradingview-ta
+
+      - name: 🗄️ 初始化狀態檔案
+        run: |
+          [ -f active_signals.json ]   || echo '{}' > active_signals.json
+          [ -f trade_history.json ]    || echo '[]' > trade_history.json
+          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
+          [ -f system_state.json ]     || echo '{}' > system_state.json
+          [ -f learning_state.json ]   || echo '{}' > learning_state.json
+
+      - name: ⚡ 執行高頻監控
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          TZ: Asia/Taipei
+        run: python main.py monitor 3 20
+
+      - name: 💾 保存狀態
+        if: always()
+        run: |
+          git config user.name  "alpha-bot"
+          git config user.email "bot@alpha.example"
+          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
+          git add -f active_signals.json trade_history.json system_state.json learning_state.json 2>/dev/null || true
+          git diff --staged --quiet || {
+            git commit -m "chore: monitor 更新訊號狀態 [skip ci]"
+            git push --quiet || git push --force-with-lease --quiet || true
+          }
+        continue-on-error: true
