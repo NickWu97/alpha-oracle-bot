@@ -1,9 +1,15 @@
+# ═══════════════════════════════════════════════
+# 🔒 Alpha Oracle Pro - .gitignore（公開 repo 安全網）
+# ═══════════════════════════════════════════════
+
 .env
 .env.*
 *.env
 secrets.json
 secrets.txt
+credentials.json
 credentials.*
+.credentials/
 
 *.bak
 *.swp
@@ -11,22 +17,27 @@ credentials.*
 *~
 .DS_Store
 Thumbs.db
+desktop.ini
 
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
 .Python
 venv/
 env/
 .venv/
 .pytest_cache/
 .coverage
+htmlcov/
 
 .vscode/
 .idea/
+*.sublime-*
 
 *.log
 logs/
+log/
 
 notes.md
 notes.txt
@@ -34,3 +45,10 @@ TODO.md
 debug.txt
 private_*.json
 local_*.json
+
+my_trades.csv
+my_*.json
+personal_*.json
+
+.fly/
+.docker/
