@@ -1096,7 +1096,7 @@ def calc_position_sizing(entry: float, sl: float, tp1: float, tp2: float,
 # 12. 通知格式
 # ═════════════════════════════════════════════════════════
 def _fmt_entry(sig: dict, current_price: float) -> str:
-    """📌 進場通知（v15.2 精簡，TP1/TP2/TP3 清楚標示）"""
+    """📌 進場通知（對齊用戶截圖格式）"""
     coin = sig["instId"].split("-")[0]
     side = sig["side"]
     entry, sl = sig["entry"], sig["sl"]
@@ -1104,30 +1104,34 @@ def _fmt_entry(sig: dict, current_price: float) -> str:
     score = sig["score"]
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
+    grade = "🔥 A+ 極強" if score >= 90 else "⭐ A 強力" if score >= 80 else "✅ B+ 合格"
 
-    tp1_pct = (tp1 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    tp2_pct = (tp2 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    tp3_pct = (tp3 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    sl_pct = (sl - entry) / entry * 100
-
-    grade = "A+" if score >= 90 else "A" if score >= 80 else "B+"
+    tp1_pct = abs(tp1 - entry) / entry * 100
+    tp2_pct = abs(tp2 - entry) / entry * 100
+    tp3_pct = abs(tp3 - entry) / entry * 100
+    sl_pct = abs(sl - entry) / entry * 100
 
     sizing = calc_position_sizing(entry, sl, tp1, tp2, tp3, side)
-    sizing_line = ""
+    sizing_block = ""
     if sizing:
-        sizing_line = (
-            f"💵 `{sizing['leverage']}x` · 倉 `${sizing['position_value']:,.0f}` · "
-            f"SL `-${sizing['sl_loss']:.0f}` / TP3 `+${sizing['tp3_profit']:.0f}`\n"
+        sizing_block = (
+            f"💵 槓桿 `{sizing['leverage']}x` · 倉 `${sizing['position_value']:,.0f}`\n"
+            f"   SL `-${sizing['sl_loss']:.0f}` / TP1 `+${sizing['tp1_profit']:.0f}` / "
+            f"TP2 `+${sizing['tp2_profit']:.0f}` / TP3 `+${sizing['tp3_profit']:.0f}`\n"
         )
 
     return (
-        f"{emoji} *{coin}* {direction} `{score}分 {grade}`\n"
-        f"進 `{entry:.4f}` / 損 `{sl:.4f}` ({sl_pct:+.2f}%)\n"
-        f"🥇 *TP1* `{tp1:.4f}` ({tp1_pct:+.2f}% / 1.5R)\n"
-        f"🥈 *TP2* `{tp2:.4f}` ({tp2_pct:+.2f}% / 3R)\n"
-        f"🏆 *TP3* `{tp3:.4f}` ({tp3_pct:+.2f}% / 5R)\n"
-        f"{sizing_line}"
-        f"🆔 `{sig['order_id'][-8:]}` · {tw_now().strftime('%H:%M')}"
+        f"{emoji} *{coin} 進場提醒* {grade}\n"
+        f"━━━━━━━━━━━━━━\n"
+        f"🆔 `{sig['order_id']}`\n"
+        f"⏰ {tw_ts()}\n"
+        f"方向：{direction}　評分：*{score} 分*\n"
+        f"💰 進場：`{entry:.4f}`\n"
+        f"🛑 SL ：`{sl:.4f}`  (距 -{sl_pct:.2f}%)\n"
+        f"🥇 TP1：`{tp1:.4f}`  (距 +{tp1_pct:.2f}% / 1.5R)\n"
+        f"🥈 TP2：`{tp2:.4f}`  (距 +{tp2_pct:.2f}% / 3.0R)\n"
+        f"🏆 TP3：`{tp3:.4f}`  (距 +{tp3_pct:.2f}% / 5.0R)\n"
+        f"{sizing_block}"
     )
 
 
