@@ -1,23 +1,20 @@
-name: Alpha Oracle 日報 / 月報
+name: Alpha Oracle Monitor (高頻監控)
 
 on:
   schedule:
-    - cron: "0 16 * * *"
+    - cron: "*/3 * * * *"
   workflow_dispatch:
-    inputs:
-      date:
-        description: "手動推日報的日期（YYYY-MM-DD，留空則推昨天）"
-        required: false
-      month:
-        description: "手動推月報的月份（YYYY-MM，留空則跳過月報）"
-        required: false
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: alpha-oracle-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  reports:
-    name: 📊 日報 / 月報
+  monitor:
+    name: 🔔 Monitor
     runs-on: ubuntu-latest
     timeout-minutes: 3
 
@@ -35,38 +32,30 @@ jobs:
       - name: 📦 安裝依賴
         run: pip install --quiet requests tradingview-ta
 
-      - name: 📊 推送日報（昨天）
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          TZ: Asia/Taipei
+      - name: 🗄️ 初始化狀態檔案
         run: |
-          if [ -n "${{ github.event.inputs.date }}" ]; then
-            TARGET_DATE="${{ github.event.inputs.date }}"
-            echo "🔧 手動指定日期：$TARGET_DATE"
-          else
-            TARGET_DATE=$(TZ=Asia/Taipei date -d 'yesterday' +'%Y-%m-%d')
-            echo "📅 自動選定昨日：$TARGET_DATE"
-          fi
-          python main.py daily "$TARGET_DATE"
+          [ -f active_signals.json ]   || echo '{}' > active_signals.json
+          [ -f trade_history.json ]    || echo '[]' > trade_history.json
+          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
+          [ -f system_state.json ]     || echo '{}' > system_state.json
+          [ -f learning_state.json ]   || echo '{}' > learning_state.json
 
-      - name: 📈 推送月報（每月 1 號自動 / 手動指定）
+      - name: ⚡ 執行高頻監控
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           TZ: Asia/Taipei
+        run: python main.py monitor 3 20
+
+      - name: 💾 保存狀態
+        if: always()
         run: |
-          MANUAL_MONTH="${{ github.event.inputs.month }}"
-          if [ -n "$MANUAL_MONTH" ]; then
-            echo "🔧 手動指定月份：$MANUAL_MONTH"
-            python main.py monthly "$MANUAL_MONTH"
-          else
-            TODAY_DAY=$(TZ=Asia/Taipei date +'%d')
-            if [ "$TODAY_DAY" = "01" ]; then
-              LAST_MONTH=$(TZ=Asia/Taipei date -d 'yesterday' +'%Y-%m')
-              echo "🎉 今天 TW 是 1 號，自動推上月月報：$LAST_MONTH"
-              python main.py monthly "$LAST_MONTH"
-            else
-              echo "今天不是 1 號（TW 日：$TODAY_DAY），跳過月報"
-            fi
-          fi
+          git config user.name  "alpha-bot"
+          git config user.email "bot@alpha.example"
+          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
+          git add -f active_signals.json trade_history.json system_state.json learning_state.json 2>/dev/null || true
+          git diff --staged --quiet || {
+            git commit -m "chore: monitor 更新訊號狀態 [skip ci]"
+            git push --quiet || git push --force-with-lease --quiet || true
+          }
+        continue-on-error: true
