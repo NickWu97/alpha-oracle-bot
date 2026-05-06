@@ -1,15 +1,8 @@
-name: Alpha Oracle (主掃描 + 高頻監控)
-
-# 🤖 一個 workflow 同時管兩件事：
-#   - Pro（主掃描）：每 15 分跑，生成新訊號 + 完整指標 + KNN 學習
-#   - Monitor（高頻監控）：每 1 分跑，只追既有訊號的 TP/SL
-#
-# 手動點 "Run workflow" 會「先跑 Pro 再跑 Monitor」全部跑一遍
+name: Alpha Oracle Pro
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # Pro 主掃描
-    - cron: "* * * * *"       # Monitor 高頻監控
+    - cron: "*/15 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -20,9 +13,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  pro:
-    name: 🤖 Alpha Oracle Pro (主掃描)
-    if: github.event.schedule == '*/15 * * * *' || github.event_name == 'workflow_dispatch'
+  run:
+    name: 🤖 Alpha Oracle Pro
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -48,7 +40,7 @@ jobs:
           [ -f system_state.json ]     || echo '{}' > system_state.json
           [ -f learning_state.json ]   || echo '{}' > learning_state.json
 
-      - name: 🚀 執行 Alpha Oracle Pro
+      - name: 🚀 執行 Alpha Oracle
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
@@ -56,7 +48,7 @@ jobs:
           SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
         run: |
-          echo "🚀 Alpha Oracle Pro - 主掃描"
+          echo "🚀 Alpha Oracle Pro - 繁體中文版"
           python main.py
 
       - name: 💾 保存狀態
@@ -67,62 +59,7 @@ jobs:
           git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
           git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json learning_state.json 2>/dev/null || true
           git diff --staged --quiet || {
-            git commit -m "chore: pro 更新訊號狀態 [skip ci]"
-            git push --quiet || git push --force-with-lease --quiet || true
-          }
-        continue-on-error: true
-
-  monitor:
-    name: ⚡ Monitor (高頻監控)
-    needs: [pro]
-    if: |
-      always() && (
-        github.event.schedule == '* * * * *' ||
-        github.event_name == 'workflow_dispatch'
-      )
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-
-    steps:
-      - name: 📦 下載程式碼
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: 🐍 設置 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: 📦 安裝依賴
-        run: pip install --quiet requests tradingview-ta
-
-      - name: 🗄️ 初始化狀態檔案
-        run: |
-          [ -f active_signals.json ]   || echo '{}' > active_signals.json
-          [ -f trade_history.json ]    || echo '[]' > trade_history.json
-          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
-          [ -f system_state.json ]     || echo '{}' > system_state.json
-          [ -f learning_state.json ]   || echo '{}' > learning_state.json
-
-      - name: ⚡ 執行高頻監控
-        env:
-          TG_TOKEN: ${{ secrets.TG_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          TZ: Asia/Taipei
-        run: |
-          echo "⚡ 高頻監控（1 輪輕量掃描）"
-          python main.py monitor 1 0
-
-      - name: 💾 保存狀態
-        if: always()
-        run: |
-          git config user.name  "alpha-bot"
-          git config user.email "bot@alpha.example"
-          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
-          git add -f active_signals.json trade_history.json system_state.json learning_state.json 2>/dev/null || true
-          git diff --staged --quiet || {
-            git commit -m "chore: monitor 更新訊號狀態 [skip ci]"
+            git commit -m "chore: 更新訊號狀態 [skip ci]"
             git push --quiet || git push --force-with-lease --quiet || true
           }
         continue-on-error: true
