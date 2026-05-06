@@ -2,21 +2,21 @@
   "buckets": {
     "score:80-89": {
       "win": 9,
-      "loss": 5,
+      "loss": 9,
       "be": 2,
-      "total": 16
+      "total": 20
     },
     "rsi_long:40-49": {
       "win": 0,
-      "loss": 0,
+      "loss": 3,
       "be": 1,
-      "total": 1
+      "total": 4
     },
     "fund:neutral": {
-      "win": 18,
-      "loss": 10,
-      "be": 4,
-      "total": 32
+      "win": 20,
+      "loss": 17,
+      "be": 5,
+      "total": 42
     },
     "sess:us": {
       "win": 0,
@@ -38,9 +38,9 @@
     },
     "rsi_long:60-69": {
       "win": 4,
-      "loss": 3,
-      "be": 0,
-      "total": 7
+      "loss": 4,
+      "be": 1,
+      "total": 9
     },
     "sess:asia_dawn": {
       "win": 11,
@@ -62,27 +62,27 @@
     },
     "coin:DOT": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:DOT_LONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:AVAX": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:AVAX_LONG": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "rsi_long:70-79": {
       "win": 0,
@@ -92,33 +92,33 @@
     },
     "coin:BNB": {
       "win": 5,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:BNB_LONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "score:90+": {
-      "win": 10,
-      "loss": 0,
+      "win": 12,
+      "loss": 1,
       "be": 1,
-      "total": 11
+      "total": 14
     },
     "rsi_short:30-39": {
-      "win": 7,
+      "win": 9,
       "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 12
     },
     "coin:LINK": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin_side:LINK_SHORT": {
       "win": 1,
@@ -128,15 +128,15 @@
     },
     "score:70-79": {
       "win": 8,
-      "loss": 5,
-      "be": 1,
-      "total": 14
+      "loss": 7,
+      "be": 2,
+      "total": 17
     },
     "coin:ETH": {
-      "win": 6,
+      "win": 8,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 9
     },
     "coin_side:ETH_LONG": {
       "win": 3,
@@ -163,16 +163,16 @@
       "total": 9
     },
     "sess:asia_day": {
-      "win": 16,
-      "loss": 1,
-      "be": 0,
-      "total": 17
+      "win": 18,
+      "loss": 8,
+      "be": 1,
+      "total": 27
     },
     "coin:NEAR": {
       "win": 9,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin_side:NEAR_SHORT": {
       "win": 9,
@@ -188,9 +188,9 @@
     },
     "coin:XRP": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin_side:XRP_SHORT": {
       "win": 1,
@@ -224,9 +224,9 @@
     },
     "coin:BTC": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:BTC_SHORT": {
       "win": 0,
@@ -237,8 +237,8 @@
     "coin:ADA": {
       "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 3
     },
     "coin_side:ADA_SHORT": {
       "win": 0,
@@ -259,14 +259,50 @@
       "total": 1
     },
     "coin_side:ETH_SHORT": {
-      "win": 3,
+      "win": 5,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 5
     },
     "coin_side:ADA_LONG": {
       "win": 1,
       "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "rsi_long:30-39": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BTC_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:LINK_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "rsi_long:50-59": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "coin_side:XRP_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:NEAR_LONG": {
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
     }
@@ -286,45 +322,45 @@
     },
     "DOT": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "AVAX": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "BNB": {
       "win": 5,
-      "loss": 1,
-      "be": 0,
-      "total": 6
-    },
-    "LINK": {
-      "win": 1,
-      "loss": 0,
-      "be": 1,
-      "total": 2
-    },
-    "ETH": {
-      "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
       "total": 7
     },
-    "NEAR": {
-      "win": 9,
-      "loss": 0,
+    "LINK": {
+      "win": 1,
+      "loss": 1,
+      "be": 1,
+      "total": 3
+    },
+    "ETH": {
+      "win": 8,
+      "loss": 1,
       "be": 0,
       "total": 9
     },
+    "NEAR": {
+      "win": 9,
+      "loss": 1,
+      "be": 0,
+      "total": 10
+    },
     "XRP": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "TON": {
       "win": 3,
@@ -334,15 +370,15 @@
     },
     "BTC": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "ADA": {
       "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -394,7 +430,35 @@
       "side": "SHORT",
       "code": "TREND_REVERSAL",
       "title": "🔄 趨勢反轉"
+    },
+    {
+      "ts": 1778108809.385553,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "RSI_COLLAPSE",
+      "title": "📉 多頭動能瓦解"
+    },
+    {
+      "ts": 1778108814.2516172,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778108816.6790802,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778108820.6560657,
+      "coin": "LINK",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778105078.7245343
+  "updated_at": 1778108824.5141082
 }

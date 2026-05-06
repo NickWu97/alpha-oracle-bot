@@ -4805,5 +4805,712 @@
       "atr_pct": 0.488,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-07 07:06",
+    "date": "2026-05-07",
+    "order_id": "1778087318-4C2CE859",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 649.6,
+    "close": 645.6893,
+    "close_type": "SL",
+    "pnl": -0.6,
+    "is_win": false,
+    "is_be": false,
+    "score": 77,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 48.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.14,
+      "regime": "range",
+      "adx": 15.3,
+      "atr_pct": 0.402,
+      "learning_notes": [
+        "score:70-79 (n=9, 勝率 78%) → +2",
+        "fund:neutral (n=18, 勝率 61%) → +1",
+        "sess:asia_dawn (n=7, 勝率 29%) → -3",
+        "coin:BNB (n=6, 勝率 83%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP3 由 669.1536 校正到 662.4724（避開阻力 663.8000）"
+      ]
+    },
+    "features": {
+      "score": 77.0,
+      "rsi": 48.1,
+      "atr_pct": 0.402,
+      "funding": 0.1,
+      "vol_ratio": 0.14,
+      "adx": 15.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 70.8
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.3,
+      "atr_pct": 0.402,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:06",
+    "date": "2026-05-07",
+    "order_id": "1778089960-75D72367",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2658,
+    "close": 0.2658,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 75,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 60.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.22,
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.488,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP3 由 0.2756 校正到 0.2732（避開阻力 0.2737）"
+      ]
+    },
+    "features": {
+      "score": 75.0,
+      "rsi": 60.8,
+      "atr_pct": 0.488,
+      "funding": 0.1,
+      "vol_ratio": 0.22,
+      "adx": 33.3,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 58.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 71.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.488,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:06",
+    "date": "2026-05-07",
+    "order_id": "1778096717-22DF9FC7",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.601,
+    "close": 9.5411,
+    "close_type": "SL",
+    "pnl": -0.62,
+    "is_win": false,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 40.9,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.92,
+      "regime": "trend",
+      "adx": 59.8,
+      "atr_pct": 0.416,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 3,
+      "tp_adjust_notes": [
+        "TP3 由 9.9005 校正到 9.7564（避開阻力 9.7760）"
+      ]
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 40.9,
+      "atr_pct": 0.416,
+      "funding": 0.1,
+      "vol_ratio": 0.92,
+      "adx": 59.8,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 54.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 59.8,
+      "atr_pct": 0.416,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:06",
+    "date": "2026-05-07",
+    "order_id": "1778101135-32F5F55A",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 81379.7,
+    "close": 81089.1179,
+    "close_type": "SL",
+    "pnl": -0.36,
+    "is_win": false,
+    "is_be": false,
+    "score": 79,
+    "funding_rate": 2.17533879109e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 38.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.07,
+      "regime": "trend",
+      "adx": 38.9,
+      "atr_pct": 0.238,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 5 (勝率 50%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 79.0,
+      "rsi": 38.4,
+      "atr_pct": 0.238,
+      "funding": 0.0217533879109,
+      "vol_ratio": 1.07,
+      "adx": 38.9,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 52.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 38.9,
+      "atr_pct": 0.238,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:06",
+    "date": "2026-05-07",
+    "order_id": "1778101137-FB15BD62",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2348.73,
+    "close": 2339.9806,
+    "close_type": "TP2",
+    "pnl": 0.37,
+    "is_win": true,
+    "is_be": false,
+    "score": 96,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 31.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.88,
+      "regime": "trend",
+      "adx": 43.0,
+      "atr_pct": 0.291,
+      "learning_notes": [
+        "rsi_short:30-39 (n=10, 勝率 70%) → +1",
+        "coin:ETH (n=7, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8,
+      "tp_adjust_notes": [
+        "TP2 由 2317.9532 校正到 2339.9806（避開支撐 2335.3100）",
+        "TP3 由 2297.4354 校正到 2339.9806（避開支撐 2335.3100）"
+      ]
+    },
+    "features": {
+      "score": 96.0,
+      "rsi": 31.6,
+      "atr_pct": 0.291,
+      "funding": 0.1,
+      "vol_ratio": 0.88,
+      "adx": 43.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 52.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 43.0,
+      "atr_pct": 0.291,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:06",
+    "date": "2026-05-07",
+    "order_id": "1778101137-FB15BD62",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2348.73,
+    "close": 2339.9806,
+    "close_type": "TP3",
+    "pnl": 0.37,
+    "is_win": true,
+    "is_be": false,
+    "score": 96,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 31.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.88,
+      "regime": "trend",
+      "adx": 43.0,
+      "atr_pct": 0.291,
+      "learning_notes": [
+        "rsi_short:30-39 (n=10, 勝率 70%) → +1",
+        "coin:ETH (n=7, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8,
+      "tp_adjust_notes": [
+        "TP2 由 2317.9532 校正到 2339.9806（避開支撐 2335.3100）",
+        "TP3 由 2297.4354 校正到 2339.9806（避開支撐 2335.3100）"
+      ]
+    },
+    "features": {
+      "score": 96.0,
+      "rsi": 31.6,
+      "atr_pct": 0.291,
+      "funding": 0.1,
+      "vol_ratio": 0.88,
+      "adx": 43.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 52.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 43.0,
+      "atr_pct": 0.291,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:06",
+    "date": "2026-05-07",
+    "order_id": "1778101141-6500C759",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 10.001,
+    "close": 9.9509,
+    "close_type": "SL",
+    "pnl": -0.5,
+    "is_win": false,
+    "is_be": false,
+    "score": 87,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 44.5,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.56,
+      "regime": "trend",
+      "adx": 26.0,
+      "atr_pct": 0.335,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 44.5,
+      "atr_pct": 0.335,
+      "funding": 0.1,
+      "vol_ratio": 0.56,
+      "adx": 26.0,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 60.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 77.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 26.0,
+      "atr_pct": 0.335,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:07",
+    "date": "2026-05-07",
+    "order_id": "1778105072-04913654",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.424,
+    "close": 1.4178,
+    "close_type": "SL",
+    "pnl": -0.44,
+    "is_win": false,
+    "is_be": false,
+    "score": 82,
+    "funding_rate": -2.83789615951e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 56.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.62,
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.291,
+      "learning_notes": [
+        "sess:asia_day (n=16, 勝率 94%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 82.0,
+      "rsi": 56.5,
+      "atr_pct": 0.291,
+      "funding": -0.028378961595099998,
+      "vol_ratio": 0.62,
+      "adx": 6.7,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 46.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.7
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 6.7,
+      "atr_pct": 0.291,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:07",
+    "date": "2026-05-07",
+    "order_id": "1778105074-6BED5AD8",
+    "coin": "DOT",
+    "side": "LONG",
+    "entry": 1.317,
+    "close": 1.3067,
+    "close_type": "SL",
+    "pnl": -0.78,
+    "is_win": false,
+    "is_be": false,
+    "score": 92,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 68.1,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.1,
+      "regime": "trend",
+      "adx": 42.3,
+      "atr_pct": 0.519,
+      "pullback": true,
+      "learning_notes": [
+        "sess:asia_day (n=16, 勝率 94%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP2 由 1.3479 校正到 1.3293（避開阻力 1.3320）",
+        "TP3 由 1.3684 校正到 1.3293（避開阻力 1.3320）"
+      ]
+    },
+    "features": {
+      "score": 92.0,
+      "rsi": 68.1,
+      "atr_pct": 0.519,
+      "funding": 0.1,
+      "vol_ratio": 1.1,
+      "adx": 42.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 84.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 42.3,
+      "atr_pct": 0.519,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-07 07:07",
+    "date": "2026-05-07",
+    "order_id": "1778105075-8D97BF67",
+    "coin": "NEAR",
+    "side": "LONG",
+    "entry": 1.516,
+    "close": 1.4934,
+    "close_type": "SL",
+    "pnl": -1.49,
+    "is_win": false,
+    "is_be": false,
+    "score": 84,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 56.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.31,
+      "regime": "trend",
+      "adx": 30.9,
+      "atr_pct": 0.988,
+      "learning_notes": [
+        "sess:asia_day (n=16, 勝率 94%) → +2",
+        "coin:NEAR (n=9, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 由 1.5499 校正到 1.5439（避開阻力 1.5470）",
+        "TP2 由 1.5838 校正到 1.5439（避開阻力 1.5470）",
+        "TP3 由 1.6290 校正到 1.5439（避開阻力 1.5470）"
+      ]
+    },
+    "features": {
+      "score": 84.0,
+      "rsi": 56.1,
+      "atr_pct": 0.988,
+      "funding": 0.1,
+      "vol_ratio": 0.31,
+      "adx": 30.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 77.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 91.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.9,
+      "atr_pct": 0.988,
+      "volatile": false
+    }
   }
 ]
