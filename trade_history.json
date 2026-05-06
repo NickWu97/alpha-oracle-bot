@@ -5101,5 +5101,119 @@
         "rsi": 71.0
       }
     }
+  },
+  {
+    "time": "2026-05-06 14:44",
+    "date": "2026-05-06",
+    "order_id": "1778042781-F79DBA23",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 81324.0,
+    "close": 81039.6214,
+    "close_type": "SL",
+    "pnl": -0.35,
+    "is_win": false,
+    "score": 109,
+    "funding_rate": -3.32425195018e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "vol_ratio": 1.17,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.233,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 9 (勝率 90%)",
+        "高勝率 +5",
+        "score:90+ (n=19, 勝率 84%) → +2"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 109.0,
+      "rsi": 58.9,
+      "atr_pct": 0.233,
+      "funding": -0.0332425195018,
+      "vol_ratio": 1.17,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 55.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 67.4
+      }
+    }
+  },
+  {
+    "time": "2026-05-06 14:44",
+    "date": "2026-05-06",
+    "order_id": "1778042783-B9E045D0",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2369.0,
+    "close": 2359.6636,
+    "close_type": "SL",
+    "pnl": -0.39,
+    "is_win": false,
+    "score": 87,
+    "funding_rate": 3.3410011719e-06,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 53.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 0,
+      "vol_ratio": 0.91,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.263,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 53.4,
+      "atr_pct": 0.263,
+      "funding": 0.0033410011719,
+      "vol_ratio": 0.91,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "rsi": 43.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 59.1
+      }
+    }
   }
 ]
