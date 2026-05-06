@@ -1,5 +1,5 @@
 {
-  "_comment": "Alpha Oracle Pro v14.2 配置（進階智能版）",
+  "_comment": "Alpha Oracle Pro v14.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
 
   "coins": [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
@@ -8,71 +8,22 @@
     "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"
   ],
 
-  "max_signals": 2,
-  "score_threshold": 80,
-  "cooldown_hours": 3,
+  "max_signals": 3,
+  "score_threshold": 68,
+  "cooldown_hours": 2,
   "signal_expire_hours": 24,
   "atr_max_pct": 0.04,
-  "min_rr_ratio": 1.5,
 
-  "show_score_breakdown": true,
-
-  "post_mortem": { "enabled": true, "loss_only": false },
+  "post_mortem": {
+    "enabled": true,
+    "loss_only": false
+  },
 
   "learning": {
     "enabled": true,
     "knn_enabled": true,
     "min_samples": 5,
     "max_score_adjust": 10
-  },
-
-  "coin_auto_pause": {
-    "enabled": true,
-    "days": 7,
-    "min_trades": 5,
-    "max_winrate": 0.30,
-    "pause_hours": 24
-  },
-
-  "position_sizing": {
-    "enabled": true,
-    "tiers": [
-      { "min_score": 95, "multiplier": 1.5, "label": "🔥 強訊號加大倉" },
-      { "min_score": 85, "multiplier": 1.0, "label": "標準倉" },
-      { "min_score": 80, "multiplier": 0.5, "label": "謹慎小倉" },
-      { "min_score": 0,  "multiplier": 0.5, "label": "標準倉" }
-    ]
-  },
-
-  "cooling_off": { "enabled": true, "loss_threshold": 2, "period_minutes": 30 },
-
-  "direction_bias": {
-    "enabled": true,
-    "min_diff_pct": 15,
-    "min_samples": 10,
-    "bonus": 3,
-    "penalty": 3
-  },
-
-  "god_signal": { "enabled": true, "min_score": 95 },
-
-  "ema_alignment": {
-    "enabled": true,
-    "periods": [20, 50, 200],
-    "perfect_bonus": 5,
-    "partial_bonus": 3,
-    "against_penalty": 5
-  },
-
-  "overheating": {
-    "enabled": true,
-    "win_streak_threshold": 3,
-    "cooldown_hours": 4
-  },
-
-  "ob_invalidation": {
-    "enabled": true,
-    "break_buffer_pct": 0.2
   },
 
   "price_verification": {
@@ -99,5 +50,8 @@
 
   "news_blackouts": [],
 
-  "auto_news_blackout": { "nfp": true, "cpi": true }
+  "auto_news_blackout": {
+    "nfp": true,
+    "cpi": true
+  }
 }
