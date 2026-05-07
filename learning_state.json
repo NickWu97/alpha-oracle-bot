@@ -7,16 +7,16 @@
       "total": 1
     },
     "rsi_short:30-39": {
-      "win": 0,
+      "win": 2,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 4
     },
     "fund:neutral": {
-      "win": 0,
-      "loss": 3,
+      "win": 2,
+      "loss": 5,
       "be": 0,
-      "total": 3
+      "total": 7
     },
     "sess:europe": {
       "win": 0,
@@ -25,22 +25,22 @@
       "total": 3
     },
     "coin:BTC": {
-      "win": 0,
+      "win": 2,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 3
     },
     "coin_side:BTC_SHORT": {
-      "win": 0,
+      "win": 2,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 3
     },
     "score:80-89": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsi_short:20-29": {
       "win": 0,
@@ -50,9 +50,9 @@
     },
     "coin:ETH": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:ETH_SHORT": {
       "win": 0,
@@ -77,22 +77,64 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "score:70-79": {
+      "win": 2,
+      "loss": 1,
+      "be": 0,
+      "total": 3
+    },
+    "sess:us": {
+      "win": 2,
+      "loss": 2,
+      "be": 0,
+      "total": 4
+    },
+    "rsi_long:40-49": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "coin_side:ETH_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:SOL": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:SOL_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "BTC": {
-      "win": 0,
+      "win": 2,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 3
     },
     "ETH": {
       "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "BNB": {
+      "win": 0,
       "loss": 1,
       "be": 0,
       "total": 1
     },
-    "BNB": {
+    "SOL": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -120,7 +162,21 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778165446.6199,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778165448.2878842,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778135821.1730247
+  "updated_at": 1778165447.800399
 }
