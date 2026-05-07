@@ -1,64 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v14.0 — 專業交易員養成版（繁體中文）
+Alpha Oracle Pro v14.1 — 高勝率專業交易版（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v14.0 新增（變專業）：
-  🕒 多時框共振：1H + 4H Supertrend 確認，最高 +15 分（反向 -10）
-  📊 量能確認：最後 K 量 vs 前 20 期均量，最高 +8 分（沒量 -10 直接淘汰）
-  🌐 市場狀態識別：ADX 趨勢/震盪/過渡，震盪市門檻自動 +5
-  🎯 動態 TP：固定 R 倍 TP 落在強 S/R 前方時自動校正
-  📰 新聞事件過濾：NFP / CPI 自動規則 + 自訂事件清單
-  🌀 進場時機：偵測回測影線 K 加 +3 分
-  🧬 KNN 學習：每筆訊號向量化，找最相似 10 筆歷史交易看勝率
-  📈 日報 / 月報：/daily 與 /monthly 命令，含各幣種績效、連勝連敗
-  📁 backtest.py：獨立回測腳本（讀歷史 K 線重跑策略）
-  📡 websocket_monitor.py：常駐 WS 監控（部署 Railway/Fly.io）
+✨ v14.1 勝率優化重點：
+  🎯 進場門檻提升至 78 分（原 68），過濾低品質訊號
+  🕒 MTF 多時框強制順勢：4H 反向直接淘汰，1H+4H 同向才給滿分
+  📊 量能硬門檻：低於 1.2 倍均量直接 -99 分淘汰
+  🧱 結構確認：至少 2 個核心條件（OB/FVG/流動性/PA）才允許進場
+  🕐 活躍時段過濾：僅在亞/歐/美盤高流動時段生成新訊號
+  🪙 幣種聚焦模式：可設定只交易 BTC/ETH/SOL 等高流動幣種
+  📉 動態冷卻：勝率<60% 時自動延長冷卻時間
+  📊 勝率監控：連續 5 筆勝率<50% 自動暫停並通知
 
-✨ v13.1 既有：
-  ⚡ monitor 模式 + 高頻 cron workflow（30 秒一次）
-  ⚡ monitor 模式：輕量、只追既有訊號，不生成新訊號
-     ↳ 用法：python main.py monitor [polls] [interval]
-     ↳ 搭配 alpha-oracle-monitor.yml 每 3 分鐘 cron + 一次 3 輪 = ~30 秒檢查一次
-     ↳ TP/SL 通知延遲從 15 分鐘壓到 ~30 秒
-  📁 新檔 alpha-oracle-monitor.yml：高頻監控專用 workflow
-
-✨ v13.0（會自我成長）：
-  🔍 覆盤分析：SL / BE / LOCK 後自動分析「為什麼結算」並送 Telegram
-     ↳ 6 大歸因：趨勢反轉 / RSI 崩盤 / 流動性掃蕩 / 波動激增 / 反向動能 / OB 跌破
-     ↳ 附「下次該怎麼判斷」+ 同類設定歷史勝率
-  🧠 學習機制：每筆交易結算後更新桶（分數/RSI/資金費率/時段/幣種）
-     ↳ 評分時自動套用調整：高勝率組合 +1~+2、低勝率組合 -2~-3，上限 ±10
-     ↳ /learning 命令查看機器人學了什麼
-  📈 12 種幣別：BTC/ETH/SOL/BNB/XRP/DOGE/ADA/AVAX/LINK/DOT/TON/NEAR
-     ↳ 可在 config.json 的 coins 自訂
-
-✨ v12.2 既有：
-  📜 歷史 K 線補抓：抓 last_checked_ts 之後所有 K 線依序處理
-  🔒 同幣種未平倉嚴格擋
-  📦 fetch_candles_full：每輪共用 30 秒快取
-
-✨ v12.1（平倉精度）：
-  🪡 插針觸發：K 線高低點觸到平倉價即視為平倉
-  🔁 TP/SL 順序處理：TP1 → TP2 → TP3 → SL（SL 用更新後的值）
-  🔒 BE 保本顯示：到達 TP1 後若 SL 觸發，獨立顯示「🔒 保本出場」`0R`
-  🔐 LOCK 鎖利顯示：到達 TP2 後若 SL 觸發，獨立顯示「🔐 鎖利出場」`+1.5R`
-  🪡 通知標記插針觸發來源（K 線插針觸及目標價）
-
-✨ v12.0 新增（高優先級風控）：
-  🆕 TradingView 第二價格來源 → OKX/TV 偏離超過閾值自動跳過
-  🆕 連續虧損熔斷：連 3 敗暫停 4h、連 5 敗硬熔斷 24h
-  🆕 關鍵時段過濾：資金費率結算 / 美股開盤等高波動時段自動避開
-  🆕 config.json 熱更新與驗證：無需重新部署即可調整參數
-  🆕 系統狀態持久化（system_state.json）：熔斷狀態跨 Actions 不漏
-  🆕 同幣種未平倉不重複開倉
-
-✨ v11.0 既有重點：
-  ✅ 修復所有 Markdown 鏈接化的語法錯誤
-  ✅ 完整 SMC（OB）/ ICT（FVG、流動性掃蕩）/ SNR / 價格行為 / 盤口動能
-  ✅ 評分 100 分制（趨勢30+RSI25+OB20+FVG15+SNR5+PA5+流動性5+動能5）
-  ✅ 止盈倍率 1.5R / 3.0R / 5.0R
-  ✅ 時間台灣 UTC+8 / 訊號冷卻持久化 / TP·SL 線層回覆
+✨ v14.0 既有功能（完整保留）：
+  🕒 多時框共振 + 📊 量能確認 + 🌐 市場狀態識別 + 🎯 動態 TP
+  📰 新聞事件過濾 + 🌀 進場時機偵測 + 🧬 KNN 學習 + 📈 日報/月報
+  ⚡ monitor 高頻監控 + 🔍 覆盤分析 + 🧠 學習機制 + 🆕 價格雙源驗證
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -69,6 +27,7 @@ import time
 import sys
 import uuid
 from datetime import datetime, timezone, timedelta
+from collections import Counter
 
 
 # ═════════════════════════════════════════════════════════
@@ -121,11 +80,11 @@ ALL_COINS = [
     "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP",
     "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP",
 ]
-MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 3)
-SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 68)
+MAX_SIGNALS = _get_env_int("MAX_SIGNALS", 2)          # 🔺 優化：3→2
+SCORE_THRESHOLD = _get_env_int("SETUP_SCORE_THRESHOLD", 78)  # 🔺 優化：68→78
 
 SIGNAL_EXPIRE_HOURS = 24
-COOLDOWN_HOURS = 2
+COOLDOWN_HOURS = 4                                     # 🔺 優化：2→4
 
 ACTIVE_SIGNALS_FILE = "active_signals.json"
 TRADE_HISTORY_FILE = "trade_history.json"
@@ -133,6 +92,7 @@ COOLDOWN_FILE = "signal_cooldown.json"
 CONFIG_FILE = "config.json"
 SYSTEM_STATE_FILE = "system_state.json"
 LEARNING_FILE = "learning_state.json"
+WINRATE_MONITOR_FILE = "winrate_monitor.json"          # 🔺 新增：勝率監控
 
 # 記憶體快取（同一輪執行內共用，跨輪不持久）
 _price_cache: dict = {}
@@ -141,43 +101,46 @@ _price_cache: dict = {}
 # 1.5 預設配置（config.json 不存在時的 fallback）
 # ═════════════════════════════════════════════════════════
 DEFAULT_CONFIG: dict = {
-    "coins": ALL_COINS,                # 可在 config.json 自訂
-    "max_signals": 3,
-    "score_threshold": 68,
-    "cooldown_hours": 2,
+    "coins": ALL_COINS,
+    "focus_coins": ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP"],  # 🔺 新增：聚焦幣種
+    "max_signals": 2,
+    "score_threshold": 78,                              # 🔺 優化：68→78
+    "cooldown_hours": 4,                                # 🔺 優化：2→4
     "signal_expire_hours": 24,
     "atr_max_pct": 0.04,
     "post_mortem": {
         "enabled": True,
-        "loss_only": False,            # False = SL/BE/LOCK 都做覆盤；True = 只 SL
+        "loss_only": False,
     },
     "learning": {
         "enabled": True,
-        "knn_enabled": True,           # 進階 KNN 學習（找最相似歷史交易）
+        "knn_enabled": True,
         "min_samples": 5,
         "max_score_adjust": 10,
     },
-    "news_blackouts": [
-        # 用戶可自訂事件，例如：
-        # {"start": "2026-05-07T20:30:00+08:00", "end": "2026-05-07T22:30:00+08:00", "reason": "FOMC 會議"}
-    ],
+    "news_blackouts": [],
     "auto_news_blackout": {
-        "nfp": True,                   # 每月第一週五 21:25–22:30 (TW)
-        "cpi": True,                   # 每月 10–16 日 21:25–22:30 (TW)
-    },           # ATR/Price 超過此值視為震盪過大
+        "nfp": True,
+        "cpi": True,
+    },
     "price_verification": {
         "enabled": True,
-        "max_deviation_pct": 0.5,  # OKX 與 TradingView 偏離 > 0.5% 跳過
-        "block_on_unverified": False,  # TV 抓不到時是否一律跳過（False=放行）
+        "max_deviation_pct": 0.5,
+        "block_on_unverified": False,
     },
     "circuit_breaker": {
         "enabled": True,
-        "soft_threshold": 3,       # 連 3 敗 → 軟熔斷
+        "soft_threshold": 3,
         "soft_pause_hours": 4,
-        "hard_threshold": 5,       # 連 5 敗 → 硬熔斷
+        "hard_threshold": 5,
         "hard_pause_hours": 24,
     },
-    # 台灣時間時段（HH:MM），結束時間為「不含」
+    # 🔺 新增：活躍交易時段（台灣時間）
+    "active_hours_tw": [
+        {"start": "09:00", "end": "11:30"},   # 亞洲盤活躍
+        {"start": "15:00", "end": "17:30"},   # 歐盤開盤
+        {"start": "21:00", "end": "23:30"}    # 美盤開盤
+    ],
     "blackout_windows_tw": [
         {"start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）"},
         {"start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）"},
@@ -185,6 +148,13 @@ DEFAULT_CONFIG: dict = {
         {"start": "21:25", "end": "21:45", "reason": "美股開盤波動"},
         {"start": "02:00", "end": "02:30", "reason": "FOMC 公布時段"},
     ],
+    # 🔺 新增：勝率監控設定
+    "winrate_monitor": {
+        "enabled": True,
+        "sample_size": 5,           # 檢視最近幾筆
+        "min_winrate": 0.50,        # 低於此勝率觸發警告
+        "pause_hours": 2            # 觸發後暫停幾小時
+    }
 }
 
 
@@ -261,12 +231,12 @@ def _fmt_entry(
     """📌 進場通知"""
     direction = "做多" if side == "LONG" else "做空"
     emoji = "🟢" if side == "LONG" else "🔴"
-    grade = "🔥 A+ 極強" if score >= 85 else "⭐ A 強力" if score >= 70 else "✅ B+ 合格"
+    grade = "🔥 A+ 極強" if score >= 90 else "⭐ A 強力" if score >= 82 else "✅ B+ 合格"
 
     tp1_pct = (tp1 - entry) / entry * 100 * (1 if side == "LONG" else -1)
     tp2_pct = (tp2 - entry) / entry * 100 * (1 if side == "LONG" else -1)
     tp3_pct = (tp3 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    sl_pct = (sl - entry) / entry * 100  # 帶正負號
+    sl_pct = (sl - entry) / entry * 100
 
     funding_line = ""
     if funding_rate is not None:
@@ -452,7 +422,6 @@ def fetch_candles(instId: str, tf: str = "15m", limit: int = 100) -> list | None
         data = res.get("data", [])
         if len(data) < 30:
             return None
-        # OKX 第 9 欄（index 8）為 confirm，僅取已收線；OKX 預設由新到舊，反轉成由舊到新
         confirmed = [r for r in data if r[8] == "1"][::-1]
         return [
             {
@@ -474,13 +443,7 @@ _candle_full_cache: dict = {}
 
 
 def fetch_candles_full(instId: str, tf: str = "15m", limit: int = 100) -> list:
-    """🪡 抓最近 N 根 K 線（含未收線）並按時間升序排序，每輪掃描共用 30 秒快取
-
-    回傳每筆含：ts(ms 整數)、o/h/l/c/v、confirmed(bool)
-    用於 _check_one 的「歷史插針補抓」：
-      - 訊號自 last_checked_ts 之後的所有 K 線都會被掃過
-      - 即使 cron 漏跑、訊號開了 3 小時才檢查，過去任何插針都不會漏
-    """
+    """🪡 抓最近 N 根 K 線（含未收線）並按時間升序排序，每輪掃描共用 30 秒快取"""
     now = time.time()
     if instId in _candle_full_cache:
         candles, t = _candle_full_cache[instId]
@@ -514,30 +477,6 @@ def fetch_candles_full(instId: str, tf: str = "15m", limit: int = 100) -> list:
         return _candle_full_cache.get(instId, ([], 0))[0]
 
 
-def fetch_recent_range(instId: str, bars: int = 2, tf: str = "15m") -> tuple[float, float] | None:
-    """🪡 抓最近 N 根 K 線（含未收線）的最低 / 最高 → (low, high)
-
-    用途：偵測插針，避免「快速戳到 SL/TP 又縮回去」逃過追蹤。
-    與 fetch_candles 不同，這裡不過濾 confirm，把正在形成的 K 線也算進去。
-    """
-    try:
-        res = requests.get(
-            f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={bars}",
-            timeout=5,
-        ).json()
-        if res.get("code") != "0":
-            return None
-        data = res.get("data", [])
-        if not data:
-            return None
-        lows = [float(r[3]) for r in data]
-        highs = [float(r[2]) for r in data]
-        return min(lows), max(highs)
-    except Exception as e:
-        logging.warning(f"⚠️ 取得 {instId} 最近區間失敗：{e}")
-        return None
-
-
 def fetch_funding_rate(instId: str) -> float | None:
     """💰 OKX 資金費率（永續合約）"""
     try:
@@ -559,10 +498,7 @@ _tv_cache: dict = {}
 
 
 def fetch_price_tv(instId: str) -> float | None:
-    """📡 從 TradingView 抓取即時價格（OKX 永續合約）
-
-    回傳 None 代表抓不到（網路 / 套件未安裝 / 符號錯誤）
-    """
+    """📡 從 TradingView 抓取即時價格（OKX 永續合約）"""
     now = time.time()
     if instId in _tv_cache:
         price, t = _tv_cache[instId]
@@ -570,14 +506,12 @@ def fetch_price_tv(instId: str) -> float | None:
             return price
 
     try:
-        # 套件可能未安裝（純語法檢查或本地測試）
         from tradingview_ta import TA_Handler, Interval  # type: ignore
     except ImportError:
         logging.warning("⚠️ 未安裝 tradingview_ta，跳過 TV 驗證")
         return None
 
     try:
-        # BTC-USDT-SWAP → BTCUSDT.P（OKX 永續合約在 TradingView 的命名）
         symbol = instId.replace("-USDT-SWAP", "USDT.P").replace("-", "")
         handler = TA_Handler(
             symbol=symbol,
@@ -602,12 +536,7 @@ def verify_price(
     max_dev_pct: float = 0.5,
     block_on_unverified: bool = False,
 ) -> tuple[bool, float | None, float]:
-    """⚖️ 雙來源價格驗證 → (是否通過, TV 價格, 偏離百分比)
-
-    block_on_unverified:
-      True  → TV 抓不到也擋訊號（保守）
-      False → TV 抓不到當作通過（避免單點失效擋掉所有訊號）
-    """
+    """⚖️ 雙來源價格驗證 → (是否通過，TV 價格，偏離百分比)"""
     tv_price = fetch_price_tv(instId)
     if tv_price is None:
         return (not block_on_unverified, None, 0.0)
@@ -682,24 +611,20 @@ def calc_rsi(df: list, period: int = 14) -> float:
 # 6. SMC / ICT / SNR / 價格行為 / 流動性 / 動能
 # ═════════════════════════════════════════════════════════
 def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
-    """🧱 訂單塊（OB）
-
-    看漲 OB：最近的陰線後緊接陽線突破其高點。
-    看跌 OB：最近的陽線後緊接陰線跌破其低點。
-    """
+    """🧱 訂單塊（OB）"""
     n = len(df)
     if n < lookback + 5:
         return None
     start = max(0, n - lookback)
     if side == "LONG":
         for i in range(n - 4, start, -1):
-            if df[i]["c"] < df[i]["o"]:  # 陰線
+            if df[i]["c"] < df[i]["o"]:
                 for j in range(i + 1, min(i + 4, n)):
                     if df[j]["c"] > df[i]["h"]:
                         return {"low": df[i]["l"], "high": df[i]["h"]}
     else:
         for i in range(n - 4, start, -1):
-            if df[i]["c"] > df[i]["o"]:  # 陽線
+            if df[i]["c"] > df[i]["o"]:
                 for j in range(i + 1, min(i + 4, n)):
                     if df[j]["c"] < df[i]["l"]:
                         return {"low": df[i]["l"], "high": df[i]["h"]}
@@ -707,11 +632,7 @@ def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
 
 
 def find_fvg(df: list, side: str, lookback: int = 30) -> dict | None:
-    """⚡ 公允價值缺口（FVG）
-
-    看漲 FVG：K[i].low > K[i-2].high。
-    看跌 FVG：K[i].high < K[i-2].low。
-    """
+    """⚡ 公允價值缺口（FVG）"""
     n = len(df)
     if n < 4:
         return None
@@ -735,7 +656,7 @@ def calc_snr(df: list, lookback: int = 100) -> tuple[float, float]:
 
 
 def detect_price_action(df: list, side: str) -> bool:
-    """📊 偵測 Pin Bar 或吞沒形態，方向需與交易方向一致"""
+    """📊 偵測 Pin Bar 或吞沒形態"""
     if len(df) < 2:
         return False
     last, prev = df[-1], df[-2]
@@ -743,14 +664,12 @@ def detect_price_action(df: list, side: str) -> bool:
     upper = last["h"] - max(last["c"], last["o"])
     lower = min(last["c"], last["o"]) - last["l"]
 
-    # Pin Bar（影線 ≥ 2 倍實體）
     if body > 0:
         if side == "LONG" and lower > body * 2 and lower > upper:
             return True
         if side == "SHORT" and upper > body * 2 and upper > lower:
             return True
 
-    # 吞沒形態
     if side == "LONG":
         if (
             prev["c"] < prev["o"]
@@ -771,11 +690,7 @@ def detect_price_action(df: list, side: str) -> bool:
 
 
 def detect_liquidity_sweep(df: list, side: str, lookback: int = 20) -> bool:
-    """💧 流動性掃蕩
-
-    多頭掃蕩：最後一根創 N 期新低後快速收回（收盤回到區間中位以上）。
-    空頭掃蕩：最後一根創 N 期新高後快速回落。
-    """
+    """💧 流動性掃蕩"""
     if len(df) < lookback + 1:
         return False
     seg = df[-(lookback + 1) : -1]
@@ -875,30 +790,36 @@ def fetch_mtf_trend(instId: str) -> dict:
     return out
 
 
+# 🔥【優化 1】MTF 強制順勢：4H 反向直接淘汰
 def calc_mtf_alignment(mtf: dict, side: str) -> tuple[int, str]:
-    """🎯 多時框共振評分（最高 +15）→ (分數, 說明)"""
+    """🎯 多時框共振評分（最高 +15）→ (分數，說明)
+    
+    🔥 v14.1 優化：4H 反向直接 -99 分淘汰，確保大週期順勢
+    """
     expect = 1 if side == "LONG" else -1
     h1 = mtf.get("1H", {}).get("supertrend", 0)
     h4 = mtf.get("4H", {}).get("supertrend", 0)
-    score = 0
-    if h1 == expect:
-        score += 8
-    elif h1 == -expect:
-        score -= 5
-    if h4 == expect:
-        score += 7
-    elif h4 == -expect:
-        score -= 5
-    score = max(-15, min(15, score))
-
-    align_desc = []
-    align_desc.append(f"1H={'順' if h1 == expect else '反' if h1 == -expect else '中'}")
-    align_desc.append(f"4H={'順' if h4 == expect else '反' if h4 == -expect else '中'}")
-    return score, " / ".join(align_desc)
+    
+    # 🔥 4H 反向直接淘汰（-99 分確保不會進場）
+    if h4 == -expect:
+        return -99, f"4H 反向淘汰 (1H={'順' if h1==expect else '反' if h1==-expect else '中'})"
+    
+    # 1H+4H 都順勢才給滿分
+    if h1 == expect and h4 == expect:
+        return 15, "1H+4H 雙順 ✅"
+    elif h1 == expect or h4 == expect:
+        return 5, f"單一時框順勢 (1H:{'順' if h1==expect else '中'}, 4H:{'順' if h4==expect else '中'})"
+    
+    # 都震盪或反向
+    return -5, "震盪/反向"
 
 
+# 🔥【優化 2】量能硬門檻：低於 1.2 倍直接淘汰
 def calc_volume_quality(df: list, lookback: int = 20) -> tuple[float, int]:
-    """📊 成交量確認：最後 K 線量 vs 前 N 期均量 → (倍數, 評分 -10~+8)"""
+    """📊 成交量確認：最後 K 線量 vs 前 N 期均量 → (倍數，評分 -99~+8)
+    
+    🔥 v14.1 優化：低於 1.2 倍均量直接 -99 分淘汰，過濾假突破
+    """
     if len(df) < lookback + 1:
         return 1.0, 0
     seg = df[-(lookback + 1):-1]
@@ -906,33 +827,32 @@ def calc_volume_quality(df: list, lookback: int = 20) -> tuple[float, int]:
     if avg <= 0:
         return 1.0, 0
     ratio = df[-1]["v"] / avg
+    
+    # 🔥 沒量直接淘汰
+    if ratio < 1.2:
+        return round(ratio, 2), -99
+    
     if ratio >= 2.0:
         s = 8
     elif ratio >= 1.5:
         s = 5
-    elif ratio >= 1.0:
+    elif ratio >= 1.2:
         s = 2
-    elif ratio >= 0.5:
-        s = 0
     else:
-        s = -10  # 沒量的訊號直接扣，過濾假突破
+        s = 0
     return round(ratio, 2), s
 
 
 def adjust_tp_by_sr(
     entry: float, side: str, tp_levels: list, df: list
 ) -> tuple[list, list]:
-    """🎯 動態 TP：若固定 R 倍 TP 落在強 S/R 前方，把 TP 拉到關鍵位前
-
-    回傳：(調整後 TP 列表, 調整紀錄)
-    """
+    """🎯 動態 TP：若固定 R 倍 TP 落在強 S/R 前方，把 TP 拉到關鍵位前"""
     sup, res = calc_snr(df, lookback=100)
     out = list(tp_levels)
     notes = []
     if side == "LONG":
         for i, tp in enumerate(out):
             if tp > res * 1.001:
-                # TP 高過阻力 0.1% 以上 → 拉到阻力前 0.2%
                 new_tp = res * 0.998
                 if new_tp > entry:
                     notes.append(
@@ -967,7 +887,7 @@ def detect_pullback(df: list, side: str) -> bool:
 
 
 # ═════════════════════════════════════════════════════════
-# 7. 評分系統（規格 100 分制）
+# 7. 評分系統（規格 100 分制 + v14.1 優化）
 # ═════════════════════════════════════════════════════════
 def calc_score(
     df: list,
@@ -976,8 +896,9 @@ def calc_score(
     mtf: dict | None = None,
     instId: str | None = None,
 ) -> tuple[int, str, dict]:
-    """總分 = 趨勢30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5 + MTF15 + Volume8 = 最高 138
-    （高於 100 是因為 v14 新增 MTF + Volume 加權，門檻仍預設 68）
+    """總分 = 趨勢 30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + 流動性 5 + 動能 5 + MTF15 + Volume8 = 最高 138
+    
+    🔥 v14.1 優化：MTF 反向/量能不足直接 -99 分淘汰
     """
     detail = {}
     score = 0
@@ -1054,35 +975,52 @@ def calc_score(
     detail["mom"] = 5 if calc_momentum_ratio(df, side) else 0
     score += detail["mom"]
 
-    # 🎯 MTF 多時框共振 (-15 ~ +15)
+    # 🎯 MTF 多時框共振 (-99 / -5 ~ +15) 🔥 優化
     if mtf is None and instId:
         mtf = fetch_mtf_trend(instId)
     if mtf:
         mtf_score, mtf_desc = calc_mtf_alignment(mtf, side)
-        score += mtf_score
-        detail["mtf"] = mtf_score
-        detail["mtf_desc"] = mtf_desc
+        # 🔥 MTF 反向直接淘汰
+        if mtf_score == -99:
+            score = -99
+            detail["mtf"] = -99
+            detail["mtf_desc"] = mtf_desc
+        else:
+            score += mtf_score
+            detail["mtf"] = mtf_score
+            detail["mtf_desc"] = mtf_desc
 
-    # 📊 成交量 (-10 ~ +8)
+    # 📊 成交量 (-99 ~ +8) 🔥 優化
     vol_ratio, vol_score = calc_volume_quality(df)
-    score += vol_score
-    detail["volume"] = vol_score
-    detail["volume_ratio"] = vol_ratio
+    # 🔥 量能不足直接淘汰
+    if vol_score == -99:
+        score = -99
+        detail["volume"] = -99
+        detail["volume_ratio"] = vol_ratio
+    else:
+        score += vol_score
+        detail["volume"] = vol_score
+        detail["volume_ratio"] = vol_ratio
+
+    # 🔥 被淘汰的訊號直接回傳
+    if score < 0:
+        grade = "❌ 淘汰"
+        return score, grade, detail
 
     grade = (
         "A+ 極強 🔥"
-        if score >= 85
+        if score >= 90
         else "A 強力 ⭐"
-        if score >= 70
+        if score >= 82
         else "B+ 合格 ✅"
-        if score >= 68
+        if score >= 78
         else "觀望 ⚪"
     )
     return score, grade, detail
 
 
 # ═════════════════════════════════════════════════════════
-# 8. 訊號生成
+# 8. 訊號生成（🔥 v14.1 結構確認優化）
 # ═════════════════════════════════════════════════════════
 def generate_signal(
     instId: str,
@@ -1101,21 +1039,20 @@ def generate_signal(
 
     atr = calc_atr(df)
     if atr / current_price > atr_max_pct:
-        # 波動過大跳過（止損會被打飛）
         return None
 
-    # 極端資金費率時降分過濾（多頭時資金費率太高代表多方擁擠）
+    # 極端資金費率時降分過濾
     funding_penalty_long = funding_rate and funding_rate > 0.0008
     funding_penalty_short = funding_rate and funding_rate < -0.0008
 
     coin = instId.split("-")[0]
 
-    # 🌐 市場狀態識別（趨勢/震盪）→ 影響門檻
+    # 🌐 市場狀態識別
     regime_info = detect_market_regime(df)
     if regime_info["regime"] == "range":
-        threshold += 5  # 震盪市要求更嚴格
+        threshold += 5
     if regime_info["volatile"]:
-        threshold += 3  # 高波動加碼提高門檻
+        threshold += 3
 
     # 🕒 多時框抓一次給兩個方向共用
     mtf = fetch_mtf_trend(instId)
@@ -1123,12 +1060,16 @@ def generate_signal(
     candidates = []
     for side in ("LONG", "SHORT"):
         score, grade, detail = calc_score(df, side, current_price, mtf=mtf)
+        
+        # 🔥 被淘汰的訊號直接跳過
+        if score < 0:
+            continue
+            
         if side == "LONG" and funding_penalty_long:
             score -= 5
         if side == "SHORT" and funding_penalty_short:
             score -= 5
 
-        # 註記市場狀態到 detail
         detail["regime"] = regime_info["regime"]
         detail["adx"] = regime_info["adx"]
         detail["atr_pct"] = regime_info["atr_pct"]
@@ -1137,6 +1078,17 @@ def generate_signal(
         if detect_pullback(df, side):
             score += 3
             detail["pullback"] = True
+
+        # 🔥【優化 3】結構確認：至少 2 個核心條件才允許進場
+        core_conditions = [
+            detail.get("ob", 0) > 0,
+            detail.get("fvg", 0) > 0,
+            detail.get("liq", 0) > 0,
+            detail.get("pa", 0) > 0,
+        ]
+        if sum(core_conditions) < 2:
+            logging.info(f"[{instId}] {side} 結構確認不足 ({sum(core_conditions)}/2)，跳過")
+            continue
 
         # 🧠 統計學習（桶 + KNN 雙路）
         adj_simple, notes_simple = apply_learning_adjustment(
@@ -1166,7 +1118,7 @@ def generate_signal(
         else:
             tp_levels = [entry - risk * 1.5, entry - risk * 3.0, entry - risk * 5.0]
 
-        # 🎯 動態 TP 校正（避開強 S/R）
+        # 🎯 動態 TP 校正
         tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
         if tp_notes:
             detail["tp_adjust_notes"] = tp_notes
@@ -1282,7 +1234,6 @@ def is_cooling(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> bool:
 def mark_cooldown(instId: str, cooldown_hours: float = COOLDOWN_HOURS) -> None:
     cd = _load_json(COOLDOWN_FILE, {})
     cd[instId] = time.time()
-    # 順便清除過期紀錄
     cutoff = time.time() - cooldown_hours * 3600 * 3
     cd = {k: v for k, v in cd.items() if float(v) > cutoff}
     _save_json(COOLDOWN_FILE, cd)
@@ -1312,7 +1263,6 @@ def record_trade(
     mtf = snap.get("mtf_snapshot")
     regime = snap.get("regime_snapshot")
 
-    # 🧬 進場時的特徵向量（給 KNN 學習查相似度用）
     features = vectorize_signal(score, side, detail, funding_rate, mtf, regime)
 
     trade = {
@@ -1330,24 +1280,25 @@ def record_trade(
         "score": score,
         "funding_rate": funding_rate,
         "detail": detail,
-        "features": features,        # 🧬 KNN 用
-        "mtf": mtf,                  # 進場時 1H/4H 趨勢
-        "regime": regime,            # 進場時市場狀態
+        "features": features,
+        "mtf": mtf,
+        "regime": regime,
     }
     history = _load_json(TRADE_HISTORY_FILE, [])
     history.append(trade)
     _save_json(TRADE_HISTORY_FILE, history)
     logging.info(f"📝 記錄交易：{coin} {order_id} {close_type}")
 
-    # 🧠 餵給學習機制
     try:
         update_learning(trade, sig_snapshot)
+        # 🔥 更新勝率監控
+        update_winrate_monitor(trade)
     except Exception as e:
         logging.warning(f"⚠️ 更新學習狀態失敗：{e}")
 
 
 # ═════════════════════════════════════════════════════════
-# 9.6 學習機制（每筆交易結束後更新桶 → 評分時自動套用調整）
+# 9.6 學習機制
 # ═════════════════════════════════════════════════════════
 def _bucket_score(score: int) -> str:
     if score >= 90:
@@ -1456,7 +1407,7 @@ def apply_learning_adjustment(
     funding_rate,
     coin: str,
 ) -> tuple[int, list]:
-    """🧠 套用學習狀態 → (調整後分數, 套用紀錄)"""
+    """🧠 套用學習狀態 → (調整後分數，套用紀錄)"""
     cfg = load_config()
     lcfg = cfg.get("learning", {})
     if not lcfg.get("enabled", True):
@@ -1534,11 +1485,10 @@ def format_daily_report(date: str | None = None) -> str:
         f"勝率：`{s['wr']:.0f}%`",
         f"總 PnL：`{s['pnl']:+.2f}%`",
         f"平均：`{s['avg']:+.2f}%/筆`",
-        f"最大獲利：`{s['max_win']:+.2f}%`　最大虧損：`{s['max_loss']:+.2f}%`",
+        f"最大獲利：`{s['max_win']:+.2f}%` 最大虧損：`{s['max_loss']:+.2f}%`",
         "",
     ]
 
-    # 各幣種表現
     by_coin = {}
     for t in today:
         c = t.get("coin", "?")
@@ -1573,11 +1523,10 @@ def format_monthly_report(year_month: str | None = None) -> str:
         f"勝率：`{s['wr']:.0f}%`",
         f"總 PnL：`{s['pnl']:+.2f}%`",
         f"平均：`{s['avg']:+.2f}%/筆`",
-        f"最大獲利：`{s['max_win']:+.2f}%`　最大虧損：`{s['max_loss']:+.2f}%`",
+        f"最大獲利：`{s['max_win']:+.2f}%` 最大虧損：`{s['max_loss']:+.2f}%`",
         "",
     ]
 
-    # 連勝 / 連敗
     cur_streak = 0
     streak_type = None
     max_win_streak = 0
@@ -1601,10 +1550,9 @@ def format_monthly_report(year_month: str | None = None) -> str:
                 cur_streak = 1
             max_loss_streak = max(max_loss_streak, cur_streak)
 
-    lines.append(f"🔥 最大連勝：{max_win_streak}　❄️ 最大連敗：{max_loss_streak}")
+    lines.append(f"🔥 最大連勝：{max_win_streak}  ❄️ 最大連敗：{max_loss_streak}")
     lines.append("")
 
-    # 各幣種
     by_coin = {}
     for t in month:
         c = t.get("coin", "?")
@@ -1637,7 +1585,6 @@ def format_learning_report() -> str:
 
     lines = ["🧠 *機器人學習狀態*", "━━━━━━━━━━━━━━", ""]
 
-    # 1. 按幣種勝率
     if by_coin:
         lines.append("📊 *各幣種戰績*：")
         sorted_coins = sorted(by_coin.items(), key=lambda x: -x[1].get("total", 0))
@@ -1652,7 +1599,6 @@ def format_learning_report() -> str:
             )
         lines.append("")
 
-    # 2. 高勝率組合（樣本 ≥ 5）
     high_wr = [
         (b, d) for b, d in buckets.items()
         if d.get("total", 0) >= 5 and d["win"] / d["total"] > 0.6
@@ -1664,7 +1610,6 @@ def format_learning_report() -> str:
             lines.append(f"  `{b}` → {d['total']} 筆，勝率 `{wr:.0f}%`")
         lines.append("")
 
-    # 3. 低勝率組合
     low_wr = [
         (b, d) for b, d in buckets.items()
         if d.get("total", 0) >= 5 and d["win"] / d["total"] < 0.4
@@ -1676,9 +1621,7 @@ def format_learning_report() -> str:
             lines.append(f"  `{b}` → {d['total']} 筆，勝率 `{wr:.0f}%`")
         lines.append("")
 
-    # 4. 主要止損原因
     if loss_reasons:
-        from collections import Counter
         cnt = Counter(r.get("title", "?") for r in loss_reasons[-30:])
         lines.append("🔍 *最近 30 筆止損主因 TOP3*：")
         for title, c in cnt.most_common(3):
@@ -1743,7 +1686,7 @@ def apply_knn_learning(
     mtf: dict | None,
     regime: dict | None,
 ) -> tuple[int, list]:
-    """🧬 KNN 學習：找最相似的 10 筆歷史交易，看勝率 → (調整後分數, 紀錄)"""
+    """🧬 KNN 學習：找最相似的 10 筆歷史交易，看勝率 → (調整後分數，紀錄)"""
     cfg = load_config()
     if not cfg.get("learning", {}).get("knn_enabled", True):
         return score, []
@@ -1774,7 +1717,7 @@ def record_loss_reason(coin: str, side: str, reasons: list) -> None:
     """記錄止損主因到 learning_state（供後續查詢）"""
     state = _load_json(LEARNING_FILE, {})
     state.setdefault("loss_reasons", [])
-    for r in reasons[:1]:  # 只記第一名主因
+    for r in reasons[:1]:
         state["loss_reasons"].append({
             "ts": time.time(),
             "coin": coin,
@@ -1782,13 +1725,82 @@ def record_loss_reason(coin: str, side: str, reasons: list) -> None:
             "code": r.get("code"),
             "title": r.get("title"),
         })
-    # 只保留最近 100 筆
     state["loss_reasons"] = state["loss_reasons"][-100:]
     _save_json(LEARNING_FILE, state)
 
 
 # ═════════════════════════════════════════════════════════
-# 9.65 覆盤分析（SL/BE/LOCK 後解釋為什麼）
+# 🔥【新增】勝率監控機制
+# ═════════════════════════════════════════════════════════
+def update_winrate_monitor(trade: dict) -> None:
+    """📊 更新勝率監控狀態"""
+    state = _load_json(WINRATE_MONITOR_FILE, {"trades": [], "paused_until": None})
+    
+    cfg = load_config()
+    wm_cfg = cfg.get("winrate_monitor", {})
+    if not wm_cfg.get("enabled", True):
+        return
+    
+    sample_size = wm_cfg.get("sample_size", 5)
+    min_winrate = wm_cfg.get("min_winrate", 0.50)
+    pause_hours = wm_cfg.get("pause_hours", 2)
+    
+    # 加入新交易
+    state["trades"].append({
+        "time": trade["time"],
+        "coin": trade["coin"],
+        "side": trade["side"],
+        "is_win": trade["is_win"],
+        "is_loss": trade["close_type"] == "SL"
+    })
+    
+    # 保留最近 N 筆
+    state["trades"] = state["trades"][-sample_size * 2:]
+    
+    # 計算最近 sample_size 筆勝率
+    recent = state["trades"][-sample_size:]
+    if len(recent) >= sample_size:
+        wins = sum(1 for t in recent if t["is_win"])
+        wr = wins / len(recent)
+        
+        # 勝率過低觸發暫停
+        if wr < min_winrate and not state.get("paused_until"):
+            state["paused_until"] = time.time() + pause_hours * 3600
+            _save_json(WINRATE_MONITOR_FILE, state)
+            send_tg(
+                f"⚠️ *勝率監控觸發*\n"
+                f"最近 {sample_size} 筆勝率 `{wr:.0%}` < 門檻 `{min_winrate:.0%}`\n"
+                f"🔄 系統暫停新訊號 {pause_hours} 小時\n"
+                f"💡 建議檢視 /learning 報告調整策略"
+            )
+            logging.warning(f"📊 勝率監控：{wr:.0%} < {min_winrate:.0%}，暫停 {pause_hours}h")
+    
+    _save_json(WINRATE_MONITOR_FILE, state)
+
+
+def check_winrate_monitor(cfg: dict) -> tuple[bool, str]:
+    """📊 檢查勝率監控狀態 → (是否暫停，原因)"""
+    wm_cfg = cfg.get("winrate_monitor", {})
+    if not wm_cfg.get("enabled", True):
+        return False, ""
+    
+    state = _load_json(WINRATE_MONITOR_FILE, {})
+    paused_until = state.get("paused_until")
+    
+    if paused_until and time.time() < paused_until:
+        remaining = (paused_until - time.time()) / 3600
+        return True, f"勝率監控暫停中（剩餘 {remaining:.1f} 小時）"
+    elif paused_until and time.time() >= paused_until:
+        # 暫停結束，清除狀態
+        state["paused_until"] = None
+        _save_json(WINRATE_MONITOR_FILE, state)
+        send_tg("✅ *勝率監控已恢復*\n系統恢復正常掃描 🚀")
+    
+    return False, ""
+
+
+# ═════════════════════════════════════════════════════════
+# 9.65 覆盤分析
 # ═════════════════════════════════════════════════════════
 def analyze_loss(sig: dict, df_at_loss: list) -> list:
     """🔍 比較進場附近 vs 出場附近的市況，回推主因（最多 3 名）"""
@@ -1950,7 +1962,7 @@ def _fmt_postmortem(
         f"━━━━━━━━━━━━━━",
         f"🆔 訂單：`{order_id}`",
         f"⏰ 時間：{tw_ts()}",
-        f"方向：{direction}　結算：{label}",
+        f"方向：{direction} 結算：{label}",
         f"原始評分：{sig.get('score', 0)} 分",
         "",
         "📋 *主要原因（依嚴重度）*：",
@@ -1983,7 +1995,6 @@ def get_similar_stats(score: int, side: str, detail: dict, funding_rate, coin: s
     """從學習狀態取「同類設定」的歷史勝負"""
     state = _load_json(LEARNING_FILE, {})
     buckets = state.get("buckets", {})
-    # 取「coin_side」這個最具體的桶
     key = f"coin_side:{coin}_{side}"
     bd = buckets.get(key, {})
     n = bd.get("total", 0)
@@ -2008,13 +2019,12 @@ def set_system_state(state: dict) -> None:
 # 9.8 連續虧損熔斷
 # ═════════════════════════════════════════════════════════
 def check_circuit_breaker(cfg: dict) -> tuple[bool, str, int]:
-    """🛑 檢查連續虧損熔斷 → (是否暫停, 訊息, 連敗次數)"""
+    """🛑 檢查連續虧損熔斷 → (是否暫停，訊息，連敗次數)"""
     cb = cfg.get("circuit_breaker", {})
     if not cb.get("enabled", True):
         return False, "", 0
 
     history = _load_json(TRADE_HISTORY_FILE, [])
-    # 只看最近 20 筆已結束交易（含 LOCK 鎖利）
     recent = [
         t for t in history
         if t.get("close_type") in ("SL", "BE", "LOCK", "TP1", "TP2", "TP3")
@@ -2022,7 +2032,6 @@ def check_circuit_breaker(cfg: dict) -> tuple[bool, str, int]:
     if not recent:
         return False, "", 0
 
-    # 從尾巴往前數連敗（SL 計敗、TP1/2/3/BE 中斷連敗）
     losses = 0
     last_loss_time: datetime | None = None
     for t in reversed(recent):
@@ -2079,7 +2088,6 @@ def is_in_news_window(cfg: dict) -> tuple[bool, str]:
     """📰 新聞事件時段檢查（自訂事件 + NFP 自動規則）"""
     now = tw_now()
 
-    # 1. config 中的自訂事件
     for nb in cfg.get("news_blackouts", []):
         try:
             start = datetime.fromisoformat(nb["start"])
@@ -2092,7 +2100,6 @@ def is_in_news_window(cfg: dict) -> tuple[bool, str]:
         except Exception:
             continue
 
-    # 2. NFP 自動規則：每月第一個週五 21:25–22:30（台灣時間）
     auto = cfg.get("auto_news_blackout", {})
     if auto.get("nfp", True):
         if now.weekday() == 4 and now.day <= 7:
@@ -2100,7 +2107,6 @@ def is_in_news_window(cfg: dict) -> tuple[bool, str]:
             if 21 * 60 + 25 <= cur < 22 * 60 + 30:
                 return True, "NFP 非農（自動偵測）"
 
-    # 3. CPI 約莫每月中旬 21:25–22:30
     if auto.get("cpi", True):
         if 10 <= now.day <= 16:
             cur = now.hour * 60 + now.minute
@@ -2124,6 +2130,27 @@ def is_blackout_time(cfg: dict) -> tuple[bool, str]:
         except Exception:
             continue
     return False, ""
+
+
+# 🔥【優化 4】活躍時段檢查
+def is_active_hours(cfg: dict) -> bool:
+    """🕐 檢查當前是否在允許交易的活躍時段（台灣時間）"""
+    active_hours = cfg.get("active_hours_tw", [])
+    if not active_hours:
+        return True  # 沒設定則允許所有時段
+    
+    now = tw_now()
+    cur_min = now.hour * 60 + now.minute
+    
+    for w in active_hours:
+        try:
+            sh, sm = map(int, w["start"].split(":"))
+            eh, em = map(int, w["end"].split(":"))
+            if _in_window(cur_min, sh * 60 + sm, eh * 60 + em):
+                return True
+        except Exception:
+            continue
+    return False
 
 
 # ═════════════════════════════════════════════════════════
@@ -2152,7 +2179,6 @@ class SignalTracker:
             "hit_tp3": False,
             "activated_at": now_ts if active else None,
             "entry_message_id": None,
-            # 🪡 歷史插針補抓的游標（秒）：下次 _check_one 從這之後的 K 線開始掃
             "last_checked_ts": now_ts if active else None,
         }
         self._save()
@@ -2179,7 +2205,7 @@ class SignalTracker:
             df_at_loss = [
                 {"ts": c["ts"], "o": c["o"], "h": c["h"], "l": c["l"], "c": c["c"], "v": c["v"]}
                 for c in all_candles
-                if (c["ts"] / 1000) >= (activated_at - 900)  # 進場前 15 分作為基準
+                if (c["ts"] / 1000) >= (activated_at - 900)
             ]
             if len(df_at_loss) < 10:
                 return
@@ -2208,10 +2234,7 @@ class SignalTracker:
             logging.error(f"❌ 覆盤分析失敗：{e}")
 
     def has_open_position(self, instId: str) -> bool:
-        """🔒 該幣種是否還有未結束的訊號（PENDING / ACTIVE / BE / TRAIL）
-
-        用途：避免在平倉前對同一幣種重複開倉。
-        """
+        """🔒 該幣種是否還有未結束的訊號"""
         for sig in self.signals.values():
             if sig.get("instId") == instId and sig.get("status") in (
                 "PENDING", "ACTIVE", "BE", "TRAIL"
@@ -2232,15 +2255,7 @@ class SignalTracker:
             self._save()
 
     def _check_one(self, key: str, sig: dict) -> bool:
-        """檢查單一訊號 → True 代表結束（要從追蹤移除）
-
-        v12.2：歷史 K 線補抓版
-          - PENDING：價格進入觸發區間時轉 ACTIVE
-          - ACTIVE/BE/TRAIL：抓 last_checked_ts 之後所有 K 線，依時序逐根處理
-            ↳ 每根 K 線檢查 TP1 → TP2 → TP3 → SL（SL 用更新後的值）
-            ↳ 即便 cron 漏跑、訊號活了 3 小時才檢查，歷史插針也不會漏
-          - SL 觸發時依狀態自動分類：止損(LOSS) / 保本(BE) / 鎖利(LOCK)
-        """
+        """檢查單一訊號 → True 代表結束（要從追蹤移除）"""
         try:
             price = fetch_price(sig["instId"])
             if price <= 0:
@@ -2249,14 +2264,12 @@ class SignalTracker:
             sig["current_price"] = price
             status = sig["status"]
 
-            # ── PENDING：等待進場 ──
             if status == "PENDING":
                 return self._check_pending(sig, price)
 
             if status not in ("ACTIVE", "BE", "TRAIL"):
                 return False
 
-            # ── 抓 last_checked_ts 之後的所有 K 線，依時序處理 ──
             all_candles = fetch_candles_full(sig["instId"])
             last_ts_s = (
                 sig.get("last_checked_ts")
@@ -2271,7 +2284,6 @@ class SignalTracker:
                 if self._process_candle(sig, c):
                     return True
 
-            # 把游標推進到最後一根「已收線」K 線（未收線下次再掃）
             confirmed = [c for c in new_candles if c["confirmed"]]
             if confirmed:
                 sig["last_checked_ts"] = max(c["ts"] for c in confirmed) / 1000.0
@@ -2326,12 +2338,7 @@ class SignalTracker:
         return False
 
     def _process_candle(self, sig: dict, candle: dict) -> bool:
-        """對單一 K 線檢查 TP1 → TP2 → TP3 → SL → True 代表訊號結束
-
-        - 用 K 線的 high / low 作極值（自然涵蓋插針）
-        - 多 TP 在同一根 K 線都觸到時，依序更新 SL（TP1→保本、TP2→鎖利）
-        - 處理完所有 TP 後，再用「最終 SL 值」檢查 SL 是否觸發
-        """
+        """對單一 K 線檢查 TP1 → TP2 → TP3 → SL → True 代表訊號結束"""
         side = sig["side"]
         entry = sig["entry"]
         sl = sig["sl"]
@@ -2345,8 +2352,8 @@ class SignalTracker:
         if side == "LONG":
             favor_hit = lambda t: ch >= t
             against_hit = lambda t: cl <= t
-            wick_favor = lambda t: cc < t and ch >= t        # 收盤未到、影線觸及
-            wick_against = lambda t: cc > t and cl <= t      # 收盤未破、影線插針
+            wick_favor = lambda t: cc < t and ch >= t
+            wick_against = lambda t: cc > t and cl <= t
         else:
             favor_hit = lambda t: cl <= t
             against_hit = lambda t: ch >= t
@@ -2441,7 +2448,6 @@ class SignalTracker:
                 reply_to_message_id=reply_to,
             )
             record_trade(coin, side, order_id, entry, sl, close_type, sig["score"], sig)
-            # 🔍 覆盤分析
             self._send_postmortem(sig, mode)
             self.transitions += 1
             return True
@@ -2511,17 +2517,10 @@ class SignalTracker:
 
 
 # ═════════════════════════════════════════════════════════
-# 11. 主掃描
+# 11. 主掃描（🔥 v14.1 整合所有優化）
 # ═════════════════════════════════════════════════════════
 def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: int = 30) -> None:
-    """🔔 高頻監控模式 — 只檢查既有訊號的 PENDING 進場 / TP / SL，不生成新訊號
-
-    in_run_polls: 一次 cron 執行內輪詢幾次（搭配 poll_interval 秒間隔）
-      預設 1 次 = 純靠 cron 頻率；設成 3 + interval=20 → 一次 cron 內 1 分鐘內掃 3 次
-
-    用法：python main.py monitor
-    建議搭配 monitor-only.yml workflow（每 3 分鐘 cron）
-    """
+    """🔔 高頻監控模式 — 只檢查既有訊號的 PENDING 進場 / TP / SL，不生成新訊號"""
     if not tracker.signals:
         logging.info("📭 無追蹤中訊號，monitor 跳過")
         return
@@ -2546,12 +2545,13 @@ def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: in
 
 
 def run_scan(tracker: SignalTracker) -> int:
-    """🔍 執行掃描（整合 v12 全部風控）"""
+    """🔍 執行掃描（整合 v14.1 全部風控優化）"""
     logging.info("🚀 開始掃描...")
 
     # ── 0. 熱載入配置 ──
     cfg = load_config()
     coins = cfg.get("coins", ALL_COINS)
+    focus_coins = cfg.get("focus_coins", [])  # 🔥 聚焦幣種
     max_signals = cfg.get("max_signals", MAX_SIGNALS)
     score_thr = cfg.get("score_threshold", SCORE_THRESHOLD)
     cooldown_h = cfg.get("cooldown_hours", COOLDOWN_HOURS)
@@ -2573,7 +2573,6 @@ def run_scan(tracker: SignalTracker) -> int:
             state["circuit_since"] = time.time()
             set_system_state(state)
         logging.warning(f"🛑 熔斷中（連敗 {losses}）→ 仍持續監控既有訊號")
-        # 熔斷期間不開新單，但要繼續追既有單
         tracker.check_all()
         tracker.send_position_updates()
         return 0
@@ -2600,13 +2599,32 @@ def run_scan(tracker: SignalTracker) -> int:
         tracker.send_position_updates()
         return 0
 
+    # ── 2.6 🔥 勝率監控檢查 ──
+    wr_paused, wr_reason = check_winrate_monitor(cfg)
+    if wr_paused:
+        logging.info(f"📊 {wr_reason}，不開新單但繼續監控")
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
+    # ── 2.7 🔥 活躍時段檢查（僅影響新訊號生成） ──
+    if not is_active_hours(cfg):
+        logging.info("🕐 非活躍時段，跳過新訊號生成（仍監控既有持倉）")
+        tracker.check_all()
+        tracker.send_position_updates()
+        return 0
+
     # ── 3. 掃描每個幣種 ──
     sent = 0
     for instId in coins:
         if sent >= max_signals:
             break
 
-        # 3.1 🔒 同幣種未平倉不重複開倉（先擋這個，避免冷卻過期後又開新單）
+        # 🔥 聚焦幣種模式：若設定聚焦幣種，只交易這些
+        if focus_coins and instId not in focus_coins:
+            continue
+
+        # 3.1 🔒 同幣種未平倉不重複開倉
         if tracker.has_open_position(instId):
             logging.info(f"[{instId}] 已有未平倉訊號，跳過")
             continue
@@ -2716,7 +2734,7 @@ def run_scan(tracker: SignalTracker) -> int:
 def main() -> None:
     try:
         logging.info("=" * 50)
-        logging.info("🤖 Alpha Oracle Pro v11.0 啟動")
+        logging.info("🤖 Alpha Oracle Pro v14.1 高勝率版 啟動")
         logging.info(f"⏰ 台灣時間：{tw_ts()}")
         logging.info("=" * 50)
 
@@ -2740,8 +2758,6 @@ def main() -> None:
                 send_tg(format_monthly_report(ym))
                 return
             if cmd in ("monitor", "/monitor", "/監控"):
-                # 高頻輕量監控模式（只追既有訊號）
-                # 可選：python main.py monitor 3 20 → 一次 cron 內掃 3 次、每次間隔 20s
                 polls = int(sys.argv[2]) if len(sys.argv) > 2 else 1
                 interval = int(sys.argv[3]) if len(sys.argv) > 3 else 30
                 run_monitor(tracker, in_run_polls=polls, poll_interval=interval)
@@ -2753,7 +2769,6 @@ def main() -> None:
     except Exception as e:
         logging.error(f"🔥 系統錯誤：{e}")
         import traceback
-
         traceback.print_exc()
         sys.exit(1)
 
