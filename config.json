@@ -1,37 +1,41 @@
 {
-  "_comment": "Alpha Oracle Pro v14.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
-
   "coins": [
-    "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
-    "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP",
-    "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP",
-    "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"
+    "BTC-USDT-SWAP",
+    "ETH-USDT-SWAP", 
+    "SOL-USDT-SWAP",
+    "BNB-USDT-SWAP",
+    "XRP-USDT-SWAP"
   ],
-
-  "max_signals": 3,
-  "score_threshold": 68,
-  "cooldown_hours": 2,
+  "focus_coins": [
+    "BTC-USDT-SWAP",
+    "ETH-USDT-SWAP",
+    "SOL-USDT-SWAP"
+  ],
+  "max_signals": 2,
+  "score_threshold": 78,
+  "cooldown_hours": 4,
   "signal_expire_hours": 24,
   "atr_max_pct": 0.04,
-
   "post_mortem": {
     "enabled": true,
     "loss_only": false
   },
-
   "learning": {
     "enabled": true,
     "knn_enabled": true,
     "min_samples": 5,
     "max_score_adjust": 10
   },
-
+  "news_blackouts": [],
+  "auto_news_blackout": {
+    "nfp": true,
+    "cpi": true
+  },
   "price_verification": {
     "enabled": true,
     "max_deviation_pct": 0.5,
     "block_on_unverified": false
   },
-
   "circuit_breaker": {
     "enabled": true,
     "soft_threshold": 3,
@@ -39,19 +43,22 @@
     "hard_threshold": 5,
     "hard_pause_hours": 24
   },
-
-  "blackout_windows_tw": [
-    { "start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）" },
-    { "start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）" },
-    { "start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）" },
-    { "start": "21:25", "end": "21:45", "reason": "美股開盤波動" },
-    { "start": "02:00", "end": "02:30", "reason": "FOMC 公布時段" }
+  "active_hours_tw": [
+    {"start": "09:00", "end": "11:30"},
+    {"start": "15:00", "end": "17:30"},
+    {"start": "21:00", "end": "23:30"}
   ],
-
-  "news_blackouts": [],
-
-  "auto_news_blackout": {
-    "nfp": true,
-    "cpi": true
+  "blackout_windows_tw": [
+    {"start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）"},
+    {"start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）"},
+    {"start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）"},
+    {"start": "21:25", "end": "21:45", "reason": "美股開盤波動"},
+    {"start": "02:00", "end": "02:30", "reason": "FOMC 公布時段"}
+  ],
+  "winrate_monitor": {
+    "enabled": true,
+    "sample_size": 5,
+    "min_winrate": 0.50,
+    "pause_hours": 2
   }
 }
