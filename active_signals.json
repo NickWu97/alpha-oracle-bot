@@ -1,1 +1,190 @@
-{}
+{
+  "BTC-USDT-SWAP_SHORT_1778155596-4C60C4DB": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 80913.7,
+    "sl": 81210.2071,
+    "tp1": 80468.9393,
+    "tp2": 80686.551,
+    "tp3": 80686.551,
+    "score": 78,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.72,
+      "regime": "trend",
+      "adx": 68.6,
+      "atr_pct": 0.245,
+      "tp_adjust_notes": [
+        "TP2 由 80024.1786 校正到 80686.5510（避開支撐 80525.5000）",
+        "TP3 由 79431.1643 校正到 80686.5510（避開支撐 80525.5000）"
+      ]
+    },
+    "funding_rate": 1.13260038122e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.1
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 49.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 68.6,
+      "atr_pct": 0.245,
+      "volatile": false
+    },
+    "created": 1778155596.257864,
+    "expires": 1778241996.2578642,
+    "order_id": "1778155596-4C60C4DB",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778155596.2578897,
+    "entry_message_id": 3226,
+    "last_checked_ts": 1778155596.2578897,
+    "current_price": 80898.0
+  },
+  "ETH-USDT-SWAP_LONG_1778155598-3EFFF600": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 2331.09,
+    "sl": 2320.8761,
+    "tp1": 2346.4109,
+    "tp2": 2361.7318,
+    "tp3": 2382.1596,
+    "score": 75,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 41.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": -10,
+      "mtf_desc": "1H=反 / 4H=反",
+      "volume": 0,
+      "volume_ratio": 0.55,
+      "regime": "trend",
+      "adx": 66.3,
+      "atr_pct": 0.292
+    },
+    "funding_rate": 1.15713902081e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 66.3,
+      "atr_pct": 0.292,
+      "volatile": false
+    },
+    "created": 1778155598.3477523,
+    "expires": 1778241998.3477528,
+    "order_id": "1778155598-3EFFF600",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778155598.3481755,
+    "entry_message_id": 3227,
+    "last_checked_ts": 1778155598.3481755,
+    "current_price": 2331.09
+  },
+  "SOL-USDT-SWAP_LONG_1778155600-12E859A3": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 89.62,
+    "sl": 89.0875,
+    "tp1": 90.4188,
+    "tp2": 90.2092,
+    "tp3": 90.2092,
+    "score": 80,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 44.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.64,
+      "regime": "trend",
+      "adx": 39.1,
+      "atr_pct": 0.397,
+      "tp_adjust_notes": [
+        "TP2 由 91.2175 校正到 90.2092（避開阻力 90.3900）",
+        "TP3 由 92.2825 校正到 90.2092（避開阻力 90.3900）"
+      ]
+    },
+    "funding_rate": 7.97503213976e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 71.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 39.1,
+      "atr_pct": 0.397,
+      "volatile": false
+    },
+    "created": 1778155600.2998383,
+    "expires": 1778242000.2998385,
+    "order_id": "1778155600-12E859A3",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778155600.300238,
+    "entry_message_id": 3228,
+    "last_checked_ts": 1778155600.300238,
+    "current_price": 89.62
+  }
+}
