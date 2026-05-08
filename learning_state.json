@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 3,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "sess:europe": {
       "win": 0,
@@ -38,9 +38,9 @@
     },
     "score:80-89": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "rsi_short:20-29": {
       "win": 0,
@@ -50,15 +50,15 @@
     },
     "coin:ETH": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:ETH_SHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "score:60-69": {
       "win": 0,
@@ -122,9 +122,9 @@
     },
     "sess:asia_dawn": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:NEAR": {
       "win": 1,
@@ -143,6 +143,12 @@
       "loss": 0,
       "be": 1,
       "total": 1
+    },
+    "rsi_short:40-49": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -154,9 +160,9 @@
     },
     "ETH": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "BNB": {
       "win": 0,
@@ -212,7 +218,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778262288.030426,
+      "coin": "ETH",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778214463.2491736
+  "updated_at": 1778262287.5582218
 }

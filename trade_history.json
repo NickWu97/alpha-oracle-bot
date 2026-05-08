@@ -583,5 +583,75 @@
       "atr_pct": 0.687,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-09 01:44",
+    "date": "2026-05-09",
+    "order_id": "1778251884-869B0A60",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2285.58,
+    "close": 2299.7786,
+    "close_type": "SL",
+    "pnl": -0.62,
+    "is_win": false,
+    "is_be": false,
+    "score": 83,
+    "funding_rate": 4.35620525093e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 47.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H+4H 雙順 ✅",
+      "volume": 5,
+      "volume_ratio": 1.52,
+      "regime": "range",
+      "adx": 7.3,
+      "atr_pct": 0.414,
+      "learning_notes": [
+        "fund:neutral (n=9, 勝率 33%) → -2"
+      ],
+      "learning_adjust": -2,
+      "tp_adjust_notes": [
+        "TP2 由 2242.9843 校正到 2266.9749（避開支撐 2262.4500）",
+        "TP3 由 2214.5871 校正到 2266.9749（避開支撐 2262.4500）"
+      ]
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 47.2,
+      "atr_pct": 0.414,
+      "funding": 0.0435620525093,
+      "vol_ratio": 1.52,
+      "adx": 7.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.4
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 7.3,
+      "atr_pct": 0.414,
+      "volatile": false
+    }
   }
 ]
