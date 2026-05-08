@@ -518,5 +518,70 @@
       "atr_pct": 0.687,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-08 12:27",
+    "date": "2026-05-08",
+    "order_id": "1778165442-2DFB3812",
+    "coin": "NEAR",
+    "side": "SHORT",
+    "entry": 1.48,
+    "close": 1.48,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 78,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.5,
+      "rsi": 25,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": -5,
+      "mtf_desc": "1H=中 / 4H=反",
+      "volume": 8,
+      "volume_ratio": 2.32,
+      "regime": "range",
+      "adx": 12.3,
+      "atr_pct": 0.687,
+      "tp_adjust_notes": [
+        "TP3 由 1.4039 校正到 1.4329（避開支撐 1.4300）"
+      ]
+    },
+    "features": {
+      "score": 78.0,
+      "rsi": 51.5,
+      "atr_pct": 0.687,
+      "funding": 0.1,
+      "vol_ratio": 2.32,
+      "adx": 12.3,
+      "mtf_h1": 0.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 52.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 81.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 12.3,
+      "atr_pct": 0.687,
+      "volatile": false
+    }
   }
 ]

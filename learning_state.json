@@ -15,8 +15,8 @@
     "fund:neutral": {
       "win": 3,
       "loss": 5,
-      "be": 0,
-      "total": 8
+      "be": 1,
+      "total": 9
     },
     "sess:europe": {
       "win": 0,
@@ -81,8 +81,8 @@
     "score:70-79": {
       "win": 3,
       "loss": 1,
-      "be": 0,
-      "total": 4
+      "be": 1,
+      "total": 5
     },
     "sess:us": {
       "win": 2,
@@ -117,8 +117,8 @@
     "rsi_short:50-59": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "sess:asia_dawn": {
       "win": 1,
@@ -129,13 +129,19 @@
     "coin:NEAR": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "coin_side:NEAR_SHORT": {
       "win": 1,
       "loss": 0,
-      "be": 0,
+      "be": 1,
+      "total": 2
+    },
+    "sess:asia_day": {
+      "win": 0,
+      "loss": 0,
+      "be": 1,
       "total": 1
     }
   },
@@ -167,8 +173,8 @@
     "NEAR": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     }
   },
   "loss_reasons": [
@@ -208,5 +214,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778183959.8769016
+  "updated_at": 1778214463.2491736
 }
