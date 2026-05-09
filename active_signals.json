@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 2316.57,
-    "sl": 2322.0739,
+    "sl": 2316.57,
     "tp1": 2308.3141,
     "tp2": 2300.0582,
     "tp3": 2289.0504,
@@ -56,13 +56,83 @@
     "created": 1778316699.166187,
     "expires": 1778403099.1661873,
     "order_id": "1778316699-38228921",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1778316699.1662147,
     "entry_message_id": 3258,
-    "last_checked_ts": 1778334300.0,
-    "current_price": 2313.27
+    "last_checked_ts": 1778337000.0,
+    "current_price": 2307.86
+  },
+  "BTC-USDT-SWAP_LONG_1778338215-5A592676": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 80293.7,
+    "sl": 80176.9357,
+    "tp1": 80468.8464,
+    "tp2": 80643.9929,
+    "tp3": 80488.6002,
+    "score": 85,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 51.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 5,
+      "mtf_desc": "單一時框順勢 (1H:順, 4H:中)",
+      "volume": 8,
+      "volume_ratio": 2.04,
+      "regime": "transitional",
+      "adx": 24.3,
+      "atr_pct": 0.097,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=10, 勝率 30%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 6 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -6,
+      "tp_adjust_notes": [
+        "TP3 由 80877.5214 校正到 80488.6002（避開阻力 80649.9000）"
+      ]
+    },
+    "funding_rate": -2.80771741208e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.6
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 44.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 24.3,
+      "atr_pct": 0.097,
+      "volatile": false
+    },
+    "created": 1778338215.1221917,
+    "expires": 1778424615.122192,
+    "order_id": "1778338215-5A592676",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778338215.1227934,
+    "entry_message_id": 3264,
+    "last_checked_ts": 1778338215.1227934,
+    "current_price": 80291.1
   }
 }
