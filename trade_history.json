@@ -1001,5 +1001,143 @@
       "atr_pct": 0.097,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-10 23:41",
+    "date": "2026-05-10",
+    "order_id": "1778426027-1843D6A4",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 80977.0,
+    "close": 81166.6268,
+    "close_type": "TP1",
+    "pnl": 0.23,
+    "is_win": true,
+    "is_be": false,
+    "score": 105,
+    "funding_rate": 2.62931091699e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 74.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H+4H 雙順 ✅",
+      "volume": 8,
+      "volume_ratio": 2.67,
+      "regime": "range",
+      "adx": 13.5,
+      "atr_pct": 0.104,
+      "pullback": true,
+      "learning_notes": [
+        "sess:us (n=9, 勝率 78%) → +2",
+        "coin:BTC (n=5, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 105.0,
+      "rsi": 74.3,
+      "atr_pct": 0.104,
+      "funding": 0.0262931091699,
+      "vol_ratio": 2.67,
+      "adx": 13.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 77.0
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 13.5,
+      "atr_pct": 0.104,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-10 23:41",
+    "date": "2026-05-10",
+    "order_id": "1778426027-1843D6A4",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 80977.0,
+    "close": 80977.0,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 105,
+    "funding_rate": 2.62931091699e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 74.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H+4H 雙順 ✅",
+      "volume": 8,
+      "volume_ratio": 2.67,
+      "regime": "range",
+      "adx": 13.5,
+      "atr_pct": 0.104,
+      "pullback": true,
+      "learning_notes": [
+        "sess:us (n=9, 勝率 78%) → +2",
+        "coin:BTC (n=5, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 105.0,
+      "rsi": 74.3,
+      "atr_pct": 0.104,
+      "funding": 0.0262931091699,
+      "vol_ratio": 2.67,
+      "adx": 13.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 77.0
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 13.5,
+      "atr_pct": 0.104,
+      "volatile": false
+    }
   }
 ]
