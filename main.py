@@ -94,7 +94,7 @@ ALL_COINS = [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
     "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP",
     "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP",
-    "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP",
+    "SUI-USDT-SWAP",
 ]
 
 ACTIVE_SIGNALS_FILE = "active_signals.json"
@@ -2281,7 +2281,38 @@ def run_scan(tracker: SignalTracker) -> int:
     tracker.check_all()
     tracker.send_position_updates()
     logging.info(f"✅ 掃描完成，本輪 {sent} 筆")
+
+    # ⚡ v15.4 持續即時監控：cron 結束前用剩餘時間繼續輪詢
+    # 每 10 秒清快取重抓最新價，把延遲壓到 ~10 秒
+    if tracker.signals:
+        intensive_monitor(tracker, total_seconds=50, interval_seconds=10)
+
     return sent
+
+
+def intensive_monitor(tracker: SignalTracker, total_seconds: int = 50,
+                       interval_seconds: int = 10) -> None:
+    """⚡ 持續即時監控：每 N 秒清快取重抓即時價，把 TP/SL 延遲壓到極限
+
+    在每次 cron 主掃描結束後呼叫，用剩餘時間做密集輪詢。
+    `total_seconds` 預設 50 秒（搭配 1 分鐘 cron 留 10 秒 buffer 給 commit）
+    `interval_seconds` 預設 10 秒（每 10 秒輪一次）
+    """
+    if not tracker.signals:
+        return
+    end_time = time.time() + total_seconds
+    polls = 0
+    while time.time() < end_time and tracker.signals:
+        time.sleep(interval_seconds)
+        try:
+            # 強制清快取，重抓最新即時價
+            _price_cache.clear()
+            _candle_cache.clear()
+            tracker.check_all()
+            polls += 1
+        except Exception as e:
+            logging.error(f"❌ intensive_monitor poll: {e}")
+    logging.info(f"📡 即時監控完成：{polls} 輪 × {interval_seconds}s 間隔")
 
 
 def run_monitor(tracker: SignalTracker) -> None:
