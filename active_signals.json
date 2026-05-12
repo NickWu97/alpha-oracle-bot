@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 80994.7,
-    "sl": 80994.7,
+    "sl": 80522.1357,
     "tp1": 80522.1357,
     "tp2": 80049.5714,
     "tp3": 79419.4857,
@@ -51,14 +51,14 @@
     "created": 1778558773.9219906,
     "expires": 1778645173.921991,
     "order_id": "1778558773-677E4878",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1778558773.9220324,
-    "last_checked_ts": 1778598000.0,
+    "last_checked_ts": 1778605200.0,
     "entry_message_id": 3280,
-    "current_price": 80547.3
+    "current_price": 80358.9
   },
   "ADA-USDT-SWAP_SHORT_1778581425-07841A8A": {
     "instId": "ADA-USDT-SWAP",
@@ -117,9 +117,9 @@
     "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1778581425.2781715,
-    "last_checked_ts": 1778598000.0,
+    "last_checked_ts": 1778605200.0,
     "entry_message_id": 3294,
-    "current_price": 0.2699
+    "current_price": 0.2701
   },
   "XRP-USDT-SWAP_SHORT_1778588593-7BAE7A62": {
     "instId": "XRP-USDT-SWAP",
@@ -178,8 +178,8 @@
     "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1778588593.0701942,
-    "last_checked_ts": 1778598000.0,
+    "last_checked_ts": 1778605200.0,
     "entry_message_id": 3300,
-    "current_price": 1.427
+    "current_price": 1.431
   }
 }
