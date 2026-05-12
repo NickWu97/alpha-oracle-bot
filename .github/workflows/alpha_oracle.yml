@@ -1,8 +1,12 @@
-name: Alpha Oracle Pro
+name: Alpha Oracle (1 分鐘 + 即時監控)
+
+# 🤖 v15.4 即時監控強化：
+#   每 1 分鐘 cron 觸發 → 主掃描 → 內部 50 秒密集輪詢（每 10s 抓即時價）
+#   → 把 TP/SL 報告延遲從 ~60s 壓到 ~10s
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "* * * * *"
   workflow_dispatch:
 
 permissions:
@@ -13,10 +17,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  run:
-    name: 🤖 Alpha Oracle Pro
+  scan:
+    name: 🤖 Alpha Oracle 主掃描 + 即時監控
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3
 
     steps:
       - name: 📦 下載程式碼
@@ -44,12 +48,8 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          MAX_SIGNALS: "3"
-          SETUP_SCORE_THRESHOLD: "68"
           TZ: Asia/Taipei
-        run: |
-          echo "🚀 Alpha Oracle Pro - 繁體中文版"
-          python main.py
+        run: python main.py
 
       - name: 💾 保存狀態
         if: always()
