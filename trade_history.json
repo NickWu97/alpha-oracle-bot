@@ -1307,5 +1307,62 @@
         "rsi": 42.4
       }
     }
+  },
+  {
+    "time": "2026-05-12 20:20",
+    "date": "2026-05-12",
+    "order_id": "1778558773-677E4878",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 80994.7,
+    "close": 80522.1357,
+    "close_type": "TP1",
+    "pnl": 0.58,
+    "is_win": true,
+    "score": 80,
+    "funding_rate": 1.74516795361e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.79,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.259,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "coin:BTC (n=7, 勝率 71%) → +2"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 32.4,
+      "atr_pct": 0.259,
+      "funding": 0.0174516795361,
+      "vol_ratio": 0.79,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 49.8
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 51.1
+      }
+    }
   }
 ]
