@@ -1195,5 +1195,117 @@
         "rsi": 42.4
       }
     }
+  },
+  {
+    "time": "2026-05-12 17:38",
+    "date": "2026-05-12",
+    "order_id": "1778568543-8595EE27",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2306.69,
+    "close": 2289.2975,
+    "close_type": "TP2",
+    "pnl": 0.75,
+    "is_win": true,
+    "score": 100,
+    "funding_rate": 8.36826922225e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 38.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "vol_ratio": 0.78,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.168,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 4 (勝率 40%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 100.0,
+      "rsi": 38.3,
+      "atr_pct": 0.168,
+      "funding": 0.0836826922225,
+      "vol_ratio": 0.78,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 32.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "rsi": 42.4
+      }
+    }
+  },
+  {
+    "time": "2026-05-12 17:38",
+    "date": "2026-05-12",
+    "order_id": "1778568543-8595EE27",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2306.69,
+    "close": 2297.9937,
+    "close_type": "LOCK",
+    "pnl": 0.38,
+    "is_win": true,
+    "score": 100,
+    "funding_rate": 8.36826922225e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 38.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 0,
+      "vol_ratio": 0.78,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.168,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 4 (勝率 40%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 100.0,
+      "rsi": 38.3,
+      "atr_pct": 0.168,
+      "funding": 0.0836826922225,
+      "vol_ratio": 0.78,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 32.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "rsi": 42.4
+      }
+    }
   }
 ]

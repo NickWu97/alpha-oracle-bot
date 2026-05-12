@@ -56,68 +56,8 @@
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1778558773.9220324,
-    "last_checked_ts": 1778570100.0,
+    "last_checked_ts": 1778577300.0,
     "entry_message_id": 3280,
-    "current_price": 80921.2
-  },
-  "ETH-USDT-SWAP_SHORT_1778568543-8595EE27": {
-    "instId": "ETH-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 2306.69,
-    "sl": 2306.69,
-    "tp1": 2297.9937,
-    "tp2": 2289.2975,
-    "tp3": 2277.7025,
-    "score": 100,
-    "grade": "🔥 A+ 極強",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 38.3,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "volume": 0,
-      "vol_ratio": 0.78,
-      "ema": 0,
-      "ema_desc": "",
-      "atr_pct": 0.168,
-      "learning_notes": [
-        "🧬 KNN：10 筆最相似 → 勝 4 (勝率 40%)"
-      ],
-      "learning_adjust": 0
-    },
-    "funding_rate": 8.36826922225e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "rsi": 32.3
-      },
-      "4H": {
-        "supertrend": -1,
-        "rsi": 42.4
-      }
-    },
-    "ob_zone": {
-      "low": 2310.0,
-      "high": 2313.0
-    },
-    "created": 1778568543.1994917,
-    "expires": 1778654943.199492,
-    "order_id": "1778568543-8595EE27",
-    "status": "BE",
-    "hit_tp1": true,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1778568543.199521,
-    "last_checked_ts": 1778570100.0,
-    "entry_message_id": 3283,
-    "current_price": 2297.32
+    "current_price": 80873.7
   }
 }
