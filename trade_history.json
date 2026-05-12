@@ -1364,5 +1364,292 @@
         "rsi": 51.1
       }
     }
+  },
+  {
+    "time": "2026-05-12 23:15",
+    "date": "2026-05-12",
+    "order_id": "1778581425-07841A8A",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.2747,
+    "close": 0.2718,
+    "close_type": "TP1",
+    "pnl": 1.06,
+    "is_win": true,
+    "score": 89,
+    "funding_rate": -3.59795894374e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 40.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.88,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.463,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "score:80-89 (n=8, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 89.0,
+      "rsi": 40.0,
+      "atr_pct": 0.463,
+      "funding": -0.035979589437400004,
+      "vol_ratio": 0.88,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 24.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 57.5
+      }
+    }
+  },
+  {
+    "time": "2026-05-12 23:15",
+    "date": "2026-05-12",
+    "order_id": "1778581425-07841A8A",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.2747,
+    "close": 0.269,
+    "close_type": "TP2",
+    "pnl": 2.07,
+    "is_win": true,
+    "score": 89,
+    "funding_rate": -3.59795894374e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 40.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.88,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.463,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "score:80-89 (n=8, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 89.0,
+      "rsi": 40.0,
+      "atr_pct": 0.463,
+      "funding": -0.035979589437400004,
+      "vol_ratio": 0.88,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 24.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 57.5
+      }
+    }
+  },
+  {
+    "time": "2026-05-12 23:15",
+    "date": "2026-05-12",
+    "order_id": "1778588590-762B5CA4",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 664.3,
+    "close": 662.0393,
+    "close_type": "SL",
+    "pnl": -0.34,
+    "is_win": false,
+    "score": 87,
+    "funding_rate": 2.00225364622e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 68.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 5,
+      "vol_ratio": 1.77,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.227,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 7 (勝率 70%)",
+        "中高 +3",
+        "score:80-89 (n=9, 勝率 67%) → +1",
+        "fund:neutral (n=21, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 68.4,
+      "atr_pct": 0.227,
+      "funding": 0.0200225364622,
+      "vol_ratio": 1.77,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "rsi": 49.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "rsi": 62.0
+      }
+    }
+  },
+  {
+    "time": "2026-05-12 23:15",
+    "date": "2026-05-12",
+    "order_id": "1778588593-7BAE7A62",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.45,
+    "close": 1.4386,
+    "close_type": "TP1",
+    "pnl": 0.79,
+    "is_win": true,
+    "score": 79,
+    "funding_rate": -2.09046463661e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 24.2,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.9,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.35,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "fund:neutral (n=21, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 79.0,
+      "rsi": 24.2,
+      "atr_pct": 0.35,
+      "funding": -0.0209046463661,
+      "vol_ratio": 0.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 33.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 58.7
+      }
+    }
+  },
+  {
+    "time": "2026-05-12 23:15",
+    "date": "2026-05-12",
+    "order_id": "1778588593-7BAE7A62",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.45,
+    "close": 1.4272,
+    "close_type": "TP2",
+    "pnl": 1.57,
+    "is_win": true,
+    "score": 79,
+    "funding_rate": -2.09046463661e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 24.2,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.9,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.35,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "fund:neutral (n=21, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 79.0,
+      "rsi": 24.2,
+      "atr_pct": 0.35,
+      "funding": -0.0209046463661,
+      "vol_ratio": 0.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 33.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 58.7
+      }
+    }
   }
 ]
