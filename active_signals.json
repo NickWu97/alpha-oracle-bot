@@ -59,5 +59,65 @@
     "last_checked_ts": 1778580000.0,
     "entry_message_id": 3280,
     "current_price": 80754.5
+  },
+  "ADA-USDT-SWAP_SHORT_1778581425-07841A8A": {
+    "instId": "ADA-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.2747,
+    "sl": 0.2766,
+    "tp1": 0.2718,
+    "tp2": 0.269,
+    "tp3": 0.2652,
+    "score": 89,
+    "grade": "⭐ A 強力",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 40.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.88,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.463,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "score:80-89 (n=8, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": -3.59795894374e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 24.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 57.5
+      }
+    },
+    "ob_zone": {
+      "low": 0.2757,
+      "high": 0.2765
+    },
+    "created": 1778581425.2781007,
+    "expires": 1778667825.278101,
+    "order_id": "1778581425-07841A8A",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778581425.2781715,
+    "last_checked_ts": 1778581425.2781715,
+    "entry_message_id": 3294
   }
 }
