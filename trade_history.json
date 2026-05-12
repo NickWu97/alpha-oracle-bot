@@ -1708,5 +1708,176 @@
         "rsi": 51.1
       }
     }
+  },
+  {
+    "time": "2026-05-13 03:16",
+    "date": "2026-05-13",
+    "order_id": "1778558773-677E4878",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 80994.7,
+    "close": 80522.1357,
+    "close_type": "LOCK",
+    "pnl": 0.58,
+    "is_win": true,
+    "score": 80,
+    "funding_rate": 1.74516795361e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 32.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.79,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.259,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "coin:BTC (n=7, 勝率 71%) → +2"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 32.4,
+      "atr_pct": 0.259,
+      "funding": 0.0174516795361,
+      "vol_ratio": 0.79,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 49.8
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 51.1
+      }
+    }
+  },
+  {
+    "time": "2026-05-13 03:16",
+    "date": "2026-05-13",
+    "order_id": "1778581425-07841A8A",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.2747,
+    "close": 0.2718,
+    "close_type": "LOCK",
+    "pnl": 1.06,
+    "is_win": true,
+    "score": 89,
+    "funding_rate": -3.59795894374e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 40.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.88,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.463,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "score:80-89 (n=8, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 89.0,
+      "rsi": 40.0,
+      "atr_pct": 0.463,
+      "funding": -0.035979589437400004,
+      "vol_ratio": 0.88,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 24.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 57.5
+      }
+    }
+  },
+  {
+    "time": "2026-05-13 03:16",
+    "date": "2026-05-13",
+    "order_id": "1778588593-7BAE7A62",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.45,
+    "close": 1.4386,
+    "close_type": "LOCK",
+    "pnl": 0.79,
+    "is_win": true,
+    "score": 79,
+    "funding_rate": -2.09046463661e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 24.2,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "vol_ratio": 0.9,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.35,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝 6 (勝率 60%)",
+        "fund:neutral (n=21, 勝率 62%) → +1"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 79.0,
+      "rsi": 24.2,
+      "atr_pct": 0.35,
+      "funding": -0.0209046463661,
+      "vol_ratio": 0.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "rsi": 33.3
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 58.7
+      }
+    }
   }
 ]
