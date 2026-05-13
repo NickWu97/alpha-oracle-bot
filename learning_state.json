@@ -13,10 +13,10 @@
       "total": 10
     },
     "fund:neutral": {
-      "win": 25,
+      "win": 26,
       "loss": 9,
       "be": 3,
-      "total": 37
+      "total": 38
     },
     "sess:europe": {
       "win": 0,
@@ -37,10 +37,10 @@
       "total": 7
     },
     "score:80-89": {
-      "win": 11,
+      "win": 12,
       "loss": 4,
       "be": 0,
-      "total": 15
+      "total": 16
     },
     "rsi_short:20-29": {
       "win": 3,
@@ -91,10 +91,10 @@
       "total": 11
     },
     "rsi_long:40-49": {
-      "win": 3,
+      "win": 4,
       "loss": 2,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:ETH_LONG": {
       "win": 0,
@@ -221,6 +221,18 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin:AVAX": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAX_LONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -271,6 +283,12 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "AVAX": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -338,5 +356,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778645704.376571
+  "updated_at": 1778674886.6644838
 }

@@ -2296,5 +2296,72 @@
         "rsi": 53.8
       }
     }
+  },
+  {
+    "time": "2026-05-13 20:21",
+    "date": "2026-05-13",
+    "order_id": "1778656867-4E9A53DB",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.992,
+    "close": 10.085857,
+    "close_type": "LOCK",
+    "pnl": 0.94,
+    "pnl_usd": 40.39,
+    "realized_r": 2.0,
+    "tp_hits": {
+      "tp1": true,
+      "tp2": true,
+      "tp3": false
+    },
+    "is_win": true,
+    "score": 80,
+    "raw_score": 85,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 42.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 2,
+      "vol_ratio": 1.18,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.313,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似（同向） → 勝 2 (勝率 20%)",
+        "低勝率 -8",
+        "score:80-89 (n=15, 勝率 73%) → +2",
+        "fund:neutral (n=37, 勝率 68%) → +1"
+      ],
+      "learning_adjust": -5
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 42.3,
+      "atr_pct": 0.313,
+      "funding": 0.1,
+      "vol_ratio": 1.18,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 78.2
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 36.8
+      }
+    }
   }
 ]
