@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 4,
+      "win": 5,
       "loss": 1,
       "be": 1,
-      "total": 6
+      "total": 7
     },
     "rsi_short:30-39": {
       "win": 8,
@@ -13,10 +13,10 @@
       "total": 10
     },
     "fund:neutral": {
-      "win": 21,
+      "win": 22,
       "loss": 7,
       "be": 2,
-      "total": 30
+      "total": 31
     },
     "sess:europe": {
       "win": 0,
@@ -103,10 +103,10 @@
       "total": 1
     },
     "coin:SOL": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:SOL_LONG": {
       "win": 0,
@@ -145,10 +145,10 @@
       "total": 1
     },
     "rsi_short:40-49": {
-      "win": 3,
+      "win": 4,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "rsi_long:50-59": {
       "win": 2,
@@ -203,6 +203,12 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin_side:SOL_SHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -225,10 +231,10 @@
       "total": 2
     },
     "SOL": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "NEAR": {
       "win": 1,
@@ -300,5 +306,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778613411.4606268
+  "updated_at": 1778631283.5514672
 }
