@@ -59,8 +59,9 @@
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1778645786.4081724,
-    "last_checked_ts": 1778645786.4081724,
-    "entry_message_id": 3340
+    "last_checked_ts": 1778655600.0,
+    "entry_message_id": 3340,
+    "current_price": 80932.0
   },
   "SOL-USDT-SWAP_LONG_1778645789-71FABD33": {
     "instId": "SOL-USDT-SWAP",
@@ -121,7 +122,77 @@
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1778645789.6326773,
-    "last_checked_ts": 1778645789.6326773,
-    "entry_message_id": 3341
+    "last_checked_ts": 1778655600.0,
+    "entry_message_id": 3341,
+    "current_price": 95.06
+  },
+  "AVAX-USDT-SWAP_LONG_1778656867-4E9A53DB": {
+    "instId": "AVAX-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 9.992,
+    "sl": 9.945071,
+    "tp1": 10.062393,
+    "tp2": 10.132786,
+    "tp3": 10.226643,
+    "score": 80,
+    "raw_score": 85,
+    "grade": "⭐ A 強力",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 42.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 2,
+      "vol_ratio": 1.18,
+      "ema": 0,
+      "ema_desc": "",
+      "atr_pct": 0.313,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似（同向） → 勝 2 (勝率 20%)",
+        "低勝率 -8",
+        "score:80-89 (n=15, 勝率 73%) → +2",
+        "fund:neutral (n=37, 勝率 68%) → +1"
+      ],
+      "learning_adjust": -5
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "rsi": 78.2
+      },
+      "4H": {
+        "supertrend": 0,
+        "rsi": 36.8
+      }
+    },
+    "ob_zone": {
+      "low": 10.01,
+      "high": 10.032
+    },
+    "tp_r_ratios": [
+      1.5,
+      3.0,
+      5.0
+    ],
+    "created": 1778656867.0687785,
+    "expires": 1778743267.0687788,
+    "order_id": "1778656867-4E9A53DB",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778656867.0699902,
+    "last_checked_ts": 1778656867.0699902,
+    "entry_message_id": 3344,
+    "sl_original": 9.945071
   }
 }
