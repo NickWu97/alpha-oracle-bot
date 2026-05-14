@@ -1,1 +1,140 @@
-{}
+{
+  "BTC-USDT-SWAP_LONG_1778750194-E41499CA": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 79753.6,
+    "sl": 79515.089286,
+    "tp1": 80111.366071,
+    "tp2": 80469.132143,
+    "tp3": 81133.2084,
+    "score": 83,
+    "raw_score": 91,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 55.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "volume": 0,
+      "volume_ratio": 0.94,
+      "regime": "range",
+      "adx": 9.7,
+      "atr_pct": 0.199,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：4 筆最相似 → 勝率 0%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -8,
+      "sl_method": "atr_too_far",
+      "tp_notes": [
+        "TP3 80946.1536 → 81133.2084（避開聚類阻力 81295.8000）"
+      ]
+    },
+    "funding_rate": 3.29706587163e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 36.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 9.7,
+      "atr_pct": 0.199,
+      "volatile": false
+    },
+    "created": 1778750193.8751047,
+    "expires": 1778836593.8751054,
+    "order_id": "1778750194-E41499CA",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "last_checked_ts": null,
+    "entry_message_id": null,
+    "sl_original": 79515.089286
+  },
+  "LINK-USDT-SWAP_LONG_1778750205-F3113057": {
+    "instId": "LINK-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 10.253,
+    "sl": 10.195679,
+    "tp1": 10.338982,
+    "tp2": 10.424964,
+    "tp3": 10.539607,
+    "score": 75,
+    "raw_score": 83,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 15,
+      "rsi_value": 50.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "volume": 0,
+      "volume_ratio": 0.97,
+      "regime": "range",
+      "adx": 5.5,
+      "atr_pct": 0.373,
+      "learning_notes": [
+        "🧬 KNN：4 筆最相似 → 勝率 0%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -8,
+      "sl_method": "atr_too_far"
+    },
+    "funding_rate": -8.3638047435e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 5.5,
+      "atr_pct": 0.373,
+      "volatile": false
+    },
+    "created": 1778750205.0155828,
+    "expires": 1778836605.0155833,
+    "order_id": "1778750205-F3113057",
+    "status": "PENDING",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": null,
+    "last_checked_ts": null,
+    "entry_message_id": null,
+    "sl_original": 10.195679
+  }
+}
