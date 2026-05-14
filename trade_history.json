@@ -4366,5 +4366,292 @@
       "atr_pct": 0.652,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-15 03:21",
+    "date": "2026-05-15",
+    "order_id": "1778779706-B2BCB316",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2705,
+    "close": 0.278471,
+    "close_type": "TP2",
+    "pnl": 2.95,
+    "is_win": true,
+    "is_be": false,
+    "score": 73,
+    "funding_rate": 9.62371793076e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 75.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 8,
+      "volume_ratio": 2.43,
+      "regime": "trend",
+      "adx": 31.4,
+      "atr_pct": 0.652,
+      "learning_notes": [
+        "🧬 KNN：4 筆最相似 → 勝率 0%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -8,
+      "sl_method": "atr_too_far"
+    },
+    "features": {
+      "score": 73.0,
+      "rsi": 75.3,
+      "atr_pct": 0.652,
+      "funding": 0.0962371793076,
+      "vol_ratio": 2.43,
+      "adx": 31.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.5
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 41.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.4,
+      "atr_pct": 0.652,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-15 03:21",
+    "date": "2026-05-15",
+    "order_id": "1778780736-695C4096",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 10.019,
+    "close": 10.0858,
+    "close_type": "TP1",
+    "pnl": 0.67,
+    "is_win": true,
+    "is_be": false,
+    "score": 72,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 68.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.38,
+      "regime": "transitional",
+      "adx": 23.3,
+      "atr_pct": 0.761,
+      "learning_notes": [
+        "sess:asia_dawn (n=7, 勝率 29%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 2,
+      "tp_adjust_notes": [
+        "TP1 由 10.1903 校正到 10.0858（避開阻力 10.1060）",
+        "TP2 由 10.3616 校正到 10.0858（避開阻力 10.1060）",
+        "TP3 由 10.5901 校正到 10.0858（避開阻力 10.1060）"
+      ]
+    },
+    "features": {
+      "score": 72.0,
+      "rsi": 68.1,
+      "atr_pct": 0.761,
+      "funding": 0.1,
+      "vol_ratio": 0.38,
+      "adx": 23.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.4
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.3,
+      "atr_pct": 0.761,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-15 03:21",
+    "date": "2026-05-15",
+    "order_id": "1778780736-695C4096",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 10.019,
+    "close": 10.0858,
+    "close_type": "TP2",
+    "pnl": 0.67,
+    "is_win": true,
+    "is_be": false,
+    "score": 72,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 68.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.38,
+      "regime": "transitional",
+      "adx": 23.3,
+      "atr_pct": 0.761,
+      "learning_notes": [
+        "sess:asia_dawn (n=7, 勝率 29%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 2,
+      "tp_adjust_notes": [
+        "TP1 由 10.1903 校正到 10.0858（避開阻力 10.1060）",
+        "TP2 由 10.3616 校正到 10.0858（避開阻力 10.1060）",
+        "TP3 由 10.5901 校正到 10.0858（避開阻力 10.1060）"
+      ]
+    },
+    "features": {
+      "score": 72.0,
+      "rsi": 68.1,
+      "atr_pct": 0.761,
+      "funding": 0.1,
+      "vol_ratio": 0.38,
+      "adx": 23.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.4
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.3,
+      "atr_pct": 0.761,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-15 03:21",
+    "date": "2026-05-15",
+    "order_id": "1778780736-695C4096",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 10.019,
+    "close": 10.0858,
+    "close_type": "TP3",
+    "pnl": 0.67,
+    "is_win": true,
+    "is_be": false,
+    "score": 72,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 68.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.38,
+      "regime": "transitional",
+      "adx": 23.3,
+      "atr_pct": 0.761,
+      "learning_notes": [
+        "sess:asia_dawn (n=7, 勝率 29%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 2,
+      "tp_adjust_notes": [
+        "TP1 由 10.1903 校正到 10.0858（避開阻力 10.1060）",
+        "TP2 由 10.3616 校正到 10.0858（避開阻力 10.1060）",
+        "TP3 由 10.5901 校正到 10.0858（避開阻力 10.1060）"
+      ]
+    },
+    "features": {
+      "score": 72.0,
+      "rsi": 68.1,
+      "atr_pct": 0.761,
+      "funding": 0.1,
+      "vol_ratio": 0.38,
+      "adx": 23.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.4
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.3,
+      "atr_pct": 0.761,
+      "volatile": false
+    }
   }
 ]
