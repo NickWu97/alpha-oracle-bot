@@ -4794,5 +4794,290 @@
       "atr_pct": 0.905,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-15 07:13",
+    "date": "2026-05-15",
+    "order_id": "1778779702-6CD64A32",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 681.1,
+    "close": 676.632143,
+    "close_type": "SL",
+    "pnl": -0.66,
+    "is_win": false,
+    "is_be": false,
+    "score": 87,
+    "funding_rate": -8.5636491098e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 83.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 4.64,
+      "regime": "trend",
+      "adx": 52.3,
+      "atr_pct": 0.436,
+      "learning_notes": [
+        "coin:BNB (n=6, 勝率 83%) → +2",
+        "🧬 KNN：4 筆最相似 → 勝率 0%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -6,
+      "sl_method": "atr_too_far"
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 83.3,
+      "atr_pct": 0.436,
+      "funding": -0.0085636491098,
+      "vol_ratio": 4.64,
+      "adx": 52.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 52.3,
+      "atr_pct": 0.436,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-15 07:14",
+    "date": "2026-05-15",
+    "order_id": "1778792020-07FB40EE",
+    "coin": "DOT",
+    "side": "LONG",
+    "entry": 1.395,
+    "close": 1.3769,
+    "close_type": "SL",
+    "pnl": -1.3,
+    "is_win": false,
+    "is_be": false,
+    "score": 70,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.41,
+      "regime": "transitional",
+      "adx": 25.0,
+      "atr_pct": 0.87,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 5,
+      "tp_adjust_notes": [
+        "TP2 由 1.4493 校正到 1.4192（避開阻力 1.4220）",
+        "TP3 由 1.4855 校正到 1.4192（避開阻力 1.4220）"
+      ]
+    },
+    "features": {
+      "score": 70.0,
+      "rsi": 44.8,
+      "atr_pct": 0.87,
+      "funding": 0.1,
+      "vol_ratio": 0.41,
+      "adx": 25.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 78.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 25.0,
+      "atr_pct": 0.87,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-15 07:14",
+    "date": "2026-05-15",
+    "order_id": "1778796808-B80D6395",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2729,
+    "close": 0.2702,
+    "close_type": "SL",
+    "pnl": -0.99,
+    "is_win": false,
+    "is_be": false,
+    "score": 84,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 39.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.25,
+      "regime": "range",
+      "adx": 9.1,
+      "atr_pct": 0.669,
+      "learning_notes": [
+        "score:70-79 (n=19, 勝率 68%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP2 由 0.2811 校正到 0.2797（避開阻力 0.2803）",
+        "TP3 由 0.2866 校正到 0.2797（避開阻力 0.2803）"
+      ]
+    },
+    "features": {
+      "score": 84.0,
+      "rsi": 39.1,
+      "atr_pct": 0.669,
+      "funding": 0.1,
+      "vol_ratio": 0.25,
+      "adx": 9.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.9
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 49.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 9.1,
+      "atr_pct": 0.669,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-15 07:14",
+    "date": "2026-05-15",
+    "order_id": "1778796810-283811E4",
+    "coin": "TON",
+    "side": "LONG",
+    "entry": 2.154,
+    "close": 2.1302,
+    "close_type": "SL",
+    "pnl": -1.1,
+    "is_win": false,
+    "is_be": false,
+    "score": 79,
+    "funding_rate": 5e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 43.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "volume": -10,
+      "volume_ratio": 0.25,
+      "regime": "trend",
+      "adx": 34.2,
+      "atr_pct": 0.739,
+      "learning_notes": [
+        "score:70-79 (n=19, 勝率 68%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 由 2.1897 校正到 2.1716（避開阻力 2.1760）",
+        "TP2 由 2.2254 校正到 2.1716（避開阻力 2.1760）",
+        "TP3 由 2.2729 校正到 2.1716（避開阻力 2.1760）"
+      ]
+    },
+    "features": {
+      "score": 79.0,
+      "rsi": 43.1,
+      "atr_pct": 0.739,
+      "funding": 0.05,
+      "vol_ratio": 0.25,
+      "adx": 34.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 29.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 34.2,
+      "atr_pct": 0.739,
+      "volatile": false
+    }
   }
 ]
