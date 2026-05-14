@@ -1,5 +1,5 @@
 {
-  "_comment": "Alpha Oracle Pro v15.4 — 即時監控強化 + 10 幣精選",
+  "_comment": "Alpha Oracle Pro v15.5 設定檔。所有值都會 deep-merge 進 DEFAULT_CONFIG，留空就用預設。",
 
   "coins": [
     "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
@@ -11,27 +11,89 @@
   "max_signals_per_scan": 2,
   "score_threshold": 72,
   "cooldown_hours": 2,
+  "cooldown_per_side": true,
   "signal_expire_hours": 24,
+  "max_hold_hours": 48,
   "atr_max_pct": 0.035,
+  "tp_r_ratios": [1.5, 3.0, 5.0],
+  "sl_atr_mult": 1.5,
   "min_rr_ratio": 1.5,
-  "show_score_breakdown": false,
 
+  "_entry_zone_comment": "PENDING 訊號的進場容差。LONG 容忍下方 0.6%、上方 0.2%（等回拉用）",
+  "entry_zone_pct": {
+    "long_favor": 0.006,
+    "long_against": 0.002,
+    "short_favor": 0.006,
+    "short_against": 0.002
+  },
+
+  "_hard_filters_comment": "三道必要條件，任一不符直接拒絕。要更多訊號可降低門檻",
   "hard_filters": {
-    "_comment": "三條必要條件，任一不符直接拒絕",
     "require_mtf_h4_align": true,
     "min_volume_ratio": 0.7,
     "min_adx": 18
   },
 
+  "_setup_watch_comment": "三階段訊號第 1 階段：早期 Setup 偵測（不開單，僅通知）",
+  "setup_watch": {
+    "enabled": true,
+    "score_threshold": 55,
+    "expire_hours": 6,
+    "min_dist_to_zone_pct": 0.005,
+    "max_dist_to_zone_pct": 0.05,
+    "approach_dist_pct": 0.003,
+    "min_impulse_atr": 1.5
+  },
+
+  "_reversal_mode_comment": "震盪市反向掛單。ADX < 18 且有流動性掃蕩才啟用",
+  "reversal_mode": {
+    "enabled": true,
+    "max_adx": 18,
+    "score_threshold": 60,
+    "snr_distance_pct": 0.01,
+    "tp_r_ratios": [1.2, 2.0, 3.0],
+    "sl_atr_extra": 0.3
+  },
+
+  "microtrigger": {
+    "enabled": true,
+    "min_bullish_candles": 3,
+    "lookback_for_breakout": 5
+  },
+
+  "pending_reminder_minutes": 30,
+
+  "heartbeat": {
+    "enabled": true,
+    "hour_mark": true
+  },
+
+  "_tick_check_comment": "v15.5 即時 tick check：純看 price vs SL/TP，秒級觸發",
+  "tick_check": {
+    "enabled": true,
+    "price_cache_ttl_active": 2,
+    "price_cache_ttl_idle": 5
+  },
+
+  "_intensive_monitor_comment": "Cron 結束前再用剩餘時間密集輪詢。v15.5 改 3 秒一輪",
+  "intensive_monitor": {
+    "enabled": true,
+    "total_seconds": 55,
+    "interval_seconds": 3
+  },
+
   "capital_management": {
     "capital_per_trade_usd": 100,
     "max_loss_usd": 20,
+    "total_capital_usd": 1000,
     "max_leverage": 50,
     "min_leverage": 2
   },
 
+  "_daily_limits_comment": "兩條紅線，任一觸發整天停掃",
   "daily_limits": {
-    "max_concurrent_positions": 3,
+    "max_concurrent_positions": 2,
+    "daily_loss_limit_usd": 50,
     "daily_loss_limit_pct": 5.0
   },
 
@@ -59,13 +121,19 @@
   },
 
   "blackout_windows_tw": [
-    { "start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）" },
-    { "start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）" },
-    { "start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）" },
-    { "start": "21:25", "end": "21:45", "reason": "美股開盤波動" },
-    { "start": "02:00", "end": "02:30", "reason": "FOMC 公布時段" }
+    {"start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）"},
+    {"start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）"},
+    {"start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）"},
+    {"start": "02:00", "end": "02:30", "reason": "FOMC 公布時段"}
   ],
 
-  "auto_news_blackout": { "nfp": true, "cpi": true },
-  "news_blackouts": []
+  "auto_news_blackout": {
+    "nfp": true,
+    "cpi": true,
+    "et_window_min_before": 35,
+    "et_window_min_after": 60
+  },
+
+  "news_blackouts": [],
+  "conservative_sl_first": true
 }
