@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 6,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 13
+      "total": 14
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 11,
-      "loss": 11,
+      "loss": 12,
       "be": 4,
-      "total": 26
+      "total": 27
     },
     "sess:us": {
       "win": 0,
@@ -206,9 +206,9 @@
     },
     "rsi_short:40-49": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:TON": {
       "win": 3,
@@ -236,15 +236,15 @@
     },
     "coin:ADA": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:ADA_SHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:DOGE_SHORT": {
       "win": 0,
@@ -328,9 +328,9 @@
     },
     "ADA": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     }
   },
   "loss_reasons": [
@@ -398,5 +398,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1778727588.7050388
+  "updated_at": 1778764621.602449
 }

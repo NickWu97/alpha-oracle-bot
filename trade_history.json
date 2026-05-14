@@ -4223,5 +4223,80 @@
       "atr_pct": 0.354,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-14 21:17",
+    "date": "2026-05-14",
+    "order_id": "1778758027-67229116",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.2639,
+    "close": 0.265143,
+    "close_type": "SL",
+    "pnl": -0.47,
+    "realized_r": -1.0,
+    "tp_hits": {
+      "tp1": false,
+      "tp2": false,
+      "tp3": false
+    },
+    "is_win": false,
+    "score": 77,
+    "raw_score": 85,
+    "funding_rate": -3.165783689e-07,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 44.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.62,
+      "regime": "transitional",
+      "adx": 20.8,
+      "atr_pct": 0.313,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似 → 勝率 0%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -8,
+      "sl_method": "atr_too_far"
+    },
+    "features": {
+      "score": 77.0,
+      "rsi": 44.0,
+      "atr_pct": 0.313,
+      "funding": -0.0003165783689,
+      "vol_ratio": 0.62,
+      "adx": 20.8,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 49.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 27.9
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.8,
+      "atr_pct": 0.313,
+      "volatile": false
+    }
   }
 ]
