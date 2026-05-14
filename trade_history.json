@@ -4298,5 +4298,73 @@
       "atr_pct": 0.313,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-15 02:20",
+    "date": "2026-05-15",
+    "order_id": "1778779706-B2BCB316",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2705,
+    "close": 0.274486,
+    "close_type": "TP1",
+    "pnl": 1.47,
+    "is_win": true,
+    "is_be": false,
+    "score": 73,
+    "funding_rate": 9.62371793076e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 75.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 8,
+      "volume_ratio": 2.43,
+      "regime": "trend",
+      "adx": 31.4,
+      "atr_pct": 0.652,
+      "learning_notes": [
+        "🧬 KNN：4 筆最相似 → 勝率 0%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -8,
+      "sl_method": "atr_too_far"
+    },
+    "features": {
+      "score": 73.0,
+      "rsi": 75.3,
+      "atr_pct": 0.652,
+      "funding": 0.0962371793076,
+      "vol_ratio": 2.43,
+      "adx": 31.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.5
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 41.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.4,
+      "atr_pct": 0.652,
+      "volatile": false
+    }
   }
 ]
