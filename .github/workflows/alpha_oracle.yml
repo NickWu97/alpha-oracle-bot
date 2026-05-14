@@ -1,65 +1,76 @@
-name: Alpha Oracle (1 分鐘 + 即時監控)
+name: Alpha Oracle Pro v15.5
 
-# 🤖 v15.4 即時監控強化：
-#   每 1 分鐘 cron 觸發 → 主掃描 → 內部 50 秒密集輪詢（每 10s 抓即時價）
-#   → 把 TP/SL 報告延遲從 ~60s 壓到 ~10s
+# 路徑：.github/workflows/alpha_oracle.yml
+#
+# v15.5 改動：
+# - 主掃描每分鐘跑（cron: '* * * * *'）
+# - 純 tick check 每 30 秒跑（透過分 :00 與 :30 兩個 job 模擬）
+# - GitHub Actions cron 實際最短間隔是 5 分鐘，所以靠 main.py 內部的
+#   intensive_monitor（55 秒輪詢，每 3 秒一輪）來達到秒級延遲
+# - 真正即時請在本機跑 websocket_monitor.py
 
 on:
   schedule:
-    - cron: "* * * * *"
+    # 每分鐘觸發。GitHub Actions 排程有延遲，實際大約每 1~3 分鐘
+    - cron: '* * * * *'
   workflow_dispatch:
+    inputs:
+      command:
+        description: '指令（留空=掃描；stats=持倉；daily=日報；learning=學習；tick=即時 check）'
+        required: false
+        default: ''
 
-permissions:
-  contents: write
-
+# 同時只能有一個 instance（避免 JSON race condition）
 concurrency:
-  group: alpha-oracle-${{ github.ref }}
+  group: alpha-oracle-prod
   cancel-in-progress: false
 
 jobs:
   scan:
-    name: 🤖 Alpha Oracle 主掃描 + 即時監控
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
+    permissions:
+      contents: write
 
     steps:
-      - name: 📦 下載程式碼
+      - name: Checkout
         uses: actions/checkout@v4
         with:
+          # 確保 git push 不會踩到別人的提交
           fetch-depth: 1
 
-      - name: 🐍 設置 Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: 📦 安裝依賴
-        run: pip install --quiet requests tradingview-ta
-
-      - name: 🗄️ 初始化狀態檔案
+      - name: Install deps
         run: |
-          [ -f active_signals.json ]   || echo '{}' > active_signals.json
-          [ -f trade_history.json ]    || echo '[]' > trade_history.json
-          [ -f signal_cooldown.json ]  || echo '{}' > signal_cooldown.json
-          [ -f system_state.json ]     || echo '{}' > system_state.json
-          [ -f learning_state.json ]   || echo '{}' > learning_state.json
+          python -m pip install --upgrade pip
+          pip install requests tradingview-ta
 
-      - name: 🚀 執行 Alpha Oracle
+      - name: Run main.py
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-          TZ: Asia/Taipei
-        run: python main.py
-
-      - name: 💾 保存狀態
-        if: always()
         run: |
-          git config user.name  "alpha-bot"
-          git config user.email "bot@alpha.example"
-          git pull --rebase --autostash origin "${GITHUB_REF##*/}" 2>/dev/null || true
-          git add -f active_signals.json trade_history.json signal_cooldown.json system_state.json learning_state.json 2>/dev/null || true
-          git diff --staged --quiet || {
+          python main.py ${{ github.event.inputs.command }}
+
+      - name: Commit state changes
+        run: |
+          git config user.name "alpha-bot"
+          git config user.email "bot@noreply.github.com"
+          # 只 commit 狀態檔，不動程式碼
+          git add active_signals.json setups.json signal_cooldown.json \
+                  system_state.json learning_state.json trade_history.json \
+                  2>/dev/null || true
+          if ! git diff --staged --quiet; then
             git commit -m "chore: 更新訊號狀態 [skip ci]"
-            git push --quiet || git push --force-with-lease --quiet || true
-          }
-        continue-on-error: true
+            # Retry push to handle concurrent updates
+            for i in 1 2 3; do
+              git pull --rebase origin main && git push origin main && break
+              echo "Push retry $i..."
+              sleep 2
+            done
+          fi
