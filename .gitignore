@@ -1,54 +1,43 @@
-# ═══════════════════════════════════════════════
-# 🔒 Alpha Oracle Pro - .gitignore（公開 repo 安全網）
-# ═══════════════════════════════════════════════
+# Alpha Oracle Pro v15.5 — .gitignore
 
-.env
-.env.*
-*.env
-secrets.json
-secrets.txt
-credentials.json
-credentials.*
-.credentials/
-
-*.bak
-*.swp
-*.tmp
-*~
-.DS_Store
-Thumbs.db
-desktop.ini
-
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual env
 venv/
 env/
 .venv/
-.pytest_cache/
-.coverage
-htmlcov/
+.env
 
+# 機器人運行時的鎖檔
+.alpha_oracle.lock
+
+# Temp / log
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# IDE
 .vscode/
 .idea/
-*.sublime-*
+*.iml
 
-*.log
-logs/
-log/
+# 不要提交本機 secrets（GitHub Actions 用 secrets，本機請用 .env 但別 commit）
+.env.local
+secrets.json
 
-notes.md
-notes.txt
-TODO.md
-debug.txt
-private_*.json
-local_*.json
-
-my_trades.csv
-my_*.json
-personal_*.json
-
-.fly/
-.docker/
+# 注意：以下 JSON 是要提交的（GitHub Actions 才能讀寫狀態）
+# active_signals.json
+# setups.json
+# trade_history.json
+# system_state.json
+# signal_cooldown.json
+# learning_state.json
