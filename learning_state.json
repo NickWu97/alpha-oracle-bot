@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 16,
-      "loss": 12,
+      "win": 17,
+      "loss": 13,
       "be": 4,
-      "total": 32
+      "total": 34
     },
     "sess:us": {
       "win": 0,
@@ -38,15 +38,15 @@
     },
     "rsi_long:60-69": {
       "win": 3,
-      "loss": 4,
-      "be": 0,
-      "total": 7
-    },
-    "sess:asia_dawn": {
-      "win": 7,
       "loss": 5,
       "be": 0,
-      "total": 12
+      "total": 8
+    },
+    "sess:asia_dawn": {
+      "win": 8,
+      "loss": 6,
+      "be": 0,
+      "total": 14
     },
     "coin:DOGE": {
       "win": 0,
@@ -85,10 +85,10 @@
       "total": 5
     },
     "rsi_long:70-79": {
-      "win": 2,
+      "win": 3,
       "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin:BNB": {
       "win": 5,
@@ -127,10 +127,10 @@
       "total": 2
     },
     "score:70-79": {
-      "win": 12,
+      "win": 13,
       "loss": 5,
       "be": 1,
-      "total": 18
+      "total": 19
     },
     "coin:ETH": {
       "win": 0,
@@ -170,9 +170,9 @@
     },
     "coin:NEAR": {
       "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:NEAR_SHORT": {
       "win": 6,
@@ -235,10 +235,10 @@
       "total": 1
     },
     "coin:ADA": {
-      "win": 2,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin_side:ADA_SHORT": {
       "win": 0,
@@ -259,10 +259,22 @@
       "total": 1
     },
     "coin_side:ADA_LONG": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 2
+      "total": 3
+    },
+    "score:60-69": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:NEAR_LONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -310,9 +322,9 @@
     },
     "NEAR": {
       "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "XRP": {
       "win": 1,
@@ -333,10 +345,10 @@
       "total": 1
     },
     "ADA": {
-      "win": 2,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     }
   },
   "loss_reasons": [
@@ -402,7 +414,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1778789427.867371,
+      "coin": "NEAR",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778786512.551279
+  "updated_at": 1778789427.3821964
 }
