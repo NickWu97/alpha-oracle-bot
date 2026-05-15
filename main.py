@@ -1,34 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v15.0 — 數據精準升級版（繁體中文）
+Alpha Oracle Pro v15.0 — 高頻監控整合版（每分鐘掃描 + 自動日報/月報）
 ══════════════════════════════════════════════════════════════════════
-✨ v15.0 精準升級（在 v14.0 核心上疊加）：
-
-📐 指標精度：
-  · RSI  → Wilder EMA 平滑（消除簡化版誤差，與 TradingView 一致）
-  · ATR  → Wilder EMA 平滑（正統 Wilder 法，而非簡單均值）
-  · ADX  → 完整 Wilder DI 平滑（+DM/-DM/TR 三路 EMA，更貼近實際值）
-
-📍 S/R 精準定位：
-  · Classic Pivot Points（PP/R1-R3/S1-S3）取代純極值
-  · Fibonacci 回調位（23.6%/38.2%/50%/61.8%/78.6%）自動識別
-  · 雙來源 S/R 融合後排序，TP/SL 落點更精準
-
-📊 成交量深化：
-  · OBV（量價趨勢）：量升價漲 → 額外確認趨勢方向
-  · VWAP（成交量加權均價）：價格在 VWAP 上下方判斷多空優勢
-
-🎯 進出場強化：
-  · Bollinger Bands Squeeze：帶寬收窄偵測即將爆發行情
-  · RSI 背離偵測：Regular + Hidden Divergence，頂底反轉警示
-  · TP 分批出場比例：通知附帶建議（TP1 30%、TP2 30%、TP3 40%）
-
-🔧 Bug 修正：
-  · 統一私有函式命名（_save_json / _load_json / _order_keyboard）
-  · SignalTracker.__init__ 命名修正
-  · _bucket_session_tw / _bucket_rsi 命名統一
-
+整合功能：
+  ✅ 每分鐘掃描市場（可調整間隔）
+  ✅ 自動每日凌晨 00:05 發送前一日交易報告
+  ✅ 自動每月 1 日 00:10 發送上月交易報告
+  ✅ 保留所有 v15 精準指標（Wilder RSI/ATR/ADX、Pivot、Fib、OBV、VWAP、背離等）
+  ✅ 支援 Telegram 指令：/stats /learning /daily /monthly /monitor
+  ✅ 雙價格驗證（OKX + TradingView）
+  ✅ 智慧熔斷與黑名單時段
+  ✅ 學習機制與 KNN 勝率調整
 ══════════════════════════════════════════════════════════════════════
 """
 import requests
@@ -95,17 +78,18 @@ SYSTEM_STATE_FILE    = "system_state.json"
 LEARNING_FILE        = "learning_state.json"
 
 _price_cache: dict = {}
+_candle_cache: dict = {}      # K線快取
 
 # ═════════════════════════════════════════════════════════
-# 1.5 預設配置
+# 1.5 預設配置（高頻版）
 # ═════════════════════════════════════════════════════════
 DEFAULT_CONFIG: dict = {
     "coins": ALL_COINS,
     "max_signals": 3,
-    "score_threshold": 68,
-    "cooldown_hours": 2,
+    "score_threshold": 72,
+    "cooldown_hours": 1,
     "signal_expire_hours": 24,
-    "atr_max_pct": 0.04,
+    "atr_max_pct": 0.035,
     "post_mortem": {"enabled": True, "loss_only": False},
     "learning": {
         "enabled": True,
@@ -181,7 +165,7 @@ def _order_keyboard(order_id: str) -> dict:
     }
 
 # ═════════════════════════════════════════════════════════
-# 3. 通知格式
+# 3. 通知格式（完整保留 v15 風格）
 # ═════════════════════════════════════════════════════════
 def _fmt_entry(
     coin: str, side: str, order_id: str,
@@ -312,7 +296,7 @@ def _fmt_position(sig: dict, current_price: float) -> str:
 
 
 # ═════════════════════════════════════════════════════════
-# 4. 數據抓取
+# 4. 數據抓取（加入快取）
 # ═════════════════════════════════════════════════════════
 def fetch_price(instId: str) -> float:
     now = time.time()
@@ -334,8 +318,14 @@ def fetch_price(instId: str) -> float:
         logging.warning(f"⚠️ 取得 {instId} 價格失敗：{e}")
     return _price_cache.get(instId, (0.0, 0))[0]
 
-def fetch_candles(instId: str, tf: str = "15m", limit: int = 300) -> list | None:
-    """已收線 K 線，由舊到新，預設抓 300 根（v15 增量）"""
+def fetch_candles(instId: str, tf: str = "15m", limit: int = 300, cache_seconds: int = 240) -> list | None:
+    """已收線 K 線，由舊到新，快取 4 分鐘"""
+    cache_key = f"{instId}_{tf}"
+    now = time.time()
+    if cache_key in _candle_cache:
+        candles, expire = _candle_cache[cache_key]
+        if now < expire:
+            return candles
     try:
         res = requests.get(
             f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}",
@@ -347,11 +337,13 @@ def fetch_candles(instId: str, tf: str = "15m", limit: int = 300) -> list | None
         if len(data) < 30:
             return None
         confirmed = [r for r in data if r[8] == "1"][::-1]
-        return [
+        candles = [
             {"ts": r[0], "o": float(r[1]), "h": float(r[2]),
              "l": float(r[3]), "c": float(r[4]), "v": float(r[5])}
             for r in confirmed
         ]
+        _candle_cache[cache_key] = (candles, now + cache_seconds)
+        return candles
     except Exception as e:
         logging.warning(f"⚠️ 取得 {instId} K 線失敗：{e}")
         return None
@@ -411,7 +403,6 @@ def fetch_price_tv(instId: str) -> float | None:
     try:
         from tradingview_ta import TA_Handler, Interval  # type: ignore
     except ImportError:
-        logging.warning("⚠️ 未安裝 tradingview_ta，跳過 TV 驗證")
         return None
     try:
         symbol = instId.replace("-USDT-SWAP", "USDT.P").replace("-", "")
@@ -445,14 +436,9 @@ def verify_price(
 
 
 # ═════════════════════════════════════════════════════════
-# 5. 精準技術指標（v15 全面升級為 Wilder 正統公式）
+# 5. 精準技術指標（Wilder 正統公式）
 # ═════════════════════════════════════════════════════════
-
 def calc_atr(df: list, period: int = 14) -> float:
-    """ATR — Wilder EMA 平滑法（與 TradingView 一致）
-    初始值 = 前 period 根 TR 的簡單平均；
-    之後每根：ATR = (ATR_prev * (period-1) + TR) / period
-    """
     if len(df) < period + 1:
         return 0.001
     trs = []
@@ -463,18 +449,12 @@ def calc_atr(df: list, period: int = 14) -> float:
         trs.append(max(hl, hc, lc))
     if len(trs) < period:
         return 0.001
-    # Wilder 初始化
     atr = sum(trs[:period]) / period
     for tr in trs[period:]:
         atr = (atr * (period - 1) + tr) / period
     return atr if atr > 0 else 0.001
 
-
 def calc_rsi(df: list, period: int = 14) -> float:
-    """RSI — Wilder EMA 平滑法（修正舊版簡單平均誤差）
-    初始 avg_gain/avg_loss = 前 period 根的簡單平均；
-    之後：avg = (avg_prev * (period-1) + current) / period
-    """
     if len(df) < period + 1:
         return 50.0
     gains, losses = [], []
@@ -494,15 +474,7 @@ def calc_rsi(df: list, period: int = 14) -> float:
     rs = avg_g / avg_l
     return 100 - (100 / (1 + rs))
 
-
 def calc_adx(df: list, period: int = 14) -> float:
-    """ADX — 完整 Wilder DI 平滑法（三路 EMA：+DM/-DM/TR）
-    1. 計算每根的原始 +DM、-DM、TR
-    2. Wilder 平滑三路
-    3. +DI = 100 * smoothed_+DM / smoothed_TR
-    4. DX  = 100 * |+DI - -DI| / (+DI + -DI)
-    5. ADX = Wilder 平滑 DX
-    """
     if len(df) < period * 2 + 2:
         return 0.0
     pdms, mdms, trs = [], [], []
@@ -518,7 +490,6 @@ def calc_adx(df: list, period: int = 14) -> float:
         ))
     if len(trs) < period:
         return 0.0
-    # Wilder 初始化
     s_pdm = sum(pdms[:period])
     s_mdm = sum(mdms[:period])
     s_tr  = sum(trs[:period])
@@ -542,9 +513,7 @@ def calc_adx(df: list, period: int = 14) -> float:
         adx = (adx * (period - 1) + dx) / period
     return round(adx, 2)
 
-
 def calc_supertrend(df: list, period: int = 10, mult: float = 3.0) -> int:
-    """Supertrend：1=多頭 / -1=空頭 / 0=震盪"""
     if len(df) < period + 2:
         return 0
     atr = calc_atr(df, period)
@@ -557,9 +526,7 @@ def calc_supertrend(df: list, period: int = 10, mult: float = 3.0) -> int:
         return -1
     return 0
 
-
 def calc_ema(df: list, period: int) -> list:
-    """計算全序列 EMA，回傳與 df 等長的列表（前 period-1 根為 None）"""
     closes = [r["c"] for r in df]
     result: list = [None] * len(closes)
     if len(closes) < period:
@@ -572,23 +539,15 @@ def calc_ema(df: list, period: int) -> list:
         result[i] = ema
     return result
 
-
 def calc_ema_last(df: list, period: int) -> float | None:
-    """只取最後一根的 EMA 值"""
     series = calc_ema(df, period)
     vals = [v for v in series if v is not None]
     return vals[-1] if vals else None
 
-
 # ═════════════════════════════════════════════════════════
 # 5.5 v15 新增指標：Pivot S/R、Fibonacci、OBV、VWAP、BB
 # ═════════════════════════════════════════════════════════
-
 def calc_pivot_sr(df: list) -> dict:
-    """Classic Pivot Points（以最後完整交易段計算）
-    使用最近 period 根 K 線的最高/最低/收盤作為前日 HLC
-    回傳 dict: pp, r1, r2, r3, s1, s2, s3
-    """
     if len(df) < 20:
         return {}
     seg  = df[-20:]
@@ -604,13 +563,7 @@ def calc_pivot_sr(df: list) -> dict:
     s3 = low  - 2 * (high - pp)
     return {"pp": pp, "r1": r1, "r2": r2, "r3": r3, "s1": s1, "s2": s2, "s3": s3}
 
-
 def calc_fibonacci_sr(df: list, lookback: int = 100) -> dict:
-    """自動 Fibonacci 回調水位
-    在 lookback 根 K 線內找最明顯的 swing high / swing low，
-    然後計算六條回調線：0/23.6/38.2/50/61.8/78.6/100
-    多頭：從 swing low 往上量；空頭：從 swing high 往下量
-    """
     seg = df[-lookback:] if len(df) >= lookback else df
     swing_high = max(r["h"] for r in seg)
     swing_low  = min(r["l"] for r in seg)
@@ -627,9 +580,7 @@ def calc_fibonacci_sr(df: list, lookback: int = 100) -> dict:
     levels["swing_low"]  = swing_low
     return levels
 
-
 def nearest_sr_levels(price: float, pivot: dict, fib: dict, n: int = 3) -> dict:
-    """把 Pivot 與 Fibonacci 所有水位合併，找最近的支撐與阻力各 n 個"""
     all_levels = []
     for v in pivot.values():
         if isinstance(v, float):
@@ -645,11 +596,7 @@ def nearest_sr_levels(price: float, pivot: dict, fib: dict, n: int = 3) -> dict:
         "nearest_res": resists[:n]    if resists  else [],
     }
 
-
 def calc_obv(df: list) -> float:
-    """OBV（On-Balance Volume）— 回傳趨勢方向 +1/0/-1
-    最後 5 根 OBV 斜率：上升=多頭量能，下降=空頭量能
-    """
     if len(df) < 10:
         return 0.0
     obv = 0.0
@@ -669,21 +616,14 @@ def calc_obv(df: list) -> float:
         return -1.0
     return 0.0
 
-
 def calc_vwap(df: list) -> float:
-    """VWAP（成交量加權均價）— 使用全部傳入 K 線"""
     total_vol = sum(r["v"] for r in df)
     if total_vol == 0:
         return df[-1]["c"] if df else 0.0
     tp_vol = sum(((r["h"] + r["l"] + r["c"]) / 3) * r["v"] for r in df)
     return tp_vol / total_vol
 
-
 def calc_bollinger(df: list, period: int = 20, std_mult: float = 2.0) -> dict:
-    """Bollinger Bands + Squeeze 偵測
-    Squeeze = 帶寬 < 過去 125 根帶寬的最低值（KB Squeeze 簡化版）
-    回傳 dict: mid, upper, lower, bandwidth, squeeze(bool), pct_b
-    """
     if len(df) < period:
         return {}
     closes = [r["c"] for r in df]
@@ -693,7 +633,6 @@ def calc_bollinger(df: list, period: int = 20, std_mult: float = 2.0) -> dict:
     upper  = mid + std_mult * std
     lower  = mid - std_mult * std
     bw     = (upper - lower) / mid if mid else 0
-    # 歷史最窄帶寬（用來判斷 squeeze）
     hist_bws = []
     for i in range(period, min(len(df), period + 125)):
         seg = closes[-(period + i):(-i) if i else None]
@@ -714,21 +653,9 @@ def calc_bollinger(df: list, period: int = 20, std_mult: float = 2.0) -> dict:
         "pct_b": round(pct_b, 3),
     }
 
-
 def detect_rsi_divergence(df: list, side: str, rsi_period: int = 14) -> dict:
-    """RSI 背離偵測（Regular + Hidden）
-    方法：在最近 50 根中找連續兩個局部低點（多頭）或高點（空頭）
-          比較 Price 與 RSI 各自的方向是否相反
-
-    回傳 dict:
-        regular  (bool) — 正規背離：趨勢反轉訊號
-        hidden   (bool) — 隱藏背離：趨勢延續訊號
-        desc     (str)  — 文字說明
-    """
     if len(df) < rsi_period + 20:
         return {"regular": False, "hidden": False, "desc": ""}
-
-    # 計算全段 RSI 序列（只取有值部分）
     closes = [r["c"] for r in df]
     gains, losses = [], []
     for i in range(1, len(closes)):
@@ -745,14 +672,11 @@ def detect_rsi_divergence(df: list, side: str, rsi_period: int = 14) -> dict:
         avg_l = (avg_l * (rsi_period - 1) + losses[i]) / rsi_period
         rs = avg_g / avg_l if avg_l else 100
         rsi_series.append(100 - 100 / (1 + rs))
-
     if len(rsi_series) < 10:
         return {"regular": False, "hidden": False, "desc": ""}
-
     lookback = min(50, len(rsi_series) - 1)
     rsi_seg  = rsi_series[-lookback:]
     price_seg = [r["c"] for r in df[-lookback:]]
-
     def find_pivots_low(series, w=3):
         pivots = []
         for i in range(w, len(series) - w):
@@ -760,7 +684,6 @@ def detect_rsi_divergence(df: list, side: str, rsi_period: int = 14) -> dict:
                all(series[i] <= series[i + j] for j in range(1, w + 1)):
                 pivots.append((i, series[i]))
         return pivots
-
     def find_pivots_high(series, w=3):
         pivots = []
         for i in range(w, len(series) - w):
@@ -768,23 +691,20 @@ def detect_rsi_divergence(df: list, side: str, rsi_period: int = 14) -> dict:
                all(series[i] >= series[i + j] for j in range(1, w + 1)):
                 pivots.append((i, series[i]))
         return pivots
-
     regular = False
     hidden  = False
     desc    = ""
-
     if side == "LONG":
-        # 多頭：找價格低點
         price_lows = find_pivots_low(price_seg)
         rsi_lows   = find_pivots_low(rsi_seg)
         if len(price_lows) >= 2 and len(rsi_lows) >= 2:
             p1, p2 = price_lows[-2], price_lows[-1]
             r1_idx = min(rsi_lows, key=lambda x: abs(x[0] - p1[0]))
             r2_idx = min(rsi_lows, key=lambda x: abs(x[0] - p2[0]))
-            price_down = p2[1] < p1[1]   # 價格更低低點
-            rsi_up     = r2_idx[1] > r1_idx[1]  # RSI 更高低點
-            rsi_down   = r2_idx[1] < r1_idx[1]  # RSI 更低低點
-            price_up   = p2[1] > p1[1]   # 價格更高低點
+            price_down = p2[1] < p1[1]
+            rsi_up     = r2_idx[1] > r1_idx[1]
+            rsi_down   = r2_idx[1] < r1_idx[1]
+            price_up   = p2[1] > p1[1]
             if price_down and rsi_up:
                 regular = True
                 desc = "📈 正規多頭背離（價格新低但 RSI 不新低）→ 底部反轉"
@@ -792,7 +712,6 @@ def detect_rsi_divergence(df: list, side: str, rsi_period: int = 14) -> dict:
                 hidden = True
                 desc = "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續"
     else:
-        # 空頭：找價格高點
         price_highs = find_pivots_high(price_seg)
         rsi_highs   = find_pivots_high(rsi_seg)
         if len(price_highs) >= 2 and len(rsi_highs) >= 2:
@@ -809,14 +728,11 @@ def detect_rsi_divergence(df: list, side: str, rsi_period: int = 14) -> dict:
             elif price_down and rsi_up:
                 hidden = True
                 desc = "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續"
-
     return {"regular": regular, "hidden": hidden, "desc": desc}
-
 
 # ═════════════════════════════════════════════════════════
 # 6. SMC / ICT / SNR / PA / 流動性 / 動能（保留 v14）
 # ═════════════════════════════════════════════════════════
-
 def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
     n = len(df)
     if n < lookback + 5:
@@ -836,7 +752,6 @@ def find_order_block(df: list, side: str, lookback: int = 30) -> dict | None:
                         return {"low": df[i]["l"], "high": df[i]["h"]}
     return None
 
-
 def find_fvg(df: list, side: str, lookback: int = 30) -> dict | None:
     n = len(df)
     if n < 4:
@@ -851,15 +766,12 @@ def find_fvg(df: list, side: str, lookback: int = 30) -> dict | None:
                 return {"low": df[i]["h"], "high": df[i - 2]["l"]}
     return None
 
-
 def calc_snr(df: list, lookback: int = 100) -> tuple[float, float]:
-    """v15：優先用 Fibonacci 水位；fallback 用極值"""
     fib = calc_fibonacci_sr(df, lookback)
     if fib and "swing_low" in fib and "swing_high" in fib:
         return fib["swing_low"], fib["swing_high"]
     seg = df[-lookback:] if len(df) >= lookback else df
     return min(r["l"] for r in seg), max(r["h"] for r in seg)
-
 
 def detect_price_action(df: list, side: str) -> bool:
     if len(df) < 2:
@@ -881,7 +793,6 @@ def detect_price_action(df: list, side: str) -> bool:
             return True
     return False
 
-
 def detect_liquidity_sweep(df: list, side: str, lookback: int = 20) -> bool:
     if len(df) < lookback + 1:
         return False
@@ -894,7 +805,6 @@ def detect_liquidity_sweep(df: list, side: str, lookback: int = 20) -> bool:
         return last["l"] < prev_low  and last["c"] > mid
     return last["h"] > prev_high and last["c"] < mid
 
-
 def calc_momentum_ratio(df: list, side: str, n: int = 5) -> bool:
     seg  = df[-n:]
     bull = sum(1 for r in seg if r["c"] > r["o"])
@@ -902,9 +812,8 @@ def calc_momentum_ratio(df: list, side: str, n: int = 5) -> bool:
     return ratio >= 0.6 if side == "LONG" else ratio <= 0.4
 
 # ═════════════════════════════════════════════════════════
-# 6.5 v14 市場狀態 / MTF（保留）
+# 6.5 市場狀態 / MTF
 # ═════════════════════════════════════════════════════════
-
 def detect_market_regime(df: list) -> dict:
     adx     = calc_adx(df)
     atr     = calc_atr(df)
@@ -943,7 +852,6 @@ def fetch_mtf_trend(instId: str) -> dict:
     _mtf_cache[instId] = (out, now)
     return out
 
-
 def calc_mtf_alignment(mtf: dict, side: str) -> tuple[int, str]:
     expect = 1 if side == "LONG" else -1
     h1 = mtf.get("1H", {}).get("supertrend", 0)
@@ -960,7 +868,6 @@ def calc_mtf_alignment(mtf: dict, side: str) -> tuple[int, str]:
     ]
     return score, " / ".join(align_desc)
 
-
 def calc_volume_quality(df: list, lookback: int = 20) -> tuple[float, int]:
     if len(df) < lookback + 1:
         return 1.0, 0
@@ -976,9 +883,7 @@ def calc_volume_quality(df: list, lookback: int = 20) -> tuple[float, int]:
     else:              s = -10
     return round(ratio, 2), s
 
-
 def adjust_tp_by_sr(entry: float, side: str, tp_levels: list, df: list) -> tuple[list, list]:
-    """v15：使用精準 Pivot + Fib S/R 校正 TP"""
     pivot = calc_pivot_sr(df)
     fib   = calc_fibonacci_sr(df)
     sr    = nearest_sr_levels(entry, pivot, fib)
@@ -1004,7 +909,6 @@ def adjust_tp_by_sr(entry: float, side: str, tp_levels: list, df: list) -> tuple
                     out[i] = new_tp
     return out, notes
 
-
 def detect_pullback(df: list, side: str) -> bool:
     if len(df) < 3:
         return False
@@ -1020,24 +924,14 @@ def detect_pullback(df: list, side: str) -> bool:
 
 
 # ═════════════════════════════════════════════════════════
-# 7. 評分系統（v15 升級：OBV + VWAP + BB Squeeze + RSI 背離）
+# 7. 評分系統（v15 升級）
 # ═════════════════════════════════════════════════════════
-
 def calc_score(
     df: list, side: str, current_price: float,
     mtf: dict | None = None, instId: str | None = None,
 ) -> tuple[int, str, dict]:
-    """
-    評分組成（最高基礎分約 155）：
-      趨勢30 + RSI25 + OB20 + FVG15 + SNR5 + PA5 + 流動性5 + 動能5
-      + MTF15 + Volume8
-      + OBV5 + VWAP5 + BB_Squeeze8 + RSI_Regular_Div12 + RSI_Hidden_Div6
-      = 基礎 ~169（門檻仍為 68，高分更稀有）
-    """
     detail = {}
     score  = 0
-
-    # ── 趨勢 (30) ──
     st = calc_supertrend(df)
     if (side == "LONG" and st == 1) or (side == "SHORT" and st == -1):
         score += 30; detail["trend"] = 30
@@ -1045,8 +939,6 @@ def calc_score(
         score += 15; detail["trend"] = 15
     else:
         detail["trend"] = 0
-
-    # ── RSI (25) ──
     rsi = calc_rsi(df)
     detail["rsi_value"] = round(rsi, 1)
     if side == "LONG":
@@ -1057,22 +949,16 @@ def calc_score(
         if   50 <= rsi <= 70: score += 25; detail["rsi"] = 25
         elif 30 < rsi  < 50: score += 15; detail["rsi"] = 15
         else:                              detail["rsi"] = 0
-
-    # ── OB (20) ──
     ob = find_order_block(df, side)
     if ob and ob["low"] * 0.995 <= current_price <= ob["high"] * 1.005:
         score += 20; detail["ob"] = 20
     else:
         detail["ob"] = 0
-
-    # ── FVG (15) ──
     fvg = find_fvg(df, side)
     if fvg and fvg["low"] * 0.997 <= current_price <= fvg["high"] * 1.003:
         score += 15; detail["fvg"] = 15
     else:
         detail["fvg"] = 0
-
-    # ── SNR / Fibonacci (5) ── v15：用 Fib 水位判斷
     fib = calc_fibonacci_sr(df)
     pivot = calc_pivot_sr(df)
     sr_info = nearest_sr_levels(current_price, pivot, fib)
@@ -1085,27 +971,18 @@ def calc_score(
         near_res = sr_info["nearest_res"][0]
         if abs(current_price - near_res) / current_price < 0.005:
             fib_bonus = 5
-    # fallback 舊極值 SNR
     if fib_bonus == 0:
         sup, res = calc_snr(df)
         if side == "LONG" and current_price <= sup * 1.01:   fib_bonus = 5
         elif side == "SHORT" and current_price >= res * 0.99: fib_bonus = 5
     detail["snr"] = fib_bonus
     score += fib_bonus
-
-    # ── PA (5) ──
     detail["pa"] = 5 if detect_price_action(df, side) else 0
     score += detail["pa"]
-
-    # ── 流動性掃蕩 (5) ──
     detail["liq"] = 5 if detect_liquidity_sweep(df, side) else 0
     score += detail["liq"]
-
-    # ── 動能 (5) ──
     detail["mom"] = 5 if calc_momentum_ratio(df, side) else 0
     score += detail["mom"]
-
-    # ── MTF (-15~+15) ──
     if mtf is None and instId:
         mtf = fetch_mtf_trend(instId)
     if mtf:
@@ -1113,23 +990,15 @@ def calc_score(
         score += mtf_score
         detail["mtf"] = mtf_score
         detail["mtf_desc"] = mtf_desc
-
-    # ── Volume (-10~+8) ──
     vol_ratio, vol_score = calc_volume_quality(df)
     score += vol_score
     detail["volume"] = vol_score
     detail["volume_ratio"] = vol_ratio
-
-    # ══ v15 新增指標 ══
-
-    # ── OBV (+5) ──
     obv_dir = calc_obv(df)
     expect  = 1.0 if side == "LONG" else -1.0
     obv_score = 5 if obv_dir == expect else (-3 if obv_dir == -expect else 0)
     score += obv_score
     detail["obv"] = obv_score
-
-    # ── VWAP (+5) ── 價格在 VWAP 正確方向
     vwap = calc_vwap(df)
     detail["vwap"] = round(vwap, 4)
     vwap_score = 0
@@ -1139,8 +1008,6 @@ def calc_score(
     elif side == "SHORT" and current_price > vwap * 1.005: vwap_score = -3
     score += vwap_score
     detail["vwap_score"] = vwap_score
-
-    # ── BB Squeeze (+8) ── 帶寬收窄後即將爆發
     bb = calc_bollinger(df)
     bb_squeeze_score = 0
     if bb:
@@ -1151,14 +1018,11 @@ def calc_score(
             detail["bb_squeeze"] = True
         else:
             detail["bb_squeeze"] = False
-        # 價格貼近 BB 邊緣確認方向
         pct_b = bb.get("pct_b", 0.5)
         if side == "LONG"  and pct_b < 0.2:  bb_squeeze_score += 2
         elif side == "SHORT" and pct_b > 0.8: bb_squeeze_score += 2
     score += bb_squeeze_score
     detail["bb_score"] = bb_squeeze_score
-
-    # ── RSI 背離 (+12 正規 / +6 隱藏) ──
     div = detect_rsi_divergence(df, side)
     div_score = 0
     if div.get("regular"):
@@ -1173,7 +1037,6 @@ def calc_score(
         detail["rsi_div"] = "none"
     score += div_score
     detail["rsi_div_score"] = div_score
-
     grade = (
         "A+ 極強 🔥" if score >= 85 else
         "A 強力 ⭐"  if score >= 70 else
@@ -1186,7 +1049,6 @@ def calc_score(
 # ═════════════════════════════════════════════════════════
 # 8. 訊號生成
 # ═════════════════════════════════════════════════════════
-
 def generate_signal(
     instId: str, df: list, current_price: float,
     funding_rate: float | None = None,
@@ -1261,7 +1123,6 @@ def generate_signal(
 # ═════════════════════════════════════════════════════════
 # 9. 持久化
 # ═════════════════════════════════════════════════════════
-
 def _load_json(path: str, default):
     try:
         if os.path.exists(path):
@@ -1283,7 +1144,6 @@ def _save_json(path: str, data) -> None:
 # ═════════════════════════════════════════════════════════
 # 9.5 配置熱更新與驗證
 # ═════════════════════════════════════════════════════════
-
 def _deep_merge(base: dict, override: dict) -> dict:
     out = dict(base)
     for k, v in override.items():
@@ -1386,11 +1246,9 @@ def record_trade(
     except Exception as e:
         logging.warning(f"⚠️ 更新學習狀態失敗：{e}")
 
-
 # ═════════════════════════════════════════════════════════
 # 9.6 學習機制
 # ═════════════════════════════════════════════════════════
-
 def _bucket_score(score: int) -> str:
     if score >= 90: return "score:90+"
     if score >= 80: return "score:80-89"
@@ -1682,11 +1540,9 @@ def format_learning_report() -> str:
     lines.append("💡 這些統計每筆交易結算後自動更新；下次相似情境的訊號評分會自動微調")
     return "\n".join(lines)
 
-
 # ═════════════════════════════════════════════════════════
 # 9.65 覆盤分析
 # ═════════════════════════════════════════════════════════
-
 def analyze_loss(sig: dict, df_at_loss: list) -> list:
     if not df_at_loss or len(df_at_loss) < 20:
         return [{"code":"INSUFFICIENT","title":"📋 資料不足","detail":"進場後 K 線太少","severity":0}]
@@ -1776,7 +1632,6 @@ def _fmt_postmortem(sig: dict, mode: str, reasons: list, lessons: list, similar_
 # ═════════════════════════════════════════════════════════
 # 9.7 系統狀態 / 9.8 熔斷 / 9.9 時段過濾
 # ═════════════════════════════════════════════════════════
-
 def get_system_state() -> dict:  return _load_json(SYSTEM_STATE_FILE, {})
 def set_system_state(state: dict) -> None: _save_json(SYSTEM_STATE_FILE, state)
 
@@ -1848,7 +1703,6 @@ def is_blackout_time(cfg: dict) -> tuple[bool, str]:
 # ═════════════════════════════════════════════════════════
 # 10. 訊號追蹤器
 # ═════════════════════════════════════════════════════════
-
 class SignalTracker:
     def __init__(self, filepath: str = ACTIVE_SIGNALS_FILE):
         self.filepath   = filepath
@@ -2070,9 +1924,8 @@ class SignalTracker:
 
 
 # ═════════════════════════════════════════════════════════
-# 11. 主掃描 + Monitor 模式
+# 11. 主掃描 + Monitor 模式 + Live 高頻模式
 # ═════════════════════════════════════════════════════════
-
 def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: int = 30) -> None:
     if not tracker.signals:
         logging.info("📭 無追蹤中訊號，monitor 跳過")
@@ -2092,7 +1945,6 @@ def run_monitor(tracker: SignalTracker, in_run_polls: int = 1, poll_interval: in
         except Exception as e:
             logging.error(f"❌ monitor poll {poll_idx + 1} 出錯：{e}")
     logging.info(f"✅ monitor 完成，{in_run_polls} 輪共觸發 {total_transitions} 次狀態變動")
-
 
 def run_scan(tracker: SignalTracker) -> int:
     logging.info("🚀 開始掃描...")
@@ -2208,37 +2060,105 @@ def run_scan(tracker: SignalTracker) -> int:
     logging.info(f"✅ 掃描完成，本輪新增 {sent} 筆訊號")
     return sent
 
+def run_live(scan_interval_seconds: int = 60):
+    """高頻監控模式：持續運行，每 scan_interval_seconds 秒掃描一次新訊號，並處理持倉更新與自動日報/月報"""
+    tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
+    last_scan_ts = 0
+    last_daily_report_date = ""
+    last_monthly_report_ym = ""
+
+    logging.info(f"🟢 高頻監控模式啟動，掃描間隔 {scan_interval_seconds} 秒")
+    while True:
+        now = tw_now()
+        try:
+            cfg = load_config()
+            # 熔斷與時段檢查（不阻斷持倉監控）
+            paused, _, _ = check_circuit_breaker(cfg)
+            blocked, _ = is_blackout_time(cfg)
+            in_news, _ = is_in_news_window(cfg)
+
+            # 1. 總是檢查既有持倉（止盈/止損）
+            tracker.check_all()
+            tracker.send_position_updates()
+
+            # 2. 條件式掃描新訊號
+            if not paused and not blocked and not in_news:
+                if time.time() - last_scan_ts >= scan_interval_seconds:
+                    run_scan(tracker)
+                    last_scan_ts = time.time()
+            else:
+                if paused or blocked or in_news:
+                    logging.debug(f"⏸ 暫停掃描新訊號 (paused={paused}, blocked={blocked}, news={in_news})")
+
+            # 3. 自動日報（每日凌晨 00:05 發送前一日報告）
+            today_str = now.strftime("%Y-%m-%d")
+            if now.hour == 0 and now.minute >= 5 and last_daily_report_date != today_str:
+                yesterday = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+                report = format_daily_report(yesterday)
+                send_tg(report)
+                last_daily_report_date = today_str
+                logging.info("📅 自動發送日報")
+
+            # 4. 自動月報（每月 1 日 00:10 發送上月報告）
+            this_month = now.strftime("%Y-%m")
+            if now.day == 1 and now.hour == 0 and now.minute >= 10 and last_monthly_report_ym != this_month:
+                last_month = (now - timedelta(days=1)).strftime("%Y-%m")
+                report = format_monthly_report(last_month)
+                send_tg(report)
+                last_monthly_report_ym = this_month
+                logging.info("📅 自動發送月報")
+
+        except Exception as e:
+            logging.error(f"❌ live 循環錯誤：{e}")
+
+        time.sleep(10)   # 每 10 秒檢查一次，但掃描頻率由 scan_interval_seconds 控制
+
+
 # ═════════════════════════════════════════════════════════
 # 12. 主入口
 # ═════════════════════════════════════════════════════════
-
 def main() -> None:
     try:
         logging.info("=" * 50)
-        logging.info("🤖 Alpha Oracle Pro v15.0 啟動")
+        logging.info("🤖 Alpha Oracle Pro v15.0 高頻監控版 啟動")
         logging.info(f"⏰ 台灣時間：{tw_ts()}")
         logging.info("=" * 50)
-        tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
+
         if len(sys.argv) > 1:
             cmd = sys.argv[1]
-            if cmd in ("/stats","/持倉","stats"):
-                send_tg(tracker.get_position_stats()); return
-            if cmd in ("/learning","/學習","/coach","learning"):
-                send_tg(format_learning_report()); return
-            if cmd in ("/daily","/日報","daily"):
-                send_tg(format_daily_report(sys.argv[2] if len(sys.argv)>2 else None)); return
-            if cmd in ("/monthly","/月報","monthly"):
-                send_tg(format_monthly_report(sys.argv[2] if len(sys.argv)>2 else None)); return
-            if cmd in ("monitor","/monitor","/監控"):
+            if cmd in ("live", "/live", "監聽"):
+                interval = int(sys.argv[2]) if len(sys.argv) > 2 else 60
+                run_live(scan_interval_seconds=interval)
+                return
+            if cmd in ("/stats", "/持倉", "stats"):
+                tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
+                send_tg(tracker.get_position_stats())
+                return
+            if cmd in ("/learning", "/學習", "/coach", "learning"):
+                send_tg(format_learning_report())
+                return
+            if cmd in ("/daily", "/日報", "daily"):
+                send_tg(format_daily_report(sys.argv[2] if len(sys.argv) > 2 else None))
+                return
+            if cmd in ("/monthly", "/月報", "monthly"):
+                send_tg(format_monthly_report(sys.argv[2] if len(sys.argv) > 2 else None))
+                return
+            if cmd in ("monitor", "/monitor", "/監控"):
                 polls    = int(sys.argv[2]) if len(sys.argv) > 2 else 1
                 interval = int(sys.argv[3]) if len(sys.argv) > 3 else 30
+                tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
                 run_monitor(tracker, in_run_polls=polls, poll_interval=interval)
                 return
+
+        # 預設行為：單次掃描
+        tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
         run_scan(tracker)
         logging.info("🎉 程式執行完成")
+
     except Exception as e:
         logging.error(f"🔥 系統錯誤：{e}")
-        import traceback; traceback.print_exc()
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 if __name__ == "__main__":
