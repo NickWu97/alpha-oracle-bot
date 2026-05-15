@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 18,
-      "loss": 9,
+      "loss": 10,
       "be": 2,
-      "total": 29
+      "total": 30
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 51,
-      "loss": 21,
+      "loss": 25,
       "be": 5,
-      "total": 77
+      "total": 81
     },
     "sess:us": {
       "win": 28,
@@ -26,9 +26,9 @@
     },
     "coin:SOL": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 6
+      "total": 7
     },
     "coin_side:SOL_LONG": {
       "win": 0,
@@ -44,9 +44,9 @@
     },
     "sess:asia_dawn": {
       "win": 8,
-      "loss": 6,
+      "loss": 10,
       "be": 0,
-      "total": 14
+      "total": 18
     },
     "coin:DOGE": {
       "win": 6,
@@ -62,9 +62,9 @@
     },
     "coin:DOT": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOT_LONG": {
       "win": 0,
@@ -74,9 +74,9 @@
     },
     "coin:AVAX": {
       "win": 6,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin_side:AVAX_LONG": {
       "win": 3,
@@ -104,9 +104,9 @@
     },
     "score:90+": {
       "win": 13,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 16
+      "total": 17
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -128,9 +128,9 @@
     },
     "score:70-79": {
       "win": 23,
-      "loss": 10,
+      "loss": 12,
       "be": 2,
-      "total": 35
+      "total": 37
     },
     "coin:ETH": {
       "win": 3,
@@ -170,9 +170,9 @@
     },
     "coin:NEAR": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "coin_side:NEAR_SHORT": {
       "win": 9,
@@ -326,9 +326,9 @@
     },
     "rsishort:30-39": {
       "win": 6,
-      "loss": 0,
+      "loss": 2,
       "be": 0,
-      "total": 6
+      "total": 8
     },
     "coin_side:BNBSHORT": {
       "win": 3,
@@ -338,9 +338,9 @@
     },
     "rsishort:20-29": {
       "win": 6,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:XRPSHORT": {
       "win": 3,
@@ -359,14 +359,44 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "rsishort:10-19": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:SOLSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:DOTSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:NEARSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "SOL": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 6
+      "total": 7
     },
     "DOGE": {
       "win": 6,
@@ -376,15 +406,15 @@
     },
     "DOT": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "AVAX": {
       "win": 6,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "BNB": {
       "win": 8,
@@ -406,9 +436,9 @@
     },
     "NEAR": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "XRP": {
       "win": 4,
@@ -540,7 +570,28 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778866261.2890701,
+      "coin": "AVAX",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778866263.5882692,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778866265.354138,
+      "coin": "DOT",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778860508.6926405
+  "updated_at": 1778866267.1851618
 }
