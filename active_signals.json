@@ -69,7 +69,7 @@
     "last_checked_ts": null,
     "entry_message_id": null,
     "sl_original": 79515.089286,
-    "current_price": 81383.0
+    "current_price": 80880.9
   },
   "LINK-USDT-SWAP_LONG_1778750205-F3113057": {
     "instId": "LINK-USDT-SWAP",
@@ -137,7 +137,7 @@
     "last_checked_ts": null,
     "entry_message_id": null,
     "sl_original": 10.195679,
-    "current_price": 10.485
+    "current_price": 10.363
   },
   "ETH-USDT-SWAP_SHORT_1778758017-46B0C0E1": {
     "instId": "ETH-USDT-SWAP",
@@ -205,15 +205,15 @@
     "created": 1778758017.2128434,
     "expires": 1778844417.212844,
     "order_id": "1778758017-46B0C0E1",
-    "status": "PENDING",
+    "status": "ACTIVE",
     "hit_tp1": false,
     "hit_tp2": false,
     "hit_tp3": false,
-    "activated_at": null,
-    "last_checked_ts": null,
-    "entry_message_id": null,
+    "activated_at": 1778819444.1927588,
+    "last_checked_ts": 1778819444.1927588,
+    "entry_message_id": 3465,
     "sl_original": 2264.303929,
-    "current_price": 2285.91
+    "current_price": 2267.42
   },
   "XRP-USDT-SWAP_LONG_1778758023-F18D230B": {
     "instId": "XRP-USDT-SWAP",
@@ -281,7 +281,7 @@
     "last_checked_ts": null,
     "entry_message_id": null,
     "sl_original": 1.430357,
-    "current_price": 1.493
+    "current_price": 1.483
   },
   "DOGE-USDT-SWAP_LONG_1778779704-63B32497": {
     "instId": "DOGE-USDT-SWAP",
@@ -341,22 +341,22 @@
     "created": 1778779704.0791376,
     "expires": 1778866104.0791378,
     "order_id": "1778779704-63B32497",
-    "status": "PENDING",
+    "status": "ACTIVE",
     "hit_tp1": false,
     "hit_tp2": false,
     "hit_tp3": false,
-    "activated_at": null,
-    "last_checked_ts": null,
-    "entry_message_id": null,
+    "activated_at": 1778819445.741688,
+    "last_checked_ts": 1778819445.741688,
+    "entry_message_id": 3466,
     "sl_original": 0.1129,
-    "current_price": 0.11684
+    "current_price": 0.11519
   },
   "SOL-USDT-SWAP_SHORT_1778792015-DE00BF6E": {
     "instId": "SOL-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 92.73,
-    "sl": 93.3996,
+    "sl": 92.73,
     "tp1": 91.7255,
     "tp2": 90.7211,
     "tp3": 89.9395,
@@ -409,21 +409,21 @@
     "created": 1778792015.375955,
     "expires": 1778878415.3759553,
     "order_id": "1778792015-DE00BF6E",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1778792015.375986,
     "entry_message_id": 3435,
-    "last_checked_ts": 1778806800.0,
-    "current_price": 92.15
+    "last_checked_ts": 1778818500.0,
+    "current_price": 91.66
   },
   "NEAR-USDT-SWAP_SHORT_1778800435-F575C0C9": {
     "instId": "NEAR-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 1.586,
-    "sl": 1.6023,
+    "sl": 1.586,
     "tp1": 1.5616,
     "tp2": 1.5371,
     "tp3": 1.5411,
@@ -478,13 +478,13 @@
     "created": 1778800435.9912956,
     "expires": 1778886835.9912958,
     "order_id": "1778800435-F575C0C9",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1778800435.991323,
     "entry_message_id": 3450,
-    "last_checked_ts": 1778806800.0,
-    "current_price": 1.568
+    "last_checked_ts": 1778818500.0,
+    "current_price": 1.573
   }
 }
