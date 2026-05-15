@@ -1,67 +1,49 @@
 # risk_manager.py
-import math
-from typing import Dict, Tuple
-from indicators import calc_atr
+import json
+import os
+from typing import Tuple
 
 class RiskManager:
-    def __init__(self, initial_equity: float = 10000.0):
-        self.initial_equity = initial_equity
-        self.current_equity = initial_equity
-        self.peak_equity = initial_equity
-        self.trades = []   # 可擴充
-    
-    def update_equity(self, pnl_percent: float) -> float:
+    def __init__(self):
+        self.initial_equity = 10000.0
+        self.current_equity = self.initial_equity
+        self.peak_equity = self.initial_equity
+        self.daily_loss = 0.0
+        self.last_date = ""
+
+    def update_equity(self, pnl_percent: float):
         self.current_equity *= (1 + pnl_percent/100)
         if self.current_equity > self.peak_equity:
             self.peak_equity = self.current_equity
-        drawdown = (self.peak_equity - self.current_equity) / self.peak_equity * 100
-        return drawdown
-    
+        return self.current_drawdown()
+
     def current_drawdown(self) -> float:
         return (self.peak_equity - self.current_equity) / self.peak_equity * 100
-    
-    def is_circuit_breaker(self, max_drawdown_pct: float = 5.0) -> bool:
-        return self.current_drawdown() >= max_drawdown_pct
-    
-    def kelly_fraction(self, win_rate: float, avg_win: float, avg_loss: float, kelly_fraction: float = 0.25) -> float:
-        if avg_loss == 0:
+
+    def calculate_position_size(self, entry: float, stop_loss: float, atr: float) -> float:
+        """動態部位規模：根據固定風險金額計算下注數量（USDT）"""
+        risk_amount = self.current_equity * 0.01  # 每筆風險 1% 本金，可調整
+        # 若提供了 fixed_risk_amount 則優先使用
+        fixed_risk = config.get("risk.fixed_risk_amount", None)
+        if fixed_risk:
+            risk_amount = fixed_risk
+        risk_per_unit = abs(entry - stop_loss)
+        if risk_per_unit <= 0:
             return 0
-        b = avg_win / avg_loss
-        p = win_rate / 100
-        q = 1 - p
-        f = (p * b - q) / b
-        return max(0.0, min(f, 0.25)) * kelly_fraction
-    
-    def calculate_stop_loss(self, entry: float, side: str, atr: float = None, method: str = "percent", percent: float = 0.5, atr_mult: float = 1.5) -> float:
-        if method == "percent":
-            dist = entry * percent / 100
-        else:  # atr
-            if atr is None:
-                raise ValueError("ATR required for ATR-based stop")
-            dist = atr * atr_mult
-        if side == "LONG":
-            return entry - dist
-        else:
-            return entry + dist
-    
-    def trailing_stop(self, current_price: float, entry: float, side: str, highest: float, lowest: float, atr: float, atr_mult: float = 2.0) -> Tuple[float, float, float]:
-        """回傳 (new_sl, new_highest, new_lowest)"""
-        new_high = highest
-        new_low = lowest
-        if side == "LONG":
-            if current_price > highest:
-                new_high = current_price
-            trail_stop = new_high - atr_mult * atr
-            # 不低於進場價保本
-            if trail_stop < entry:
-                trail_stop = entry
-            return trail_stop, new_high, new_low
-        else:
-            if current_price < lowest:
-                new_low = current_price
-            trail_stop = new_low + atr_mult * atr
-            if trail_stop > entry:
-                trail_stop = entry
-            return trail_stop, new_high, new_low
+        # 返回部位價值（USDT）
+        position_value = risk_amount / (risk_per_unit / entry)
+        return min(position_value, self.current_equity * 0.25)  # 最多佔用 25% 本金
+
+    def update_daily_loss(self, pnl_percent: float):
+        from datetime import datetime
+        today = datetime.now().strftime("%Y-%m-%d")
+        if today != self.last_date:
+            self.daily_loss = 0.0
+            self.last_date = today
+        if pnl_percent < 0:
+            self.daily_loss += abs(pnl_percent)
+
+    def is_daily_loss_exceeded(self, limit_percent: float) -> bool:
+        return self.daily_loss >= limit_percent
 
 risk_mgr = RiskManager()
