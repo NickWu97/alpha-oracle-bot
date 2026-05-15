@@ -8396,5 +8396,84 @@
       "atr_pct": 0.649,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-16 06:38",
+    "date": "2026-05-16",
+    "order_id": "1778866258-C375E012",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.1127,
+    "close": 0.1137,
+    "close_type": "SL",
+    "pnl": -0.89,
+    "is_win": false,
+    "is_be": false,
+    "score": 75,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 48.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.4,
+      "obv": -3,
+      "vwap": 0.1135,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.03252,
+      "bb_pct_b": 0.588,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "regime": "trend",
+      "adx": 37.8,
+      "atr_pct": 0.616,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=77, 勝率 66%) → +1",
+        "coin:DOGE (n=9, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 75.0,
+      "rsi": 48.6,
+      "atr_pct": 0.616,
+      "funding": 0.1,
+      "vol_ratio": 0.4,
+      "adx": 37.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.7
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 46.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 37.8,
+      "atr_pct": 0.616,
+      "volatile": false
+    }
   }
 ]

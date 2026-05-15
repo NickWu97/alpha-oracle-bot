@@ -68,8 +68,8 @@
     "hit_tp3": false,
     "activated_at": 1778857268.6838276,
     "entry_message_id": 3521,
-    "last_checked_ts": 1778881500.0,
-    "current_price": 79021.7
+    "last_checked_ts": 1778883300.0,
+    "current_price": 79077.7
   },
   "BNB-USDT-SWAPSHORT1778861546-FF1E5BD5": {
     "instId": "BNB-USDT-SWAP",
@@ -151,7 +151,7 @@
     "hit_tp3": false,
     "activated_at": 1778861546.3288465,
     "entry_message_id": 3564,
-    "last_checked_ts": 1778881500.0,
+    "last_checked_ts": 1778883300.0,
     "current_price": 672.1
   },
   "ETH-USDT-SWAPSHORT1778866254-A319EF56": {
@@ -231,84 +231,7 @@
     "hit_tp3": false,
     "activated_at": 1778866254.7634015,
     "entry_message_id": 3573,
-    "last_checked_ts": 1778881500.0,
-    "current_price": 2219.75
-  },
-  "DOGE-USDT-SWAPSHORT1778866258-C375E012": {
-    "instId": "DOGE-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.1127,
-    "sl": 0.1137,
-    "tp1": 0.1111,
-    "tp2": 0.1096,
-    "tp3": 0.1075,
-    "score": 75,
-    "grade": "觀望 ⚪",
-    "detail": {
-      "trend": 15,
-      "rsi_value": 48.6,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 8,
-      "mtf_desc": "1H=順 / 4H=中",
-      "volume": -10,
-      "volume_ratio": 0.4,
-      "obv": -3,
-      "vwap": 0.1135,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.03252,
-      "bb_pct_b": 0.588,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "regime": "trend",
-      "adx": 37.8,
-      "atr_pct": 0.616,
-      "pullback": true,
-      "learning_notes": [
-        "fund:neutral (n=77, 勝率 66%) → +1",
-        "coin:DOGE (n=9, 勝率 67%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 7
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 43.7
-      },
-      "4H": {
-        "supertrend": 0,
-        "trend": "side",
-        "rsi": 46.8
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 37.8,
-      "atr_pct": 0.616,
-      "volatile": false
-    },
-    "created": 1778866258.4576807,
-    "expires": 1778952658.457681,
-    "order_id": "1778866258-C375E012",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1778866258.4577272,
-    "entry_message_id": 3574,
-    "last_checked_ts": 1778881500.0,
-    "current_price": 0.11339
+    "last_checked_ts": 1778883300.0,
+    "current_price": 2221.48
   }
 }
