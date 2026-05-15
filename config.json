@@ -1,53 +1,34 @@
-# config.py
-import os
-import yaml
-from dotenv import load_dotenv
-
-load_dotenv()
-
-class Config:
-    def __init__(self, config_path="config.yaml"):
-        self.config_path = config_path
-        self.data = self._load()
-    
-    def _load(self):
-        default = {
-            "coins": ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP", "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"],
-            "max_signals": 2,
-            "score_threshold": 70,
-            "cooldown_hours": 1,
-            "signal_expire_hours": 24,
-            "scan_interval": 60,
-            "atr_max_pct": 0.035,
-            "risk": {
-                "max_account_risk_percent": 0.02,
-                "kelly_fraction": 0.25,
-                "max_drawdown_percent": 5.0,
-                "trailing_stop_atr_mult": 2.0,
-            },
-            "entry_zone_atr_mult": 0.3,
-            "price_sources": ["okx", "binance", "tradingview"],
-            "price_deviation_max": 0.5,
-            "notification_level": "important",  # all, important, critical
-            "dashboard_host": "0.0.0.0",
-            "dashboard_port": 8501,
-            "db_path": "trades.db",
-        }
-        if os.path.exists(self.config_path):
-            with open(self.config_path, 'r', encoding='utf-8') as f:
-                user = yaml.safe_load(f)
-                if user:
-                    default.update(user)
-        return default
-    
-    def get(self, key, default=None):
-        keys = key.split('.')
-        d = self.data
-        for k in keys:
-            if isinstance(d, dict):
-                d = d.get(k)
-            else:
-                return default
-        return d if d is not None else default
-
-config = Config()
+{
+    "coins": ["BTC-USDT-SWAP", "ETH-USDT-SWAP", ...],
+    "max_signals": 2,
+    "score_threshold": 70,
+    "cooldown_hours": 1,
+    "scan_interval": 60,
+    "atr_max_pct": 0.035,
+    "entry_zone_atr_mult": 0.3,
+    "price_deviation_max": 0.5,
+    "notification_level": "important",
+    "dashboard_port": 8501,
+    "db_path": "trades.db",
+    "risk": {
+        "max_account_risk_percent": 0.02,
+        "kelly_fraction": 0.25,
+        "max_drawdown_percent": 5.0,
+        "trailing_stop_atr_mult": 2.0,
+        "daily_loss_limit_percent": 3.0,
+        "fixed_risk_amount": 100.0
+    },
+    "filters": {
+        "require_mtf_alignment": true,
+        "blackout_hours": ["00:00-01:00", "07:50-08:10", "23:50-00:10"],
+        "max_daily_loss": 3.0
+    },
+    "ml": {
+        "enabled": false,
+        "model_path": "model.pkl"
+    },
+    "orderbook": {
+        "enabled": false,
+        "websocket_url": "wss://ws.okx.com:8443/ws/v5/public"
+    }
+}
