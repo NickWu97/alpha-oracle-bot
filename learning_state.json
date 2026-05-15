@@ -8,15 +8,15 @@
     },
     "rsi_long:40-49": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 3
+      "total": 4
     },
     "fund:neutral": {
       "win": 17,
-      "loss": 17,
+      "loss": 18,
       "be": 4,
-      "total": 38
+      "total": 39
     },
     "sess:us": {
       "win": 0,
@@ -74,15 +74,15 @@
     },
     "coin:AVAX": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:AVAX_LONG": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "rsi_long:70-79": {
       "win": 3,
@@ -128,9 +128,9 @@
     },
     "score:70-79": {
       "win": 13,
-      "loss": 7,
+      "loss": 8,
       "be": 1,
-      "total": 21
+      "total": 22
     },
     "coin:ETH": {
       "win": 0,
@@ -164,9 +164,9 @@
     },
     "sess:asia_day": {
       "win": 15,
-      "loss": 11,
+      "loss": 12,
       "be": 3,
-      "total": 29
+      "total": 30
     },
     "coin:NEAR": {
       "win": 6,
@@ -316,9 +316,9 @@
     },
     "AVAX": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "BNB": {
       "win": 5,
@@ -453,7 +453,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778803985.4615128,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778800444.932728
+  "updated_at": 1778803984.8259795
 }

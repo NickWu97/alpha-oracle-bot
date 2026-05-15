@@ -5079,5 +5079,78 @@
       "atr_pct": 0.739,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-15 08:13",
+    "date": "2026-05-15",
+    "order_id": "1778792018-D725DFA4",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.989,
+    "close": 9.8994,
+    "close_type": "SL",
+    "pnl": -0.9,
+    "is_win": false,
+    "is_be": false,
+    "score": 79,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.31,
+      "regime": "trend",
+      "adx": 36.8,
+      "atr_pct": 0.6,
+      "pullback": true,
+      "learning_notes": [
+        "score:70-79 (n=19, 勝率 68%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP2 由 10.2577 校正到 10.1117（避開阻力 10.1320）",
+        "TP3 由 10.4369 校正到 10.1117（避開阻力 10.1320）"
+      ]
+    },
+    "features": {
+      "score": 79.0,
+      "rsi": 44.3,
+      "atr_pct": 0.6,
+      "funding": 0.1,
+      "vol_ratio": 0.31,
+      "adx": 36.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 36.8,
+      "atr_pct": 0.6,
+      "volatile": false
+    }
   }
 ]
