@@ -5715,5 +5715,73 @@
       "atr_pct": 0.684,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-15 18:27",
+    "date": "2026-05-15",
+    "order_id": "1778750205-F3113057",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 10.253,
+    "close": 10.253,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 75,
+    "funding_rate": -8.3638047435e-06,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 50.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "volume": 0,
+      "volume_ratio": 0.97,
+      "regime": "range",
+      "adx": 5.5,
+      "atr_pct": 0.373,
+      "learning_notes": [
+        "🧬 KNN：4 筆最相似 → 勝率 0%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -8,
+      "sl_method": "atr_too_far"
+    },
+    "features": {
+      "score": 75.0,
+      "rsi": 50.0,
+      "atr_pct": 0.373,
+      "funding": -0.0083638047435,
+      "vol_ratio": 0.97,
+      "adx": 5.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.8
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 5.5,
+      "atr_pct": 0.373,
+      "volatile": false
+    }
   }
 ]
