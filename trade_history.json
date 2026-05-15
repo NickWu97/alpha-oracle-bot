@@ -5292,5 +5292,81 @@
       "atr_pct": 0.684,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-15 13:31",
+    "date": "2026-05-15",
+    "order_id": "1778758017-46B0C0E1",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 2255.65,
+    "close": 2264.303929,
+    "close_type": "SL",
+    "pnl": -0.38,
+    "is_win": false,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 2.56530046549e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 39.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 7,
+      "mtf_desc": "1H=中 / 4H=順",
+      "volume": 0,
+      "volume_ratio": 0.54,
+      "regime": "trend",
+      "adx": 43.4,
+      "atr_pct": 0.255,
+      "learning_notes": [
+        "rsi_short:30-39 (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似 → 勝率 20%",
+        "低勝率 -8"
+      ],
+      "learning_adjust": -7,
+      "sl_method": "atr_too_far",
+      "tp_notes": [
+        "TP1 2242.6691 → 2239.6053（避開聚類支撐 2235.1350）",
+        "TP2 2229.6882 → 2239.6053（避開聚類支撐 2235.1350）",
+        "TP3 2212.3804 → 2239.6053（避開聚類支撐 2235.1350）",
+        "TP2 順序修正",
+        "TP3 順序修正"
+      ]
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 39.2,
+      "atr_pct": 0.255,
+      "funding": 0.0256530046549,
+      "vol_ratio": 0.54,
+      "adx": 43.4,
+      "mtf_h1": 0.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 49.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 36.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 43.4,
+      "atr_pct": 0.255,
+      "volatile": false
+    }
   }
 ]
