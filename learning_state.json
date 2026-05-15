@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 7,
+      "win": 8,
       "loss": 9,
       "be": 2,
-      "total": 18
+      "total": 19
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 4
     },
     "fund:neutral": {
-      "win": 19,
-      "loss": 19,
+      "win": 23,
+      "loss": 20,
       "be": 4,
-      "total": 42
+      "total": 47
     },
     "sess:us": {
       "win": 0,
@@ -25,10 +25,10 @@
       "total": 1
     },
     "coin:SOL": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 5
     },
     "coin_side:SOL_LONG": {
       "win": 0,
@@ -50,15 +50,15 @@
     },
     "coin:DOGE": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:DOGE_LONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:DOT": {
       "win": 0,
@@ -115,10 +115,10 @@
       "total": 11
     },
     "coin:LINK": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin_side:LINK_SHORT": {
       "win": 1,
@@ -127,10 +127,10 @@
       "total": 2
     },
     "score:70-79": {
-      "win": 13,
-      "loss": 8,
+      "win": 14,
+      "loss": 9,
       "be": 1,
-      "total": 22
+      "total": 24
     },
     "coin:ETH": {
       "win": 0,
@@ -145,16 +145,16 @@
       "total": 2
     },
     "rsi_short:50-59": {
-      "win": 5,
+      "win": 7,
       "loss": 3,
       "be": 1,
-      "total": 9
+      "total": 11
     },
     "coin_side:SOL_SHORT": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 1,
-      "total": 3
+      "total": 4
     },
     "fund:neg": {
       "win": 6,
@@ -169,16 +169,16 @@
       "total": 33
     },
     "coin:NEAR": {
-      "win": 7,
+      "win": 9,
       "loss": 2,
       "be": 0,
-      "total": 9
+      "total": 11
     },
     "coin_side:NEAR_SHORT": {
-      "win": 7,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 8
+      "total": 10
     },
     "rsi_short:60-69": {
       "win": 3,
@@ -205,10 +205,10 @@
       "total": 5
     },
     "rsi_short:40-49": {
-      "win": 4,
+      "win": 5,
       "loss": 1,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin:TON": {
       "win": 3,
@@ -265,10 +265,10 @@
       "total": 4
     },
     "score:60-69": {
-      "win": 1,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 2
+      "total": 4
     },
     "coin_side:NEAR_LONG": {
       "win": 0,
@@ -299,20 +299,38 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsi_long:50-59": {
+      "win": 1,
+      "loss": 1,
+      "be": 0,
+      "total": 2
+    },
+    "sess:europe": {
+      "win": 4,
+      "loss": 1,
+      "be": 0,
+      "total": 5
+    },
+    "coin_side:LINK_LONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "SOL": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 5
     },
     "DOGE": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "DOT": {
       "win": 0,
@@ -333,10 +351,10 @@
       "total": 7
     },
     "LINK": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "ETH": {
       "win": 0,
@@ -345,10 +363,10 @@
       "total": 3
     },
     "NEAR": {
-      "win": 7,
+      "win": 9,
       "loss": 2,
       "be": 0,
-      "total": 9
+      "total": 11
     },
     "XRP": {
       "win": 1,
@@ -466,7 +484,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778833374.8992064,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778823074.1078525
+  "updated_at": 1778833378.276887
 }
