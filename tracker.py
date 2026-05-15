@@ -1,122 +1,166 @@
 # tracker.py
 import json
-import logging
 import time
-from typing import Dict, List, Optional
-from database import db
-from notifier import send_tg_async
+import uuid
+import logging
+from typing import Dict
 from indicators import calc_atr
 from risk_manager import risk_mgr
-from data_fetcher import AsyncDataFetcher
+from notifier import send_tg_sync
+from config import config
 
-class TrackerV16:
-    def __init__(self, fetcher: AsyncDataFetcher):
-        self.fetcher = fetcher
-        self.active_signals: Dict[str, Dict] = {}  # order_id -> signal dict
-        self._load_active()
-    
-    def _load_active(self):
-        rows = db.get_active_signals()
-        for row in rows:
-            order_id = row["order_id"]
-            sig = json.loads(row["signal_json"])
-            sig["status"] = row["status"]
-            sig["activated_at"] = row.get("activated_at")
-            sig["last_checked_ts"] = row.get("last_checked_ts")
-            # 額外狀態
-            sig.setdefault("hit_tp1", False)
-            sig.setdefault("hit_tp2", False)
-            sig.setdefault("hit_tp3", False)
-            sig.setdefault("highest_price", sig["entry"])
-            sig.setdefault("lowest_price", sig["entry"])
-            self.active_signals[order_id] = sig
-    
-    async def check_all(self):
-        """檢查所有活躍訊號的止盈止損及移動止損"""
-        for order_id, sig in list(self.active_signals.items()):
-            current_price = await self.fetcher.fetch_price(sig["instId"], "okx")
-            if not current_price:
-                continue
-            sig["current_price"] = current_price
-            
-            # 處理 PENDING 狀態
-            if sig["status"] == "PENDING":
-                await self._check_pending(order_id, sig, current_price)
-                continue
-            
-            if sig["status"] not in ("ACTIVE", "BE", "TRAIL"):
-                continue
-            
-            # 移動止損（若已啟動）
-            if sig.get("trailing_active", False):
-                atr = calc_atr(await self.fetcher.fetch_candles(sig["instId"]))  # 簡化，實際應緩存
+class SignalTracker:
+    def __init__(self):
+        self.filepath = "active_signals.json"
+        self.signals = self._load()
+        self.transitions = 0
+
+    def _load(self):
+        try:
+            with open(self.filepath, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+
+    def _save(self):
+        with open(self.filepath, 'w') as f:
+            json.dump(self.signals, f, indent=2)
+
+    def add_signal(self, signal, current_price=None) -> str:
+        order_id = f"{int(time.time())}-{uuid.uuid4().hex[:8].upper()}"
+        key = f"{signal['instId']}{signal['side']}{order_id}"
+        in_zone = False
+        if current_price:
+            if signal["entry_low"] <= current_price <= signal["entry_high"]:
+                in_zone = True
+        self.signals[key] = {
+            **signal,
+            "order_id": order_id,
+            "status": "ACTIVE" if in_zone else "PENDING",
+            "hit_tp1": False, "hit_tp2": False, "hit_tp3": False,
+            "trailing_active": False,
+            "highest": signal["entry"], "lowest": signal["entry"],
+            "activated_at": time.time() if in_zone else None,
+            "entry_message_id": None,
+            "last_checked_ts": time.time() if in_zone else None
+        }
+        self._save()
+        return order_id
+
+    def check_all(self):
+        to_remove = []
+        for key, sig in list(self.signals.items()):
+            if self._check_one(key, sig):
+                to_remove.append(key)
+        for k in to_remove:
+            del self.signals[k]
+        if to_remove:
+            self._save()
+
+    def _check_one(self, key, sig):
+        from data_fetcher import fetch_price  # 同步版本，需自行實現或改用同步請求
+        price = fetch_price(sig["instId"])
+        if price <= 0:
+            return False
+        sig["current_price"] = price
+        status = sig["status"]
+        if status == "PENDING":
+            return self._check_pending(sig, price, key)
+        if status not in ("ACTIVE", "BE", "TRAIL"):
+            return False
+        # 移動止損
+        if sig.get("trailing_active"):
+            from indicators import calc_atr
+            import requests
+            candles = self._fetch_candles_sync(sig["instId"])
+            if candles:
+                atr = calc_atr(candles)
                 new_sl, new_high, new_low = risk_mgr.trailing_stop(
-                    current_price, sig["entry"], sig["side"],
-                    sig.get("highest_price", sig["entry"]),
-                    sig.get("lowest_price", sig["entry"]),
-                    atr, atr_mult=2.0
+                    price, sig["entry"], sig["side"],
+                    sig.get("highest", price), sig.get("lowest", price),
+                    atr, atr_mult=config.get("risk.trailing_stop_atr_mult", 2.0)
                 )
                 if new_sl != sig["sl"]:
                     sig["sl"] = new_sl
-                    sig["highest_price"] = new_high
-                    sig["lowest_price"] = new_low
-                    db.update_signal_status(order_id, sig["status"], last_checked_ts=int(time.time()))
-                    await send_tg_async(f"🔁 移動止損更新 {sig['instId']} 訂單{order_id[-8:]}: SL → {new_sl:.4f}", level="important")
-            
-            # 檢查觸發（需要 K 線數據，此處簡化為直接比較價格）
-            # 完整實作應使用 K 線高/低點，可參考 v15 SignalTracker
-            side = sig["side"]
-            if not sig.get("hit_tp1") and self._hit_target(current_price, side, sig["tp1"]):
-                await self._hit_tp(order_id, sig, 1, current_price)
-            elif not sig.get("hit_tp2") and self._hit_target(current_price, side, sig["tp2"]):
-                await self._hit_tp(order_id, sig, 2, current_price)
-            elif not sig.get("hit_tp3") and self._hit_target(current_price, side, sig["tp3"]):
-                await self._hit_tp(order_id, sig, 3, current_price)
-            elif self._hit_target(current_price, side, sig["sl"], is_sl=True):
-                await self._hit_sl(order_id, sig, current_price)
-    
-    def _hit_target(self, price: float, side: str, target: float, is_sl: bool = False) -> bool:
+                    sig["highest"] = new_high
+                    sig["lowest"] = new_low
+                    self._save()
+                    send_tg_sync(f"🔁 移動止損更新 {sig['instId']} 訂單 {sig['order_id'][-8:]}: SL → {new_sl:.4f}", level="important")
+        # 止盈止損檢查（簡化，實際需遍歷K線）
+        if not sig.get("hit_tp1") and self._hit_target(price, sig["side"], sig["tp1"]):
+            self._hit_tp(sig, 1, price, key)
+        elif not sig.get("hit_tp2") and self._hit_target(price, sig["side"], sig["tp2"]):
+            self._hit_tp(sig, 2, price, key)
+        elif not sig.get("hit_tp3") and self._hit_target(price, sig["side"], sig["tp3"]):
+            self._hit_tp(sig, 3, price, key)
+        elif self._hit_target(price, sig["side"], sig["sl"], is_sl=True):
+            self._hit_sl(sig, price, key)
+        return False
+
+    def _check_pending(self, sig, price, key):
+        if sig["entry_low"] <= price <= sig["entry_high"]:
+            sig["status"] = "ACTIVE"
+            sig["activated_at"] = time.time()
+            self._save()
+            send_tg_sync(f"✅ 進場觸發 {sig['instId']} {sig['side']} 價格 {price:.4f} 部位建議 {sig.get('position_size',0):.2f} USDT", level="important")
+        return False
+
+    def _hit_target(self, price, side, target, is_sl=False):
         if side == "LONG":
             return price >= target if not is_sl else price <= target
         else:
             return price <= target if not is_sl else price >= target
-    
-    async def _check_pending(self, order_id: str, sig: Dict, current_price: float):
-        entry_low = sig["entry_low"]
-        entry_high = sig["entry_high"]
-        if (sig["side"]=="LONG" and entry_low <= current_price <= entry_high) or \
-           (sig["side"]=="SHORT" and entry_low <= current_price <= entry_high):
-            sig["status"] = "ACTIVE"
-            sig["activated_at"] = int(time.time())
-            db.update_signal_status(order_id, "ACTIVE", activated_at=sig["activated_at"])
-            await send_tg_async(f"✅ 進場觸發 {sig['instId']} {sig['side']} 訂單{order_id[-8:]} 價格 {current_price:.4f}", level="important")
-    
-    async def _hit_tp(self, order_id: str, sig: Dict, level: int, price: float):
-        setattr(sig, f"hit_tp{level}", True)
+
+    def _hit_tp(self, sig, level, price, key):
+        setattr(self, f"hit_tp{level}", True)
         pnl = (price - sig["entry"]) / sig["entry"] * 100 if sig["side"]=="LONG" else (sig["entry"] - price) / sig["entry"] * 100
-        # 更新狀態
         if level == 1:
             sig["status"] = "BE"
-            sig["sl"] = sig["entry"]  # 保本
+            sig["sl"] = sig["entry"]
         elif level == 2:
             sig["status"] = "TRAIL"
             sig["trailing_active"] = True
             sig["sl"] = sig["tp1"]
-        else:  # TP3
+        else:
             sig["status"] = "CLOSED"
-            db.update_signal_status(order_id, "CLOSED", closed_at=int(time.time()))
-            del self.active_signals[order_id]
-        db.update_signal_status(order_id, sig["status"], last_checked_ts=int(time.time()))
-        await send_tg_async(f"🎯 TP{level} 達標 {sig['instId']} 獲利 {pnl:+.2f}%", level="important")
-    
-    async def _hit_sl(self, order_id: str, sig: Dict, price: float):
+            self._save_trade(sig, price, f"TP{level}", pnl)
+            del self.signals[key]
+        self._save()
+        send_tg_sync(f"🎯 TP{level} 達標 {sig['instId']} 獲利 {pnl:+.2f}%", level="important")
+
+    def _hit_sl(self, sig, price, key):
         pnl = (price - sig["entry"]) / sig["entry"] * 100 if sig["side"]=="LONG" else (sig["entry"] - price) / sig["entry"] * 100
-        sig["status"] = "CLOSED"
-        db.update_signal_status(order_id, "CLOSED", closed_at=int(time.time()))
-        del self.active_signals[order_id]
-        await send_tg_async(f"🛑 止損觸發 {sig['instId']} 虧損 {pnl:+.2f}%", level="critical")
-    
-    async def run_periodic(self, interval: int = 10):
-        while True:
-            await self.check_all()
-            await asyncio.sleep(interval)
+        self._save_trade(sig, price, "SL", pnl)
+        del self.signals[key]
+        self._save()
+        # 更新日內虧損
+        risk_mgr.update_daily_loss(pnl)
+        send_tg_sync(f"🛑 止損觸發 {sig['instId']} 虧損 {pnl:+.2f}%", level="critical")
+
+    def _save_trade(self, sig, close_price, close_type, pnl):
+        import os
+        trade = {
+            "order_id": sig["order_id"], "coin": sig["instId"].split("-")[0], "side": sig["side"],
+            "entry": sig["entry"], "close": close_price, "close_type": close_type,
+            "pnl": round(pnl,2), "score": sig["score"], "date": time.strftime("%Y-%m-%d"),
+            "time": time.strftime("%Y-%m-%d %H:%M"), "features": {}
+        }
+        history = []
+        if os.path.exists("trade_history.json"):
+            with open("trade_history.json", "r") as f:
+                history = json.load(f)
+        history.append(trade)
+        with open("trade_history.json", "w") as f:
+            json.dump(history, f, indent=2)
+
+    def send_position_updates(self):
+        for sig in self.signals.values():
+            if sig["status"] in ("ACTIVE","BE","TRAIL"):
+                price = sig.get("current_price", 0)
+                if price:
+                    pnl = (price - sig["entry"]) / sig["entry"] * 100 if sig["side"]=="LONG" else (sig["entry"] - price) / sig["entry"] * 100
+                    send_tg_sync(f"📊 {sig['instId']} {sig['side']} 當前 {price:.4f} {pnl:+.2f}% 止損 {sig['sl']:.4f}", level="all")
+
+def enhance_signal_tracker():
+    # 此函數保留給 main.py 調用，目前 tracker 已完整
+    pass
