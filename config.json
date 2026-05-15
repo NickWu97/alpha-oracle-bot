@@ -1,57 +1,53 @@
-{
-  "_comment": "Alpha Oracle Pro v14.0 配置（熱更新，無需重新部署）。可不放此檔，程式會 fallback 到 DEFAULT_CONFIG。",
+# config.py
+import os
+import yaml
+from dotenv import load_dotenv
 
-  "coins": [
-    "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP",
-    "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP",
-    "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP",
-    "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"
-  ],
+load_dotenv()
 
-  "max_signals": 3,
-  "score_threshold": 68,
-  "cooldown_hours": 2,
-  "signal_expire_hours": 24,
-  "atr_max_pct": 0.04,
+class Config:
+    def __init__(self, config_path="config.yaml"):
+        self.config_path = config_path
+        self.data = self._load()
+    
+    def _load(self):
+        default = {
+            "coins": ["BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP", "XRP-USDT-SWAP", "DOGE-USDT-SWAP", "ADA-USDT-SWAP", "AVAX-USDT-SWAP", "LINK-USDT-SWAP", "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"],
+            "max_signals": 2,
+            "score_threshold": 70,
+            "cooldown_hours": 1,
+            "signal_expire_hours": 24,
+            "scan_interval": 60,
+            "atr_max_pct": 0.035,
+            "risk": {
+                "max_account_risk_percent": 0.02,
+                "kelly_fraction": 0.25,
+                "max_drawdown_percent": 5.0,
+                "trailing_stop_atr_mult": 2.0,
+            },
+            "entry_zone_atr_mult": 0.3,
+            "price_sources": ["okx", "binance", "tradingview"],
+            "price_deviation_max": 0.5,
+            "notification_level": "important",  # all, important, critical
+            "dashboard_host": "0.0.0.0",
+            "dashboard_port": 8501,
+            "db_path": "trades.db",
+        }
+        if os.path.exists(self.config_path):
+            with open(self.config_path, 'r', encoding='utf-8') as f:
+                user = yaml.safe_load(f)
+                if user:
+                    default.update(user)
+        return default
+    
+    def get(self, key, default=None):
+        keys = key.split('.')
+        d = self.data
+        for k in keys:
+            if isinstance(d, dict):
+                d = d.get(k)
+            else:
+                return default
+        return d if d is not None else default
 
-  "post_mortem": {
-    "enabled": true,
-    "loss_only": false
-  },
-
-  "learning": {
-    "enabled": true,
-    "knn_enabled": true,
-    "min_samples": 5,
-    "max_score_adjust": 10
-  },
-
-  "price_verification": {
-    "enabled": true,
-    "max_deviation_pct": 0.5,
-    "block_on_unverified": false
-  },
-
-  "circuit_breaker": {
-    "enabled": true,
-    "soft_threshold": 3,
-    "soft_pause_hours": 4,
-    "hard_threshold": 5,
-    "hard_pause_hours": 24
-  },
-
-  "blackout_windows_tw": [
-    { "start": "07:50", "end": "08:10", "reason": "資金費率結算（00 UTC）" },
-    { "start": "15:50", "end": "16:10", "reason": "資金費率結算（08 UTC）" },
-    { "start": "23:50", "end": "00:10", "reason": "資金費率結算（16 UTC）" },
-    { "start": "21:25", "end": "21:45", "reason": "美股開盤波動" },
-    { "start": "02:00", "end": "02:30", "reason": "FOMC 公布時段" }
-  ],
-
-  "news_blackouts": [],
-
-  "auto_news_blackout": {
-    "nfp": true,
-    "cpi": true
-  }
-}
+config = Config()
