@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 51,
-      "loss": 25,
+      "loss": 26,
       "be": 5,
-      "total": 81
+      "total": 82
     },
     "sess:us": {
       "win": 28,
@@ -44,9 +44,9 @@
     },
     "sess:asia_dawn": {
       "win": 8,
-      "loss": 10,
+      "loss": 11,
       "be": 0,
-      "total": 18
+      "total": 19
     },
     "coin:DOGE": {
       "win": 6,
@@ -116,9 +116,9 @@
     },
     "coin:LINK": {
       "win": 5,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 7
+      "total": 8
     },
     "coin_side:LINK_SHORT": {
       "win": 4,
@@ -128,9 +128,9 @@
     },
     "score:70-79": {
       "win": 23,
-      "loss": 12,
+      "loss": 13,
       "be": 2,
-      "total": 37
+      "total": 38
     },
     "coin:ETH": {
       "win": 3,
@@ -362,9 +362,9 @@
     },
     "rsishort:10-19": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:AVAXSHORT": {
       "win": 0,
@@ -385,6 +385,12 @@
       "total": 1
     },
     "coin_side:NEARSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:LINKSHORT": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -424,9 +430,9 @@
     },
     "LINK": {
       "win": 5,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 7
+      "total": 8
     },
     "ETH": {
       "win": 3,
@@ -591,7 +597,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778869284.9235106,
+      "coin": "LINK",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778866267.1851618
+  "updated_at": 1778869284.2769482
 }

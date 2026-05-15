@@ -8320,5 +8320,81 @@
       "atr_pct": 0.701,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-16 02:21",
+    "date": "2026-05-16",
+    "order_id": "1778857281-DCC07F8A",
+    "coin": "LINK",
+    "side": "SHORT",
+    "entry": 10.032,
+    "close": 10.1295,
+    "close_type": "SL",
+    "pnl": -0.97,
+    "is_win": false,
+    "is_be": false,
+    "score": 72,
+    "funding_rate": -4.15866288642e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 19.5,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": 0,
+      "volume_ratio": 0.55,
+      "regime": "trend",
+      "adx": 84.3,
+      "atr_pct": 0.649,
+      "pullback": true,
+      "learning_notes": [
+        "sess:us (n=18, 勝率 89%) → +2",
+        "coin:LINK (n=7, 勝率 71%) → +2",
+        "coin_side:LINK_SHORT (n=5, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11,
+      "tp_adjust_notes": [
+        "TP1 由 9.8857 校正到 9.9789（避開支撐 9.9590）",
+        "TP2 由 9.7395 校正到 9.9789（避開支撐 9.9590）",
+        "TP3 由 9.5445 校正到 9.9789（避開支撐 9.9590）"
+      ]
+    },
+    "features": {
+      "score": 72.0,
+      "rsi": 19.5,
+      "atr_pct": 0.649,
+      "funding": -0.0415866288642,
+      "vol_ratio": 0.55,
+      "adx": 84.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 24.8
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 45.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 84.3,
+      "atr_pct": 0.649,
+      "volatile": false
+    }
   }
 ]
