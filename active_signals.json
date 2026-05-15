@@ -217,5 +217,247 @@
     "entry_message_id": 3523,
     "last_checked_ts": 1778857281.749575,
     "current_price": 10.032
+  },
+  "SOL-USDT-SWAPSHORT1778857582-7569435B": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 89.03,
+    "sl": 89.744,
+    "tp1": 88.6469,
+    "tp2": 88.6469,
+    "tp3": 88.6469,
+    "score": 71,
+    "grade": "觀望 ⚪",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 28.1,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 2,
+      "volume_ratio": 1.29,
+      "obv": -3,
+      "vwap": 92.3277,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.04046,
+      "bb_pct_b": 0.119,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "regime": "trend",
+      "adx": 40.1,
+      "atr_pct": 0.535,
+      "pullback": true,
+      "learning_notes": [
+        "sess:us (n=18, 勝率 89%) → +2",
+        "coin:SOL (n=6, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8,
+      "tp_adjust_notes": [
+        "TP1 87.9590→88.6469（支撐 88.4700）",
+        "TP2 86.8880→88.6469（支撐 88.4700）",
+        "TP3 85.4599→88.6469（支撐 88.4700）"
+      ]
+    },
+    "funding_rate": 3.78222530904e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 40.1,
+      "atr_pct": 0.535,
+      "volatile": false
+    },
+    "created": 1778857582.9376395,
+    "expires": 1778943982.9376397,
+    "order_id": "1778857582-7569435B",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778857582.9376683,
+    "entry_message_id": 3527,
+    "last_checked_ts": 1778857582.9376683
+  },
+  "BNB-USDT-SWAPSHORT1778857585-E59DAA62": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 675.5,
+    "sl": 679.9446,
+    "tp1": 675.1346,
+    "tp2": 675.1346,
+    "tp3": 675.1346,
+    "score": 76,
+    "grade": "觀望 ⚪",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 38.8,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "volume": -10,
+      "volume_ratio": 0.46,
+      "obv": -3,
+      "vwap": 674.5121,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.03246,
+      "bb_pct_b": 0.218,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📉 正規空頭背離（價格新高但 RSI 不新高）→ 頂部反轉",
+      "rsi_div_score": 12,
+      "regime": "trend",
+      "adx": 29.6,
+      "atr_pct": 0.439,
+      "learning_notes": [
+        "sess:us (n=18, 勝率 89%) → +2",
+        "coin:BNB (n=7, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 668.8330→675.1346（支撐 673.7870）",
+        "TP2 662.1661→675.1346（支撐 673.7870）",
+        "TP3 653.2768→675.1346（支撐 673.7870）"
+      ]
+    },
+    "funding_rate": -8.5001741793e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 46.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 29.6,
+      "atr_pct": 0.439,
+      "volatile": false
+    },
+    "created": 1778857585.0714269,
+    "expires": 1778943985.0714273,
+    "order_id": "1778857585-E59DAA62",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778857585.0714576,
+    "entry_message_id": 3528,
+    "last_checked_ts": 1778857585.0714576
+  },
+  "DOT-USDT-SWAPSHORT1778857591-57063F0B": {
+    "instId": "DOT-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.307,
+    "sl": 1.3201,
+    "tp1": 1.2874,
+    "tp2": 1.2896,
+    "tp3": 1.2896,
+    "score": 83,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 34.7,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 8,
+      "mtf_desc": "1H=順 / 4H=中",
+      "volume": -10,
+      "volume_ratio": 0.42,
+      "obv": -3,
+      "vwap": 1.3544,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.04386,
+      "bb_pct_b": 0.184,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "regime": "trend",
+      "adx": 37.2,
+      "atr_pct": 0.667,
+      "learning_notes": [
+        "sess:us (n=18, 勝率 89%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP2 1.2678→1.2896（支撐 1.2870）",
+        "TP3 1.2417→1.2896（支撐 1.2870）"
+      ]
+    },
+    "funding_rate": -7.43353815104e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.5
+      },
+      "4H": {
+        "supertrend": 0,
+        "trend": "side",
+        "rsi": 47.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 37.2,
+      "atr_pct": 0.667,
+      "volatile": false
+    },
+    "created": 1778857591.3259714,
+    "expires": 1778943991.325972,
+    "order_id": "1778857591-57063F0B",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1778857591.3260047,
+    "entry_message_id": 3529,
+    "last_checked_ts": 1778857591.3260047
   }
 }
