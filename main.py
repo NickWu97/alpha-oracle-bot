@@ -105,6 +105,24 @@ DEFAULT_CONFIG: dict = {
     "score_threshold": 75,
     "cooldown_hours": 2,
     "daily_max_trades": 15,
+    # 🔴 每日最大虧損熔斷（-3% 停止新倉）
+    "daily_loss_limit": {
+        "enabled": True,
+        "max_loss_pct": -3.0,
+    },
+    # 📅 時段勝率分層（樣本足夠後自動提高低勝率時段門檻）
+    "session_wr_filter": {
+        "enabled": True,
+        "min_samples": 10,
+        "low_wr_boost": 8,
+        "mid_wr_boost": 5,
+    },
+    # 📈 週線趨勢鎖定（只做與週線 Supertrend 同向的訊號）
+    "weekly_trend_filter": {
+        "enabled": True,
+        "score_penalty": 12,
+        "block_hard": False,
+    },
     "win_rate_guardian": {
         "enabled": True,
         "min_wr": 0.70,
@@ -940,8 +958,9 @@ def fetch_mtf_trend(instId: str) -> dict:
         if now - t < 30:
             return data
     out = {}
-    for tf in ("1H", "4H"):
-        df = fetch_candles(instId, tf=tf, limit=100)
+    for tf in ("1H", "4H", "1W"):
+        limit = 50 if tf != "1W" else 30
+        df = fetch_candles(instId, tf=tf, limit=limit)
         if df:
             st = calc_supertrend(df)
             out[tf] = {
@@ -1124,6 +1143,19 @@ def calc_score(
         score += mtf_score
         detail["mtf"] = mtf_score
         detail["mtf_desc"] = mtf_desc
+        # ── 週線 Supertrend 逆勢懲罰（-12 分）──
+        expect_w = 1 if side == "LONG" else -1
+        w1_st = mtf.get("1W", {}).get("supertrend", 0)
+        if w1_st == -expect_w:
+            score -= 12
+            detail["weekly_penalty"] = -12
+            detail["weekly_trend"] = "逆週線"
+        elif w1_st == expect_w:
+            detail["weekly_penalty"] = 0
+            detail["weekly_trend"] = "順週線 ✅"
+        else:
+            detail["weekly_penalty"] = 0
+            detail["weekly_trend"] = "週線中性"
 
     # ── Volume (-10~+8) ──
     vol_ratio, vol_score = calc_volume_quality(df)
@@ -1363,6 +1395,10 @@ def record_trade(
         (close_price - entry) / entry * 100 if side == "LONG"
         else (entry - close_price) / entry * 100
     )
+    # 加權實際 RR（依出場類型 × 建議出場比例）
+    _rr_map = {"TP1": (1.5, 0.30), "TP2": (3.0, 0.30), "TP3": (5.0, 0.40),
+               "LOCK": (1.5, 1.0), "BE": (0.0, 1.0), "SL": (-1.0, 1.0)}
+    exit_rr_val, exit_wt = _rr_map.get(close_type, (-1.0, 1.0))
     snap        = sig_snapshot or {}
     detail      = snap.get("detail", {}) or {}
     funding_rate = snap.get("funding_rate")
@@ -1379,6 +1415,8 @@ def record_trade(
         "close":      close_price,
         "close_type": close_type,
         "pnl":        round(pnl, 2),
+        "exit_rr":    exit_rr_val,
+        "exit_weight":exit_wt,
         "is_win":     is_win,
         "is_be":      is_be,
         "score":      score,
@@ -1620,19 +1658,26 @@ def format_daily_report(date: str | None = None) -> str:
     pf  = _calc_profit_factor(today)
     mdd = _calc_max_drawdown(today)
     pf_str = f"`{pf:.2f}`" if pf != float("inf") else "`∞`"
+    rr_stats = calc_avg_actual_rr(today)
+    rr_line = ""
+    if rr_stats["avg"] is not None:
+        rr_line = (
+            f"實際加權RR：`{rr_stats['avg']:+.2f}R`"
+            f"（贏 `{rr_stats['win_rr']:+.2f}R` / 輸 `{rr_stats['loss_rr']:+.2f}R`）"
+        ) if rr_stats["win_rr"] and rr_stats["loss_rr"] else f"實際RR：`{rr_stats['avg']:+.2f}R`"
+    daily_pnl_now = get_daily_pnl(date)
     lines = [
         f"📊 *每日績效報告 {date}*",
         "━━━━━━━━━━━━━━",
         f"交易筆數：{s['n']} / 上限 15",
         f"勝 / 平 / 敗：{s['win']} / {s['be']} / {s['loss']}",
         f"勝率：`{s['wr']:.0f}%` {_wr_status(s['wr'])}",
-        f"總 PnL：`{s['pnl']:+.2f}%`",
+        f"總 PnL：`{s['pnl']:+.2f}%`（加權：`{daily_pnl_now:+.2f}%`）",
         f"平均：`{s['avg']:+.2f}%/筆`",
         f"最大獲利：`{s['max_win']:+.2f}%`  最大虧損：`{s['max_loss']:+.2f}%`",
         f"利潤因子：{pf_str}（>1.5 健康）",
         f"最大回撤：`{mdd:.2f}%`",
-        "",
-    ]
+    ] + ([rr_line] if rr_line else []) + [""]
     by_coin: dict = {}
     for t in today:
         c = t.get("coin","?"); by_coin.setdefault(c,[]).append(t)
@@ -1687,15 +1732,20 @@ def format_monthly_report(year_month: str | None = None) -> str:
             sub = _summarize_trades(ts)
             lines.append(f"  {c}: {sub['n']} 筆 · 勝率 `{sub['wr']:.0f}%` · PnL `{sub['pnl']:+.2f}%`")
     # 月度綜合評估
-    pf  = _calc_profit_factor(month)
-    mdd = _calc_max_drawdown(month)
-    pf_str = f"`{pf:.2f}`" if pf != float("inf") else "`∞`"
+    pf      = _calc_profit_factor(month)
+    mdd     = _calc_max_drawdown(month)
+    pf_str  = f"`{pf:.2f}`" if pf != float("inf") else "`∞`"
+    rr_mo   = calc_avg_actual_rr(month)
+    rr_mo_line = ""
+    if rr_mo["avg"] is not None:
+        rr_mo_line = f"平均加權RR：`{rr_mo['avg']:+.2f}R`（{rr_mo['n_orders']} 筆訂單）"
     lines += [
         "",
         "📐 *月度綜合評估*",
         f"利潤因子：{pf_str}",
         f"最大回撤：`{mdd:.2f}%`",
         f"勝率狀態：{_wr_status(s['wr'])}",
+    ] + ([rr_mo_line] if rr_mo_line else []) + [
         "",
         f"⏰ 報告生成：{tw_ts()}",
     ]
@@ -2128,6 +2178,118 @@ class SignalTracker:
 
 
 # ═════════════════════════════════════════════════════════
+# 11.1 v17 新增：真實RR / 時段分層 / 日虧熔斷
+# ═════════════════════════════════════════════════════════
+
+# ── A. 加權實際 RR 計算 ────────────────────────────────
+def calc_order_actual_rr(history: list, order_id: str) -> float | None:
+    """
+    依訂單 ID 找出所有出場記錄，按比例計算加權 RR。
+    分批出場權重：TP1=30%、TP2=30%、TP3=40%；
+    一次性出場（SL/BE/LOCK）= 100%。
+    """
+    events = [t for t in history if t.get("order_id") == order_id]
+    if not events:
+        return None
+    weighted = 0.0; total_wt = 0.0
+    for e in events:
+        rr = e.get("exit_rr")
+        wt = e.get("exit_weight", 1.0)
+        if rr is not None:
+            weighted += rr * wt
+            total_wt  += wt
+    return round(weighted / total_wt, 3) if total_wt > 0 else None
+
+
+def calc_avg_actual_rr(history: list) -> dict:
+    """統計一批交易的平均加權 RR（分贏/虧）"""
+    order_ids = list({t.get("order_id") for t in history if t.get("order_id")})
+    rrs = [r for oid in order_ids if (r := calc_order_actual_rr(history, oid)) is not None]
+    if not rrs:
+        return {"avg": None, "win_rr": None, "loss_rr": None}
+    wins   = [r for r in rrs if r > 0]
+    losses = [r for r in rrs if r <= 0]
+    return {
+        "avg":     round(sum(rrs) / len(rrs), 3),
+        "win_rr":  round(sum(wins)   / len(wins),   3) if wins   else None,
+        "loss_rr": round(sum(losses) / len(losses), 3) if losses else None,
+        "n_orders": len(rrs),
+    }
+
+
+# ── B. 每日最大虧損熔斷 ────────────────────────────────
+def get_daily_pnl(date: str | None = None) -> float:
+    """當日已結算的累積 PnL（%）"""
+    if date is None:
+        date = tw_now().strftime("%Y-%m-%d")
+    history = _load_json(TRADE_HISTORY_FILE, [])
+    # 只計算最終出場（SL/BE/LOCK/TP3）；TP1/TP2 為部分出場，用權重折算
+    total = 0.0
+    for t in history:
+        if t.get("date") != date:
+            continue
+        pnl = t.get("pnl", 0.0)
+        wt  = t.get("exit_weight", 1.0)
+        total += pnl * wt
+    return round(total, 3)
+
+
+def is_daily_loss_limit_reached(cfg: dict) -> tuple[bool, str]:
+    dlcfg = cfg.get("daily_loss_limit", {})
+    if not dlcfg.get("enabled", True):
+        return False, ""
+    threshold = dlcfg.get("max_loss_pct", -3.0)
+    daily_pnl = get_daily_pnl()
+    if daily_pnl <= threshold:
+        return True, (
+            f"🔴 日虧熔斷觸發\n"
+            f"今日累積虧損 `{daily_pnl:+.2f}%` ≤ 限額 `{threshold:+.1f}%`\n"
+            f"本日停止開新倉，繼續監控既有持倉"
+        )
+    remaining = abs(threshold) - abs(daily_pnl)
+    return False, f"今日PnL `{daily_pnl:+.2f}%`（距熔斷還差 `{remaining:.2f}%`）"
+
+
+# ── C. 時段勝率分層 ────────────────────────────────────
+def get_session_wr_boost(cfg: dict) -> tuple[int, str]:
+    """
+    依當前台灣時間時段查歷史勝率，樣本足夠時自動提高門檻。
+    時段：亞盤黎明(0-6) / 亞盤白天(6-14) / 歐盤(14-21) / 美盤(21-24)
+    """
+    sf = cfg.get("session_wr_filter", {})
+    if not sf.get("enabled", True):
+        return 0, ""
+    min_samples = sf.get("min_samples", 10)
+    low_boost   = sf.get("low_wr_boost",  8)
+    mid_boost   = sf.get("mid_wr_boost",  5)
+
+    cur_sess = _bucket_session_tw()   # "sess:asia_dawn" 等
+    state    = _load_json(LEARNING_FILE, {})
+    bucket   = state.get("buckets", {}).get(cur_sess, {})
+    total    = bucket.get("total", 0)
+
+    if total < min_samples:
+        return 0, f"時段 {cur_sess}：樣本不足（{total}/{min_samples}），暫不調整"
+
+    wins = bucket.get("win", 0)
+    wr   = wins / total
+
+    session_names = {
+        "sess:asia_dawn": "亞盤黎明 0–6時",
+        "sess:asia_day":  "亞盤白天 6–14時",
+        "sess:europe":    "歐盤 14–21時",
+        "sess:us":        "美盤 21–24時",
+    }
+    sname = session_names.get(cur_sess, cur_sess)
+
+    if wr < 0.55:
+        return low_boost, f"⚠️ {sname} 歷史勝率 {wr:.0%}（{total}筆），門檻 +{low_boost}"
+    if wr < 0.68:
+        return mid_boost, f"📊 {sname} 歷史勝率 {wr:.0%}（{total}筆），門檻 +{mid_boost}"
+    return 0, f"✅ {sname} 歷史勝率 {wr:.0%}（{total}筆），門檻無調整"
+
+
+# ═════════════════════════════════════════════════════════
 # 11.0 v16 新增：每日交易限制 / 勝率守衛 / 相關性過濾
 # ═════════════════════════════════════════════════════════
 
@@ -2271,11 +2433,32 @@ def run_scan(tracker: SignalTracker) -> int:
         tracker.check_all(); tracker.send_position_updates()
         return 0
 
+    # 2.75 每日最大虧損熔斷
+    loss_reached, loss_msg = is_daily_loss_limit_reached(cfg)
+    if loss_reached:
+        logging.warning(loss_msg)
+        send_tg(loss_msg) if not get_system_state().get("daily_loss_notified") else None
+        st2 = get_system_state(); st2["daily_loss_notified"] = True; set_system_state(st2)
+        tracker.check_all(); tracker.send_position_updates()
+        return 0
+    else:
+        st2 = get_system_state()
+        if st2.get("daily_loss_notified"):
+            st2["daily_loss_notified"] = False; set_system_state(st2)
+
     # 2.8 勝率守衛：動態提升門檻
     wr_boost, wr_msg = check_win_rate_guardian(cfg)
     if wr_boost > 0:
         logging.info(wr_msg)
         score_thr += wr_boost
+
+    # 2.9 時段勝率分層：依當前時段歷史表現微調門檻
+    sess_boost, sess_msg = get_session_wr_boost(cfg)
+    if sess_boost > 0:
+        logging.info(sess_msg)
+        score_thr += sess_boost
+    else:
+        logging.info(sess_msg)
 
     # 3. 掃描每個幣種
     sent = 0
@@ -2356,7 +2539,7 @@ def run_scan(tracker: SignalTracker) -> int:
 def main() -> None:
     try:
         logging.info("=" * 50)
-        logging.info("🤖 Alpha Oracle Pro v16.0 啟動")
+        logging.info("🤖 Alpha Oracle Pro v17.0 啟動")
         logging.info(f"⏰ 台灣時間：{tw_ts()}")
         logging.info("=" * 50)
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
