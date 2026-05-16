@@ -10890,5 +10890,90 @@
       "atr_pct": 0.436,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-17 01:40",
+    "date": "2026-05-17",
+    "order_id": "1778945669-2885372F",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 9.317,
+    "close": 9.3641,
+    "close_type": "SL",
+    "pnl": -0.51,
+    "is_win": false,
+    "is_be": false,
+    "score": 73,
+    "funding_rate": 9.88703890067e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 49.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.5,
+      "obv": 5,
+      "vwap": 9.6578,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00917,
+      "bb_pct_b": 0.784,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.338,
+      "pullback": true,
+      "learning_notes": [
+        "score:60-69 (n=7, 勝率 86%) → +2",
+        "fund:neutral (n=104, 勝率 67%) → +1",
+        "sess:us (n=32, 勝率 94%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 10,
+      "tp_adjust_notes": [
+        "TP1 9.2463→9.2992（支撐 9.2807）",
+        "TP2 9.1756→9.2992（支撐 9.2807）",
+        "TP3 9.0813→9.2992（支撐 9.2807）"
+      ]
+    },
+    "features": {
+      "score": 73.0,
+      "rsi": 49.9,
+      "atr_pct": 0.338,
+      "funding": 0.0988703890067,
+      "vol_ratio": 0.5,
+      "adx": 33.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 31.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.3,
+      "atr_pct": 0.338,
+      "volatile": false
+    }
   }
 ]
