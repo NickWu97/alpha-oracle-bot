@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 26,
-      "loss": 11,
+      "loss": 12,
       "be": 2,
-      "total": 39
+      "total": 40
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 70,
-      "loss": 31,
+      "loss": 32,
       "be": 5,
-      "total": 106
+      "total": 107
     },
     "sess:us": {
       "win": 30,
@@ -44,9 +44,9 @@
     },
     "sess:asia_dawn": {
       "win": 8,
-      "loss": 11,
+      "loss": 12,
       "be": 0,
-      "total": 19
+      "total": 20
     },
     "coin:DOGE": {
       "win": 6,
@@ -188,9 +188,9 @@
     },
     "coin:XRP": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "coin_side:XRP_SHORT": {
       "win": 1,
@@ -344,9 +344,9 @@
     },
     "coin_side:XRPSHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOGESHORT": {
       "win": 3,
@@ -398,9 +398,9 @@
     },
     "rsishort:40-49": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:BTCSHORT": {
       "win": 6,
@@ -466,9 +466,9 @@
     },
     "XRP": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "TON": {
       "win": 3,
@@ -643,7 +643,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1778949328.3207846,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1778945673.656062
+  "updated_at": 1778949327.781989
 }

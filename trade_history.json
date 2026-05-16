@@ -10725,5 +10725,86 @@
       "atr_pct": 0.208,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-17 00:35",
+    "date": "2026-05-17",
+    "order_id": "1778935545-76A42266",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.411,
+    "close": 1.4188,
+    "close_type": "SL",
+    "pnl": -0.55,
+    "is_win": false,
+    "is_be": false,
+    "score": 87,
+    "funding_rate": -7.93640599372e-05,
+    "detail": {
+      "trend": 15,
+      "rsi_value": 47.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.31,
+      "obv": 5,
+      "vwap": 1.4552,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01578,
+      "bb_pct_b": 0.597,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "regime": "trend",
+      "adx": 36.6,
+      "atr_pct": 0.367,
+      "learning_notes": [
+        "score:70-79 (n=43, 勝率 60%) → +1",
+        "fund:neutral (n=102, 勝率 67%) → +1",
+        "sess:europe (n=26, 勝率 81%) → +2",
+        "coin:XRP (n=5, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 47.8,
+      "atr_pct": 0.367,
+      "funding": -0.0793640599372,
+      "vol_ratio": 0.31,
+      "adx": 36.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 36.6,
+      "atr_pct": 0.367,
+      "volatile": false
+    }
   }
 ]
