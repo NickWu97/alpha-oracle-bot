@@ -10806,5 +10806,89 @@
       "atr_pct": 0.367,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-17 01:36",
+    "date": "2026-05-17",
+    "order_id": "1778931456-6E6432EB",
+    "coin": "SOL",
+    "side": "SHORT",
+    "entry": 86.23,
+    "close": 86.793,
+    "close_type": "SL",
+    "pnl": -0.65,
+    "is_win": false,
+    "is_be": false,
+    "score": 104,
+    "funding_rate": 1.58211911599e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 31.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": -10,
+      "volume_ratio": 0.38,
+      "obv": -3,
+      "vwap": 90.9058,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.03729,
+      "bb_pct_b": 0.295,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "regime": "trend",
+      "adx": 64.2,
+      "atr_pct": 0.436,
+      "learning_notes": [
+        "score:90+ (n=25, 勝率 84%) → +2",
+        "rsishort:30-39 (n=16, 勝率 88%) → +2",
+        "fund:neutral (n=101, 勝率 67%) → +1",
+        "sess:europe (n=25, 勝率 84%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 12,
+      "tp_adjust_notes": [
+        "TP2 84.5410→85.6409（支撐 85.4700）",
+        "TP3 83.4150→85.6409（支撐 85.4700）"
+      ]
+    },
+    "features": {
+      "score": 104.0,
+      "rsi": 31.3,
+      "atr_pct": 0.436,
+      "funding": 0.015821191159899998,
+      "vol_ratio": 0.38,
+      "adx": 64.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 17.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 31.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 64.2,
+      "atr_pct": 0.436,
+      "volatile": false
+    }
   }
 ]
