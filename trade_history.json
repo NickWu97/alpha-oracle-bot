@@ -9616,5 +9616,170 @@
       "atr_pct": 0.372,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-16 16:22",
+    "date": "2026-05-16",
+    "order_id": "1778915805-C59AC9CB",
+    "coin": "SOL",
+    "side": "SHORT",
+    "entry": 86.97,
+    "close": 87.4931,
+    "close_type": "SL",
+    "pnl": -0.6,
+    "is_win": false,
+    "is_be": false,
+    "score": 77,
+    "funding_rate": 4.30134200959e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 15.3,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 4.96,
+      "obv": 5,
+      "vwap": 91.4539,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02226,
+      "bb_pct_b": -0.252,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "regime": "trend",
+      "adx": 50.0,
+      "atr_pct": 0.4,
+      "learning_notes": [
+        "fund:neutral (n=88, 勝率 64%) → +1",
+        "sess:europe (n=11, 勝率 82%) → +2",
+        "coin:SOL (n=9, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 77.0,
+      "rsi": 15.3,
+      "atr_pct": 0.4,
+      "funding": 0.0430134200959,
+      "vol_ratio": 4.96,
+      "adx": 50.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 27.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 36.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 50.0,
+      "atr_pct": 0.4,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-16 16:22",
+    "date": "2026-05-16",
+    "order_id": "1778915807-AAAF537F",
+    "coin": "BNB",
+    "side": "SHORT",
+    "entry": 657.4,
+    "close": 660.3565,
+    "close_type": "SL",
+    "pnl": -0.45,
+    "is_win": false,
+    "is_be": false,
+    "score": 83,
+    "funding_rate": -0.0001399060157401,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 21.1,
+      "rsi": 0,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "volume": 8,
+      "volume_ratio": 2.81,
+      "obv": 5,
+      "vwap": 675.3946,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0178,
+      "bb_pct_b": -0.031,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "regime": "trend",
+      "adx": 51.1,
+      "atr_pct": 0.3,
+      "learning_notes": [
+        "rsishort:20-29 (n=7, 勝率 86%) → +2",
+        "fund:neg (n=10, 勝率 90%) → +2",
+        "sess:europe (n=11, 勝率 82%) → +2",
+        "coin:BNB (n=16, 勝率 88%) → +2",
+        "coin_side:BNBSHORT (n=9, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 15,
+      "tp_adjust_notes": [
+        "TP1 652.9652→657.1116（支撐 655.8000）",
+        "TP2 648.5304→657.1116（支撐 655.8000）",
+        "TP3 642.6173→657.1116（支撐 655.8000）"
+      ]
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 21.1,
+      "atr_pct": 0.3,
+      "funding": -0.1399060157401,
+      "vol_ratio": 2.81,
+      "adx": 51.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 31.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 46.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 51.1,
+      "atr_pct": 0.3,
+      "volatile": false
+    }
   }
 ]
