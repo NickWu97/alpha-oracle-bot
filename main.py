@@ -1076,17 +1076,21 @@ def calc_score(
     else:
         detail["trend"] = 0
 
-    # ── RSI (25) ──
+    # ── RSI (25) — 含極端區懲罰 ──
     rsi = calc_rsi(df)
     detail["rsi_value"] = round(rsi, 1)
     if side == "LONG":
-        if   30 <= rsi <= 50: score += 25; detail["rsi"] = 25
-        elif 50 < rsi  < 70: score += 15; detail["rsi"] = 15
-        else:                              detail["rsi"] = 0
+        if   30 <= rsi <= 50:  score += 25; detail["rsi"] = 25
+        elif 50 < rsi  <= 65:  score += 15; detail["rsi"] = 15
+        elif rsi > 75:                       # 嚴重超買，做多風險極高
+            score -= 15; detail["rsi"] = -15; detail["rsi_warn"] = "⚠️ RSI超買>75 嚴格懲罰"
+        else:                               detail["rsi"] = 0
     else:
-        if   50 <= rsi <= 70: score += 25; detail["rsi"] = 25
-        elif 30 < rsi  < 50: score += 15; detail["rsi"] = 15
-        else:                              detail["rsi"] = 0
+        if   50 <= rsi <= 70:  score += 25; detail["rsi"] = 25
+        elif 35 <= rsi  < 50:  score += 15; detail["rsi"] = 15
+        elif rsi < 25:                       # 嚴重超賣，做空風險極高
+            score -= 15; detail["rsi"] = -15; detail["rsi_warn"] = "⚠️ RSI超賣<25 嚴格懲罰"
+        else:                               detail["rsi"] = 0
 
     # ── OB (20) ──
     ob = find_order_block(df, side)
@@ -1165,23 +1169,27 @@ def calc_score(
 
     # ══ v15 新增指標 ══
 
-    # ── OBV (+5) ──
+    # ── OBV (+5 / -6) — 加重背離懲罰 ──
     obv_dir = calc_obv(df)
     expect  = 1.0 if side == "LONG" else -1.0
-    obv_score = 5 if obv_dir == expect else (-3 if obv_dir == -expect else 0)
+    obv_score = 5 if obv_dir == expect else (-6 if obv_dir == -expect else 0)
     score += obv_score
     detail["obv"] = obv_score
+    if obv_score < 0:
+        detail["obv_warn"] = "⚠️ OBV與方向背離"
 
-    # ── VWAP (+5) ── 價格在 VWAP 正確方向
+    # ── VWAP (+5 / -6) — 加重錯側懲罰 ──
     vwap = calc_vwap(df)
     detail["vwap"] = round(vwap, 4)
     vwap_score = 0
-    if side == "LONG"  and current_price > vwap: vwap_score = 5
-    elif side == "SHORT" and current_price < vwap: vwap_score = 5
-    elif side == "LONG"  and current_price < vwap * 0.995: vwap_score = -3
-    elif side == "SHORT" and current_price > vwap * 1.005: vwap_score = -3
+    if side == "LONG"  and current_price > vwap * 1.001: vwap_score = 5
+    elif side == "SHORT" and current_price < vwap * 0.999: vwap_score = 5
+    elif side == "LONG"  and current_price < vwap * 0.995: vwap_score = -6
+    elif side == "SHORT" and current_price > vwap * 1.005: vwap_score = -6
     score += vwap_score
     detail["vwap_score"] = vwap_score
+    if vwap_score < 0:
+        detail["vwap_warn"] = "⚠️ 價格在VWAP錯側"
 
     # ── BB Squeeze (+8) ── 帶寬收窄後即將爆發
     bb = calc_bollinger(df)
@@ -1247,17 +1255,41 @@ def generate_signal(
     funding_penalty_short = funding_rate and funding_rate < -0.0008
     coin = instId.split("-")[0]
     regime_info = detect_market_regime(df)
+    adx_val = regime_info.get("adx", 0)
+
+    # ── ADX 硬性門檻：ADX < 15 表示市場無方向，禁止進場 ──
+    if adx_val < 15:
+        logging.debug(f"[{instId}] ADX={adx_val:.1f} < 15，市場無趨勢，跳過")
+        return None
+
     if regime_info["regime"] == "range":    threshold += 5
     if regime_info["volatile"]:             threshold += 3
     mtf = fetch_mtf_trend(instId)
+
+    # ── MTF 1H 硬性驗證：1H Supertrend 必須存在且不反向 ──
+    h1_st = mtf.get("1H", {}).get("supertrend", 0) if mtf else 0
     candidates = []
     for side in ("LONG", "SHORT"):
+        # ── 1H Supertrend 方向硬性驗證：1H 逆向直接跳過 ──
+        if h1_st != 0:
+            expect_h1 = 1 if side == "LONG" else -1
+            if h1_st == -expect_h1:
+                logging.debug(f"[{instId}] {side} 被 1H Supertrend 反向封鎖，跳過")
+                continue
+
         score, grade, detail = calc_score(df, side, current_price, mtf=mtf)
         if side == "LONG"  and funding_penalty_long:  score -= 5
         if side == "SHORT" and funding_penalty_short: score -= 5
         detail["regime"]   = regime_info["regime"]
         detail["adx"]      = regime_info["adx"]
         detail["atr_pct"]  = regime_info["atr_pct"]
+
+        # ── ADX 趨勢強度加分：ADX > 30 表示強趨勢，順勢加分 ──
+        if adx_val > 30:
+            score += 4; detail["adx_bonus"] = 4
+        elif adx_val > 25:
+            score += 2; detail["adx_bonus"] = 2
+
         if detect_pullback(df, side):
             score += 3; detail["pullback"] = True
         adj_simple, notes_simple = apply_learning_adjustment(score, side, detail, funding_rate, coin)
@@ -1278,6 +1310,12 @@ def generate_signal(
             tp_levels = [entry + risk * 1.5, entry + risk * 3.0, entry + risk * 5.0]
         else:
             tp_levels = [entry - risk * 1.5, entry - risk * 3.0, entry - risk * 5.0]
+
+        # ── RR 最低門檻：TP1/SL 必須 >= 1.2，否則跳過 ──
+        rr1 = abs(tp_levels[0] - entry) / risk
+        if rr1 < 1.2:
+            logging.debug(f"[{instId}] {side} RR={rr1:.2f} < 1.2，跳過")
+            continue
         tp_levels, tp_notes = adjust_tp_by_sr(entry, side, tp_levels, df)
         if tp_notes:
             detail["tp_adjust_notes"] = tp_notes
@@ -2046,16 +2084,15 @@ class SignalTracker:
             last_ts_ms   = int(last_ts_s * 1000)
             new_candles  = [c for c in all_candles if c["ts"] > last_ts_ms]
             for c in new_candles:
-                # ── 同一根 K 線最多重跑 4 次（TP1→TP2→TP3→SL），每次只觸一個事件
-                # 這樣每個 TP 通知之間強制間隔 1.5 秒，Telegram 收到的時間點不同
-                for _attempt in range(4):
-                    result = self._process_candle(sig, c)
-                    if result is True:          # 訊號結束
-                        return True
-                    elif result == "tp":        # TP 命中，同一根 K 線繼續檢查下一個 TP
-                        time.sleep(1.5)         # ← 強制 1.5 秒間隔，Telegram 時間戳不同
-                    else:                       # 本根 K 無事件
-                        break
+                # ── 每根 K 線只觸發「下一個尚未命中」的單一事件 ──
+                # TP1 觸發後立即停止本根 K 線處理，等下一根真實 K 線才檢查 TP2。
+                # 這樣 TP 之間的時間差由市場決定（真實間距），而非人為 sleep。
+                result = self._process_candle(sig, c)
+                if result is True:     # 訊號結束（TP3 / SL / BE / LOCK）
+                    return True
+                elif result == "tp":   # TP1 或 TP2 命中 → 停止本根，等下根
+                    break
+                # result == False → 本根 K 無事件，繼續看下一根
             confirmed = [c for c in new_candles if c["confirmed"]]
             if confirmed:
                 sig["last_checked_ts"] = max(c["ts"] for c in confirmed) / 1000.0
