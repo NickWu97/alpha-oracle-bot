@@ -1,39 +1,158 @@
 {
-    "coins": [
-        "BTC-USDT-SWAP", "ETH-USDT-SWAP", "SOL-USDT-SWAP", "BNB-USDT-SWAP",
-        "XRP-USDT-SWAP", "DOGE-USDT-SWAP", "ADA-USDT-SWAP", "AVAX-USDT-SWAP",
-        "LINK-USDT-SWAP", "DOT-USDT-SWAP", "TON-USDT-SWAP", "NEAR-USDT-SWAP"
-    ],
-    "max_signals": 2,
-    "score_threshold": 70,
-    "cooldown_hours": 1,
-    "signal_expire_hours": 24,
-    "scan_interval": 60,
-    "atr_max_pct": 0.035,
-    "entry_zone_atr_mult": 0.3,
-    "price_deviation_max": 0.5,
-    "notification_level": "important",
-    "dashboard_port": 8501,
-    "db_path": "trades.db",
-    "risk": {
-        "max_account_risk_percent": 0.02,
-        "kelly_fraction": 0.25,
-        "max_drawdown_percent": 5.0,
-        "trailing_stop_atr_mult": 2.0,
-        "daily_loss_limit_percent": 3.0,
-        "fixed_risk_amount": 100.0
-    },
-    "filters": {
-        "require_mtf_alignment": true,
-        "blackout_hours": ["00:00-01:00", "07:50-08:10", "23:50-00:10"],
-        "max_daily_loss": 3.0
-    },
-    "ml": {
-        "enabled": false,
-        "model_path": "model.pkl"
-    },
-    "orderbook": {
-        "enabled": false,
-        "websocket_url": "wss://ws.okx.com:8443/ws/v5/public"
-    }
+  "_version": "Alpha Oracle Pro v18.0",
+  "_doc": "Production configuration. Fill in REQUIRED fields before deployment. All other fields have battle-tested defaults.",
+
+  "===== REQUIRED =====": "",
+
+  "TG_TOKEN": "YOUR_TELEGRAM_BOT_TOKEN",
+  "CHAT_ID": "YOUR_TELEGRAM_CHAT_OR_CHANNEL_ID",
+
+  "OKX_API_KEY":    "YOUR_OKX_API_KEY",
+  "OKX_SECRET_KEY": "YOUR_OKX_SECRET_KEY",
+  "OKX_PASSPHRASE": "YOUR_OKX_PASSPHRASE",
+
+  "===== TRADING UNIVERSE =====": "",
+
+  "symbols": [
+    "BTC-USDT-SWAP",
+    "ETH-USDT-SWAP",
+    "SOL-USDT-SWAP",
+    "BNB-USDT-SWAP",
+    "DOGE-USDT-SWAP",
+    "XRP-USDT-SWAP",
+    "AVAX-USDT-SWAP",
+    "LINK-USDT-SWAP",
+    "ARB-USDT-SWAP",
+    "OP-USDT-SWAP"
+  ],
+
+  "===== SIGNAL SCORING =====": "",
+
+  "score_threshold": 75,
+  "_score_threshold_doc": "Minimum score (0-100) required to open a trade. Raise to 80 for higher precision, lower to 70 for more signals.",
+
+  "===== RISK MANAGEMENT =====": "",
+
+  "daily_max_trades": 15,
+  "_daily_max_trades_doc": "Hard cap on total new signals per calendar day (UTC). Prevents overtrading.",
+
+  "daily_loss_limit_pct": 3.0,
+  "_daily_loss_limit_pct_doc": "Circuit breaker: halt new signals if daily realized loss exceeds this % of account equity. Set 0 to disable.",
+
+  "risk_per_trade_pct_conservative": 1.0,
+  "risk_per_trade_pct_standard":     1.5,
+  "_risk_doc": "Position sizing suggestion percentages shown in entry messages. Actual order sizing is manual or via your OKX account.",
+
+  "===== WIN RATE GUARDIAN =====": "",
+
+  "win_rate_guardian_enabled": true,
+  "win_rate_guardian_min_trades": 20,
+  "_win_rate_guardian_min_trades_doc": "Guardian only activates after this many completed trades (avoid noise in early sample).",
+  "win_rate_guardian_threshold": 0.70,
+  "_win_rate_guardian_threshold_doc": "If rolling win rate drops below this, new signals require score ≥ score_threshold + 5 (extra caution mode).",
+
+  "===== SESSION STRATIFICATION =====": "",
+
+  "session_wr_filter_enabled": true,
+  "_session_wr_filter_doc": "Boost/penalise score based on historical win rate for the current trading session (Asia/London/NY).",
+
+  "sessions": {
+    "asia":   { "hours_utc": [0,  8],  "wr_boost_threshold": 0.72, "boost_pts": 3,  "penalty_threshold": 0.50, "penalty_pts": -4 },
+    "london": { "hours_utc": [7,  16], "wr_boost_threshold": 0.75, "boost_pts": 4,  "penalty_threshold": 0.52, "penalty_pts": -4 },
+    "ny":     { "hours_utc": [13, 22], "wr_boost_threshold": 0.74, "boost_pts": 3,  "penalty_threshold": 0.50, "penalty_pts": -4 }
+  },
+
+  "===== WEEKLY TREND FILTER =====": "",
+
+  "weekly_trend_filter_enabled": true,
+  "weekly_trend_counter_penalty": -12,
+  "_weekly_trend_doc": "Applies -12 pts to any signal trading against the weekly Supertrend direction. Strongly discourages counter-trend trades.",
+
+  "===== CORRELATION FILTER =====": "",
+
+  "correlation_filter_enabled": true,
+  "max_correlated_positions": 2,
+  "_correlation_filter_doc": "Blocks opening a 3rd position in the same asset category (BTC/ETH/alts) to limit correlated exposure.",
+
+  "===== TAKE PROFIT / STOP LOSS DEFAULTS =====": "",
+
+  "tp_ratios": [1.5, 2.5, 4.0],
+  "_tp_ratios_doc": "ATR multiples for TP1 / TP2 / TP3 from entry. Tuned for 30min swing trades.",
+  "sl_atr_multiple": 1.2,
+  "_sl_atr_doc": "ATR multiple for initial stop loss placement.",
+  "breakeven_at_tp1": true,
+  "_breakeven_doc": "Move stop loss to entry price once TP1 is hit (risk-free trade).",
+
+  "===== REPORTING =====": "",
+
+  "daily_report_enabled": true,
+  "daily_report_time_utc": "23:55",
+  "_daily_report_doc": "Sends daily performance summary to Telegram at this UTC time. Handled by Cowork scheduled task.",
+
+  "monthly_report_enabled": true,
+  "monthly_report_time_utc": "23:50",
+  "_monthly_report_doc": "Sends monthly performance summary. Fires on last day of month (28-31 check).",
+
+  "===== DATA / INDICATORS =====": "",
+
+  "candle_timeframe": "30m",
+  "_candle_timeframe_doc": "Primary signal timeframe. Options: 1m 3m 5m 15m 30m 1H 4H",
+
+  "lookback_candles": 200,
+  "_lookback_doc": "Number of historical candles fetched per symbol per cycle for indicator calculation.",
+
+  "rsi_period": 14,
+  "atr_period": 14,
+  "adx_period": 14,
+  "bb_period": 20,
+  "bb_stddev": 2.0,
+  "obv_ema_period": 20,
+  "supertrend_factor": 3.0,
+
+  "pivot_type": "classic",
+  "_pivot_type_doc": "Pivot point style for S/R levels. Options: classic | camarilla | woodie",
+  "fib_levels": [0.236, 0.382, 0.5, 0.618, 0.786],
+
+  "===== MULTI-TIMEFRAME =====": "",
+
+  "mtf_timeframes": ["1H", "4H", "1W"],
+  "_mtf_doc": "Timeframes used for Supertrend alignment check. All three must align for maximum score.",
+
+  "===== LEARNING / ADAPTIVE =====": "",
+
+  "knn_enabled": true,
+  "knn_k": 5,
+  "_knn_doc": "K-Nearest Neighbour similarity learning. Compares current market fingerprint to historical signals.",
+
+  "post_mortem_enabled": true,
+  "_post_mortem_doc": "After each closed trade, attributes outcome to one of 6 failure/success categories for long-term learning.",
+
+  "===== CIRCUIT BREAKER =====": "",
+
+  "circuit_breaker_enabled": true,
+  "soft_loss_streak": 3,
+  "_soft_loss_streak_doc": "After N consecutive losses, add +5 to required score threshold (caution mode).",
+  "hard_loss_streak": 5,
+  "_hard_loss_streak_doc": "After N consecutive losses, pause new signals for pause_minutes_hard minutes.",
+  "pause_minutes_hard": 60,
+
+  "===== MONITORING =====": "",
+
+  "monitor_mode": "websocket",
+  "_monitor_mode_doc": "How TP/SL is monitored. Options: websocket (real-time, recommended) | polling (cron every 1 min)",
+
+  "proximity_alert_pct": 0.3,
+  "_proximity_alert_pct_doc": "Send a proximity alert when price is within this % of a TP or SL level.",
+
+  "===== MISC =====": "",
+
+  "log_level": "INFO",
+  "_log_level_doc": "Logging verbosity. Options: DEBUG | INFO | WARNING | ERROR",
+
+  "signals_file": "active_signals.json",
+  "trades_file":  "trades.json",
+  "state_file":   "bot_state.json",
+
+  "dry_run": false,
+  "_dry_run_doc": "When true, signals are calculated and logged but NO Telegram messages are sent. Use for testing."
 }
