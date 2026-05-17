@@ -2046,8 +2046,16 @@ class SignalTracker:
             last_ts_ms   = int(last_ts_s * 1000)
             new_candles  = [c for c in all_candles if c["ts"] > last_ts_ms]
             for c in new_candles:
-                if self._process_candle(sig, c):
-                    return True
+                # ── 同一根 K 線最多重跑 4 次（TP1→TP2→TP3→SL），每次只觸一個事件
+                # 這樣每個 TP 通知之間強制間隔 1.5 秒，Telegram 收到的時間點不同
+                for _attempt in range(4):
+                    result = self._process_candle(sig, c)
+                    if result is True:          # 訊號結束
+                        return True
+                    elif result == "tp":        # TP 命中，同一根 K 線繼續檢查下一個 TP
+                        time.sleep(1.5)         # ← 強制 1.5 秒間隔，Telegram 時間戳不同
+                    else:                       # 本根 K 無事件
+                        break
             confirmed = [c for c in new_candles if c["confirmed"]]
             if confirmed:
                 sig["last_checked_ts"] = max(c["ts"] for c in confirmed) / 1000.0
@@ -2083,7 +2091,15 @@ class SignalTracker:
             self._save(); self.transitions += 1
         return False
 
-    def _process_candle(self, sig: dict, candle: dict) -> bool:
+    def _process_candle(self, sig: dict, candle: dict) -> bool | str:
+        """
+        每次呼叫只處理「下一個尚未命中」的事件。
+        回傳值：
+          True  → 訊號結束（TP3 或 SL/BE/LOCK 觸發）
+          "tp"  → TP1 或 TP2 命中、訊號仍活躍，呼叫方應再次呼叫同一根 K 線
+          False → 本根 K 線無任何事件
+        這樣確保同一根 K 線內 TP1→TP2→TP3 各自獨立發一則通知，不同時間戳。
+        """
         side   = sig["side"]
         entry  = sig["entry"]
         sl     = sig["sl"]
@@ -2094,48 +2110,68 @@ class SignalTracker:
         kb       = _order_keyboard(order_id)
         ch, cl, cc = candle["h"], candle["l"], candle["c"]
         if side == "LONG":
-            favor_hit   = lambda t: ch >= t
-            against_hit = lambda t: cl <= t
-            wick_favor  = lambda t: cc < t  and ch >= t
-            wick_against= lambda t: cc > t  and cl <= t
+            favor_hit    = lambda t: ch >= t
+            against_hit  = lambda t: cl <= t
+            wick_favor   = lambda t: cc < t and ch >= t
+            wick_against = lambda t: cc > t and cl <= t
         else:
-            favor_hit   = lambda t: cl <= t
-            against_hit = lambda t: ch >= t
-            wick_favor  = lambda t: cc > t  and cl <= t
-            wick_against= lambda t: cc < t  and ch >= t
+            favor_hit    = lambda t: cl <= t
+            against_hit  = lambda t: ch >= t
+            wick_favor   = lambda t: cc > t and cl <= t
+            wick_against = lambda t: cc < t and ch >= t
 
+        # ── TP1：尚未命中 → 本次只處理 TP1，返回 "tp" 讓呼叫方再跑一次 ──
         if not sig.get("hit_tp1") and favor_hit(tp1):
-            sig["hit_tp1"] = True; sig["sl"] = entry; sig["status"] = "BE"; sl = entry
+            sig["hit_tp1"] = True
+            sig["sl"]      = entry          # 保本
+            sig["status"]  = "BE"
             pnl = (tp1-entry)/entry*100 if side=="LONG" else (entry-tp1)/entry*100
-            send_tg(_fmt_tp(coin,side,order_id,"TP1",tp1,pnl,1.5,wick_triggered=wick_favor(tp1)), reply_markup=kb, reply_to_message_id=reply_to)
+            send_tg(_fmt_tp(coin,side,order_id,"TP1",tp1,pnl,1.5,
+                            wick_triggered=wick_favor(tp1)),
+                    reply_markup=kb, reply_to_message_id=reply_to)
             record_trade(coin,side,order_id,entry,tp1,"TP1",sig["score"],sig)
             self._save(); self.transitions += 1
+            return "tp"                     # ← 不繼續，等 1.5s 後再檢查 TP2
 
-        if not sig.get("hit_tp2") and favor_hit(tp2):
-            sig["hit_tp2"] = True; sig["sl"] = tp1; sig["status"] = "TRAIL"; sl = tp1
+        # ── TP2：TP1 已命中、TP2 尚未 → 本次只處理 TP2 ──
+        if sig.get("hit_tp1") and not sig.get("hit_tp2") and favor_hit(tp2):
+            sig["hit_tp2"] = True
+            sig["sl"]      = tp1            # 鎖利至 TP1
+            sig["status"]  = "TRAIL"
             pnl = (tp2-entry)/entry*100 if side=="LONG" else (entry-tp2)/entry*100
-            send_tg(_fmt_tp(coin,side,order_id,"TP2",tp2,pnl,3.0,wick_triggered=wick_favor(tp2)), reply_markup=kb, reply_to_message_id=reply_to)
+            send_tg(_fmt_tp(coin,side,order_id,"TP2",tp2,pnl,3.0,
+                            wick_triggered=wick_favor(tp2)),
+                    reply_markup=kb, reply_to_message_id=reply_to)
             record_trade(coin,side,order_id,entry,tp2,"TP2",sig["score"],sig)
             self._save(); self.transitions += 1
+            return "tp"                     # ← 等 1.5s 後再檢查 TP3
 
-        if not sig.get("hit_tp3") and favor_hit(tp3):
+        # ── TP3：TP2 已命中 → 訊號結束 ──
+        if sig.get("hit_tp2") and not sig.get("hit_tp3") and favor_hit(tp3):
             sig["hit_tp3"] = True
             pnl = (tp3-entry)/entry*100 if side=="LONG" else (entry-tp3)/entry*100
-            send_tg(_fmt_tp(coin,side,order_id,"TP3",tp3,pnl,5.0,wick_triggered=wick_favor(tp3)), reply_markup=kb, reply_to_message_id=reply_to)
+            send_tg(_fmt_tp(coin,side,order_id,"TP3",tp3,pnl,5.0,
+                            wick_triggered=wick_favor(tp3)),
+                    reply_markup=kb, reply_to_message_id=reply_to)
             record_trade(coin,side,order_id,entry,tp3,"TP3",sig["score"],sig)
             self.transitions += 1
             return True
 
-        if against_hit(sl):
+        # ── SL：只在本輪沒有觸 TP 才檢查（TP 優先） ──
+        if against_hit(sig["sl"]):          # 用最新的 sl（可能已保本/鎖利）
+            cur_sl = sig["sl"]
             if sig.get("hit_tp2"):   mode, r_value, close_type = "LOCK", 1.5, "LOCK"
             elif sig.get("hit_tp1"): mode, r_value, close_type = "BE",   0.0, "BE"
             else:                    mode, r_value, close_type = "LOSS",-1.0, "SL"
-            pnl = (sl-entry)/entry*100 if side=="LONG" else (entry-sl)/entry*100
-            send_tg(_fmt_sl(coin,side,order_id,sl,pnl,mode,r_value,wick_triggered=wick_against(sl)), reply_markup=kb, reply_to_message_id=reply_to)
-            record_trade(coin,side,order_id,entry,sl,close_type,sig["score"],sig)
+            pnl = (cur_sl-entry)/entry*100 if side=="LONG" else (entry-cur_sl)/entry*100
+            send_tg(_fmt_sl(coin,side,order_id,cur_sl,pnl,mode,r_value,
+                            wick_triggered=wick_against(cur_sl)),
+                    reply_markup=kb, reply_to_message_id=reply_to)
+            record_trade(coin,side,order_id,entry,cur_sl,close_type,sig["score"],sig)
             self._send_postmortem(sig, mode)
             self.transitions += 1
             return True
+
         return False
 
     def send_position_updates(self) -> None:
