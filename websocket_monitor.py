@@ -331,12 +331,13 @@ class WebSocketMonitor:
             if sig.closed:
                 continue
             async with sig.lock:
-                # Sequential TP / SL loop for this signal
-                for _ in range(4):          # max 4 events per tick (TP1→TP2→TP3→SL)
-                    event = sig.next_event(price)
-                    if event is None:
-                        break
-
+                # ── 每個 price tick 只觸發「下一個尚未命中」的單一事件 ──
+                # 原則：TP1 觸發後不繼續檢查 TP2；TP2 必須等下一個真實價格 tick。
+                # 時間差由市場決定（真實不同時間），而非人工 sleep。
+                event = sig.next_event(price)
+                if event is None:
+                    pass   # no action this tick
+                else:
                     msg = fmt_tp_message(sig, event, price)
                     log.info("[%s] %s @ %.4f — %s", symbol, event.upper(), price, sig.id)
                     await self._notify(msg)
@@ -353,11 +354,6 @@ class WebSocketMonitor:
                         sig.closed = True
 
                     await self._persist()
-
-                    if sig.closed:
-                        break
-                    # Pause so next TP notification has a distinct timestamp
-                    await asyncio.sleep(TP_NOTIFY_DELAY)
 
                 # Proximity alert (outside the TP loop, debounced)
                 if not sig.closed:
