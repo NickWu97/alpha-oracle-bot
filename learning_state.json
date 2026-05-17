@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 29,
+      "win": 32,
       "loss": 12,
       "be": 2,
-      "total": 43
+      "total": 46
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 73,
+      "win": 76,
       "loss": 34,
       "be": 5,
-      "total": 112
+      "total": 115
     },
     "sess:us": {
       "win": 30,
@@ -25,10 +25,10 @@
       "total": 34
     },
     "coin:SOL": {
-      "win": 6,
+      "win": 9,
       "loss": 3,
       "be": 2,
-      "total": 11
+      "total": 14
     },
     "coin_side:SOL_LONG": {
       "win": 0,
@@ -307,10 +307,10 @@
       "total": 3
     },
     "sess:europe": {
-      "win": 21,
+      "win": 24,
       "loss": 4,
       "be": 1,
-      "total": 26
+      "total": 29
     },
     "coin_side:LINK_LONG": {
       "win": 1,
@@ -413,14 +413,26 @@
       "loss": 1,
       "be": 0,
       "total": 7
+    },
+    "rsilong:50-59": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:SOLLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
     "SOL": {
-      "win": 6,
+      "win": 9,
       "loss": 3,
       "be": 2,
-      "total": 11
+      "total": 14
     },
     "DOGE": {
       "win": 6,
@@ -659,5 +671,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1778989410.8441632
+  "updated_at": 1779003843.5435743
 }
