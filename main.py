@@ -272,16 +272,26 @@ def _fmt_entry(
     emoji     = "🟢" if side == "LONG" else "🔴"
     grade     = ("🔥 A+ 極強" if score >= 85 else
                  "⭐ A 強力"  if score >= 70 else "✅ B+ 合格")
-    tp1_pct = (tp1 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    tp2_pct = (tp2 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    tp3_pct = (tp3 - entry) / entry * 100 * (1 if side == "LONG" else -1)
-    sl_pct  = (sl  - entry) / entry * 100
-    sl_pct_abs = abs(sl_pct) if sl_pct != 0 else 0.01
+
+    # TP 盈利百分比（統一以「獲利方向」為正）
+    _sign = 1 if side == "LONG" else -1
+    tp1_pct = (tp1 - entry) / entry * 100 * _sign
+    tp2_pct = (tp2 - entry) / entry * 100 * _sign
+    tp3_pct = (tp3 - entry) / entry * 100 * _sign
+
+    # SL 風險百分比：統一顯示為負數（代表虧損方向）
+    # 多頭: sl < entry → (sl-entry)/entry*100 = 負  ✓
+    # 空頭: sl > entry → (entry-sl)/entry*100 = 負  ✓
+    sl_risk_pct = (sl - entry) / entry * 100 * _sign   # 永遠為負
+    sl_risk_abs = abs(sl_risk_pct) if sl_risk_pct != 0 else 0.01
+
     funding_line = ""
     if funding_rate is not None:
         funding_line = f"💰 資金費率：`{funding_rate * 100:+.4f}%`\n"
+
     breakdown = _fmt_score_breakdown(detail or {}, score)
     breakdown_block = f"\n{breakdown}\n" if breakdown else ""
+
     return (
         f"{emoji} {coin} 進場提醒 {grade}\n"
         f"━━━━━━━━━━━━━━\n"
@@ -298,11 +308,11 @@ def _fmt_entry(
         f" TP2 `{tp2:.4f}` ({tp2_pct:+.2f}%)  → 建議出 *30%*\n"
         f" TP3 `{tp3:.4f}` ({tp3_pct:+.2f}%)  → 建議出 *40%*\n"
         f"\n"
-        f"🛑 止損：`{sl:.4f}` ({sl_pct:+.2f}%)\n"
+        f"🛑 止損：`{sl:.4f}` ({sl_risk_pct:+.2f}%)\n"
         f"\n"
         f"💰 *建議倉位（固定風險法）：*\n"
-        f" 保守 1%：總資金的 `{min(abs(1/sl_pct_abs)*100,500):.0f}%` 倉位\n"
-        f" 標準 1.5%：總資金的 `{min(abs(1.5/sl_pct_abs)*100,500):.0f}%` 倉位\n"
+        f" 保守 1%：總資金的 `{min(1/sl_risk_abs*100, 500):.0f}%` 倉位\n"
+        f" 標準 1.5%：總資金的 `{min(1.5/sl_risk_abs*100, 500):.0f}%` 倉位\n"
         f"\n"
         f"💡 到達 TP1 自動保本，到達 TP2 自動鎖利至 TP1"
     )
