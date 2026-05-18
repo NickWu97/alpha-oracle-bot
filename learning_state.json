@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 35,
-      "loss": 15,
+      "loss": 16,
       "be": 2,
-      "total": 52
+      "total": 53
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 83,
-      "loss": 39,
+      "loss": 40,
       "be": 6,
-      "total": 128
+      "total": 129
     },
     "sess:us": {
       "win": 30,
@@ -44,9 +44,9 @@
     },
     "sess:asia_dawn": {
       "win": 9,
-      "loss": 14,
+      "loss": 15,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "coin:DOGE": {
       "win": 6,
@@ -236,9 +236,9 @@
     },
     "coin:ADA": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "coin_side:ADA_SHORT": {
       "win": 0,
@@ -356,9 +356,9 @@
     },
     "coin_side:ADASHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsishort:10-19": {
       "win": 3,
@@ -443,6 +443,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsishort:60-69": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -514,9 +520,9 @@
     },
     "ADA": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 10
+      "total": 11
     }
   },
   "loss_reasons": [
@@ -696,5 +702,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1779139334.0183587
+  "updated_at": 1779140301.814214
 }

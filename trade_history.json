@@ -12734,5 +12734,96 @@
       "atr_pct": 0.35,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-19 05:38",
+    "date": "2026-05-19",
+    "order_id": "1779134595-6FAE83DC",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.2507,
+    "close": 0.2527,
+    "close_type": "SL",
+    "pnl": -0.8,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 89,
+    "funding_rate": 7.39548314897e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.253,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01801,
+      "bb_pct_b": 0.986,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.3,
+      "atr_pct": 0.537,
+      "learning_notes": [
+        "score:80-89 (n=52, 勝率 67%) → +1",
+        "fund:neutral (n=126, 勝率 65%) → +1",
+        "sess:asia_dawn (n=22, 勝率 36%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 89.0,
+      "rsi": 60.0,
+      "atr_pct": 0.537,
+      "funding": 0.0739548314897,
+      "vol_ratio": 0.52,
+      "adx": 18.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.0
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.3,
+      "atr_pct": 0.537,
+      "volatile": false
+    }
   }
 ]
