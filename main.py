@@ -1,33 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Alpha Oracle Pro v15.0 — 數據精準升級版（繁體中文）
+Alpha Oracle Pro v19.0 — 專業 24/7 交易訊號機器人（繁體中文）
 ══════════════════════════════════════════════════════════════════════
-✨ v15.0 精準升級（在 v14.0 核心上疊加）：
+v19.0 升級清單（完整修正版）：
 
-📐 指標精度：
-  · RSI  → Wilder EMA 平滑（消除簡化版誤差，與 TradingView 一致）
-  · ATR  → Wilder EMA 平滑（正統 Wilder 法，而非簡單均值）
-  · ADX  → 完整 Wilder DI 平滑（+DM/-DM/TR 三路 EMA，更貼近實際值）
+🔧 關鍵修正：
+  · Supertrend → 全面重寫為正統狀態機算法（per-bar ATR + 帶狀追蹤）
+    舊版僅為 EMA ± 0.5ATR 的假算法，與 TradingView 不符
+  · _process_candle → 每根K線只觸一個TP事件，time gap由市場決定
+  · 日虧熔斷通知旗標在午夜自動重設（不再靠PnL回升才重設）
 
-📍 S/R 精準定位：
-  · Classic Pivot Points（PP/R1-R3/S1-S3）取代純極值
-  · Fibonacci 回調位（23.6%/38.2%/50%/61.8%/78.6%）自動識別
-  · 雙來源 S/R 融合後排序，TP/SL 落點更精準
+🛡 可靠性：
+  · _api_get() → 所有 OKX REST 請求加指數退避重試（最多3次）
+  · 24/7 心跳通知（每4小時一則，確認機器人存活）
+  · 啟動通知（每次程式啟動發送配置摘要）
 
-📊 成交量深化：
-  · OBV（量價趨勢）：量升價漲 → 額外確認趨勢方向
-  · VWAP（成交量加權均價）：價格在 VWAP 上下方判斷多空優勢
+📊 新增指標：
+  · MACD（EMA12/26/9）→ 金叉/死叉/順向/逆向評分（+8~-5）
+  · 評分明細行（進場通知附帶所有子分數，透明化觸發原因）
 
-🎯 進出場強化：
-  · Bollinger Bands Squeeze：帶寬收窄偵測即將爆發行情
-  · RSI 背離偵測：Regular + Hidden Divergence，頂底反轉警示
-  · TP 分批出場比例：通知附帶建議（TP1 30%、TP2 30%、TP3 40%）
+⚙️ 精準化：
+  · 進場觸發區間改為 ATR 動態計算（取代硬編碼 0.6%）
+  · ADX < 15 硬性封鎖（無趨勢市場禁止開倉）
+  · 1H Supertrend 硬性方向驗證
+  · RSI 極端區懲罰（>75做多 / <25做空 = -15分）
+  · OBV/VWAP 背離懲罰加倍（-6分）
+  · RR < 1.2 硬性封鎖
 
-🔧 Bug 修正：
-  · 統一私有函式命名（_save_json / _load_json / _order_keyboard）
-  · SignalTracker.__init__ 命名修正
-  · _bucket_session_tw / _bucket_rsi 命名統一
+v15.0~v18.0 累積功能：
+  RSI/ATR/ADX Wilder精準化 | Pivot+Fibonacci S/R | OBV/VWAP
+  Bollinger Squeeze | RSI背離 | SMC訂單塊/FVG | 流動性掃蕩
+  週線趨勢鎖定(-12) | 時段勝率分層 | 每日上限/虧損熔斷
+  KNN相似交易學習 | 覆盤分析(6類原因) | 相關性過濾
+  加權實際RR追蹤 | TP循序通知（真實時間差）
 
 ══════════════════════════════════════════════════════════════════════
 """
@@ -208,12 +214,59 @@ def _order_keyboard(order_id: str) -> dict:
 # ═════════════════════════════════════════════════════════
 # 3. 通知格式
 # ═════════════════════════════════════════════════════════
+
+def _fmt_score_breakdown(detail: dict, score: int) -> str:
+    """
+    將評分 detail 濃縮成兩行，附在進場通知尾端。
+    讓用戶一眼看到觸發原因，增加透明度。
+    """
+    if not detail:
+        return ""
+    d = detail
+    rsi_v  = d.get("rsi_value", 0)
+    adx_v  = d.get("adx", 0)
+    mtf_v  = d.get("mtf", 0)
+
+    line1 = (
+        f"趨勢:{d.get('trend',0)} "
+        f"RSI:{d.get('rsi',0)}({rsi_v:.1f}) "
+        f"OB:{d.get('ob',0)} "
+        f"FVG:{d.get('fvg',0)} "
+        f"MTF:{mtf_v:+d} "
+        f"ADX:{adx_v:.1f}"
+    )
+    macd_tag = d.get("macd", "")
+    bb_tag   = "Squeeze✅" if d.get("bb_squeeze") else ""
+    div_tag  = d.get("rsi_div", "")
+    div_tag  = ("背離✅" if div_tag in ("regular","hidden") else "")
+
+    line2 = (
+        f"Vol:{d.get('volume',0)} "
+        f"OBV:{d.get('obv',0)} "
+        f"VWAP:{d.get('vwap_score',0)} "
+        f"BB:{d.get('bb_score',0)} "
+        + (f"MACD:{macd_tag} " if macd_tag else "")
+        + (f"{bb_tag} "         if bb_tag  else "")
+        + (f"RSI{div_tag}"      if div_tag else "")
+    )
+
+    # 警示（如果有）
+    warns = [v for k, v in d.items() if k.endswith("_warn") and v]
+    warn_line = ("⚠️ " + " | ".join(str(w) for w in warns)) if warns else ""
+
+    parts = [f"📐 {line1.strip()}", f"🔢 {line2.strip()}"]
+    if warn_line:
+        parts.append(warn_line)
+    return "\n".join(parts)
+
+
 def _fmt_entry(
     coin: str, side: str, order_id: str,
     price: float, entry: float, sl: float,
     tp1: float, tp2: float, tp3: float,
     score: int,
     funding_rate: float | None = None,
+    detail: dict | None = None,
 ) -> str:
     direction = "做多" if side == "LONG" else "做空"
     emoji     = "🟢" if side == "LONG" else "🔴"
@@ -223,9 +276,12 @@ def _fmt_entry(
     tp2_pct = (tp2 - entry) / entry * 100 * (1 if side == "LONG" else -1)
     tp3_pct = (tp3 - entry) / entry * 100 * (1 if side == "LONG" else -1)
     sl_pct  = (sl  - entry) / entry * 100
+    sl_pct_abs = abs(sl_pct) if sl_pct != 0 else 0.01
     funding_line = ""
     if funding_rate is not None:
         funding_line = f"💰 資金費率：`{funding_rate * 100:+.4f}%`\n"
+    breakdown = _fmt_score_breakdown(detail or {}, score)
+    breakdown_block = f"\n{breakdown}\n" if breakdown else ""
     return (
         f"{emoji} {coin} 進場提醒 {grade}\n"
         f"━━━━━━━━━━━━━━\n"
@@ -235,7 +291,8 @@ def _fmt_entry(
         f"進場價：`{entry:.4f}`\n"
         f"當前價：`{price:.4f}`\n"
         f"評分：{score} 分\n"
-        f"{funding_line}\n"
+        f"{funding_line}"
+        f"{breakdown_block}\n"
         f"🎯 止盈目標（建議分批出場）：\n"
         f" TP1 `{tp1:.4f}` ({tp1_pct:+.2f}%)  → 建議出 *30%*\n"
         f" TP2 `{tp2:.4f}` ({tp2_pct:+.2f}%)  → 建議出 *30%*\n"
@@ -244,8 +301,8 @@ def _fmt_entry(
         f"🛑 止損：`{sl:.4f}` ({sl_pct:+.2f}%)\n"
         f"\n"
         f"💰 *建議倉位（固定風險法）：*\n"
-        f" 保守 1%：總資金的 `{min(abs(1/sl_pct)*100,500):.0f}%` 倉位\n"
-        f" 標準 1.5%：總資金的 `{min(abs(1.5/sl_pct)*100,500):.0f}%` 倉位\n"
+        f" 保守 1%：總資金的 `{min(abs(1/sl_pct_abs)*100,500):.0f}%` 倉位\n"
+        f" 標準 1.5%：總資金的 `{min(abs(1.5/sl_pct_abs)*100,500):.0f}%` 倉位\n"
         f"\n"
         f"💡 到達 TP1 自動保本，到達 TP2 自動鎖利至 TP1"
     )
@@ -343,47 +400,62 @@ def _fmt_position(sig: dict, current_price: float) -> str:
 # ═════════════════════════════════════════════════════════
 # 4. 數據抓取
 # ═════════════════════════════════════════════════════════
+
+def _api_get(url: str, params: dict | None = None, retries: int = 3, timeout: int = 8) -> dict:
+    """OKX REST GET — 指數退避重試，最多 retries 次。失敗全部回傳 {}。"""
+    for attempt in range(retries):
+        try:
+            resp = requests.get(url, params=params, timeout=timeout)
+            if resp.status_code == 200:
+                data = resp.json()
+                if data.get("code") == "0":
+                    return data
+                # OKX 有時回傳非0 code，短暫等待後重試
+            wait = 0.5 * (2 ** attempt)
+            if attempt < retries - 1:
+                time.sleep(wait)
+        except requests.exceptions.Timeout:
+            logging.warning(f"⚠️ API 超時（{attempt+1}/{retries}）: {url}")
+            if attempt < retries - 1:
+                time.sleep(0.5 * (2 ** attempt))
+        except Exception as e:
+            logging.warning(f"⚠️ API 錯誤（{attempt+1}/{retries}）: {e}")
+            if attempt < retries - 1:
+                time.sleep(0.5 * (2 ** attempt))
+    return {}
+
+
 def fetch_price(instId: str) -> float:
     now = time.time()
     if instId in _price_cache:
         price, t = _price_cache[instId]
         if now - t < 5:
             return price
-    try:
-        res = requests.get(
-            f"https://www.okx.com/api/v5/market/ticker?instId={instId}",
-            timeout=5,
-        ).json()
-        if res.get("code") == "0" and res.get("data"):
+    res = _api_get(f"https://www.okx.com/api/v5/market/ticker?instId={instId}", timeout=5)
+    if res.get("data"):
+        try:
             price = float(res["data"][0]["last"])
             if price > 0:
                 _price_cache[instId] = (price, now)
                 return price
-    except Exception as e:
-        logging.warning(f"⚠️ 取得 {instId} 價格失敗：{e}")
+        except Exception:
+            pass
     return _price_cache.get(instId, (0.0, 0))[0]
 
 def fetch_candles(instId: str, tf: str = "15m", limit: int = 300) -> list | None:
-    """已收線 K 線，由舊到新，預設抓 300 根（v15 增量）"""
-    try:
-        res = requests.get(
-            f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}",
-            timeout=8,
-        ).json()
-        if res.get("code") != "0":
-            return None
-        data = res.get("data", [])
-        if len(data) < 30:
-            return None
-        confirmed = [r for r in data if r[8] == "1"][::-1]
-        return [
-            {"ts": r[0], "o": float(r[1]), "h": float(r[2]),
-             "l": float(r[3]), "c": float(r[4]), "v": float(r[5])}
-            for r in confirmed
-        ]
-    except Exception as e:
-        logging.warning(f"⚠️ 取得 {instId} K 線失敗：{e}")
+    """已收線 K 線，由舊到新，預設抓 300 根"""
+    res = _api_get(f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}")
+    data = res.get("data", [])
+    if len(data) < 30:
         return None
+    confirmed = [r for r in data if r[8] == "1"][::-1]
+    if len(confirmed) < 20:
+        return None
+    return [
+        {"ts": r[0], "o": float(r[1]), "h": float(r[2]),
+         "l": float(r[3]), "c": float(r[4]), "v": float(r[5])}
+        for r in confirmed
+    ]
 
 _candle_full_cache: dict = {}
 
@@ -393,37 +465,27 @@ def fetch_candles_full(instId: str, tf: str = "15m", limit: int = 100) -> list:
         candles, t = _candle_full_cache[instId]
         if now - t < 30:
             return candles
-    try:
-        res = requests.get(
-            f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}",
-            timeout=8,
-        ).json()
-        if res.get("code") != "0":
-            return _candle_full_cache.get(instId, ([], 0))[0]
-        data = res.get("data", [])
-        candles = [
-            {"ts": int(r[0]), "o": float(r[1]), "h": float(r[2]),
-             "l": float(r[3]), "c": float(r[4]), "v": float(r[5]),
-             "confirmed": r[8] == "1"}
-            for r in data
-        ]
-        candles.sort(key=lambda x: x["ts"])
-        _candle_full_cache[instId] = (candles, now)
-        return candles
-    except Exception as e:
-        logging.warning(f"⚠️ 取得 {instId} 完整 K 線失敗：{e}")
+    res = _api_get(f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar={tf}&limit={limit}")
+    data = res.get("data", [])
+    if not data:
         return _candle_full_cache.get(instId, ([], 0))[0]
+    candles = [
+        {"ts": int(r[0]), "o": float(r[1]), "h": float(r[2]),
+         "l": float(r[3]), "c": float(r[4]), "v": float(r[5]),
+         "confirmed": r[8] == "1"}
+        for r in data
+    ]
+    candles.sort(key=lambda x: x["ts"])
+    _candle_full_cache[instId] = (candles, now)
+    return candles
 
 def fetch_funding_rate(instId: str) -> float | None:
-    try:
-        res = requests.get(
-            f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}",
-            timeout=5,
-        ).json()
-        if res.get("code") == "0" and res.get("data"):
+    res = _api_get(f"https://www.okx.com/api/v5/public/funding-rate?instId={instId}", timeout=5)
+    if res.get("data"):
+        try:
             return float(res["data"][0]["fundingRate"])
-    except Exception as e:
-        logging.warning(f"⚠️ 取得 {instId} 資金費率失敗：{e}")
+        except Exception:
+            pass
     return None
 
 # ═════════════════════════════════════════════════════════
@@ -573,18 +635,68 @@ def calc_adx(df: list, period: int = 14) -> float:
 
 
 def calc_supertrend(df: list, period: int = 10, mult: float = 3.0) -> int:
-    """Supertrend：1=多頭 / -1=空頭 / 0=震盪"""
-    if len(df) < period + 2:
+    """
+    Supertrend v19.0 — 正統狀態機算法（與 TradingView 一致）
+    ──────────────────────────────────────────────────────
+    1. 每根 K 線用 Wilder ATR 計算 per-bar ATR
+    2. basic_upper = HL/2 + mult × ATR_i
+       basic_lower = HL/2 - mult × ATR_i
+    3. 狀態機維護 final_upper / final_lower（帶狀只收緊不放寬）
+    4. 方向翻轉：收盤穿越當前帶則反向
+    回傳：1=多頭 / -1=空頭 / 0=資料不足
+    """
+    if len(df) < period * 2 + 2:
         return 0
-    atr = calc_atr(df, period)
-    mid = sum(r["c"] for r in df[-20:]) / 20
-    cur = df[-1]["c"]
-    band = atr * 0.5
-    if cur > mid + band:
-        return 1
-    if cur < mid - band:
-        return -1
-    return 0
+
+    # 計算每根 K 線的 TR
+    trs: list[float] = []
+    for i in range(1, len(df)):
+        hl = df[i]["h"] - df[i]["l"]
+        hc = abs(df[i]["h"] - df[i - 1]["c"])
+        lc = abs(df[i]["l"] - df[i - 1]["c"])
+        trs.append(max(hl, hc, lc))
+
+    if len(trs) < period:
+        return 0
+
+    # Wilder ATR per bar（索引對應 df[period] 開始）
+    atr_vals: list[float] = [0.0] * len(df)
+    atr_vals[period] = sum(trs[:period]) / period
+    for i in range(period, len(trs)):
+        atr_vals[i + 1] = (atr_vals[i] * (period - 1) + trs[i]) / period
+
+    # 狀態機
+    direction = 1
+    final_upper = 0.0
+    final_lower = 0.0
+
+    for i in range(period, len(df)):
+        if atr_vals[i] == 0:
+            continue
+        hl2 = (df[i]["h"] + df[i]["l"]) / 2
+        basic_upper = hl2 + mult * atr_vals[i]
+        basic_lower = hl2 - mult * atr_vals[i]
+
+        if i > period:
+            # 帶狀只收緊：upper 只能下降（除非上一根收盤已突破），lower 只能上升
+            new_upper = (basic_upper if basic_upper < final_upper
+                         or df[i - 1]["c"] > final_upper else final_upper)
+            new_lower = (basic_lower if basic_lower > final_lower
+                         or df[i - 1]["c"] < final_lower else final_lower)
+        else:
+            new_upper = basic_upper
+            new_lower = basic_lower
+
+        # 方向判定
+        if direction == 1:
+            direction = -1 if df[i]["c"] < new_lower else 1
+        else:
+            direction = 1 if df[i]["c"] > new_upper else -1
+
+        final_upper = new_upper
+        final_lower = new_lower
+
+    return direction
 
 
 def calc_ema(df: list, period: int) -> list:
@@ -607,6 +719,77 @@ def calc_ema_last(df: list, period: int) -> float | None:
     series = calc_ema(df, period)
     vals = [v for v in series if v is not None]
     return vals[-1] if vals else None
+
+
+def calc_macd(
+    df: list,
+    fast: int = 12,
+    slow: int = 26,
+    signal_period: int = 9,
+) -> dict:
+    """
+    MACD — EMA(fast) - EMA(slow)，信號線 = EMA(signal) of MACD
+    回傳：{
+        "macd":        float  最新 MACD 值,
+        "signal_line": float  最新信號線值,
+        "hist":        float  柱狀圖 = macd - signal,
+        "cross":       str    "bullish" / "bearish" / ""
+    }
+    bullish cross = 前一根 macd < signal，當前根 macd > signal
+    bearish cross = 前一根 macd > signal，當前根 macd < signal
+    """
+    if len(df) < slow + signal_period + 2:
+        return {}
+
+    closes = [r["c"] for r in df]
+
+    # EMA fast & slow
+    k_f = 2 / (fast + 1)
+    k_s = 2 / (slow + 1)
+
+    ema_f = sum(closes[:fast]) / fast
+    ema_s = sum(closes[:slow]) / slow
+
+    macd_series: list[float] = []
+
+    for i in range(slow, len(closes)):
+        ema_f = closes[i] * k_f + ema_f * (1 - k_f)
+        ema_s = closes[i] * k_s + ema_s * (1 - k_s)
+        macd_series.append(ema_f - ema_s)
+
+    if len(macd_series) < signal_period + 2:
+        return {}
+
+    # Signal line = EMA of macd_series
+    k_sig = 2 / (signal_period + 1)
+    sig_ema = sum(macd_series[:signal_period]) / signal_period
+    signal_series: list[float] = [sig_ema]
+
+    for m in macd_series[signal_period:]:
+        sig_ema = m * k_sig + sig_ema * (1 - k_sig)
+        signal_series.append(sig_ema)
+
+    if len(signal_series) < 2:
+        return {}
+
+    macd_last     = macd_series[-1]
+    signal_last   = signal_series[-1]
+    macd_prev     = macd_series[-2]
+    signal_prev   = signal_series[-2]
+    hist_last     = macd_last - signal_last
+
+    cross = ""
+    if macd_prev < signal_prev and macd_last > signal_last:
+        cross = "bullish"
+    elif macd_prev > signal_prev and macd_last < signal_last:
+        cross = "bearish"
+
+    return {
+        "macd":        round(macd_last, 6),
+        "signal_line": round(signal_last, 6),
+        "hist":        round(hist_last, 6),
+        "cross":       cross,
+    }
 
 
 # ═════════════════════════════════════════════════════════
@@ -1225,6 +1408,23 @@ def calc_score(
     score += div_score
     detail["rsi_div_score"] = div_score
 
+    # ── MACD (+8 金叉 / +4 順向 / -5 逆向) ──
+    macd_d = calc_macd(df)
+    macd_score = 0
+    if macd_d:
+        expect_cross = "bullish" if side == "LONG" else "bearish"
+        if macd_d["cross"] == expect_cross:
+            macd_score = 8
+            detail["macd"] = "MACD金叉✅" if side == "LONG" else "MACD死叉✅"
+        elif (macd_d["hist"] > 0 and side == "LONG") or (macd_d["hist"] < 0 and side == "SHORT"):
+            macd_score = 4
+            detail["macd"] = "MACD順向"
+        elif (macd_d["hist"] < 0 and side == "LONG") or (macd_d["hist"] > 0 and side == "SHORT"):
+            macd_score = -5
+            detail["macd"] = "MACD逆向⚠️"
+    score += macd_score
+    detail["macd_score"] = macd_score
+
     grade = (
         "A+ 極強 🔥" if score >= 85 else
         "A 強力 ⭐"  if score >= 70 else
@@ -1328,6 +1528,7 @@ def generate_signal(
             "tp1":            round(tp_levels[0], 4),
             "tp2":            round(tp_levels[1], 4),
             "tp3":            round(tp_levels[2], 4),
+            "atr":            round(atr, 8),     # v19: ATR 供進場區間動態計算
             "score":          score,
             "grade":          grade,
             "detail":         detail,
@@ -2113,15 +2314,25 @@ class SignalTracker:
             send_tg(f"⏰ {coin} 訊號過期\n🆔 訂單：`{order_id}`\n進場 `{entry:.4f}` 未觸發，已自動取消")
             self.transitions += 1
             return True
-        in_zone = (
-            (side=="LONG"  and entry*(1-0.006) <= price <= entry*(1+0.002)) or
-            (side=="SHORT" and entry*(1-0.002) <= price <= entry*(1+0.006))
-        )
+        # v19：ATR 動態進場區間（取代硬編碼百分比）
+        atr = sig.get("atr", 0)
+        if atr > 0:
+            if side == "LONG":
+                in_zone = (entry - atr * 1.2) <= price <= (entry + atr * 0.3)
+            else:
+                in_zone = (entry - atr * 0.3) <= price <= (entry + atr * 1.2)
+        else:
+            # fallback: 原始硬編碼
+            in_zone = (
+                (side=="LONG"  and entry*(1-0.006) <= price <= entry*(1+0.002)) or
+                (side=="SHORT" and entry*(1-0.002) <= price <= entry*(1+0.006))
+            )
         if in_zone:
             now_ts = time.time()
             sig["status"] = "ACTIVE"; sig["activated_at"] = now_ts; sig["last_checked_ts"] = now_ts
             msg_id = send_tg(
-                _fmt_entry(coin, side, order_id, price, entry, sl, tp1, tp2, tp3, sig["score"], sig.get("funding_rate")),
+                _fmt_entry(coin, side, order_id, price, entry, sl, tp1, tp2, tp3,
+                           sig["score"], sig.get("funding_rate"), sig.get("detail")),
                 reply_markup=kb,
             )
             if msg_id: sig["entry_message_id"] = msg_id
@@ -2130,12 +2341,12 @@ class SignalTracker:
 
     def _process_candle(self, sig: dict, candle: dict) -> bool | str:
         """
-        每次呼叫只處理「下一個尚未命中」的事件。
+        每次呼叫只處理「下一個尚未命中」的單一事件。
         回傳值：
           True  → 訊號結束（TP3 或 SL/BE/LOCK 觸發）
-          "tp"  → TP1 或 TP2 命中、訊號仍活躍，呼叫方應再次呼叫同一根 K 線
+          "tp"  → TP1 或 TP2 命中，呼叫方應 break 停止本根 K 線，
+                  等下一根真實 K 線才繼續檢查下一個 TP（時間差由市場決定）
           False → 本根 K 線無任何事件
-        這樣確保同一根 K 線內 TP1→TP2→TP3 各自獨立發一則通知，不同時間戳。
         """
         side   = sig["side"]
         entry  = sig["entry"]
@@ -2469,6 +2680,31 @@ def run_scan(tracker: SignalTracker) -> int:
     pv_block_unverified = pv_cfg.get("block_on_unverified", False)
     state = get_system_state()
 
+    # ── v19: 午夜重設日虧熔斷通知旗標（不依賴 PnL 回升重設）──
+    _today_str = tw_now().strftime("%Y-%m-%d")
+    if state.get("daily_loss_reset_date") != _today_str:
+        state["daily_loss_notified"]   = False
+        state["daily_loss_reset_date"] = _today_str
+        set_system_state(state)
+
+    # ── v19: 心跳通知（每 4 小時一次，確認機器人存活）──
+    _hb_interval = cfg.get("heartbeat_interval_hours", 4)
+    _last_hb     = state.get("last_heartbeat", 0)
+    if time.time() - _last_hb >= _hb_interval * 3600:
+        _active_cnt  = sum(1 for s in tracker.signals.values()
+                          if s.get("status") in ("ACTIVE","BE","TRAIL"))
+        _daily_cnt   = count_daily_trades()
+        _daily_limit = cfg.get("daily_max_trades", 15)
+        _daily_pnl   = get_daily_pnl()
+        send_tg(
+            f"💓 Alpha Oracle Pro v19.0 心跳\n"
+            f"⏰ {tw_ts()}\n"
+            f"追蹤中：{_active_cnt} 筆 | 今日開倉：{_daily_cnt}/{_daily_limit}\n"
+            f"今日 PnL：`{_daily_pnl:+.2f}%` | 系統正常 ✅"
+        )
+        state["last_heartbeat"] = time.time()
+        set_system_state(state)
+
     # 1. 熔斷
     paused, msg, losses = check_circuit_breaker(cfg)
     if paused:
@@ -2510,14 +2746,15 @@ def run_scan(tracker: SignalTracker) -> int:
     loss_reached, loss_msg = is_daily_loss_limit_reached(cfg)
     if loss_reached:
         logging.warning(loss_msg)
-        send_tg(loss_msg) if not get_system_state().get("daily_loss_notified") else None
-        st2 = get_system_state(); st2["daily_loss_notified"] = True; set_system_state(st2)
+        _st_now = get_system_state()
+        if not _st_now.get("daily_loss_notified"):
+            send_tg(loss_msg)
+            _st_now["daily_loss_notified"] = True
+            set_system_state(_st_now)
         tracker.check_all(); tracker.send_position_updates()
         return 0
-    else:
-        st2 = get_system_state()
-        if st2.get("daily_loss_notified"):
-            st2["daily_loss_notified"] = False; set_system_state(st2)
+    # 注意：daily_loss_notified 現在只在午夜（上方的日期判斷）才重設，
+    # 不在 PnL 恢復時重設，避免同一天重複發送熔斷通知後又繼續開倉。
 
     # 2.8 勝率守衛：動態提升門檻
     wr_boost, wr_msg = check_win_rate_guardian(cfg)
@@ -2578,7 +2815,7 @@ def run_scan(tracker: SignalTracker) -> int:
                 msg_id = send_tg(
                     _fmt_entry(instId.split("-")[0], signal["side"], order_id, okx_price,
                                signal["entry"], signal["sl"], signal["tp1"], signal["tp2"], signal["tp3"],
-                               signal["score"], funding),
+                               signal["score"], funding, signal.get("detail")),
                     reply_markup=_order_keyboard(order_id),
                 )
                 tracker.set_entry_message_id(key, msg_id)
@@ -2612,7 +2849,7 @@ def run_scan(tracker: SignalTracker) -> int:
 def main() -> None:
     try:
         logging.info("=" * 50)
-        logging.info("🤖 Alpha Oracle Pro v17.0 啟動")
+        logging.info("🤖 Alpha Oracle Pro v19.0 啟動")
         logging.info(f"⏰ 台灣時間：{tw_ts()}")
         logging.info("=" * 50)
         tracker = SignalTracker(ACTIVE_SIGNALS_FILE)
@@ -2631,6 +2868,17 @@ def main() -> None:
                 interval = int(sys.argv[3]) if len(sys.argv) > 3 else 30
                 run_monitor(tracker, in_run_polls=polls, poll_interval=interval)
                 return
+        # ── v19: 啟動通知（正常掃描模式才發，指令模式不發）──
+        _cfg_boot   = load_config()
+        _coins_boot = _cfg_boot.get("coins", ALL_COINS)
+        _thr_boot   = _cfg_boot.get("score_threshold", SCORE_THRESHOLD)
+        send_tg(
+            f"🤖 Alpha Oracle Pro v19.0 已啟動\n"
+            f"⏰ {tw_ts()}\n"
+            f"幣種：{len(_coins_boot)} 個 | 門檻：{_thr_boot} 分\n"
+            f"ADX門檻：15 | 1H趨勢驗證：開啟\n"
+            f"MACD確認：開啟 | WebSocket監控：就緒 ✅"
+        )
         run_scan(tracker)
         logging.info("🎉 程式執行完成")
     except Exception as e:
