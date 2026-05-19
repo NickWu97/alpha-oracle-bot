@@ -14161,5 +14161,96 @@
       "atr_pct": 0.26,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-20 01:26",
+    "date": "2026-05-20",
+    "order_id": "1779189712-EFFE5AEC",
+    "coin": "BNB",
+    "side": "SHORT",
+    "entry": 639.5,
+    "close": 639.5,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 123,
+    "funding_rate": -5.08137720246e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.82,
+      "obv": 5,
+      "vwap": 647.4827,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01277,
+      "bb_pct_b": 0.254,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 23.6,
+      "atr_pct": 0.26,
+      "learning_notes": [
+        "score:90+ (n=39, 勝率 72%) → +2",
+        "fund:neutral (n=138, 勝率 65%) → +1",
+        "sess:europe (n=40, 勝率 75%) → +2",
+        "coin:BNB (n=31, 勝率 90%) → +2",
+        "coin_side:BNBSHORT (n=24, 勝率 96%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 123.0,
+      "rsi": 43.3,
+      "atr_pct": 0.26,
+      "funding": -0.0508137720246,
+      "vol_ratio": 0.82,
+      "adx": 23.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.9
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.0
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.6,
+      "atr_pct": 0.26,
+      "volatile": false
+    }
   }
 ]
