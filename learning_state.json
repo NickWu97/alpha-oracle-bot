@@ -14,21 +14,21 @@
     },
     "fund:neutral": {
       "win": 93,
-      "loss": 41,
+      "loss": 42,
       "be": 7,
-      "total": 141
+      "total": 142
     },
     "sess:us": {
       "win": 30,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 34
+      "total": 35
     },
     "coin:SOL": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "coin_side:SOL_LONG": {
       "win": 0,
@@ -104,9 +104,9 @@
     },
     "score:90+": {
       "win": 31,
-      "loss": 9,
+      "loss": 10,
       "be": 2,
-      "total": 42
+      "total": 43
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -374,9 +374,9 @@
     },
     "coin_side:SOLSHORT": {
       "win": 2,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:DOTSHORT": {
       "win": 0,
@@ -398,9 +398,9 @@
     },
     "rsishort:40-49": {
       "win": 12,
-      "loss": 7,
+      "loss": 8,
       "be": 0,
-      "total": 19
+      "total": 20
     },
     "coin_side:BTCSHORT": {
       "win": 7,
@@ -460,9 +460,9 @@
   "by_coin": {
     "SOL": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "DOGE": {
       "win": 6,
@@ -706,7 +706,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1779199830.826544,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1779191454.327514
+  "updated_at": 1779199830.2057612
 }

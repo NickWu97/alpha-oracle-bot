@@ -1,92 +1,4 @@
 {
-  "SOL-USDT-SWAPSHORT1779189710-5C2276E8": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 84.51,
-    "sl": 84.9817,
-    "tp1": 83.8025,
-    "tp2": 83.095,
-    "tp3": 82.1517,
-    "atr": 0.31444127,
-    "score": 116,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 43.5,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.55,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 85.4105,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01649,
-      "bb_pct_b": 0.255,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 19.9,
-      "atr_pct": 0.371,
-      "learning_notes": [
-        "score:90+ (n=39, 勝率 72%) → +2",
-        "fund:neutral (n=138, 勝率 65%) → +1",
-        "sess:europe (n=40, 勝率 75%) → +2",
-        "coin_side:SOLSHORT (n=6, 勝率 33%) → -2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
-      ],
-      "learning_adjust": 3
-    },
-    "funding_rate": -8.85565669022e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 44.2
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 38.5
-      },
-      "1W": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 30.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 19.9,
-      "atr_pct": 0.371,
-      "volatile": false
-    },
-    "created": 1779189710.654286,
-    "expires": 1779276110.6542864,
-    "order_id": "1779189710-5C2276E8",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1779189710.6543403,
-    "entry_message_id": 3791,
-    "last_checked_ts": 1779190200.0,
-    "current_price": 84.35
-  },
   "BNB-USDT-SWAPSHORT1779189712-EFFE5AEC": {
     "instId": "BNB-USDT-SWAP",
     "side": "SHORT",
@@ -172,7 +84,7 @@
     "hit_tp3": false,
     "activated_at": 1779189712.7451777,
     "entry_message_id": 3792,
-    "last_checked_ts": 1779190200.0,
-    "current_price": 638.9
+    "last_checked_ts": 1779198300.0,
+    "current_price": 638.7
   }
 }
