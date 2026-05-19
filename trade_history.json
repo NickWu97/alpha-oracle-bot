@@ -14252,5 +14252,102 @@
       "atr_pct": 0.26,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-20 03:20",
+    "date": "2026-05-20",
+    "order_id": "1779210916-AFE4AD13",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.162,
+    "close": 9.1131,
+    "close_type": "SL",
+    "pnl": -0.53,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 102,
+    "funding_rate": -7.0056128777e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.8,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.46,
+      "obv": 5,
+      "vwap": 9.1874,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.01305,
+      "bb_pct_b": 0.961,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📈 正規多頭背離（價格新低但 RSI 不新低）→ 底部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 26.2,
+      "atr_pct": 0.356,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "score:90+ (n=43, 勝率 72%) → +2",
+        "fund:neutral (n=142, 勝率 65%) → +1",
+        "sess:asia_dawn (n=25, 勝率 36%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 9.2353→9.1785（阻力 9.1969）",
+        "TP2 9.3087→9.1785（阻力 9.1969）",
+        "TP3 9.4065→9.1785（阻力 9.1969）"
+      ]
+    },
+    "features": {
+      "score": 102.0,
+      "rsi": 59.8,
+      "atr_pct": 0.356,
+      "funding": -0.0070056128777,
+      "vol_ratio": 1.46,
+      "adx": 26.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 48.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 26.2,
+      "atr_pct": 0.356,
+      "volatile": false
+    }
   }
 ]
