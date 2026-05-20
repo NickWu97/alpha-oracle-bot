@@ -13,10 +13,10 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 95,
-      "loss": 43,
-      "be": 8,
-      "total": 146
+      "win": 96,
+      "loss": 44,
+      "be": 9,
+      "total": 149
     },
     "sess:us": {
       "win": 30,
@@ -103,10 +103,10 @@
       "total": 2
     },
     "score:90+": {
-      "win": 33,
-      "loss": 11,
-      "be": 3,
-      "total": 47
+      "win": 34,
+      "loss": 12,
+      "be": 4,
+      "total": 50
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -117,8 +117,8 @@
     "coin:LINK": {
       "win": 6,
       "loss": 2,
-      "be": 2,
-      "total": 10
+      "be": 3,
+      "total": 11
     },
     "coin_side:LINK_SHORT": {
       "win": 4,
@@ -163,16 +163,16 @@
       "total": 11
     },
     "sess:asia_day": {
-      "win": 31,
-      "loss": 15,
-      "be": 4,
-      "total": 50
+      "win": 32,
+      "loss": 16,
+      "be": 5,
+      "total": 53
     },
     "coin:NEAR": {
-      "win": 10,
+      "win": 11,
       "loss": 3,
       "be": 1,
-      "total": 14
+      "total": 15
     },
     "coin_side:NEAR_SHORT": {
       "win": 9,
@@ -224,9 +224,9 @@
     },
     "coin:BTC": {
       "win": 10,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 15
+      "total": 16
     },
     "coin_side:BTC_SHORT": {
       "win": 3,
@@ -393,8 +393,8 @@
     "coin_side:LINKSHORT": {
       "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 2
+      "be": 1,
+      "total": 3
     },
     "rsishort:40-49": {
       "win": 13,
@@ -404,9 +404,9 @@
     },
     "coin_side:BTCSHORT": {
       "win": 7,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "coin_side:ETHSHORT": {
       "win": 9,
@@ -428,9 +428,9 @@
     },
     "rsishort:50-59": {
       "win": 5,
-      "loss": 2,
-      "be": 1,
-      "total": 8
+      "loss": 3,
+      "be": 2,
+      "total": 10
     },
     "rsilong:60-69": {
       "win": 1,
@@ -451,14 +451,20 @@
       "total": 7
     },
     "coin_side:NEARLONG": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin_side:AVAXLONG": {
       "win": 0,
       "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "rsilong:40-49": {
+      "win": 1,
+      "loss": 0,
       "be": 0,
       "total": 1
     }
@@ -497,8 +503,8 @@
     "LINK": {
       "win": 6,
       "loss": 2,
-      "be": 2,
-      "total": 10
+      "be": 3,
+      "total": 11
     },
     "ETH": {
       "win": 12,
@@ -507,10 +513,10 @@
       "total": 16
     },
     "NEAR": {
-      "win": 10,
+      "win": 11,
       "loss": 3,
       "be": 1,
-      "total": 14
+      "total": 15
     },
     "XRP": {
       "win": 7,
@@ -526,9 +532,9 @@
     },
     "BTC": {
       "win": 10,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 15
+      "total": 16
     },
     "ADA": {
       "win": 6,
@@ -719,7 +725,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1779256130.5778615,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1779229328.968151
+  "updated_at": 1779256133.506282
 }
