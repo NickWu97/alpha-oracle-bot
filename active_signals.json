@@ -1,98 +1,4 @@
 {
-  "NEAR-USDT-SWAPLONG1779311687-D8DDAACD": {
-    "instId": "NEAR-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 1.692,
-    "sl": 1.692,
-    "tp1": 1.7076,
-    "tp2": 1.7076,
-    "tp3": 1.7076,
-    "atr": 0.01527291,
-    "score": 127,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 57.2,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": -10,
-      "volume_ratio": 0.46,
-      "obv": 5,
-      "vwap": 1.6057,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.02399,
-      "bb_pct_b": 0.789,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD金叉✅",
-      "macd_score": 8,
-      "regime": "range",
-      "adx": 17.2,
-      "atr_pct": 0.902,
-      "learning_notes": [
-        "score:90+ (n=71, 勝率 73%) → +2",
-        "rsilong:50-59 (n=14, 勝率 86%) → +2",
-        "fund:neutral (n=171, 勝率 67%) → +1",
-        "coin:NEAR (n=17, 勝率 76%) → +2",
-        "coin_side:NEARLONG (n=5, 勝率 80%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 14,
-      "tp_adjust_notes": [
-        "TP1 1.7264→1.7076（阻力 1.7110）",
-        "TP2 1.7607→1.7076（阻力 1.7110）",
-        "TP3 1.8065→1.7076（阻力 1.7110）"
-      ]
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 63.0
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 64.0
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 48.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 17.2,
-      "atr_pct": 0.902,
-      "volatile": false
-    },
-    "created": 1779311687.3964036,
-    "expires": 1779398087.3964038,
-    "order_id": "1779311687-D8DDAACD",
-    "status": "BE",
-    "hit_tp1": true,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1779311687.396439,
-    "entry_message_id": 3904,
-    "last_checked_ts": 1779316200.0,
-    "current_price": 1.688
-  },
   "BTC-USDT-SWAPLONG1779317144-D226E322": {
     "instId": "BTC-USDT-SWAP",
     "side": "LONG",
@@ -182,7 +88,7 @@
     "activated_at": 1779317144.335439,
     "entry_message_id": 3908,
     "last_checked_ts": 1779317144.335439,
-    "current_price": 77429.9
+    "current_price": 77431.5
   },
   "BNB-USDT-SWAPLONG1779317146-D2AAB3AB": {
     "instId": "BNB-USDT-SWAP",
