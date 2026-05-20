@@ -13,10 +13,10 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 108,
+      "win": 114,
       "loss": 47,
       "be": 10,
-      "total": 165
+      "total": 171
     },
     "sess:us": {
       "win": 32,
@@ -43,10 +43,10 @@
       "total": 8
     },
     "sess:asia_dawn": {
-      "win": 16,
+      "win": 22,
       "loss": 16,
       "be": 3,
-      "total": 35
+      "total": 41
     },
     "coin:DOGE": {
       "win": 9,
@@ -73,10 +73,10 @@
       "total": 2
     },
     "coin:AVAX": {
-      "win": 9,
+      "win": 12,
       "loss": 6,
       "be": 0,
-      "total": 15
+      "total": 18
     },
     "coin_side:AVAX_LONG": {
       "win": 3,
@@ -103,10 +103,10 @@
       "total": 2
     },
     "score:90+": {
-      "win": 46,
+      "win": 52,
       "loss": 14,
       "be": 5,
-      "total": 65
+      "total": 71
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -211,10 +211,10 @@
       "total": 7
     },
     "coin:TON": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "coin_side:TON_SHORT": {
       "win": 3,
@@ -415,10 +415,10 @@
       "total": 10
     },
     "rsilong:50-59": {
-      "win": 9,
+      "win": 12,
       "loss": 2,
       "be": 0,
-      "total": 11
+      "total": 14
     },
     "coin_side:SOLLONG": {
       "win": 3,
@@ -457,16 +457,16 @@
       "total": 5
     },
     "coin_side:AVAXLONG": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "rsilong:40-49": {
-      "win": 6,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "coin_side:DOGELONG": {
       "win": 3,
@@ -485,6 +485,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin_side:TONLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -507,10 +513,10 @@
       "total": 4
     },
     "AVAX": {
-      "win": 9,
+      "win": 12,
       "loss": 6,
       "be": 0,
-      "total": 15
+      "total": 18
     },
     "BNB": {
       "win": 29,
@@ -543,10 +549,10 @@
       "total": 12
     },
     "TON": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "BTC": {
       "win": 10,
@@ -773,5 +779,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1779298533.6402936
+  "updated_at": 1779306742.6817179
 }
