@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 39,
-      "loss": 17,
+      "loss": 18,
       "be": 3,
-      "total": 59
+      "total": 60
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 102,
-      "loss": 46,
+      "loss": 47,
       "be": 9,
-      "total": 157
+      "total": 158
     },
     "sess:us": {
       "win": 32,
-      "loss": 6,
+      "loss": 7,
       "be": 1,
-      "total": 39
+      "total": 40
     },
     "coin:SOL": {
       "win": 9,
@@ -92,9 +92,9 @@
     },
     "coin:BNB": {
       "win": 29,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 33
+      "total": 34
     },
     "coin_side:BNB_LONG": {
       "win": 0,
@@ -434,9 +434,9 @@
     },
     "rsilong:60-69": {
       "win": 1,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 4
+      "total": 5
     },
     "coin_side:LINKLONG": {
       "win": 0,
@@ -479,6 +479,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin_side:BNBLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -508,9 +514,9 @@
     },
     "BNB": {
       "win": 29,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 33
+      "total": 34
     },
     "LINK": {
       "win": 6,
@@ -758,7 +764,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1779286473.37556,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1779284491.5642238
+  "updated_at": 1779286472.6734905
 }
