@@ -13,16 +13,16 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 100,
-      "loss": 44,
+      "win": 102,
+      "loss": 46,
       "be": 9,
-      "total": 153
+      "total": 157
     },
     "sess:us": {
-      "win": 30,
-      "loss": 4,
+      "win": 32,
+      "loss": 6,
       "be": 1,
-      "total": 35
+      "total": 39
     },
     "coin:SOL": {
       "win": 9,
@@ -50,9 +50,9 @@
     },
     "coin:DOGE": {
       "win": 9,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 14
+      "total": 15
     },
     "coin_side:DOGE_LONG": {
       "win": 0,
@@ -103,10 +103,10 @@
       "total": 2
     },
     "score:90+": {
-      "win": 38,
-      "loss": 12,
+      "win": 40,
+      "loss": 14,
       "be": 4,
-      "total": 54
+      "total": 58
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -134,9 +134,9 @@
     },
     "coin:ETH": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 16
+      "total": 17
     },
     "coin_side:ETH_LONG": {
       "win": 0,
@@ -169,10 +169,10 @@
       "total": 53
     },
     "coin:NEAR": {
-      "win": 12,
+      "win": 13,
       "loss": 3,
       "be": 1,
-      "total": 16
+      "total": 17
     },
     "coin_side:NEAR_SHORT": {
       "win": 9,
@@ -187,10 +187,10 @@
       "total": 4
     },
     "coin:XRP": {
-      "win": 7,
+      "win": 8,
       "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "coin_side:XRP_SHORT": {
       "win": 1,
@@ -343,10 +343,10 @@
       "total": 15
     },
     "coin_side:XRPSHORT": {
-      "win": 6,
+      "win": 7,
       "loss": 2,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin_side:DOGESHORT": {
       "win": 3,
@@ -416,9 +416,9 @@
     },
     "rsilong:50-59": {
       "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:SOLLONG": {
       "win": 3,
@@ -434,9 +434,9 @@
     },
     "rsilong:60-69": {
       "win": 1,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 3
+      "total": 4
     },
     "coin_side:LINKLONG": {
       "win": 0,
@@ -445,16 +445,16 @@
       "total": 1
     },
     "rsishort:60-69": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:NEARLONG": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 4
+      "total": 5
     },
     "coin_side:AVAXLONG": {
       "win": 0,
@@ -463,16 +463,22 @@
       "total": 1
     },
     "rsilong:40-49": {
-      "win": 2,
-      "loss": 0,
-      "be": 0,
-      "total": 2
-    },
-    "coin_side:DOGELONG": {
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin_side:DOGELONG": {
+      "win": 3,
+      "loss": 1,
+      "be": 0,
+      "total": 4
+    },
+    "coin_side:ETHLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -484,9 +490,9 @@
     },
     "DOGE": {
       "win": 9,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 14
+      "total": 15
     },
     "DOT": {
       "win": 0,
@@ -514,21 +520,21 @@
     },
     "ETH": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 16
+      "total": 17
     },
     "NEAR": {
-      "win": 12,
+      "win": 13,
       "loss": 3,
       "be": 1,
-      "total": 16
+      "total": 17
     },
     "XRP": {
-      "win": 7,
+      "win": 8,
       "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "TON": {
       "win": 3,
@@ -738,7 +744,21 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1779284488.1834834,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1779284492.2023356,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1779266818.9708176
+  "updated_at": 1779284491.5642238
 }
