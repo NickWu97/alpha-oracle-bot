@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 41,
+      "win": 42,
       "loss": 20,
       "be": 3,
-      "total": 64
+      "total": 65
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 118,
+      "win": 119,
       "loss": 49,
-      "be": 11,
-      "total": 178
+      "be": 12,
+      "total": 180
     },
     "sess:us": {
       "win": 32,
@@ -91,10 +91,10 @@
       "total": 6
     },
     "coin:BNB": {
-      "win": 31,
+      "win": 32,
       "loss": 4,
       "be": 1,
-      "total": 36
+      "total": 37
     },
     "coin_side:BNB_LONG": {
       "win": 0,
@@ -105,8 +105,8 @@
     "score:90+": {
       "win": 54,
       "loss": 14,
-      "be": 6,
-      "total": 74
+      "be": 7,
+      "total": 75
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -225,8 +225,8 @@
     "coin:BTC": {
       "win": 11,
       "loss": 5,
-      "be": 1,
-      "total": 17
+      "be": 2,
+      "total": 18
     },
     "coin_side:BTC_SHORT": {
       "win": 3,
@@ -307,10 +307,10 @@
       "total": 3
     },
     "sess:europe": {
-      "win": 38,
+      "win": 39,
       "loss": 9,
-      "be": 1,
-      "total": 48
+      "be": 2,
+      "total": 50
     },
     "coin_side:LINK_LONG": {
       "win": 1,
@@ -463,10 +463,10 @@
       "total": 7
     },
     "rsilong:40-49": {
-      "win": 12,
+      "win": 13,
       "loss": 0,
-      "be": 0,
-      "total": 12
+      "be": 1,
+      "total": 14
     },
     "coin_side:DOGELONG": {
       "win": 3,
@@ -481,10 +481,10 @@
       "total": 4
     },
     "coin_side:BNBLONG": {
-      "win": 2,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:TONLONG": {
       "win": 3,
@@ -495,8 +495,8 @@
     "coin_side:BTCLONG": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     }
   },
   "by_coin": {
@@ -525,10 +525,10 @@
       "total": 18
     },
     "BNB": {
-      "win": 31,
+      "win": 32,
       "loss": 4,
       "be": 1,
-      "total": 36
+      "total": 37
     },
     "LINK": {
       "win": 6,
@@ -563,8 +563,8 @@
     "BTC": {
       "win": 11,
       "loss": 5,
-      "be": 1,
-      "total": 17
+      "be": 2,
+      "total": 18
     },
     "ADA": {
       "win": 6,
@@ -792,5 +792,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1779351579.8108397
+  "updated_at": 1779363662.082738
 }
