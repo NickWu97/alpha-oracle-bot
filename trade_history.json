@@ -17662,5 +17662,201 @@
       "atr_pct": 0.212,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-22 05:00",
+    "date": "2026-05-22",
+    "order_id": "1779393404-8E749FD8",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.491,
+    "close": 9.497,
+    "close_type": "TP1",
+    "pnl": 0.06,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.29,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 9.2672,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02655,
+      "bb_pct_b": 0.677,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.481,
+      "learning_notes": [
+        "score:80-89 (n=65, 勝率 65%) → +1",
+        "rsilong:50-59 (n=17, 勝率 76%) → +2",
+        "fund:neutral (n=180, 勝率 66%) → +1",
+        "coin:AVAX (n=18, 勝率 67%) → +1",
+        "coin_side:AVAXLONG (n=7, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 12,
+      "tp_adjust_notes": [
+        "TP1 9.5934→9.4970（阻力 9.5160）",
+        "TP2 9.6958→9.4970（阻力 9.5160）",
+        "TP3 9.8324→9.4970（阻力 9.5160）"
+      ]
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 58.3,
+      "atr_pct": 0.481,
+      "funding": 0.1,
+      "vol_ratio": 0.29,
+      "adx": 16.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 54.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.481,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-22 05:01",
+    "date": "2026-05-22",
+    "order_id": "1779393404-8E749FD8",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 9.491,
+    "close": 9.491,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 98,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.29,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 9.2672,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02655,
+      "bb_pct_b": 0.677,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.481,
+      "learning_notes": [
+        "score:80-89 (n=65, 勝率 65%) → +1",
+        "rsilong:50-59 (n=17, 勝率 76%) → +2",
+        "fund:neutral (n=180, 勝率 66%) → +1",
+        "coin:AVAX (n=18, 勝率 67%) → +1",
+        "coin_side:AVAXLONG (n=7, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 12,
+      "tp_adjust_notes": [
+        "TP1 9.5934→9.4970（阻力 9.5160）",
+        "TP2 9.6958→9.4970（阻力 9.5160）",
+        "TP3 9.8324→9.4970（阻力 9.5160）"
+      ]
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 58.3,
+      "atr_pct": 0.481,
+      "funding": 0.1,
+      "vol_ratio": 0.29,
+      "adx": 16.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 54.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.481,
+      "volatile": false
+    }
   }
 ]
