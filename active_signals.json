@@ -1,1 +1,89 @@
-{}
+{
+  "TON-USDT-SWAPLONG1779385559-32816AE8": {
+    "instId": "TON-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 2.049,
+    "sl": 2.0204,
+    "tp1": 2.0919,
+    "tp2": 2.1348,
+    "tp3": 2.1919,
+    "atr": 0.01905696,
+    "score": 104,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.5,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.96,
+      "obv": 5,
+      "vwap": 2.0066,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02838,
+      "bb_pct_b": 1.053,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 18.2,
+      "atr_pct": 0.927,
+      "learning_notes": [
+        "score:90+ (n=75, 勝率 72%) → +2",
+        "rsilong:60-69 (n=5, 勝率 20%) → -3",
+        "fund:neutral (n=180, 勝率 66%) → +1",
+        "coin:TON (n=8, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "funding_rate": 6.72284502843e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 47.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 18.2,
+      "atr_pct": 0.927,
+      "volatile": false
+    },
+    "created": 1779385559.2130182,
+    "expires": 1779471959.2130184,
+    "order_id": "1779385559-32816AE8",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1779385559.2130551,
+    "entry_message_id": 3943,
+    "last_checked_ts": 1779385559.2130551
+  }
+}
