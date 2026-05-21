@@ -17951,5 +17951,193 @@
       "atr_pct": 0.387,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-22 07:34",
+    "date": "2026-05-22",
+    "order_id": "1779403965-BD63B707",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 9.731,
+    "close": 9.7428,
+    "close_type": "TP1",
+    "pnl": 0.12,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 82,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 49.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.71,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 9.6118,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00792,
+      "bb_pct_b": 0.055,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.5,
+      "atr_pct": 0.381,
+      "learning_notes": [
+        "rsilong:40-49 (n=14, 勝率 93%) → +2",
+        "fund:neutral (n=182, 勝率 66%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 3,
+      "tp_adjust_notes": [
+        "TP1 9.8145→9.7428（阻力 9.7623）",
+        "TP2 9.8980→9.7428（阻力 9.7623）",
+        "TP3 10.0093→9.7428（阻力 9.7623）"
+      ]
+    },
+    "features": {
+      "score": 82.0,
+      "rsi": 49.3,
+      "atr_pct": 0.381,
+      "funding": 0.1,
+      "vol_ratio": 0.71,
+      "adx": 18.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.8
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.5,
+      "atr_pct": 0.381,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-22 07:35",
+    "date": "2026-05-22",
+    "order_id": "1779403965-BD63B707",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 9.731,
+    "close": 9.731,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 82,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 49.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.71,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 9.6118,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00792,
+      "bb_pct_b": 0.055,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.5,
+      "atr_pct": 0.381,
+      "learning_notes": [
+        "rsilong:40-49 (n=14, 勝率 93%) → +2",
+        "fund:neutral (n=182, 勝率 66%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 3,
+      "tp_adjust_notes": [
+        "TP1 9.8145→9.7428（阻力 9.7623）",
+        "TP2 9.8980→9.7428（阻力 9.7623）",
+        "TP3 10.0093→9.7428（阻力 9.7623）"
+      ]
+    },
+    "features": {
+      "score": 82.0,
+      "rsi": 49.3,
+      "atr_pct": 0.381,
+      "funding": 0.1,
+      "vol_ratio": 0.71,
+      "adx": 18.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.8
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.5,
+      "atr_pct": 0.381,
+      "volatile": false
+    }
   }
 ]
