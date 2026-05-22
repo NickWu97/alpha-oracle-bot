@@ -18996,5 +18996,95 @@
       "atr_pct": 0.63,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-22 16:03",
+    "date": "2026-05-22",
+    "order_id": "1779399666-965D8FC0",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.1056,
+    "close": 0.1049,
+    "close_type": "SL",
+    "pnl": -0.66,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 97,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 55.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.16,
+      "obv": 5,
+      "vwap": 0.1043,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01829,
+      "bb_pct_b": 0.523,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 17.5,
+      "atr_pct": 0.412,
+      "learning_notes": [
+        "score:80-89 (n=65, 勝率 65%) → +1",
+        "rsilong:50-59 (n=19, 勝率 74%) → +2",
+        "fund:neutral (n=182, 勝率 66%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 97.0,
+      "rsi": 55.0,
+      "atr_pct": 0.412,
+      "funding": 0.1,
+      "vol_ratio": 0.16,
+      "adx": 17.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.9
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 17.5,
+      "atr_pct": 0.412,
+      "volatile": false
+    }
   }
 ]
