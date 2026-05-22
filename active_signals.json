@@ -88,5 +88,95 @@
     "entry_message_id": 4018,
     "last_checked_ts": 1779488100.0,
     "current_price": 651.4
+  },
+  "BTC-USDT-SWAPSHORT1779489774-77B10CC5": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 75650.2,
+    "sl": 75935.4046,
+    "tp1": 75222.3931,
+    "tp2": 74794.5863,
+    "tp3": 74224.1771,
+    "atr": 190.13638413,
+    "score": 98,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 25.6,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.3,
+      "obv": 5,
+      "vwap": 77223.1396,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0198,
+      "bb_pct_b": 0.224,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 44.9,
+      "atr_pct": 0.251,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:80-89 (n=73, 勝率 67%) → +1",
+        "rsishort:20-29 (n=18, 勝率 83%) → +2",
+        "fund:neutral (n=205, 勝率 66%) → +1",
+        "sess:asia_day (n=74, 勝率 61%) → +1",
+        "coin:BTC (n=24, 勝率 71%) → +2",
+        "coin_side:BTCSHORT (n=18, 勝率 72%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 14
+    },
+    "funding_rate": 3.77664801958e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 28.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.7
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 44.9,
+      "atr_pct": 0.251,
+      "volatile": false
+    },
+    "created": 1779489774.0420473,
+    "expires": 1779576174.0420477,
+    "order_id": "1779489774-77B10CC5",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1779489774.0420785,
+    "entry_message_id": 4033,
+    "last_checked_ts": 1779489774.0420785
   }
 }
