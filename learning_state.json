@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 49,
-      "loss": 20,
+      "loss": 21,
       "be": 4,
-      "total": 73
+      "total": 74
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 136,
-      "loss": 54,
+      "loss": 55,
       "be": 16,
-      "total": 206
+      "total": 207
     },
     "sess:us": {
       "win": 32,
@@ -164,9 +164,9 @@
     },
     "sess:asia_day": {
       "win": 46,
-      "loss": 22,
+      "loss": 23,
       "be": 7,
-      "total": 75
+      "total": 76
     },
     "coin:NEAR": {
       "win": 17,
@@ -188,9 +188,9 @@
     },
     "coin:XRP": {
       "win": 10,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 17
+      "total": 18
     },
     "coin_side:XRP_SHORT": {
       "win": 1,
@@ -344,9 +344,9 @@
     },
     "coin_side:XRPSHORT": {
       "win": 9,
-      "loss": 3,
+      "loss": 4,
       "be": 3,
-      "total": 15
+      "total": 16
     },
     "coin_side:DOGESHORT": {
       "win": 3,
@@ -398,9 +398,9 @@
     },
     "rsishort:40-49": {
       "win": 13,
-      "loss": 9,
+      "loss": 10,
       "be": 1,
-      "total": 23
+      "total": 24
     },
     "coin_side:BTCSHORT": {
       "win": 14,
@@ -562,9 +562,9 @@
     },
     "XRP": {
       "win": 10,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 17
+      "total": 18
     },
     "TON": {
       "win": 6,
@@ -823,7 +823,14 @@
       "side": "LONG",
       "code": "AGAINST_MOMENTUM",
       "title": "💪 持續反向動能"
+    },
+    {
+      "ts": 1779507049.5772908,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1779499740.2635396
+  "updated_at": 1779507048.9044325
 }

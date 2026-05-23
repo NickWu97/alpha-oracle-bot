@@ -20158,5 +20158,96 @@
       "atr_pct": 0.251,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-23 11:30",
+    "date": "2026-05-23",
+    "order_id": "1779493775-61E88DA8",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.332,
+    "close": 1.3398,
+    "close_type": "SL",
+    "pnl": -0.59,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 3.53853526545e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 42.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.22,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 1.3635,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00797,
+      "bb_pct_b": 0.374,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 46.7,
+      "atr_pct": 0.387,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=205, 勝率 66%) → +1",
+        "sess:asia_day (n=74, 勝率 61%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 42.0,
+      "atr_pct": 0.387,
+      "funding": 0.0353853526545,
+      "vol_ratio": 0.22,
+      "adx": 46.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.9
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 46.7,
+      "atr_pct": 0.387,
+      "volatile": false
+    }
   }
 ]
