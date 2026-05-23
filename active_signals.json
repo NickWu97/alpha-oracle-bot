@@ -1,96 +1,4 @@
 {
-  "ETH-USDT-SWAPLONG1779563635-B226D520": {
-    "instId": "ETH-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 2071.0,
-    "sl": 2061.3347,
-    "tp1": 2073.0272,
-    "tp2": 2073.0272,
-    "tp3": 2073.0272,
-    "atr": 6.44355585,
-    "score": 89,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 68.7,
-      "rsi": 0,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.53,
-      "obv": 5,
-      "vwap": 2099.4573,
-      "vwap_score": -6,
-      "vwap_warn": "⚠️ 價格在VWAP錯側",
-      "bb_bandwidth": 0.01632,
-      "bb_pct_b": 0.847,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 43.5,
-      "atr_pct": 0.311,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "score:80-89 (n=81, 勝率 68%) → +1",
-        "fund:neutral (n=223, 勝率 67%) → +1",
-        "coin:ETH (n=21, 勝率 71%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
-      ],
-      "learning_adjust": 4,
-      "tp_adjust_notes": [
-        "TP1 2085.4980→2073.0272（阻力 2077.1816）",
-        "TP2 2099.9960→2073.0272（阻力 2077.1816）",
-        "TP3 2119.3267→2073.0272（阻力 2077.1816）"
-      ]
-    },
-    "funding_rate": 5.07967536133e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 54.8
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 36.7
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 33.7
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 43.5,
-      "atr_pct": 0.311,
-      "volatile": false
-    },
-    "created": 1779563635.6788409,
-    "expires": 1779650035.6788414,
-    "order_id": "1779563635-B226D520",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1779563635.6788838,
-    "entry_message_id": 4116,
-    "last_checked_ts": 1779563635.6788838
-  },
   "ADA-USDT-SWAPLONG1779563642-D2A55479": {
     "instId": "ADA-USDT-SWAP",
     "side": "LONG",
@@ -176,7 +84,8 @@
     "hit_tp3": false,
     "activated_at": 1779563642.7896786,
     "entry_message_id": 4117,
-    "last_checked_ts": 1779563642.7896786
+    "last_checked_ts": 1779564600.0,
+    "current_price": 0.2437
   },
   "NEAR-USDT-SWAPLONG1779563647-FB322C12": {
     "instId": "NEAR-USDT-SWAP",
@@ -269,6 +178,7 @@
     "hit_tp3": false,
     "activated_at": 1779563647.4192388,
     "entry_message_id": 4118,
-    "last_checked_ts": 1779563647.4192388
+    "last_checked_ts": 1779564600.0,
+    "current_price": 2.398
   }
 }
