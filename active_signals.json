@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 652.4,
-    "sl": 655.9447,
+    "sl": 652.4,
     "tp1": 647.0829,
     "tp2": 641.7658,
     "tp3": 634.6764,
@@ -80,14 +80,14 @@
     "created": 1779481214.972904,
     "expires": 1779567614.9729042,
     "order_id": "1779481214-35C48858",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1779481214.9729295,
     "entry_message_id": 4018,
-    "last_checked_ts": 1779516000.0,
-    "current_price": 648.9
+    "last_checked_ts": 1779520500.0,
+    "current_price": 645.3
   },
   "BTC-USDT-SWAPSHORT1779489774-77B10CC5": {
     "instId": "BTC-USDT-SWAP",
@@ -177,15 +177,15 @@
     "hit_tp3": false,
     "activated_at": 1779489774.0420785,
     "entry_message_id": 4033,
-    "last_checked_ts": 1779516000.0,
-    "current_price": 75440.2
+    "last_checked_ts": 1779520500.0,
+    "current_price": 75290.1
   },
   "SOL-USDT-SWAPSHORT1779507042-10CC7993": {
     "instId": "SOL-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 84.58,
-    "sl": 84.9925,
+    "sl": 84.58,
     "tp1": 83.9612,
     "tp2": 83.3424,
     "tp3": 82.5173,
@@ -262,14 +262,14 @@
     "created": 1779507042.3627853,
     "expires": 1779593442.3627856,
     "order_id": "1779507042-10CC7993",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1779507042.3628132,
     "entry_message_id": 4044,
-    "last_checked_ts": 1779516000.0,
-    "current_price": 84.34
+    "last_checked_ts": 1779520500.0,
+    "current_price": 83.88
   },
   "XRP-USDT-SWAPSHORT1779517496-282D0673": {
     "instId": "XRP-USDT-SWAP",
@@ -357,100 +357,7 @@
     "hit_tp3": false,
     "activated_at": 1779517496.9788783,
     "entry_message_id": 4051,
-    "last_checked_ts": 1779517496.9788783
-  },
-  "TON-USDT-SWAPSHORT1779517502-2328B25F": {
-    "instId": "TON-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 1.815,
-    "sl": 1.8341,
-    "tp1": 1.7986,
-    "tp2": 1.7986,
-    "tp3": 1.7986,
-    "atr": 0.012739,
-    "score": 88,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 27.4,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 15,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.54,
-      "obv": 5,
-      "vwap": 1.9923,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.03819,
-      "bb_pct_b": 0.054,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 56.6,
-      "atr_pct": 0.703,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "rsishort:20-29 (n=19, 勝率 84%) → +2",
-        "fund:neutral (n=207, 勝率 66%) → +1",
-        "sess:europe (n=51, 勝率 76%) → +2",
-        "coin:TON (n=9, 勝率 67%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 11,
-      "tp_adjust_notes": [
-        "TP1 1.7863→1.7986（支撐 1.7950）",
-        "TP2 1.7577→1.7986（支撐 1.7950）",
-        "TP3 1.7195→1.7986（支撐 1.7950）"
-      ]
-    },
-    "funding_rate": -1.86900281833e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 23.4
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 33.4
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 53.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 56.6,
-      "atr_pct": 0.703,
-      "volatile": false
-    },
-    "created": 1779517502.1243231,
-    "expires": 1779603902.1243234,
-    "order_id": "1779517502-2328B25F",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1779517502.1243513,
-    "entry_message_id": 4052,
-    "last_checked_ts": 1779517502.1243513
+    "last_checked_ts": 1779520500.0,
+    "current_price": 1.331
   }
 }
