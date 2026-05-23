@@ -86,8 +86,8 @@
     "hit_tp3": false,
     "activated_at": 1779481214.9729295,
     "entry_message_id": 4018,
-    "last_checked_ts": 1779524100.0,
-    "current_price": 639.0
+    "last_checked_ts": 1779526800.0,
+    "current_price": 639.4
   },
   "BTC-USDT-SWAPSHORT1779489774-77B10CC5": {
     "instId": "BTC-USDT-SWAP",
@@ -177,106 +177,15 @@
     "hit_tp3": false,
     "activated_at": 1779489774.0420785,
     "entry_message_id": 4033,
-    "last_checked_ts": 1779524100.0,
-    "current_price": 74476.3
-  },
-  "SOL-USDT-SWAPSHORT1779507042-10CC7993": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 84.58,
-    "sl": 83.9612,
-    "tp1": 83.9612,
-    "tp2": 83.3424,
-    "tp3": 82.5173,
-    "atr": 0.27502407,
-    "score": 87,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 45.2,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": -10,
-      "volume_ratio": 0.47,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 86.0653,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01125,
-      "bb_pct_b": 0.552,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 48.8,
-      "atr_pct": 0.325,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "score:80-89 (n=73, 勝率 67%) → +1",
-        "fund:neutral (n=206, 勝率 66%) → +1",
-        "sess:asia_day (n=75, 勝率 61%) → +1",
-        "coin_side:SOLSHORT (n=7, 勝率 29%) → -3",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 5
-    },
-    "funding_rate": 1.3024326635e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 33.8
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 37.0
-      },
-      "1W": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 30.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 48.8,
-      "atr_pct": 0.325,
-      "volatile": false
-    },
-    "created": 1779507042.3627853,
-    "expires": 1779593442.3627856,
-    "order_id": "1779507042-10CC7993",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1779507042.3628132,
-    "entry_message_id": 4044,
-    "last_checked_ts": 1779524100.0,
-    "current_price": 82.0
+    "last_checked_ts": 1779526800.0,
+    "current_price": 74650.0
   },
   "XRP-USDT-SWAPSHORT1779517496-282D0673": {
     "instId": "XRP-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 1.333,
-    "sl": 1.333,
+    "sl": 1.3235,
     "tp1": 1.3235,
     "tp2": 1.3141,
     "tp3": 1.3015,
@@ -351,13 +260,13 @@
     "created": 1779517496.9788465,
     "expires": 1779603896.978847,
     "order_id": "1779517496-282D0673",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1779517496.9788783,
     "entry_message_id": 4051,
-    "last_checked_ts": 1779524100.0,
-    "current_price": 1.309
+    "last_checked_ts": 1779526800.0,
+    "current_price": 1.311
   }
 }
