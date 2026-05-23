@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 55,
-      "loss": 21,
+      "loss": 22,
       "be": 4,
-      "total": 80
+      "total": 81
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 150,
-      "loss": 55,
+      "loss": 57,
       "be": 16,
-      "total": 221
+      "total": 223
     },
     "sess:us": {
       "win": 34,
@@ -26,9 +26,9 @@
     },
     "coin:SOL": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 19
+      "total": 20
     },
     "coin_side:SOL_LONG": {
       "win": 0,
@@ -43,10 +43,10 @@
       "total": 8
     },
     "sess:asia_dawn": {
-      "win": 28,
-      "loss": 16,
-      "be": 6,
-      "total": 50
+      "win": 29,
+      "loss": 19,
+      "be": 7,
+      "total": 55
     },
     "coin:DOGE": {
       "win": 9,
@@ -92,9 +92,9 @@
     },
     "coin:BNB": {
       "win": 35,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 41
+      "total": 42
     },
     "coin_side:BNB_LONG": {
       "win": 0,
@@ -103,10 +103,10 @@
       "total": 2
     },
     "score:90+": {
-      "win": 72,
-      "loss": 19,
-      "be": 10,
-      "total": 101
+      "win": 73,
+      "loss": 21,
+      "be": 11,
+      "total": 105
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -157,10 +157,10 @@
       "total": 5
     },
     "fund:neg": {
-      "win": 9,
-      "loss": 2,
-      "be": 0,
-      "total": 11
+      "win": 10,
+      "loss": 3,
+      "be": 1,
+      "total": 14
     },
     "sess:asia_day": {
       "win": 46,
@@ -188,9 +188,9 @@
     },
     "coin:XRP": {
       "win": 13,
-      "loss": 4,
+      "loss": 5,
       "be": 4,
-      "total": 21
+      "total": 22
     },
     "coin_side:XRP_SHORT": {
       "win": 1,
@@ -211,10 +211,10 @@
       "total": 7
     },
     "coin:TON": {
-      "win": 9,
+      "win": 10,
       "loss": 3,
-      "be": 0,
-      "total": 12
+      "be": 1,
+      "total": 14
     },
     "coin_side:TON_SHORT": {
       "win": 3,
@@ -332,9 +332,9 @@
     },
     "coin_side:BNBSHORT": {
       "win": 27,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 29
+      "total": 30
     },
     "rsishort:20-29": {
       "win": 21,
@@ -344,9 +344,9 @@
     },
     "coin_side:XRPSHORT": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 19
+      "total": 20
     },
     "coin_side:DOGESHORT": {
       "win": 3,
@@ -374,9 +374,9 @@
     },
     "coin_side:SOLSHORT": {
       "win": 5,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "coin_side:DOTSHORT": {
       "win": 0,
@@ -427,10 +427,10 @@
       "total": 3
     },
     "rsishort:50-59": {
-      "win": 5,
-      "loss": 3,
-      "be": 2,
-      "total": 10
+      "win": 6,
+      "loss": 4,
+      "be": 3,
+      "total": 13
     },
     "rsilong:60-69": {
       "win": 7,
@@ -446,9 +446,9 @@
     },
     "rsishort:60-69": {
       "win": 7,
-      "loss": 1,
+      "loss": 3,
       "be": 1,
-      "total": 9
+      "total": 11
     },
     "coin_side:NEARLONG": {
       "win": 8,
@@ -511,18 +511,18 @@
       "total": 1
     },
     "coin_side:TONSHORT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
-      "be": 0,
-      "total": 3
+      "be": 1,
+      "total": 5
     }
   },
   "by_coin": {
     "SOL": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 19
+      "total": 20
     },
     "DOGE": {
       "win": 9,
@@ -544,9 +544,9 @@
     },
     "BNB": {
       "win": 35,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 41
+      "total": 42
     },
     "LINK": {
       "win": 7,
@@ -568,15 +568,15 @@
     },
     "XRP": {
       "win": 13,
-      "loss": 4,
+      "loss": 5,
       "be": 4,
-      "total": 21
+      "total": 22
     },
     "TON": {
-      "win": 9,
+      "win": 10,
       "loss": 3,
-      "be": 0,
-      "total": 12
+      "be": 1,
+      "total": 14
     },
     "BTC": {
       "win": 20,
@@ -838,5 +838,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1779550953.898605
+  "updated_at": 1779561872.717493
 }
