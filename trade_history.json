@@ -22331,5 +22331,278 @@
       "atr_pct": 0.311,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-24 04:38",
+    "date": "2026-05-24",
+    "order_id": "1779563642-D2A55479",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2435,
+    "close": 0.2455,
+    "close_type": "TP1",
+    "pnl": 0.82,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": -4.2593129869e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.8,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": 5,
+      "vwap": 0.2465,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.01782,
+      "bb_pct_b": 0.849,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 41.2,
+      "atr_pct": 0.373,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:80-89 (n=81, 勝率 68%) → +1",
+        "fund:neutral (n=223, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 65.8,
+      "atr_pct": 0.373,
+      "funding": -0.042593129869,
+      "vol_ratio": 0.52,
+      "adx": 41.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 41.2,
+      "atr_pct": 0.373,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-24 04:39",
+    "date": "2026-05-24",
+    "order_id": "1779563642-D2A55479",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2435,
+    "close": 0.2476,
+    "close_type": "TP2",
+    "pnl": 1.68,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": -4.2593129869e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.8,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": 5,
+      "vwap": 0.2465,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.01782,
+      "bb_pct_b": 0.849,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 41.2,
+      "atr_pct": 0.373,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:80-89 (n=81, 勝率 68%) → +1",
+        "fund:neutral (n=223, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 65.8,
+      "atr_pct": 0.373,
+      "funding": -0.042593129869,
+      "vol_ratio": 0.52,
+      "adx": 41.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 41.2,
+      "atr_pct": 0.373,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-24 04:39",
+    "date": "2026-05-24",
+    "order_id": "1779563642-D2A55479",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.2435,
+    "close": 0.2455,
+    "close_type": "LOCK",
+    "pnl": 0.82,
+    "exit_rr": 1.5,
+    "exit_weight": 1.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": -4.2593129869e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.8,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": 5,
+      "vwap": 0.2465,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.01782,
+      "bb_pct_b": 0.849,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 41.2,
+      "atr_pct": 0.373,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:80-89 (n=81, 勝率 68%) → +1",
+        "fund:neutral (n=223, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 65.8,
+      "atr_pct": 0.373,
+      "funding": -0.042593129869,
+      "vol_ratio": 0.52,
+      "adx": 41.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 41.2,
+      "atr_pct": 0.373,
+      "volatile": false
+    }
   }
 ]
