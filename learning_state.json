@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 159,
-      "loss": 63,
+      "loss": 65,
       "be": 16,
-      "total": 238
+      "total": 240
     },
     "sess:us": {
       "win": 34,
@@ -44,9 +44,9 @@
     },
     "sess:asia_dawn": {
       "win": 38,
-      "loss": 19,
+      "loss": 21,
       "be": 7,
-      "total": 64
+      "total": 66
     },
     "coin:DOGE": {
       "win": 9,
@@ -74,9 +74,9 @@
     },
     "coin:AVAX": {
       "win": 13,
-      "loss": 7,
+      "loss": 8,
       "be": 1,
-      "total": 21
+      "total": 22
     },
     "coin_side:AVAX_LONG": {
       "win": 3,
@@ -104,9 +104,9 @@
     },
     "score:90+": {
       "win": 80,
-      "loss": 27,
+      "loss": 29,
       "be": 12,
-      "total": 119
+      "total": 121
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -224,9 +224,9 @@
     },
     "coin:BTC": {
       "win": 20,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 27
+      "total": 28
     },
     "coin_side:BTC_SHORT": {
       "win": 3,
@@ -416,9 +416,9 @@
     },
     "rsilong:50-59": {
       "win": 14,
-      "loss": 10,
+      "loss": 12,
       "be": 2,
-      "total": 26
+      "total": 28
     },
     "coin_side:SOLLONG": {
       "win": 3,
@@ -458,9 +458,9 @@
     },
     "coin_side:AVAXLONG": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "rsilong:40-49": {
       "win": 14,
@@ -494,9 +494,9 @@
     },
     "coin_side:BTCLONG": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin_side:DOTLONG": {
       "win": 3,
@@ -550,9 +550,9 @@
     },
     "AVAX": {
       "win": 13,
-      "loss": 7,
+      "loss": 8,
       "be": 1,
-      "total": 21
+      "total": 22
     },
     "BNB": {
       "win": 35,
@@ -592,9 +592,9 @@
     },
     "BTC": {
       "win": 20,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 27
+      "total": 28
     },
     "ADA": {
       "win": 12,
@@ -876,7 +876,21 @@
       "side": "LONG",
       "code": "RSI_COLLAPSE",
       "title": "📉 多頭動能瓦解"
+    },
+    {
+      "ts": 1779738906.1822264,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1779738908.1234365,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1779732228.728095
+  "updated_at": 1779738907.4469197
 }
