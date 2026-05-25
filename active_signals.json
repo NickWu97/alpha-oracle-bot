@@ -1,97 +1,4 @@
 {
-  "DOGE-USDT-SWAPSHORT1779744872-74A9CFD9": {
-    "instId": "DOGE-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.1024,
-    "sl": 0.1023,
-    "tp1": 0.1023,
-    "tp2": 0.1023,
-    "tp3": 0.1023,
-    "atr": 0.00026961,
-    "score": 121,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 36.5,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.98,
-      "obv": 5,
-      "vwap": 0.1019,
-      "vwap_score": 0,
-      "bb_bandwidth": 0.01401,
-      "bb_pct_b": 0.107,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "regular",
-      "rsi_div_desc": "📉 正規空頭背離（價格新高但 RSI 不新高）→ 頂部反轉",
-      "rsi_div_score": 12,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 22.1,
-      "atr_pct": 0.263,
-      "learning_notes": [
-        "score:90+ (n=126, 勝率 66%) → +1",
-        "rsishort:30-39 (n=35, 勝率 86%) → +2",
-        "fund:neutral (n=245, 勝率 66%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
-        "KNN 中高勝率 → +3"
-      ],
-      "learning_adjust": 7,
-      "tp_adjust_notes": [
-        "TP1 0.1018→0.1023（支撐 0.1021）",
-        "TP2 0.1012→0.1023（支撐 0.1021）",
-        "TP3 0.1004→0.1023（支撐 0.1021）"
-      ]
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 42.9
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 45.8
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 36.2
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 22.1,
-      "atr_pct": 0.263,
-      "volatile": false
-    },
-    "created": 1779744872.3985977,
-    "expires": 1779831272.398598,
-    "order_id": "1779744872-74A9CFD9",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1779744872.398633,
-    "entry_message_id": 4254,
-    "last_checked_ts": 1779747300.0,
-    "current_price": 0.10185
-  },
   "NEAR-USDT-SWAPLONG1779744880-C94E2636": {
     "instId": "NEAR-USDT-SWAP",
     "side": "LONG",
@@ -185,8 +92,8 @@
     "hit_tp3": false,
     "activated_at": 1779744880.483005,
     "entry_message_id": 4255,
-    "last_checked_ts": 1779747300.0,
-    "current_price": 2.745
+    "last_checked_ts": 1779750900.0,
+    "current_price": 2.771
   },
   "XRP-USDT-SWAPSHORT1779748924-4C1844A0": {
     "instId": "XRP-USDT-SWAP",
@@ -275,6 +182,7 @@
     "hit_tp3": false,
     "activated_at": 1779748924.6984873,
     "entry_message_id": 4260,
-    "last_checked_ts": 1779748924.6984873
+    "last_checked_ts": 1779750900.0,
+    "current_price": 1.35
   }
 }
