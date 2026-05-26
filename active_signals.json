@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 1.349,
-    "sl": 1.349,
+    "sl": 1.3414,
     "tp1": 1.3414,
     "tp2": 1.3337,
     "tp3": 1.3235,
@@ -80,13 +80,13 @@
     "created": 1779748924.698444,
     "expires": 1779835324.6984444,
     "order_id": "1779748924-4C1844A0",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1779748924.6984873,
     "entry_message_id": 4260,
-    "last_checked_ts": 1779757200.0,
+    "last_checked_ts": 1779766200.0,
     "current_price": 1.34
   },
   "BNB-USDT-SWAPSHORT1779752868-8FF56680": {
@@ -94,7 +94,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 662.0,
-    "sl": 662.0,
+    "sl": 659.0453,
     "tp1": 659.0453,
     "tp2": 656.0907,
     "tp3": 652.1511,
@@ -171,13 +171,13 @@
     "created": 1779752868.6371882,
     "expires": 1779839268.6371884,
     "order_id": "1779752868-8FF56680",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1779752868.6372235,
     "entry_message_id": 4267,
-    "last_checked_ts": 1779757200.0,
-    "current_price": 657.6
+    "last_checked_ts": 1779766200.0,
+    "current_price": 658.0
   }
 }
