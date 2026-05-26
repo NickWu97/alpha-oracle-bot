@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 58,
+      "win": 61,
       "loss": 23,
       "be": 4,
-      "total": 85
+      "total": 88
     },
     "rsi_long:40-49": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 172,
+      "win": 174,
       "loss": 68,
       "be": 16,
-      "total": 256
+      "total": 258
     },
     "sess:us": {
       "win": 34,
@@ -103,10 +103,10 @@
       "total": 2
     },
     "score:90+": {
-      "win": 93,
+      "win": 95,
       "loss": 32,
       "be": 12,
-      "total": 137
+      "total": 139
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -163,10 +163,10 @@
       "total": 17
     },
     "sess:asia_day": {
-      "win": 56,
+      "win": 61,
       "loss": 28,
       "be": 8,
-      "total": 92
+      "total": 97
     },
     "coin:NEAR": {
       "win": 18,
@@ -211,10 +211,10 @@
       "total": 7
     },
     "coin:TON": {
-      "win": 10,
+      "win": 13,
       "loss": 4,
       "be": 1,
-      "total": 15
+      "total": 18
     },
     "coin_side:TON_SHORT": {
       "win": 3,
@@ -223,10 +223,10 @@
       "total": 3
     },
     "coin:BTC": {
-      "win": 21,
+      "win": 23,
       "loss": 7,
       "be": 2,
-      "total": 30
+      "total": 32
     },
     "coin_side:BTC_SHORT": {
       "win": 3,
@@ -325,10 +325,10 @@
       "total": 3
     },
     "rsishort:30-39": {
-      "win": 37,
+      "win": 39,
       "loss": 3,
       "be": 2,
-      "total": 42
+      "total": 44
     },
     "coin_side:BNBSHORT": {
       "win": 30,
@@ -403,10 +403,10 @@
       "total": 30
     },
     "coin_side:BTCSHORT": {
-      "win": 17,
+      "win": 19,
       "loss": 4,
       "be": 1,
-      "total": 22
+      "total": 24
     },
     "coin_side:ETHSHORT": {
       "win": 9,
@@ -463,10 +463,10 @@
       "total": 11
     },
     "rsilong:40-49": {
-      "win": 14,
+      "win": 17,
       "loss": 2,
       "be": 2,
-      "total": 18
+      "total": 21
     },
     "coin_side:DOGELONG": {
       "win": 3,
@@ -487,10 +487,10 @@
       "total": 5
     },
     "coin_side:TONLONG": {
-      "win": 3,
+      "win": 6,
       "loss": 3,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "coin_side:BTCLONG": {
       "win": 1,
@@ -527,6 +527,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "fund:very_neg": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -585,16 +591,16 @@
       "total": 26
     },
     "TON": {
-      "win": 10,
+      "win": 13,
       "loss": 4,
       "be": 1,
-      "total": 15
+      "total": 18
     },
     "BTC": {
-      "win": 21,
+      "win": 23,
       "loss": 7,
       "be": 2,
-      "total": 30
+      "total": 32
     },
     "ADA": {
       "win": 12,
@@ -899,5 +905,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1779832026.8559115
+  "updated_at": 1779833362.4329605
 }
