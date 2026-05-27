@@ -26247,5 +26247,96 @@
       "atr_pct": 0.422,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-27 09:31",
+    "date": "2026-05-27",
+    "order_id": "1779832021-B7CB1088",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.1011,
+    "close": 0.1017,
+    "close_type": "SL",
+    "pnl": -0.59,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 83,
+    "funding_rate": -4.9849866685e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 46.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.36,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.1023,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01033,
+      "bb_pct_b": 0.52,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 28.3,
+      "atr_pct": 0.416,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "rsishort:40-49 (n=30, 勝率 63%) → +1",
+        "fund:neutral (n=255, 勝率 67%) → +1",
+        "coin_side:DOGESHORT (n=8, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 46.1,
+      "atr_pct": 0.416,
+      "funding": -0.049849866685,
+      "vol_ratio": 0.36,
+      "adx": 28.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 36.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.3,
+      "atr_pct": 0.416,
+      "volatile": false
+    }
   }
 ]
