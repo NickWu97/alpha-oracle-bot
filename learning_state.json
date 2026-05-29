@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 192,
-      "loss": 77,
+      "loss": 78,
       "be": 22,
-      "total": 291
+      "total": 292
     },
     "sess:us": {
       "win": 34,
-      "loss": 10,
+      "loss": 11,
       "be": 1,
-      "total": 45
+      "total": 46
     },
     "coin:SOL": {
       "win": 17,
@@ -104,9 +104,9 @@
     },
     "score:90+": {
       "win": 115,
-      "loss": 39,
+      "loss": 40,
       "be": 20,
-      "total": 174
+      "total": 175
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -170,9 +170,9 @@
     },
     "coin:NEAR": {
       "win": 18,
-      "loss": 5,
+      "loss": 6,
       "be": 3,
-      "total": 26
+      "total": 27
     },
     "coin_side:NEAR_SHORT": {
       "win": 9,
@@ -416,9 +416,9 @@
     },
     "rsilong:50-59": {
       "win": 14,
-      "loss": 13,
+      "loss": 14,
       "be": 2,
-      "total": 29
+      "total": 30
     },
     "coin_side:SOLLONG": {
       "win": 3,
@@ -452,9 +452,9 @@
     },
     "coin_side:NEARLONG": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 14
+      "total": 15
     },
     "coin_side:AVAXLONG": {
       "win": 7,
@@ -580,9 +580,9 @@
     },
     "NEAR": {
       "win": 18,
-      "loss": 5,
+      "loss": 6,
       "be": 3,
-      "total": 26
+      "total": 27
     },
     "XRP": {
       "win": 17,
@@ -952,7 +952,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1780065381.4145205,
+      "coin": "NEAR",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1780055221.3806274
+  "updated_at": 1780065380.7409694
 }
