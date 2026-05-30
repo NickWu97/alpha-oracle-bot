@@ -805,5 +805,98 @@
       "atr_pct": 0.295,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-31 05:42",
+    "date": "2026-05-31",
+    "order_id": "1780173187-0D9768B4",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.347,
+    "close": 1.35,
+    "close_type": "TP1",
+    "pnl": 0.22,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 106,
+    "funding_rate": -2.21056105067e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 56.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.19,
+      "obv": 5,
+      "vwap": 1.3175,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00826,
+      "bb_pct_b": 0.693,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.5,
+      "atr_pct": 0.29,
+      "learning_notes": [
+        "score:90+ (n=9, 勝率 100%) → +2",
+        "fund:neutral (n=9, 勝率 100%) → +2",
+        "sess:asia_dawn (n=9, 勝率 100%) → +2"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 1.3558→1.3500（阻力 1.3527）",
+        "TP2 1.3646→1.3500（阻力 1.3527）",
+        "TP3 1.3763→1.3500（阻力 1.3527）"
+      ]
+    },
+    "features": {
+      "score": 106.0,
+      "rsi": 56.9,
+      "atr_pct": 0.29,
+      "funding": -0.0221056105067,
+      "vol_ratio": 0.19,
+      "adx": 19.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 31.7
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.5,
+      "atr_pct": 0.29,
+      "volatile": false
+    }
   }
 ]
