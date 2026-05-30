@@ -29519,5 +29519,296 @@
       "atr_pct": 1.341,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-31 00:44",
+    "date": "2026-05-31",
+    "order_id": "1780155400-DD21946B",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.1012,
+    "close": 0.1014,
+    "close_type": "TP1",
+    "pnl": 0.2,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 5.10562279015e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 57.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.25,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0997,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00835,
+      "bb_pct_b": 0.871,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.249,
+      "learning_notes": [
+        "score:90+ (n=175, 勝率 66%) → +1",
+        "fund:neutral (n=292, 勝率 66%) → +1",
+        "sess:us (n=46, 勝率 74%) → +2",
+        "coin_side:DOGELONG (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5,
+      "tp_adjust_notes": [
+        "TP1 0.1018→0.1014（阻力 0.1017）",
+        "TP2 0.1023→0.1014（阻力 0.1017）",
+        "TP3 0.1031→0.1014（阻力 0.1017）"
+      ]
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 57.9,
+      "atr_pct": 0.249,
+      "funding": 0.0510562279015,
+      "vol_ratio": 1.25,
+      "adx": 16.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 36.2
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.249,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-31 00:44",
+    "date": "2026-05-31",
+    "order_id": "1780155400-DD21946B",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.1012,
+    "close": 0.1014,
+    "close_type": "TP2",
+    "pnl": 0.2,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 5.10562279015e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 57.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.25,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0997,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00835,
+      "bb_pct_b": 0.871,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.249,
+      "learning_notes": [
+        "score:90+ (n=175, 勝率 66%) → +1",
+        "fund:neutral (n=292, 勝率 66%) → +1",
+        "sess:us (n=46, 勝率 74%) → +2",
+        "coin_side:DOGELONG (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5,
+      "tp_adjust_notes": [
+        "TP1 0.1018→0.1014（阻力 0.1017）",
+        "TP2 0.1023→0.1014（阻力 0.1017）",
+        "TP3 0.1031→0.1014（阻力 0.1017）"
+      ]
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 57.9,
+      "atr_pct": 0.249,
+      "funding": 0.0510562279015,
+      "vol_ratio": 1.25,
+      "adx": 16.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 36.2
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.249,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-05-31 00:44",
+    "date": "2026-05-31",
+    "order_id": "1780155400-DD21946B",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.1012,
+    "close": 0.1014,
+    "close_type": "TP3",
+    "pnl": 0.2,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 5.10562279015e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 57.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.25,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0997,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00835,
+      "bb_pct_b": 0.871,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.249,
+      "learning_notes": [
+        "score:90+ (n=175, 勝率 66%) → +1",
+        "fund:neutral (n=292, 勝率 66%) → +1",
+        "sess:us (n=46, 勝率 74%) → +2",
+        "coin_side:DOGELONG (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5,
+      "tp_adjust_notes": [
+        "TP1 0.1018→0.1014（阻力 0.1017）",
+        "TP2 0.1023→0.1014（阻力 0.1017）",
+        "TP3 0.1031→0.1014（阻力 0.1017）"
+      ]
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 57.9,
+      "atr_pct": 0.249,
+      "funding": 0.0510562279015,
+      "vol_ratio": 1.25,
+      "adx": 16.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 36.2
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.249,
+      "volatile": false
+    }
   }
 ]
