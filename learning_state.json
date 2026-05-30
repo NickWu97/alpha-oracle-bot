@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 10,
-      "loss": 0,
+      "win": 12,
+      "loss": 1,
       "be": 0,
-      "total": 10
+      "total": 13
     },
     "rsilong:60-69": {
       "win": 6,
@@ -13,10 +13,10 @@
       "total": 6
     },
     "fund:neutral": {
-      "win": 10,
-      "loss": 0,
+      "win": 12,
+      "loss": 3,
       "be": 0,
-      "total": 10
+      "total": 15
     },
     "sess:asia_dawn": {
       "win": 10,
@@ -37,22 +37,22 @@
       "total": 3
     },
     "coin:XRP": {
-      "win": 4,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 4
+      "total": 6
     },
     "coin_side:XRPLONG": {
-      "win": 4,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 4
+      "total": 6
     },
     "rsilong:50-59": {
-      "win": 4,
-      "loss": 0,
+      "win": 6,
+      "loss": 3,
       "be": 0,
-      "total": 4
+      "total": 9
     },
     "coin:ADA": {
       "win": 3,
@@ -65,6 +65,54 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "score:80-89": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "sess:asia_day": {
+      "win": 2,
+      "loss": 3,
+      "be": 0,
+      "total": 5
+    },
+    "coin:DOGE": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:DOGELONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:TON": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:TONLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -75,18 +123,51 @@
       "total": 3
     },
     "XRP": {
-      "win": 4,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 4
+      "total": 6
     },
     "ADA": {
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "DOGE": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "TON": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1780177373.5398445
+  "loss_reasons": [
+    {
+      "ts": 1780179156.4501655,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1780179157.943114,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    }
+  ],
+  "updated_at": 1780179181.075149
 }
