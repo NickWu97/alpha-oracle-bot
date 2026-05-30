@@ -13,10 +13,17 @@
       "total": 5
     },
     "fund:neutral": {
+<<<<<<< Updated upstream
       "win": 195,
       "loss": 78,
       "be": 22,
       "total": 295
+=======
+      "win": 193,
+      "loss": 78,
+      "be": 22,
+      "total": 293
+>>>>>>> Stashed changes
     },
     "sess:us": {
       "win": 34,
@@ -43,6 +50,7 @@
       "total": 8
     },
     "sess:asia_dawn": {
+<<<<<<< Updated upstream
       "win": 48,
       "loss": 26,
       "be": 11,
@@ -53,6 +61,18 @@
       "loss": 12,
       "be": 0,
       "total": 27
+=======
+      "win": 46,
+      "loss": 26,
+      "be": 11,
+      "total": 83
+    },
+    "coin:DOGE": {
+      "win": 13,
+      "loss": 12,
+      "be": 0,
+      "total": 25
+>>>>>>> Stashed changes
     },
     "coin_side:DOGE_LONG": {
       "win": 0,
@@ -103,10 +123,17 @@
       "total": 2
     },
     "score:90+": {
+<<<<<<< Updated upstream
       "win": 118,
       "loss": 40,
       "be": 20,
       "total": 178
+=======
+      "win": 116,
+      "loss": 40,
+      "be": 20,
+      "total": 176
+>>>>>>> Stashed changes
     },
     "rsi_short:30-39": {
       "win": 16,
@@ -415,10 +442,17 @@
       "total": 13
     },
     "rsilong:50-59": {
+<<<<<<< Updated upstream
       "win": 17,
       "loss": 14,
       "be": 2,
       "total": 33
+=======
+      "win": 15,
+      "loss": 14,
+      "be": 2,
+      "total": 31
+>>>>>>> Stashed changes
     },
     "coin_side:SOLLONG": {
       "win": 3,
@@ -469,10 +503,17 @@
       "total": 24
     },
     "coin_side:DOGELONG": {
+<<<<<<< Updated upstream
       "win": 6,
       "loss": 5,
       "be": 0,
       "total": 11
+=======
+      "win": 4,
+      "loss": 5,
+      "be": 0,
+      "total": 9
+>>>>>>> Stashed changes
     },
     "coin_side:ETHLONG": {
       "win": 6,
@@ -543,10 +584,17 @@
       "total": 28
     },
     "DOGE": {
+<<<<<<< Updated upstream
       "win": 15,
       "loss": 12,
       "be": 0,
       "total": 27
+=======
+      "win": 13,
+      "loss": 12,
+      "be": 0,
+      "total": 25
+>>>>>>> Stashed changes
     },
     "DOT": {
       "win": 3,
@@ -961,5 +1009,9 @@
       "title": "📊 正常波動"
     }
   ],
+<<<<<<< Updated upstream
   "updated_at": 1780159483.0684414
+=======
+  "updated_at": 1780159508.300363
+>>>>>>> Stashed changes
 }
