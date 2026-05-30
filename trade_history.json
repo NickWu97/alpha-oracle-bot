@@ -1361,5 +1361,89 @@
       "atr_pct": 0.29,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-05-31 06:40",
+    "date": "2026-05-31",
+    "order_id": "1780163275-756859CC",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 73940.0,
+    "close": 73780.2608,
+    "close_type": "SL",
+    "pnl": -0.22,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 2.97327098791e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.03,
+      "obv": 5,
+      "vwap": 73613.6707,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00516,
+      "bb_pct_b": 0.641,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 27.8,
+      "atr_pct": 0.144,
+      "adx_bonus": 2,
+      "pullback": true
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 59.1,
+      "atr_pct": 0.144,
+      "funding": 0.0297327098791,
+      "vol_ratio": 1.03,
+      "adx": 27.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.0
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.6
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 27.8,
+      "atr_pct": 0.144,
+      "volatile": false
+    }
   }
 ]
