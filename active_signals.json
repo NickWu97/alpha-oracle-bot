@@ -84,15 +84,15 @@
     "hit_tp3": false,
     "activated_at": 1780243940.752161,
     "entry_message_id": 4560,
-    "last_checked_ts": 1780252200.0,
-    "current_price": 1999.29
+    "last_checked_ts": 1780255800.0,
+    "current_price": 1999.01
   },
   "SOL-USDT-SWAPSHORT1780243942-F53468EB": {
     "instId": "SOL-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 81.86,
-    "sl": 82.2329,
+    "sl": 81.86,
     "tp1": 81.3006,
     "tp2": 80.7413,
     "tp3": 79.9955,
@@ -166,14 +166,14 @@
     "created": 1780243942.8516703,
     "expires": 1780330342.8516707,
     "order_id": "1780243942-F53468EB",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1780243942.8516972,
     "entry_message_id": 4561,
-    "last_checked_ts": 1780252200.0,
-    "current_price": 81.7
+    "last_checked_ts": 1780255800.0,
+    "current_price": 81.59
   },
   "DOGE-USDT-SWAPSHORT1780248733-CC0B100A": {
     "instId": "DOGE-USDT-SWAP",
@@ -263,15 +263,15 @@
     "hit_tp3": false,
     "activated_at": 1780248733.9737754,
     "entry_message_id": 4567,
-    "last_checked_ts": 1780252200.0,
-    "current_price": 0.0994
+    "last_checked_ts": 1780255800.0,
+    "current_price": 0.09947
   },
   "ADA-USDT-SWAPSHORT1780248736-67071D4B": {
     "instId": "ADA-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 0.233,
-    "sl": 0.2344,
+    "sl": 0.233,
     "tp1": 0.2322,
     "tp2": 0.2322,
     "tp3": 0.2322,
@@ -348,104 +348,13 @@
     "created": 1780248736.1682317,
     "expires": 1780335136.168232,
     "order_id": "1780248736-67071D4B",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1780248736.168258,
     "entry_message_id": 4568,
-    "last_checked_ts": 1780252200.0,
-    "current_price": 0.233
-  },
-  "LINK-USDT-SWAPSHORT1780248738-4E4D5057": {
-    "instId": "LINK-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 9.054,
-    "sl": 9.1083,
-    "tp1": 9.027,
-    "tp2": 9.027,
-    "tp3": 9.027,
-    "atr": 0.03617167,
-    "score": 90,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 31.7,
-      "rsi": 0,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": -10,
-      "volume_ratio": 0.43,
-      "obv": 5,
-      "vwap": 9.0845,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.0318,
-      "bb_pct_b": 0.224,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 32.8,
-      "atr_pct": 0.4,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "fund:neutral (n=16, 勝率 75%) → +2",
-        "sess:asia_dawn (n=10, 勝率 100%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
-      ],
-      "learning_adjust": 4,
-      "tp_adjust_notes": [
-        "TP1 8.9726→9.0270（支撐 9.0090）",
-        "TP2 8.8912→9.0270（支撐 9.0090）",
-        "TP3 8.7827→9.0270（支撐 9.0090）"
-      ]
-    },
-    "funding_rate": 9.96428408149e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 30.9
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 46.4
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 39.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 32.8,
-      "atr_pct": 0.4,
-      "volatile": false
-    },
-    "created": 1780248738.300549,
-    "expires": 1780335138.3005493,
-    "order_id": "1780248738-4E4D5057",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1780248738.3005764,
-    "entry_message_id": 4569,
-    "last_checked_ts": 1780252200.0,
-    "current_price": 9.048
+    "last_checked_ts": 1780255800.0,
+    "current_price": 0.2326
   }
 }
