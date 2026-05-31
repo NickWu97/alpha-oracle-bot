@@ -1,1 +1,176 @@
-{}
+{
+  "ETH-USDT-SWAPSHORT1780243940-1909F99F": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 2008.46,
+    "sl": 2015.7792,
+    "tp1": 1997.4812,
+    "tp2": 1986.5025,
+    "tp3": 1971.8642,
+    "atr": 4.87944493,
+    "score": 87,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 35.5,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.51,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 2012.2484,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01201,
+      "bb_pct_b": 0.176,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 33.8,
+      "atr_pct": 0.243,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=16, 勝率 75%) → +2",
+        "sess:asia_dawn (n=10, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 4
+    },
+    "funding_rate": 1.17601711891e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.6
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 33.8,
+      "atr_pct": 0.243,
+      "volatile": false
+    },
+    "created": 1780243940.752133,
+    "expires": 1780330340.7521331,
+    "order_id": "1780243940-1909F99F",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1780243940.752161,
+    "entry_message_id": 4560,
+    "last_checked_ts": 1780243940.752161
+  },
+  "SOL-USDT-SWAPSHORT1780243942-F53468EB": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 81.86,
+    "sl": 82.2329,
+    "tp1": 81.3006,
+    "tp2": 80.7413,
+    "tp3": 79.9955,
+    "atr": 0.2486011,
+    "score": 104,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 31.8,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.44,
+      "obv": 5,
+      "vwap": 82.1303,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01925,
+      "bb_pct_b": 0.094,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 27.4,
+      "atr_pct": 0.304,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "score:90+ (n=14, 勝率 86%) → +2",
+        "fund:neutral (n=16, 勝率 75%) → +2",
+        "sess:asia_dawn (n=10, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11
+    },
+    "funding_rate": 3.88128948044e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.5
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 27.4,
+      "atr_pct": 0.304,
+      "volatile": false
+    },
+    "created": 1780243942.8516703,
+    "expires": 1780330342.8516707,
+    "order_id": "1780243942-F53468EB",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1780243942.8516972,
+    "entry_message_id": 4561,
+    "last_checked_ts": 1780243942.8516972
+  }
+}
