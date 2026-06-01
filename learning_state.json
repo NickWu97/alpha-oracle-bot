@@ -13,16 +13,16 @@
       "total": 6
     },
     "fund:neutral": {
-      "win": 20,
+      "win": 23,
       "loss": 8,
       "be": 5,
-      "total": 33
+      "total": 36
     },
     "sess:asia_dawn": {
-      "win": 16,
+      "win": 19,
       "loss": 1,
       "be": 3,
-      "total": 20
+      "total": 23
     },
     "coin:SOL": {
       "win": 5,
@@ -67,10 +67,10 @@
       "total": 3
     },
     "score:80-89": {
-      "win": 3,
+      "win": 6,
       "loss": 3,
       "be": 3,
-      "total": 9
+      "total": 12
     },
     "sess:asia_day": {
       "win": 4,
@@ -209,6 +209,24 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsilong:70-79": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:NEAR": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:NEARLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -271,6 +289,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "NEAR": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -310,5 +334,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1780287531.1792543
+  "updated_at": 1780346627.9568567
 }
