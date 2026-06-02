@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 9,
+      "win": 18,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 18
     },
     "rsishort:40-49": {
       "win": 9,
@@ -13,16 +13,16 @@
       "total": 9
     },
     "fund:neutral": {
-      "win": 9,
+      "win": 18,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 18
     },
     "sess:asia_dawn": {
-      "win": 9,
+      "win": 18,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 18
     },
     "coin:ETH": {
       "win": 3,
@@ -37,16 +37,16 @@
       "total": 3
     },
     "coin:SOL": {
-      "win": 3,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "coin_side:SOLSHORT": {
-      "win": 3,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "coin:XRP": {
       "win": 3,
@@ -55,6 +55,36 @@
       "total": 3
     },
     "coin_side:XRPSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "rsishort:30-39": {
+      "win": 9,
+      "loss": 0,
+      "be": 0,
+      "total": 9
+    },
+    "coin:BTC": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:BTCSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:BNB": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:BNBSHORT": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -69,12 +99,24 @@
       "total": 3
     },
     "SOL": {
+      "win": 6,
+      "loss": 0,
+      "be": 0,
+      "total": 6
+    },
+    "XRP": {
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
     },
-    "XRP": {
+    "BTC": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "BNB": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -82,5 +124,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1780420370.937476
+  "updated_at": 1780431624.3208845
 }
