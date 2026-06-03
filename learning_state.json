@@ -1,28 +1,28 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 18,
+      "win": 22,
       "loss": 0,
       "be": 0,
-      "total": 18
+      "total": 22
     },
     "rsishort:40-49": {
-      "win": 9,
+      "win": 14,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 14
     },
     "fund:neutral": {
-      "win": 18,
+      "win": 23,
       "loss": 0,
       "be": 0,
-      "total": 18
+      "total": 23
     },
     "sess:asia_dawn": {
-      "win": 18,
+      "win": 23,
       "loss": 0,
       "be": 0,
-      "total": 18
+      "total": 23
     },
     "coin:ETH": {
       "win": 3,
@@ -37,16 +37,16 @@
       "total": 3
     },
     "coin:SOL": {
-      "win": 6,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "coin_side:SOLSHORT": {
-      "win": 6,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "coin:XRP": {
       "win": 3,
@@ -67,28 +67,34 @@
       "total": 9
     },
     "coin:BTC": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:BTCSHORT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:BNB": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:BNBSHORT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
+    },
+    "score:80-89": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -99,10 +105,10 @@
       "total": 3
     },
     "SOL": {
-      "win": 6,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "XRP": {
       "win": 3,
@@ -111,18 +117,18 @@
       "total": 3
     },
     "BTC": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "BNB": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     }
   },
   "loss_reasons": [],
-  "updated_at": 1780431624.3208845
+  "updated_at": 1780523394.6108696
 }
