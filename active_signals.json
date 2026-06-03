@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 65950.3,
-    "sl": 65950.3,
+    "sl": 65235.8358,
     "tp1": 65235.8358,
     "tp2": 64521.3717,
     "tp3": 63568.7528,
@@ -80,14 +80,14 @@
     "created": 1780513705.1499102,
     "expires": 1780600105.1499107,
     "order_id": "1780513705-D2AF852F",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1780513705.1499417,
     "entry_message_id": 4727,
-    "last_checked_ts": 1780523100.0,
-    "current_price": 65611.7
+    "last_checked_ts": 1780527600.0,
+    "current_price": 64365.9
   },
   "SOL-USDT-SWAPSHORT1780524361-C817BF19": {
     "instId": "SOL-USDT-SWAP",
@@ -175,100 +175,7 @@
     "hit_tp3": false,
     "activated_at": 1780524361.8949003,
     "entry_message_id": 4741,
-    "last_checked_ts": 1780524361.8949003,
-    "current_price": 72.92
-  },
-  "ADA-USDT-SWAPSHORT1780524368-CC13211A": {
-    "instId": "ADA-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.2055,
-    "sl": 0.2081,
-    "tp1": 0.2048,
-    "tp2": 0.2048,
-    "tp3": 0.2048,
-    "atr": 0.00170495,
-    "score": 75,
-    "grade": "觀望 ⚪",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 42.0,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.94,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 0.2204,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.05121,
-      "bb_pct_b": 0.419,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 61.6,
-      "atr_pct": 0.83,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "rsishort:40-49 (n=14, 勝率 100%) → +2",
-        "fund:neutral (n=23, 勝率 100%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 9,
-      "tp_adjust_notes": [
-        "TP1 0.2017→0.2048（支撐 0.2044）",
-        "TP2 0.1978→0.2048（支撐 0.2044）",
-        "TP3 0.1927→0.2048（支撐 0.2044）"
-      ]
-    },
-    "funding_rate": -1.22171650886e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 33.0
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 27.1
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 28.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 61.6,
-      "atr_pct": 0.83,
-      "volatile": false
-    },
-    "created": 1780524368.892899,
-    "expires": 1780610768.8928995,
-    "order_id": "1780524368-CC13211A",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1780524368.892925,
-    "entry_message_id": 4742,
-    "last_checked_ts": 1780524368.892925,
-    "current_price": 0.2057
+    "last_checked_ts": 1780527600.0,
+    "current_price": 71.65
   }
 }
