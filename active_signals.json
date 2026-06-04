@@ -88,100 +88,8 @@
     "hit_tp3": false,
     "activated_at": 1780605216.5179377,
     "entry_message_id": 4774,
-    "last_checked_ts": 1780609500.0,
-    "current_price": 600.5
-  },
-  "TON-USDT-SWAPSHORT1780605224-D6708F49": {
-    "instId": "TON-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 1.715,
-    "sl": 1.715,
-    "tp1": 1.6884,
-    "tp2": 1.6884,
-    "tp3": 1.6884,
-    "atr": 0.01674072,
-    "score": 120,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 37.6,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 2,
-      "volume_ratio": 1.23,
-      "obv": 5,
-      "vwap": 1.9618,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.0328,
-      "bb_pct_b": 0.112,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 23.1,
-      "atr_pct": 0.98,
-      "learning_notes": [
-        "score:90+ (n=27, 勝率 100%) → +2",
-        "rsishort:30-39 (n=12, 勝率 100%) → +2",
-        "sess:asia_dawn (n=23, 勝率 100%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 11,
-      "tp_adjust_notes": [
-        "TP1 1.6773→1.6884（支撐 1.6850）",
-        "TP2 1.6397→1.6884（支撐 1.6850）",
-        "TP3 1.5894→1.6884（支撐 1.6850）"
-      ]
-    },
-    "funding_rate": -0.0002590955376697,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.2
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.1
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 55.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 23.1,
-      "atr_pct": 0.98,
-      "volatile": false
-    },
-    "created": 1780605224.0467005,
-    "expires": 1780691624.0467007,
-    "order_id": "1780605224-D6708F49",
-    "status": "BE",
-    "hit_tp1": true,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1780605224.0467281,
-    "entry_message_id": 4776,
-    "last_checked_ts": 1780609500.0,
-    "current_price": 1.642
+    "last_checked_ts": 1780611300.0,
+    "current_price": 599.5
   },
   "SOL-USDT-SWAPSHORT1780611117-C0A0D4A8": {
     "instId": "SOL-USDT-SWAP",
@@ -274,6 +182,7 @@
     "hit_tp3": false,
     "activated_at": 1780611117.3916585,
     "entry_message_id": 4784,
-    "last_checked_ts": 1780611117.3916585
+    "last_checked_ts": 1780611300.0,
+    "current_price": 67.95
   }
 }
