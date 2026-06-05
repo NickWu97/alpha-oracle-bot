@@ -1,22 +1,22 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 34,
+      "win": 35,
       "loss": 0,
-      "be": 0,
-      "total": 34
+      "be": 1,
+      "total": 36
     },
     "rsishort:40-49": {
-      "win": 23,
+      "win": 24,
       "loss": 0,
-      "be": 1,
-      "total": 24
+      "be": 2,
+      "total": 26
     },
     "fund:neutral": {
-      "win": 41,
+      "win": 42,
       "loss": 1,
-      "be": 1,
-      "total": 43
+      "be": 2,
+      "total": 45
     },
     "sess:asia_dawn": {
       "win": 26,
@@ -81,14 +81,14 @@
     "coin:BNB": {
       "win": 5,
       "loss": 0,
-      "be": 1,
-      "total": 6
+      "be": 2,
+      "total": 7
     },
     "coin_side:BNBSHORT": {
       "win": 5,
       "loss": 0,
-      "be": 1,
-      "total": 6
+      "be": 2,
+      "total": 7
     },
     "score:80-89": {
       "win": 4,
@@ -97,10 +97,10 @@
       "total": 6
     },
     "sess:asia_day": {
-      "win": 15,
+      "win": 16,
       "loss": 1,
-      "be": 1,
-      "total": 17
+      "be": 2,
+      "total": 19
     },
     "score:70-79": {
       "win": 6,
@@ -173,6 +173,18 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin:DOGE": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:DOGESHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -203,8 +215,8 @@
     "BNB": {
       "win": 5,
       "loss": 0,
-      "be": 1,
-      "total": 6
+      "be": 2,
+      "total": 7
     },
     "ADA": {
       "win": 6,
@@ -229,8 +241,14 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "DOGE": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1780617046.7040098
+  "updated_at": 1780624441.9948306
 }
