@@ -5458,5 +5458,94 @@
       "atr_pct": 0.817,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-05 18:29",
+    "date": "2026-06-05",
+    "order_id": "1780624438-EF8F4821",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.156,
+    "close": 1.1355,
+    "close_type": "LOCK",
+    "pnl": 1.77,
+    "exit_rr": 1.5,
+    "exit_weight": 1.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 76,
+    "funding_rate": -0.0001084098732081,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 42.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 5,
+      "volume_ratio": 1.54,
+      "obv": 5,
+      "vwap": 1.2104,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02123,
+      "bb_pct_b": 0.231,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 22.5,
+      "atr_pct": 0.786,
+      "learning_notes": [
+        "rsishort:40-49 (n=24, 勝率 96%) → +2",
+        "sess:asia_day (n=17, 勝率 88%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 76.0,
+      "rsi": 42.5,
+      "atr_pct": 0.786,
+      "funding": -0.1084098732081,
+      "vol_ratio": 1.54,
+      "adx": 22.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.0
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 31.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.4
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 22.5,
+      "atr_pct": 0.786,
+      "volatile": false
+    }
   }
 ]
