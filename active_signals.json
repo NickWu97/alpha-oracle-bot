@@ -1,95 +1,4 @@
 {
-  "SOL-USDT-SWAPSHORT1780624436-E131F653": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 68.49,
-    "sl": 67.2299,
-    "tp1": 67.2299,
-    "tp2": 65.9697,
-    "tp3": 64.2895,
-    "atr": 0.56006159,
-    "score": 138,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 48.8,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 2,
-      "volume_ratio": 1.17,
-      "obv": 5,
-      "vwap": 72.7508,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.02125,
-      "bb_pct_b": 0.601,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "transitional",
-      "adx": 24.6,
-      "atr_pct": 0.817,
-      "learning_notes": [
-        "score:90+ (n=34, 勝率 100%) → +2",
-        "rsishort:40-49 (n=24, 勝率 96%) → +2",
-        "fund:neutral (n=43, 勝率 95%) → +2",
-        "sess:asia_day (n=17, 勝率 88%) → +2",
-        "coin:SOL (n=13, 勝率 92%) → +2",
-        "coin_side:SOLSHORT (n=13, 勝率 92%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 15
-    },
-    "funding_rate": -7.79225032942e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 39.7
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 24.7
-      },
-      "1W": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 24.6,
-      "atr_pct": 0.817,
-      "volatile": false
-    },
-    "created": 1780624436.5831814,
-    "expires": 1780710836.5831816,
-    "order_id": "1780624436-E131F653",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1780624436.5832078,
-    "entry_message_id": 4805,
-    "last_checked_ts": 1780639200.0,
-    "current_price": 64.57
-  },
   "XRP-USDT-SWAPSHORT1780624438-EF8F4821": {
     "instId": "XRP-USDT-SWAP",
     "side": "SHORT",
@@ -174,6 +83,6 @@
     "activated_at": 1780624438.5733829,
     "entry_message_id": 4806,
     "last_checked_ts": 1780639200.0,
-    "current_price": 1.099
+    "current_price": 1.098
   }
 }
