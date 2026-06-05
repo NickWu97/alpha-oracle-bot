@@ -1,22 +1,22 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 50,
+      "win": 51,
       "loss": 1,
-      "be": 1,
-      "total": 52
+      "be": 2,
+      "total": 54
     },
     "rsishort:40-49": {
-      "win": 41,
+      "win": 42,
       "loss": 0,
-      "be": 2,
-      "total": 43
+      "be": 3,
+      "total": 45
     },
     "fund:neutral": {
-      "win": 57,
+      "win": 59,
       "loss": 2,
-      "be": 2,
-      "total": 61
+      "be": 4,
+      "total": 65
     },
     "sess:asia_dawn": {
       "win": 33,
@@ -37,28 +37,28 @@
       "total": 6
     },
     "coin:SOL": {
-      "win": 18,
+      "win": 19,
       "loss": 1,
-      "be": 0,
-      "total": 19
+      "be": 1,
+      "total": 21
     },
     "coin_side:SOLSHORT": {
-      "win": 18,
+      "win": 19,
       "loss": 1,
-      "be": 0,
-      "total": 19
+      "be": 1,
+      "total": 21
     },
     "coin:XRP": {
-      "win": 6,
+      "win": 7,
       "loss": 0,
-      "be": 0,
-      "total": 6
+      "be": 1,
+      "total": 8
     },
     "coin_side:XRPSHORT": {
-      "win": 6,
+      "win": 7,
       "loss": 0,
-      "be": 0,
-      "total": 6
+      "be": 1,
+      "total": 8
     },
     "rsishort:30-39": {
       "win": 19,
@@ -91,16 +91,16 @@
       "total": 8
     },
     "score:80-89": {
-      "win": 4,
-      "loss": 1,
-      "be": 1,
-      "total": 6
-    },
-    "sess:asia_day": {
-      "win": 16,
+      "win": 5,
       "loss": 1,
       "be": 2,
-      "total": 19
+      "total": 8
+    },
+    "sess:asia_day": {
+      "win": 18,
+      "loss": 1,
+      "be": 4,
+      "total": 23
     },
     "score:70-79": {
       "win": 9,
@@ -121,10 +121,10 @@
       "total": 6
     },
     "rsishort:50-59": {
-      "win": 3,
+      "win": 4,
       "loss": 1,
-      "be": 0,
-      "total": 4
+      "be": 1,
+      "total": 6
     },
     "sess:europe": {
       "win": 14,
@@ -195,16 +195,16 @@
       "total": 6
     },
     "SOL": {
-      "win": 18,
+      "win": 19,
       "loss": 1,
-      "be": 0,
-      "total": 19
+      "be": 1,
+      "total": 21
     },
     "XRP": {
-      "win": 6,
+      "win": 7,
       "loss": 0,
-      "be": 0,
-      "total": 6
+      "be": 1,
+      "total": 8
     },
     "BTC": {
       "win": 9,
@@ -250,5 +250,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1780696082.8094783
+  "updated_at": 1780699826.5296907
 }
