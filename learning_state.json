@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 61,
-      "loss": 1,
+      "loss": 2,
       "be": 4,
-      "total": 66
+      "total": 67
     },
     "rsishort:40-49": {
       "win": 48,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 71,
-      "loss": 2,
+      "loss": 3,
       "be": 5,
-      "total": 78
+      "total": 79
     },
     "sess:asia_dawn": {
       "win": 43,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 45
+      "total": 46
     },
     "coin:ETH": {
       "win": 12,
@@ -62,9 +62,9 @@
     },
     "rsishort:30-39": {
       "win": 20,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 23
+      "total": 24
     },
     "coin:BTC": {
       "win": 9,
@@ -185,6 +185,18 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin:AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -247,8 +259,14 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1780776912.0748868
+  "updated_at": 1780780755.6504998
 }
