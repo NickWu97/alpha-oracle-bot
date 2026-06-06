@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 1556.87,
-    "sl": 1573.1541,
+    "sl": 1556.87,
     "tp1": 1550.7629,
     "tp2": 1550.7629,
     "tp3": 1550.7629,
@@ -87,13 +87,14 @@
     "created": 1780764012.460757,
     "expires": 1780850412.4607573,
     "order_id": "1780764012-D6C4782F",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1780764012.460786,
     "entry_message_id": 4892,
-    "last_checked_ts": 1780764012.460786
+    "last_checked_ts": 1780767000.0,
+    "current_price": 1553.61
   },
   "SOL-USDT-SWAPSHORT1780764014-EB5B0D64": {
     "instId": "SOL-USDT-SWAP",
@@ -187,7 +188,8 @@
     "hit_tp3": false,
     "activated_at": 1780764014.6264722,
     "entry_message_id": 4893,
-    "last_checked_ts": 1780764014.6264722
+    "last_checked_ts": 1780767000.0,
+    "current_price": 61.68
   },
   "BNB-USDT-SWAPSHORT1780764016-B2574DB8": {
     "instId": "BNB-USDT-SWAP",
@@ -281,6 +283,7 @@
     "hit_tp3": false,
     "activated_at": 1780764016.7351325,
     "entry_message_id": 4894,
-    "last_checked_ts": 1780764016.7351325
+    "last_checked_ts": 1780767000.0,
+    "current_price": 573.7
   }
 }
