@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 55,
+      "win": 61,
       "loss": 1,
       "be": 4,
-      "total": 60
+      "total": 66
     },
     "rsishort:40-49": {
       "win": 48,
@@ -13,40 +13,40 @@
       "total": 51
     },
     "fund:neutral": {
-      "win": 65,
+      "win": 71,
       "loss": 2,
       "be": 5,
-      "total": 72
+      "total": 78
     },
     "sess:asia_dawn": {
-      "win": 37,
+      "win": 43,
       "loss": 1,
       "be": 1,
-      "total": 39
+      "total": 45
     },
     "coin:ETH": {
-      "win": 9,
+      "win": 12,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 12
     },
     "coin_side:ETHSHORT": {
-      "win": 9,
+      "win": 12,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 12
     },
     "coin:SOL": {
-      "win": 20,
+      "win": 23,
       "loss": 1,
       "be": 2,
-      "total": 23
+      "total": 26
     },
     "coin_side:SOLSHORT": {
-      "win": 20,
+      "win": 23,
       "loss": 1,
       "be": 2,
-      "total": 23
+      "total": 26
     },
     "coin:XRP": {
       "win": 10,
@@ -121,10 +121,10 @@
       "total": 6
     },
     "rsishort:50-59": {
-      "win": 4,
+      "win": 10,
       "loss": 1,
       "be": 1,
-      "total": 6
+      "total": 12
     },
     "sess:europe": {
       "win": 14,
@@ -189,16 +189,16 @@
   },
   "by_coin": {
     "ETH": {
-      "win": 9,
+      "win": 12,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 12
     },
     "SOL": {
-      "win": 20,
+      "win": 23,
       "loss": 1,
       "be": 2,
-      "total": 23
+      "total": 26
     },
     "XRP": {
       "win": 10,
@@ -250,5 +250,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1780772342.2844522
+  "updated_at": 1780776912.0748868
 }
