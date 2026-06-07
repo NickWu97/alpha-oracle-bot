@@ -8,15 +8,15 @@
     },
     "rsishort:40-49": {
       "win": 49,
-      "loss": 0,
+      "loss": 1,
       "be": 4,
-      "total": 53
+      "total": 54
     },
     "fund:neutral": {
       "win": 72,
-      "loss": 3,
+      "loss": 4,
       "be": 6,
-      "total": 81
+      "total": 82
     },
     "sess:asia_dawn": {
       "win": 43,
@@ -92,15 +92,15 @@
     },
     "score:80-89": {
       "win": 8,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 11
+      "total": 12
     },
     "sess:asia_day": {
       "win": 22,
-      "loss": 1,
+      "loss": 2,
       "be": 6,
-      "total": 29
+      "total": 30
     },
     "score:70-79": {
       "win": 9,
@@ -164,15 +164,15 @@
     },
     "coin:DOT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOTSHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:DOGE": {
       "win": 3,
@@ -250,9 +250,9 @@
     },
     "DOT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "DOGE": {
       "win": 3,
@@ -267,6 +267,14 @@
       "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1780787187.4192097
+  "loss_reasons": [
+    {
+      "ts": 1780791468.1691802,
+      "coin": "DOT",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    }
+  ],
+  "updated_at": 1780791467.701606
 }
