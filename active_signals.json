@@ -85,15 +85,15 @@
     "hit_tp3": false,
     "activated_at": 1780939809.9139154,
     "entry_message_id": 4992,
-    "last_checked_ts": 1780951500.0,
-    "current_price": 63564.2
+    "last_checked_ts": 1780954200.0,
+    "current_price": 63749.5
   },
   "BNB-USDT-SWAPLONG1780939814-3A9838B6": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 604.7,
-    "sl": 601.0411,
+    "sl": 604.7,
     "tp1": 610.1883,
     "tp2": 615.6766,
     "tp3": 622.9943,
@@ -167,21 +167,21 @@
     "created": 1780939814.4734936,
     "expires": 1781026214.473494,
     "order_id": "1780939814-3A9838B6",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1780939814.4735453,
     "entry_message_id": 4994,
-    "last_checked_ts": 1780951500.0,
-    "current_price": 607.6
+    "last_checked_ts": 1780954200.0,
+    "current_price": 608.8
   },
   "XRP-USDT-SWAPLONG1780948087-EF436155": {
     "instId": "XRP-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 1.178,
-    "sl": 1.1658,
+    "sl": 1.178,
     "tp1": 1.1836,
     "tp2": 1.1836,
     "tp3": 1.1836,
@@ -262,13 +262,194 @@
     "created": 1780948087.0648997,
     "expires": 1781034487.0649,
     "order_id": "1780948087-EF436155",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1780948087.0649676,
     "entry_message_id": 5001,
-    "last_checked_ts": 1780951500.0,
-    "current_price": 1.18
+    "last_checked_ts": 1780954200.0,
+    "current_price": 1.182
+  },
+  "DOGE-USDT-SWAPLONG1780955483-E6811802": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.0873,
+    "sl": 0.0867,
+    "tp1": 0.0874,
+    "tp2": 0.0874,
+    "tp3": 0.0874,
+    "atr": 0.0003839,
+    "score": 99,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 62.8,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.73,
+      "obv": 5,
+      "vwap": 0.0831,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01463,
+      "bb_pct_b": 1.002,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.6,
+      "atr_pct": 0.439,
+      "learning_notes": [
+        "score:90+ (n=77, 勝率 86%) → +2",
+        "fund:neutral (n=91, 勝率 84%) → +2",
+        "sess:asia_dawn (n=56, 勝率 84%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 0.0882→0.0874（阻力 0.0876）",
+        "TP2 0.0890→0.0874（阻力 0.0876）",
+        "TP3 0.0902→0.0874（阻力 0.0876）"
+      ]
+    },
+    "funding_rate": -4.27082278623e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 52.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 15.6,
+      "atr_pct": 0.439,
+      "volatile": false
+    },
+    "created": 1780955483.1247919,
+    "expires": 1781041883.1247923,
+    "order_id": "1780955483-E6811802",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1780955483.1248546,
+    "entry_message_id": 5013,
+    "last_checked_ts": 1780955483.1248546
+  },
+  "LINK-USDT-SWAPLONG1780955486-580462E8": {
+    "instId": "LINK-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 8.101,
+    "sl": 8.0406,
+    "tp1": 8.1038,
+    "tp2": 8.1038,
+    "tp3": 8.1038,
+    "atr": 0.04024384,
+    "score": 94,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 63.6,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.07,
+      "obv": 5,
+      "vwap": 7.5655,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0175,
+      "bb_pct_b": 1.035,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.3,
+      "atr_pct": 0.496,
+      "learning_notes": [
+        "score:80-89 (n=17, 勝率 65%) → +1",
+        "fund:neg (n=12, 勝率 83%) → +2",
+        "sess:asia_dawn (n=56, 勝率 84%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 5,
+      "tp_adjust_notes": [
+        "TP1 8.1915→8.1038（阻力 8.1200）",
+        "TP2 8.2821→8.1038（阻力 8.1200）",
+        "TP3 8.4028→8.1038（阻力 8.1200）"
+      ]
+    },
+    "funding_rate": -0.0001436446491583,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 57.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 34.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 15.3,
+      "atr_pct": 0.496,
+      "volatile": false
+    },
+    "created": 1780955486.7006533,
+    "expires": 1781041886.7006538,
+    "order_id": "1780955486-580462E8",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1780955486.70069,
+    "entry_message_id": 5014,
+    "last_checked_ts": 1780955486.70069
   }
 }
