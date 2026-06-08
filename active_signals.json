@@ -85,7 +85,186 @@
     "hit_tp3": false,
     "activated_at": 1780939809.9139154,
     "entry_message_id": 4992,
-    "last_checked_ts": 1780957800.0,
-    "current_price": 63281.8
+    "last_checked_ts": 1780958700.0,
+    "current_price": 63502.2
+  },
+  "BNB-USDT-SWAPLONG1780960355-D0149576": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 606.4,
+    "sl": 603.3537,
+    "tp1": 610.9694,
+    "tp2": 615.5389,
+    "tp3": 621.6315,
+    "atr": 2.03086133,
+    "score": 90,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.39,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 585.7898,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00933,
+      "bb_pct_b": 0.3,
+      "bb_squeeze": true,
+      "bb_score": 8,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.335,
+      "learning_notes": [
+        "score:80-89 (n=19, 勝率 63%) → +1",
+        "fund:neutral (n=97, 勝率 82%) → +2",
+        "sess:asia_day (n=38, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 5
+    },
+    "funding_rate": 5.19486770961e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 53.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 16.5,
+      "atr_pct": 0.335,
+      "volatile": false
+    },
+    "created": 1780960355.0822246,
+    "expires": 1781046755.0822248,
+    "order_id": "1780960355-D0149576",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1780960355.082265,
+    "entry_message_id": 5030,
+    "last_checked_ts": 1780960355.082265
+  },
+  "XRP-USDT-SWAPLONG1780960357-D30F4270": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.179,
+    "sl": 1.1681,
+    "tp1": 1.1836,
+    "tp2": 1.1836,
+    "tp3": 1.1836,
+    "atr": 0.00726738,
+    "score": 122,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 54.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.7,
+      "obv": 5,
+      "vwap": 1.1194,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0123,
+      "bb_pct_b": 0.517,
+      "bb_squeeze": true,
+      "bb_score": 8,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 17.4,
+      "atr_pct": 0.617,
+      "learning_notes": [
+        "score:90+ (n=82, 勝率 84%) → +2",
+        "fund:neutral (n=97, 勝率 82%) → +2",
+        "sess:asia_day (n=38, 勝率 71%) → +2",
+        "coin:XRP (n=17, 勝率 94%) → +2",
+        "coin_side:XRPLONG (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": 10,
+      "tp_adjust_notes": [
+        "TP1 1.1954→1.1836（阻力 1.1860）",
+        "TP2 1.2117→1.1836（阻力 1.1860）",
+        "TP3 1.2335→1.1836（阻力 1.1860）"
+      ]
+    },
+    "funding_rate": -3.59879154545e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 58.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 17.4,
+      "atr_pct": 0.617,
+      "volatile": false
+    },
+    "created": 1780960357.391066,
+    "expires": 1781046757.3910663,
+    "order_id": "1780960357-D30F4270",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1780960357.3911037,
+    "entry_message_id": 5031,
+    "last_checked_ts": 1780960357.3911037
   }
 }
