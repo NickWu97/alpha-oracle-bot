@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 81,
-      "loss": 12,
+      "loss": 13,
       "be": 6,
-      "total": 99
+      "total": 100
     },
     "rsishort:40-49": {
       "win": 52,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 89,
-      "loss": 15,
+      "loss": 16,
       "be": 8,
-      "total": 112
+      "total": 113
     },
     "sess:asia_dawn": {
       "win": 52,
@@ -98,9 +98,9 @@
     },
     "sess:asia_day": {
       "win": 36,
-      "loss": 7,
+      "loss": 8,
       "be": 7,
-      "total": 50
+      "total": 51
     },
     "score:70-79": {
       "win": 9,
@@ -134,9 +134,9 @@
     },
     "coin:NEAR": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:NEARSHORT": {
       "win": 3,
@@ -257,6 +257,18 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsilong:70-79": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:NEARLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -298,9 +310,9 @@
     },
     "NEAR": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "TON": {
       "win": 9,
@@ -370,5 +382,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1781040208.7414544
+  "updated_at": 1781045722.6085088
 }
