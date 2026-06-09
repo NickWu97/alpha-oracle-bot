@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 78,
-      "loss": 9,
+      "loss": 10,
       "be": 6,
-      "total": 93
+      "total": 94
     },
     "rsishort:40-49": {
       "win": 49,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 86,
-      "loss": 12,
+      "loss": 13,
       "be": 8,
-      "total": 106
+      "total": 107
     },
     "sess:asia_dawn": {
       "win": 49,
-      "loss": 7,
+      "loss": 8,
       "be": 2,
-      "total": 58
+      "total": 59
     },
     "coin:ETH": {
       "win": 12,
@@ -38,15 +38,15 @@
     },
     "coin:SOL": {
       "win": 27,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 32
+      "total": 33
     },
     "coin_side:SOLSHORT": {
       "win": 23,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 26
+      "total": 27
     },
     "coin:XRP": {
       "win": 19,
@@ -62,9 +62,9 @@
     },
     "rsishort:30-39": {
       "win": 20,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 24
+      "total": 25
     },
     "coin:BTC": {
       "win": 9,
@@ -268,9 +268,9 @@
     },
     "SOL": {
       "win": 27,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 32
+      "total": 33
     },
     "XRP": {
       "win": 19,
@@ -347,7 +347,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1781033677.9037876,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1780984569.3228157
+  "updated_at": 1781033677.2620232
 }
