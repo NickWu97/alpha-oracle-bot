@@ -3,20 +3,20 @@
     "score:90+": {
       "win": 87,
       "loss": 14,
-      "be": 8,
-      "total": 109
+      "be": 9,
+      "total": 110
     },
     "rsishort:40-49": {
       "win": 53,
-      "loss": 3,
-      "be": 4,
-      "total": 60
+      "loss": 4,
+      "be": 5,
+      "total": 62
     },
     "fund:neutral": {
       "win": 99,
-      "loss": 18,
-      "be": 11,
-      "total": 128
+      "loss": 19,
+      "be": 12,
+      "total": 130
     },
     "sess:asia_dawn": {
       "win": 54,
@@ -39,14 +39,14 @@
     "coin:SOL": {
       "win": 28,
       "loss": 3,
-      "be": 3,
-      "total": 34
+      "be": 4,
+      "total": 35
     },
     "coin_side:SOLSHORT": {
       "win": 24,
       "loss": 2,
-      "be": 2,
-      "total": 28
+      "be": 3,
+      "total": 29
     },
     "coin:XRP": {
       "win": 23,
@@ -92,15 +92,15 @@
     },
     "score:80-89": {
       "win": 17,
-      "loss": 6,
+      "loss": 7,
       "be": 5,
-      "total": 28
+      "total": 29
     },
     "sess:asia_day": {
       "win": 45,
-      "loss": 8,
-      "be": 9,
-      "total": 62
+      "loss": 9,
+      "be": 10,
+      "total": 64
     },
     "score:70-79": {
       "win": 9,
@@ -110,15 +110,15 @@
     },
     "coin:ADA": {
       "win": 6,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:ADASHORT": {
       "win": 6,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "rsishort:50-59": {
       "win": 10,
@@ -293,8 +293,8 @@
     "SOL": {
       "win": 28,
       "loss": 3,
-      "be": 3,
-      "total": 34
+      "be": 4,
+      "total": 35
     },
     "XRP": {
       "win": 23,
@@ -316,9 +316,9 @@
     },
     "ADA": {
       "win": 6,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "NEAR": {
       "win": 3,
@@ -399,7 +399,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1781142173.164486,
+      "coin": "ADA",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1781136850.2955809
+  "updated_at": 1781142172.4637182
 }
