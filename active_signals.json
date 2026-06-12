@@ -1,1 +1,90 @@
-{}
+{
+  "AVAX-USDT-SWAPLONG1781296158-3668A508": {
+    "instId": "AVAX-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 6.592,
+    "sl": 6.5384,
+    "tp1": 6.6724,
+    "tp2": 6.7529,
+    "tp3": 6.8601,
+    "atr": 0.0357533,
+    "score": 116,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 49.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.8,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 6.5544,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01235,
+      "bb_pct_b": 0.493,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.3,
+      "atr_pct": 0.542,
+      "learning_notes": [
+        "score:90+ (n=119, 勝率 75%) → +2",
+        "rsilong:40-49 (n=6, 勝率 67%) → +1",
+        "fund:neg (n=20, 勝率 75%) → +2",
+        "sess:asia_dawn (n=71, 勝率 76%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 4 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": -0.0001052751568125,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 48.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 29.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 15.3,
+      "atr_pct": 0.542,
+      "volatile": false
+    },
+    "created": 1781296158.1083348,
+    "expires": 1781382558.108335,
+    "order_id": "1781296158-3668A508",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1781296158.1083724,
+    "entry_message_id": 5227,
+    "last_checked_ts": 1781296158.1083724
+  }
+}
