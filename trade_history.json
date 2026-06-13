@@ -17878,5 +17878,97 @@
       "atr_pct": 0.272,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-14 01:46",
+    "date": "2026-06-14",
+    "order_id": "1781352942-A1110549",
+    "coin": "TON",
+    "side": "LONG",
+    "entry": 1.697,
+    "close": 1.719,
+    "close_type": "LOCK",
+    "pnl": 1.3,
+    "exit_rr": 1.5,
+    "exit_weight": 1.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 134,
+    "funding_rate": -0.0007545767311779,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.18,
+      "obv": 5,
+      "vwap": 1.6749,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01903,
+      "bb_pct_b": 0.691,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 31.6,
+      "atr_pct": 0.575,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=127, 勝率 74%) → +2",
+        "fund:neg (n=20, 勝率 75%) → +2",
+        "sess:europe (n=29, 勝率 72%) → +2",
+        "coin:TON (n=13, 勝率 77%) → +2",
+        "coin_side:TONLONG (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 2 (勝率 50%)"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 134.0,
+      "rsi": 58.1,
+      "atr_pct": 0.575,
+      "funding": -0.7545767311779,
+      "vol_ratio": 1.18,
+      "adx": 31.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.6,
+      "atr_pct": 0.575,
+      "volatile": false
+    }
   }
 ]
