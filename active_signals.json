@@ -85,8 +85,8 @@
     "hit_tp3": false,
     "activated_at": 1781346712.4947572,
     "entry_message_id": 5252,
-    "last_checked_ts": 1781361900.0,
-    "current_price": 64199.9
+    "last_checked_ts": 1781365500.0,
+    "current_price": 64028.9
   },
   "SOL-USDT-SWAPLONG1781346714-F7DC7B79": {
     "instId": "SOL-USDT-SWAP",
@@ -174,8 +174,8 @@
     "hit_tp3": false,
     "activated_at": 1781346714.6610377,
     "entry_message_id": 5253,
-    "last_checked_ts": 1781361900.0,
-    "current_price": 68.31
+    "last_checked_ts": 1781365500.0,
+    "current_price": 68.14
   },
   "XRP-USDT-SWAPLONG1781352936-08BF8ED2": {
     "instId": "XRP-USDT-SWAP",
@@ -262,7 +262,7 @@
     "hit_tp3": false,
     "activated_at": 1781352936.257201,
     "entry_message_id": 5263,
-    "last_checked_ts": 1781361900.0,
+    "last_checked_ts": 1781365500.0,
     "current_price": 1.151
   },
   "TON-USDT-SWAPLONG1781352942-A1110549": {
@@ -270,7 +270,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 1.697,
-    "sl": 1.697,
+    "sl": 1.719,
     "tp1": 1.719,
     "tp2": 1.741,
     "tp3": 1.7703,
@@ -345,13 +345,13 @@
     "created": 1781352942.3156908,
     "expires": 1781439342.3156912,
     "order_id": "1781352942-A1110549",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1781352942.3157349,
     "entry_message_id": 5265,
-    "last_checked_ts": 1781361900.0,
-    "current_price": 1.72
+    "last_checked_ts": 1781365500.0,
+    "current_price": 1.738
   }
 }
