@@ -1,28 +1,28 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 133,
+      "win": 134,
       "loss": 27,
-      "be": 19,
-      "total": 179
+      "be": 20,
+      "total": 181
     },
     "rsishort:40-49": {
-      "win": 54,
+      "win": 55,
       "loss": 8,
-      "be": 6,
-      "total": 68
+      "be": 7,
+      "total": 70
     },
     "fund:neutral": {
       "win": 140,
-      "loss": 35,
+      "loss": 36,
       "be": 26,
-      "total": 201
+      "total": 202
     },
     "sess:asia_dawn": {
-      "win": 75,
-      "loss": 18,
-      "be": 12,
-      "total": 105
+      "win": 76,
+      "loss": 19,
+      "be": 13,
+      "total": 108
     },
     "coin:ETH": {
       "win": 13,
@@ -62,9 +62,9 @@
     },
     "rsishort:30-39": {
       "win": 26,
-      "loss": 3,
+      "loss": 4,
       "be": 5,
-      "total": 34
+      "total": 35
     },
     "coin:BTC": {
       "win": 24,
@@ -92,9 +92,9 @@
     },
     "score:80-89": {
       "win": 20,
-      "loss": 13,
+      "loss": 14,
       "be": 8,
-      "total": 41
+      "total": 42
     },
     "sess:asia_day": {
       "win": 53,
@@ -109,16 +109,16 @@
       "total": 13
     },
     "coin:ADA": {
-      "win": 8,
+      "win": 9,
       "loss": 3,
-      "be": 2,
-      "total": 13
+      "be": 3,
+      "total": 15
     },
     "coin_side:ADASHORT": {
-      "win": 6,
+      "win": 7,
       "loss": 2,
-      "be": 0,
-      "total": 8
+      "be": 1,
+      "total": 10
     },
     "rsishort:50-59": {
       "win": 10,
@@ -134,21 +134,21 @@
     },
     "coin:NEAR": {
       "win": 3,
+      "loss": 2,
+      "be": 0,
+      "total": 5
+    },
+    "coin_side:NEARSHORT": {
+      "win": 3,
       "loss": 1,
       "be": 0,
       "total": 4
     },
-    "coin_side:NEARSHORT": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
     "fund:neg": {
-      "win": 18,
+      "win": 19,
       "loss": 4,
-      "be": 3,
-      "total": 25
+      "be": 4,
+      "total": 27
     },
     "coin:TON": {
       "win": 19,
@@ -345,16 +345,16 @@
       "total": 33
     },
     "ADA": {
-      "win": 8,
+      "win": 9,
       "loss": 3,
-      "be": 2,
-      "total": 13
+      "be": 3,
+      "total": 15
     },
     "NEAR": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "TON": {
       "win": 19,
@@ -501,5 +501,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1781564462.964996
+  "updated_at": 1781643975.7975638
 }
