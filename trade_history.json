@@ -1676,5 +1676,91 @@
       "atr_pct": 0.465,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-18 00:03",
+    "date": "2026-06-18",
+    "order_id": "1781676197-E9EA6B82",
+    "coin": "NEAR",
+    "side": "SHORT",
+    "entry": 2.333,
+    "close": 2.333,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 100,
+    "funding_rate": -7.07389779e-08,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.21,
+      "obv": 5,
+      "vwap": 2.356,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01879,
+      "bb_pct_b": 0.508,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 15.5,
+      "atr_pct": 0.804,
+      "learning_notes": [
+        "score:90+ (n=5, 勝率 80%) → +2"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 100.0,
+      "rsi": 50.8,
+      "atr_pct": 0.804,
+      "funding": -7.07389779e-05,
+      "vol_ratio": 1.21,
+      "adx": 15.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.9
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.5,
+      "atr_pct": 0.804,
+      "volatile": false
+    }
   }
 ]
