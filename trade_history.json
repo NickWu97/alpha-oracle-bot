@@ -2216,5 +2216,94 @@
       "atr_pct": 0.552,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-18 04:11",
+    "date": "2026-06-18",
+    "order_id": "1781723977-47180C72",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 72.67,
+    "close": 71.6747,
+    "close_type": "SL",
+    "pnl": -1.37,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 84,
+    "funding_rate": 3.225692658e-07,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.89,
+      "obv": 5,
+      "vwap": 73.0701,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.0331,
+      "bb_pct_b": 0.517,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 23.1,
+      "atr_pct": 0.903,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=23, 勝率 74%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 84.0,
+      "rsi": 51.8,
+      "atr_pct": 0.903,
+      "funding": 0.0003225692658,
+      "vol_ratio": 0.89,
+      "adx": 23.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 28.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.1,
+      "atr_pct": 0.903,
+      "volatile": false
+    }
   }
 ]
