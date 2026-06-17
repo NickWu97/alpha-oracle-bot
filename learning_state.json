@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 7,
+      "win": 10,
       "loss": 0,
       "be": 1,
-      "total": 8
+      "total": 11
     },
     "rsishort:40-49": {
       "win": 4,
@@ -13,10 +13,10 @@
       "total": 6
     },
     "fund:neutral": {
-      "win": 8,
+      "win": 14,
       "loss": 2,
       "be": 2,
-      "total": 12
+      "total": 18
     },
     "sess:asia_day": {
       "win": 5,
@@ -37,10 +37,10 @@
       "total": 5
     },
     "score:80-89": {
-      "win": 1,
+      "win": 4,
       "loss": 2,
       "be": 1,
-      "total": 4
+      "total": 7
     },
     "coin:ETH": {
       "win": 1,
@@ -73,10 +73,10 @@
       "total": 2
     },
     "rsishort:30-39": {
-      "win": 0,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 7
     },
     "coin:ADA": {
       "win": 0,
@@ -109,10 +109,10 @@
       "total": 1
     },
     "sess:europe": {
-      "win": 3,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 9
     },
     "coin:NEAR": {
       "win": 1,
@@ -131,6 +131,30 @@
       "loss": 0,
       "be": 0,
       "total": 2
+    },
+    "coin:BTC": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:BTCSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:DOGE": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:DOGESHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -169,6 +193,18 @@
       "loss": 0,
       "be": 0,
       "total": 1
+    },
+    "BTC": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "DOGE": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -180,5 +216,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1781694355.5134034
+  "updated_at": 1781699694.0493913
 }
