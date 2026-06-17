@@ -81,15 +81,15 @@
     "hit_tp3": false,
     "activated_at": 1781664156.1654904,
     "entry_message_id": 5547,
-    "last_checked_ts": 1781675100.0,
-    "current_price": 1.216
+    "last_checked_ts": 1781680500.0,
+    "current_price": 1.208
   },
   "NEAR-USDT-SWAPSHORT1781676197-E9EA6B82": {
     "instId": "NEAR-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 2.333,
-    "sl": 2.3611,
+    "sl": 2.333,
     "tp1": 2.2909,
     "tp2": 2.2487,
     "tp3": 2.1925,
@@ -158,12 +158,13 @@
     "created": 1781676197.143265,
     "expires": 1781762597.1432652,
     "order_id": "1781676197-E9EA6B82",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1781676197.1432972,
     "entry_message_id": 5561,
-    "last_checked_ts": 1781676197.1432972
+    "last_checked_ts": 1781680500.0,
+    "current_price": 2.297
   }
 }
