@@ -259,5 +259,89 @@
       "atr_pct": 0.431,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-17 09:31",
+    "date": "2026-06-17",
+    "order_id": "1781655114-F1F97959",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 1794.7,
+    "close": 1779.9096,
+    "close_type": "TP1",
+    "pnl": 0.82,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 3.33832407014e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 48.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.66,
+      "obv": 5,
+      "vwap": 1767.7686,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.00486,
+      "bb_pct_b": 0.241,
+      "bb_squeeze": true,
+      "bb_score": 8,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.2,
+      "atr_pct": 0.367,
+      "pullback": true
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 48.8,
+      "atr_pct": 0.367,
+      "funding": 0.0333832407014,
+      "vol_ratio": 0.66,
+      "adx": 15.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 52.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.4
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.2,
+      "atr_pct": 0.367,
+      "volatile": false
+    }
   }
 ]
