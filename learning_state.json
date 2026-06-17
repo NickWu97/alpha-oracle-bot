@@ -3,26 +3,26 @@
     "score:90+": {
       "win": 4,
       "loss": 0,
-      "be": 0,
-      "total": 4
-    },
-    "rsishort:40-49": {
-      "win": 4,
-      "loss": 0,
       "be": 1,
       "total": 5
     },
-    "fund:neutral": {
-      "win": 5,
+    "rsishort:40-49": {
+      "win": 4,
       "loss": 1,
       "be": 1,
-      "total": 7
+      "total": 6
+    },
+    "fund:neutral": {
+      "win": 5,
+      "loss": 2,
+      "be": 2,
+      "total": 9
     },
     "sess:asia_day": {
       "win": 5,
-      "loss": 1,
-      "be": 1,
-      "total": 7
+      "loss": 2,
+      "be": 2,
+      "total": 9
     },
     "coin:XRP": {
       "win": 3,
@@ -38,9 +38,9 @@
     },
     "score:80-89": {
       "win": 1,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 3
+      "total": 4
     },
     "coin:ETH": {
       "win": 1,
@@ -57,20 +57,20 @@
     "rsilong:50-59": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "coin:AVAX": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "coin_side:AVAXLONG": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "rsishort:30-39": {
       "win": 0,
@@ -85,6 +85,18 @@
       "total": 1
     },
     "coin_side:ADASHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:BNB": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BNBSHORT": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -107,16 +119,30 @@
     "AVAX": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "ADA": {
       "win": 0,
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "BNB": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1781663526.4281492
+  "loss_reasons": [
+    {
+      "ts": 1781675453.7107334,
+      "coin": "BNB",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    }
+  ],
+  "updated_at": 1781675453.2332025
 }
