@@ -1,28 +1,28 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsishort:40-49": {
       "win": 4,
       "loss": 0,
-      "be": 0,
-      "total": 4
+      "be": 1,
+      "total": 5
     },
     "fund:neutral": {
-      "win": 4,
-      "loss": 0,
-      "be": 0,
-      "total": 4
+      "win": 5,
+      "loss": 1,
+      "be": 1,
+      "total": 7
     },
     "sess:asia_day": {
-      "win": 4,
-      "loss": 0,
-      "be": 0,
-      "total": 4
+      "win": 5,
+      "loss": 1,
+      "be": 1,
+      "total": 7
     },
     "coin:XRP": {
       "win": 3,
@@ -38,19 +38,55 @@
     },
     "score:80-89": {
       "win": 1,
-      "loss": 0,
-      "be": 0,
-      "total": 1
+      "loss": 1,
+      "be": 1,
+      "total": 3
     },
     "coin:ETH": {
       "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 2
     },
     "coin_side:ETHSHORT": {
       "win": 1,
       "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "rsilong:50-59": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin:AVAX": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXLONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "rsishort:30-39": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:ADA": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ADASHORT": {
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
     }
@@ -65,10 +101,22 @@
     "ETH": {
       "win": 1,
       "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "AVAX": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "ADA": {
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1781659863.954558
+  "updated_at": 1781663526.4281492
 }
