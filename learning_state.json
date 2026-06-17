@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 10,
+      "win": 11,
       "loss": 0,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "rsishort:40-49": {
       "win": 4,
@@ -13,10 +13,10 @@
       "total": 6
     },
     "fund:neutral": {
-      "win": 14,
+      "win": 15,
       "loss": 2,
       "be": 2,
-      "total": 18
+      "total": 19
     },
     "sess:asia_day": {
       "win": 5,
@@ -25,16 +25,16 @@
       "total": 9
     },
     "coin:XRP": {
-      "win": 5,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:XRPSHORT": {
-      "win": 5,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "score:80-89": {
       "win": 4,
@@ -127,10 +127,10 @@
       "total": 1
     },
     "rsishort:60-69": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin:BTC": {
       "win": 3,
@@ -155,14 +155,20 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "sess:us": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "XRP": {
-      "win": 5,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "ETH": {
       "win": 1,
@@ -216,5 +222,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1781699694.0493913
+  "updated_at": 1781704566.9339051
 }

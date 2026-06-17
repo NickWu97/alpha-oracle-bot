@@ -1,89 +1,4 @@
 {
-  "XRP-USDT-SWAPSHORT1781664156-F94A2BB9": {
-    "instId": "XRP-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 1.216,
-    "sl": 1.2032,
-    "tp1": 1.2032,
-    "tp2": 1.1904,
-    "tp3": 1.1733,
-    "atr": 0.00569712,
-    "score": 91,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 61.0,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 2,
-      "volume_ratio": 1.16,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 1.2165,
-      "vwap_score": 0,
-      "bb_bandwidth": 0.01087,
-      "bb_pct_b": 1.07,
-      "bb_squeeze": true,
-      "bb_score": 10,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "transitional",
-      "adx": 19.4,
-      "atr_pct": 0.465,
-      "learning_notes": [
-        "fund:neutral (n=7, 勝率 71%) → +2",
-        "sess:asia_day (n=7, 勝率 71%) → +2"
-      ],
-      "learning_adjust": 4
-    },
-    "funding_rate": -2.02794392602e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 48.6
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 56.4
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 24.2
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 19.4,
-      "atr_pct": 0.465,
-      "volatile": false
-    },
-    "created": 1781664156.1654625,
-    "expires": 1781750556.1654627,
-    "order_id": "1781664156-F94A2BB9",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1781664156.1654904,
-    "entry_message_id": 5547,
-    "last_checked_ts": 1781701200.0,
-    "current_price": 1.196
-  },
   "NEAR-USDT-SWAPSHORT1781676197-E9EA6B82": {
     "instId": "NEAR-USDT-SWAP",
     "side": "SHORT",
@@ -164,7 +79,7 @@
     "hit_tp3": false,
     "activated_at": 1781676197.1432972,
     "entry_message_id": 5561,
-    "last_checked_ts": 1781701200.0,
-    "current_price": 2.297
+    "last_checked_ts": 1781703000.0,
+    "current_price": 2.313
   }
 }
