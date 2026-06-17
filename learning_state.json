@@ -1,28 +1,28 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 12,
+      "win": 15,
       "loss": 0,
       "be": 3,
-      "total": 15
+      "total": 18
     },
     "rsishort:40-49": {
-      "win": 6,
+      "win": 8,
       "loss": 1,
       "be": 2,
-      "total": 9
+      "total": 11
     },
     "fund:neutral": {
-      "win": 18,
+      "win": 23,
       "loss": 4,
       "be": 5,
-      "total": 27
+      "total": 32
     },
     "sess:asia_day": {
-      "win": 6,
+      "win": 11,
       "loss": 2,
       "be": 2,
-      "total": 10
+      "total": 15
     },
     "coin:XRP": {
       "win": 7,
@@ -37,10 +37,10 @@
       "total": 8
     },
     "score:80-89": {
-      "win": 5,
+      "win": 7,
       "loss": 4,
       "be": 1,
-      "total": 10
+      "total": 12
     },
     "coin:ETH": {
       "win": 1,
@@ -73,22 +73,22 @@
       "total": 2
     },
     "rsishort:30-39": {
-      "win": 6,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "coin:ADA": {
-      "win": 1,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 2
+      "total": 4
     },
     "coin_side:ADASHORT": {
-      "win": 1,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 2
+      "total": 4
     },
     "coin:BNB": {
       "win": 1,
@@ -187,16 +187,22 @@
       "total": 2
     },
     "coin:SOL": {
-      "win": 0,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "coin_side:SOLLONG": {
       "win": 0,
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin_side:SOLSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -219,10 +225,10 @@
       "total": 2
     },
     "ADA": {
-      "win": 1,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 2
+      "total": 4
     },
     "BNB": {
       "win": 1,
@@ -249,10 +255,10 @@
       "total": 3
     },
     "SOL": {
-      "win": 0,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 4
     }
   },
   "loss_reasons": [
@@ -264,5 +270,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1781734353.6297278
+  "updated_at": 1781735150.993997
 }
