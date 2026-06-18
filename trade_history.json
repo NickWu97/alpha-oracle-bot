@@ -2383,5 +2383,292 @@
       "atr_pct": 1.363,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-19 04:03",
+    "date": "2026-06-19",
+    "order_id": "1781810378-D82720B2",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 62664.6,
+    "close": 63077.0365,
+    "close_type": "SL",
+    "pnl": -0.66,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": -1.6094798619e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 36.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.13,
+      "obv": 5,
+      "vwap": 65037.2258,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02947,
+      "bb_pct_b": 0.378,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 42.6,
+      "atr_pct": 0.439,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsishort:30-39 (n=6, 勝率 100%) → +2",
+        "fund:neutral (n=23, 勝率 100%) → +2",
+        "coin:BTC (n=6, 勝率 100%) → +2",
+        "coin_side:BTCSHORT (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 13,
+      "tp_adjust_notes": [
+        "TP1 62045.9452→62346.6444（支撐 62222.2000）",
+        "TP2 61427.2904→62346.6444（支撐 62222.2000）",
+        "TP3 60602.4174→62346.6444（支撐 62222.2000）"
+      ]
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 36.2,
+      "atr_pct": 0.439,
+      "funding": -0.0016094798619,
+      "vol_ratio": 0.13,
+      "adx": 42.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 42.6,
+      "atr_pct": 0.439,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-06-19 04:03",
+    "date": "2026-06-19",
+    "order_id": "1781810384-F9BED23A",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0824,
+    "close": 0.083,
+    "close_type": "SL",
+    "pnl": -0.73,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 1.97543554175e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 36.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.19,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0864,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02912,
+      "bb_pct_b": 0.406,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 43.4,
+      "atr_pct": 0.505,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsishort:30-39 (n=6, 勝率 100%) → +2",
+        "fund:neutral (n=23, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 0.0815→0.0819（支撐 0.0818）",
+        "TP2 0.0805→0.0819（支撐 0.0818）",
+        "TP3 0.0793→0.0819（支撐 0.0818）"
+      ]
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 36.8,
+      "atr_pct": 0.505,
+      "funding": 0.0197543554175,
+      "vol_ratio": 0.19,
+      "adx": 43.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.4
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 43.4,
+      "atr_pct": 0.505,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-06-19 04:04",
+    "date": "2026-06-19",
+    "order_id": "1781810386-CD94EEE9",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 6.309,
+    "close": 6.379,
+    "close_type": "SL",
+    "pnl": -1.11,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 78,
+    "funding_rate": -0.0002727203318996,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 35.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.11,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 6.7266,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.07624,
+      "bb_pct_b": 0.409,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 45.1,
+      "atr_pct": 0.741,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsishort:30-39 (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP2 6.0989→6.2174（支撐 6.2050）",
+        "TP3 5.9588→6.2174（支撐 6.2050）"
+      ]
+    },
+    "features": {
+      "score": 78.0,
+      "rsi": 35.5,
+      "atr_pct": 0.741,
+      "funding": -0.2727203318996,
+      "vol_ratio": 0.11,
+      "adx": 45.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 29.0
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 31.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 26.4
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 45.1,
+      "atr_pct": 0.741,
+      "volatile": false
+    }
   }
 ]
