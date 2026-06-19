@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 28,
+      "win": 29,
       "loss": 2,
       "be": 1,
-      "total": 31
+      "total": 32
     },
     "rsishort:50-59": {
       "win": 19,
@@ -13,16 +13,16 @@
       "total": 22
     },
     "fund:neutral": {
-      "win": 34,
+      "win": 35,
       "loss": 7,
       "be": 1,
-      "total": 42
+      "total": 43
     },
     "sess:asia_day": {
-      "win": 30,
+      "win": 31,
       "loss": 0,
       "be": 1,
-      "total": 31
+      "total": 32
     },
     "coin:BTC": {
       "win": 7,
@@ -73,10 +73,10 @@
       "total": 15
     },
     "coin:LINK": {
-      "win": 6,
+      "win": 7,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:LINKSHORT": {
       "win": 6,
@@ -191,6 +191,18 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsilong:40-49": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:LINKLONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -213,10 +225,10 @@
       "total": 6
     },
     "LINK": {
-      "win": 6,
+      "win": 7,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "ADA": {
       "win": 3,
@@ -271,5 +283,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1781903752.884611
+  "updated_at": 1781912333.0982025
 }
