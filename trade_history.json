@@ -3777,5 +3777,99 @@
       "atr_pct": 0.409,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-20 01:55",
+    "date": "2026-06-20",
+    "order_id": "1781888615-804C1653",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.13,
+    "close": 1.1375,
+    "close_type": "SL",
+    "pnl": -0.66,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 77,
+    "funding_rate": -8.1883452233e-06,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.2,
+      "obv": 5,
+      "vwap": 1.1763,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01762,
+      "bb_pct_b": 0.3,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "transitional",
+      "adx": 21.6,
+      "atr_pct": 0.442,
+      "learning_notes": [
+        "rsishort:40-49 (n=12, 勝率 100%) → +2",
+        "fund:neutral (n=37, 勝率 92%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 1.1188→1.1280（支撐 1.1257）",
+        "TP2 1.1075→1.1280（支撐 1.1257）",
+        "TP3 1.0925→1.1280（支撐 1.1257）"
+      ]
+    },
+    "features": {
+      "score": 77.0,
+      "rsi": 44.1,
+      "atr_pct": 0.442,
+      "funding": -0.0081883452233,
+      "vol_ratio": 1.2,
+      "adx": 21.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.2
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 21.6,
+      "atr_pct": 0.442,
+      "volatile": false
+    }
   }
 ]

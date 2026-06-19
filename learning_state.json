@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 34,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 37
+      "total": 38
     },
     "sess:asia_day": {
       "win": 30,
@@ -68,9 +68,9 @@
     },
     "rsishort:40-49": {
       "win": 12,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "coin:LINK": {
       "win": 6,
@@ -140,15 +140,15 @@
     },
     "score:70-79": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "sess:asia_dawn": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin:NEAR": {
       "win": 3,
@@ -165,6 +165,18 @@
     "sess:europe": {
       "win": 1,
       "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin:XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:XRPSHORT": {
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
     }
@@ -217,8 +229,14 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1781879153.9750652
+  "updated_at": 1781891744.770064
 }
