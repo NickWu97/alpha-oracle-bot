@@ -1,85 +1,4 @@
 {
-  "ADA-USDT-SWAPSHORT1781746083-5D196DE1": {
-    "instId": "ADA-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.168,
-    "sl": 0.1653,
-    "tp1": 0.1653,
-    "tp2": 0.1625,
-    "tp3": 0.1589,
-    "atr": 0.00121221,
-    "score": 80,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 54.2,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.55,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 0.1766,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01286,
-      "bb_pct_b": 1.093,
-      "bb_squeeze": false,
-      "bb_score": 2,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "transitional",
-      "adx": 19.4,
-      "atr_pct": 0.722
-    },
-    "funding_rate": -5.38451585462e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 40.2
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 40.8
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 23.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 19.4,
-      "atr_pct": 0.722,
-      "volatile": false
-    },
-    "created": 1781746083.8333313,
-    "expires": 1781832483.8333318,
-    "order_id": "1781746083-5D196DE1",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1781746083.8333647,
-    "entry_message_id": 5660,
-    "last_checked_ts": 1781852400.0,
-    "current_price": 0.1599
-  },
   "SOL-USDT-SWAPSHORT1781831524-ADB2D154": {
     "instId": "SOL-USDT-SWAP",
     "side": "SHORT",
@@ -165,8 +84,8 @@
     "hit_tp3": false,
     "activated_at": 1781831524.357,
     "entry_message_id": 5757,
-    "last_checked_ts": 1781852400.0,
-    "current_price": 68.42
+    "last_checked_ts": 1781858700.0,
+    "current_price": 68.66
   },
   "LINK-USDT-SWAPSHORT1781831529-93656B68": {
     "instId": "LINK-USDT-SWAP",
@@ -254,7 +173,7 @@
     "hit_tp3": false,
     "activated_at": 1781831529.4130774,
     "entry_message_id": 5758,
-    "last_checked_ts": 1781852400.0,
-    "current_price": 7.855
+    "last_checked_ts": 1781858700.0,
+    "current_price": 7.854
   }
 }
