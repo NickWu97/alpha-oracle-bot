@@ -1,92 +1,4 @@
 {
-  "SOL-USDT-SWAPSHORT1781831524-ADB2D154": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 69.65,
-    "sl": 69.0047,
-    "tp1": 69.0047,
-    "tp2": 68.3595,
-    "tp3": 67.4991,
-    "atr": 0.28678675,
-    "score": 99,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 55.4,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": -10,
-      "volume_ratio": 0.36,
-      "obv": 5,
-      "vwap": 72.3544,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00881,
-      "bb_pct_b": 0.747,
-      "bb_squeeze": true,
-      "bb_score": 8,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "range",
-      "adx": 16.2,
-      "atr_pct": 0.411,
-      "learning_notes": [
-        "score:80-89 (n=7, 勝率 71%) → +2",
-        "rsishort:50-59 (n=11, 勝率 100%) → +2",
-        "fund:neutral (n=25, 勝率 92%) → +2",
-        "sess:asia_day (n=22, 勝率 100%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 13
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 42.6
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 44.5
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 28.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 16.2,
-      "atr_pct": 0.411,
-      "volatile": false
-    },
-    "created": 1781831524.35697,
-    "expires": 1781917924.3569705,
-    "order_id": "1781831524-ADB2D154",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1781831524.357,
-    "entry_message_id": 5757,
-    "last_checked_ts": 1781874000.0,
-    "current_price": 68.5
-  },
   "LINK-USDT-SWAPSHORT1781831529-93656B68": {
     "instId": "LINK-USDT-SWAP",
     "side": "SHORT",
@@ -173,7 +85,7 @@
     "hit_tp3": false,
     "activated_at": 1781831529.4130774,
     "entry_message_id": 5758,
-    "last_checked_ts": 1781874000.0,
-    "current_price": 7.846
+    "last_checked_ts": 1781874900.0,
+    "current_price": 7.897
   }
 }
