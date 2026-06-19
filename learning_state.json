@@ -1,40 +1,40 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 18,
+      "win": 21,
       "loss": 0,
       "be": 0,
-      "total": 18
+      "total": 21
     },
     "rsishort:50-59": {
-      "win": 11,
+      "win": 14,
       "loss": 0,
       "be": 0,
-      "total": 11
+      "total": 14
     },
     "fund:neutral": {
-      "win": 23,
+      "win": 26,
       "loss": 2,
+      "be": 0,
+      "total": 28
+    },
+    "sess:asia_day": {
+      "win": 25,
+      "loss": 0,
       "be": 0,
       "total": 25
     },
-    "sess:asia_day": {
-      "win": 22,
-      "loss": 0,
-      "be": 0,
-      "total": 22
-    },
     "coin:BTC": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:BTCSHORT": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "score:80-89": {
       "win": 5,
@@ -55,16 +55,16 @@
       "total": 4
     },
     "coin:SOL": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:SOLSHORT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsishort:40-49": {
       "win": 9,
@@ -73,16 +73,16 @@
       "total": 9
     },
     "coin:LINK": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:LINKSHORT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:ADA": {
       "win": 2,
@@ -165,10 +165,10 @@
   },
   "by_coin": {
     "BTC": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "DOGE": {
       "win": 3,
@@ -177,16 +177,16 @@
       "total": 4
     },
     "SOL": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "LINK": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "ADA": {
       "win": 2,
@@ -214,5 +214,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1781813071.2486124
+  "updated_at": 1781840004.0631297
 }
