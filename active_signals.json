@@ -84,8 +84,8 @@
     "hit_tp3": false,
     "activated_at": 1781995248.5863786,
     "entry_message_id": 6003,
-    "last_checked_ts": 1781995500.0,
-    "current_price": 0.0838
+    "last_checked_ts": 1781997300.0,
+    "current_price": 0.08373
   },
   "ETH-USDT-SWAPLONG1781997046-D8DB0A04": {
     "instId": "ETH-USDT-SWAP",
@@ -178,7 +178,8 @@
     "hit_tp3": false,
     "activated_at": 1781997046.085495,
     "entry_message_id": 6014,
-    "last_checked_ts": 1781997046.085495
+    "last_checked_ts": 1781997300.0,
+    "current_price": 1741.52
   },
   "SOL-USDT-SWAPLONG1781997048-A88E6F3F": {
     "instId": "SOL-USDT-SWAP",
@@ -270,100 +271,7 @@
     "hit_tp3": false,
     "activated_at": 1781997048.146903,
     "entry_message_id": 6015,
-    "last_checked_ts": 1781997048.146903
-  },
-  "BNB-USDT-SWAPLONG1781997050-4C7757CB": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 587.6,
-    "sl": 585.9142,
-    "tp1": 587.7555,
-    "tp2": 587.7555,
-    "tp3": 587.7555,
-    "atr": 1.12385178,
-    "score": 115,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 60.4,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 5,
-      "volume_ratio": 1.56,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 583.2136,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00588,
-      "bb_pct_b": 0.935,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "range",
-      "adx": 17.5,
-      "atr_pct": 0.191,
-      "learning_notes": [
-        "score:90+ (n=46, 勝率 85%) → +2",
-        "rsilong:60-69 (n=8, 勝率 88%) → +2",
-        "fund:neutral (n=60, 勝率 77%) → +2",
-        "sess:asia_day (n=44, 勝率 86%) → +2",
-        "coin:BNB (n=9, 勝率 67%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 14,
-      "tp_adjust_notes": [
-        "TP1 590.1287→587.7555（阻力 588.9333）",
-        "TP2 592.6573→587.7555（阻力 588.9333）",
-        "TP3 596.0289→587.7555（阻力 588.9333）"
-      ]
-    },
-    "funding_rate": 6.05859782133e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 61.9
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 45.5
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 37.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 17.5,
-      "atr_pct": 0.191,
-      "volatile": false
-    },
-    "created": 1781997050.2163067,
-    "expires": 1782083450.2163072,
-    "order_id": "1781997050-4C7757CB",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1781997050.216346,
-    "entry_message_id": 6016,
-    "last_checked_ts": 1781997050.216346
+    "last_checked_ts": 1781997300.0,
+    "current_price": 73.37
   }
 }
