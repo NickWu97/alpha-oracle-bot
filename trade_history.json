@@ -4712,5 +4712,96 @@
       "atr_pct": 0.221,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-20 10:22",
+    "date": "2026-06-20",
+    "order_id": "1781894733-294F518F",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 7.863,
+    "close": 7.863,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 105,
+    "funding_rate": 4.62438572023e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 45.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.63,
+      "obv": 5,
+      "vwap": 8.0578,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.01132,
+      "bb_pct_b": 0.058,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 15.4,
+      "atr_pct": 0.408,
+      "learning_notes": [
+        "score:90+ (n=29, 勝率 97%) → +2",
+        "fund:neutral (n=38, 勝率 89%) → +2",
+        "coin:LINK (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 10 / 敗 0 (勝率 100%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11
+    },
+    "features": {
+      "score": 105.0,
+      "rsi": 45.1,
+      "atr_pct": 0.408,
+      "funding": 0.046243857202299996,
+      "vol_ratio": 0.63,
+      "adx": 15.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 47.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.4
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.4,
+      "atr_pct": 0.408,
+      "volatile": false
+    }
   }
 ]
