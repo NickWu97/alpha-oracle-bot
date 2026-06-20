@@ -2,27 +2,27 @@
   "buckets": {
     "score:90+": {
       "win": 29,
-      "loss": 3,
+      "loss": 4,
       "be": 2,
-      "total": 34
+      "total": 35
     },
     "rsishort:50-59": {
       "win": 19,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "fund:neutral": {
       "win": 36,
-      "loss": 9,
+      "loss": 10,
       "be": 3,
-      "total": 48
+      "total": 49
     },
     "sess:asia_day": {
       "win": 32,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 37
+      "total": 38
     },
     "coin:BTC": {
       "win": 8,
@@ -104,15 +104,15 @@
     },
     "coin:BNB": {
       "win": 6,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin_side:BNBSHORT": {
       "win": 6,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "fund:neg": {
       "win": 3,
@@ -250,9 +250,9 @@
     },
     "BNB": {
       "win": 6,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "AVAX": {
       "win": 3,
@@ -307,7 +307,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1781933705.7136579,
+      "coin": "BNB",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1781922177.9135761
+  "updated_at": 1781933705.1084566
 }
