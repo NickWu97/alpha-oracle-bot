@@ -5286,5 +5286,96 @@
       "atr_pct": 0.36,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-21 05:32",
+    "date": "2026-06-21",
+    "order_id": "1781976882-6886A422",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 71.46,
+    "close": 72.3045,
+    "close_type": "TP1",
+    "pnl": 1.18,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 112,
+    "funding_rate": 8.18295018967e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.56,
+      "obv": 5,
+      "vwap": 70.7284,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02355,
+      "bb_pct_b": 0.547,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.4,
+      "atr_pct": 0.525,
+      "pullback": true,
+      "learning_notes": [
+        "score:90+ (n=38, 勝率 84%) → +2",
+        "fund:neutral (n=52, 勝率 75%) → +2",
+        "coin:SOL (n=7, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11
+    },
+    "features": {
+      "score": 112.0,
+      "rsi": 50.6,
+      "atr_pct": 0.525,
+      "funding": 0.0818295018967,
+      "vol_ratio": 0.56,
+      "adx": 19.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.0
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 57.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 28.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.4,
+      "atr_pct": 0.525,
+      "volatile": false
+    }
   }
 ]
