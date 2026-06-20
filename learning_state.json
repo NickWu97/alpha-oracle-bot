@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 29,
+      "win": 32,
       "loss": 4,
       "be": 2,
-      "total": 35
+      "total": 38
     },
     "rsishort:50-59": {
       "win": 19,
@@ -13,10 +13,10 @@
       "total": 25
     },
     "fund:neutral": {
-      "win": 36,
+      "win": 39,
       "loss": 10,
       "be": 3,
-      "total": 49
+      "total": 52
     },
     "sess:asia_day": {
       "win": 32,
@@ -85,10 +85,10 @@
       "total": 6
     },
     "coin:ADA": {
-      "win": 3,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "coin_side:ADASHORT": {
       "win": 3,
@@ -145,10 +145,10 @@
       "total": 5
     },
     "sess:asia_dawn": {
-      "win": 3,
+      "win": 6,
       "loss": 8,
       "be": 0,
-      "total": 11
+      "total": 14
     },
     "coin:NEAR": {
       "win": 3,
@@ -193,10 +193,10 @@
       "total": 1
     },
     "rsilong:40-49": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "coin_side:LINKLONG": {
       "win": 1,
@@ -215,6 +215,12 @@
       "loss": 0,
       "be": 1,
       "total": 2
+    },
+    "coin_side:ADALONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -243,10 +249,10 @@
       "total": 8
     },
     "ADA": {
-      "win": 3,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "BNB": {
       "win": 6,
@@ -316,5 +322,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1781933705.1084566
+  "updated_at": 1781975272.208017
 }

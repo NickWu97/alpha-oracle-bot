@@ -4897,5 +4897,296 @@
       "atr_pct": 0.205,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-21 01:07",
+    "date": "2026-06-21",
+    "order_id": "1781974142-BF17FB2B",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1614,
+    "close": 0.1614,
+    "close_type": "TP1",
+    "pnl": 0.0,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 101,
+    "funding_rate": -6.01128886228e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.7,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.1643,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02009,
+      "bb_pct_b": 0.351,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 20.3,
+      "atr_pct": 0.537,
+      "learning_notes": [
+        "score:90+ (n=35, 勝率 83%) → +2",
+        "fund:neutral (n=49, 勝率 73%) → +2",
+        "sess:asia_dawn (n=11, 勝率 27%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 0.1633→0.1614（阻力 0.1618）",
+        "TP2 0.1653→0.1614（阻力 0.1618）",
+        "TP3 0.1679→0.1614（阻力 0.1618）"
+      ]
+    },
+    "features": {
+      "score": 101.0,
+      "rsi": 43.6,
+      "atr_pct": 0.537,
+      "funding": -0.0601128886228,
+      "vol_ratio": 0.7,
+      "adx": 20.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 23.6
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.3,
+      "atr_pct": 0.537,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-06-21 01:07",
+    "date": "2026-06-21",
+    "order_id": "1781974142-BF17FB2B",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1614,
+    "close": 0.1614,
+    "close_type": "TP2",
+    "pnl": 0.0,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 101,
+    "funding_rate": -6.01128886228e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.7,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.1643,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02009,
+      "bb_pct_b": 0.351,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 20.3,
+      "atr_pct": 0.537,
+      "learning_notes": [
+        "score:90+ (n=35, 勝率 83%) → +2",
+        "fund:neutral (n=49, 勝率 73%) → +2",
+        "sess:asia_dawn (n=11, 勝率 27%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 0.1633→0.1614（阻力 0.1618）",
+        "TP2 0.1653→0.1614（阻力 0.1618）",
+        "TP3 0.1679→0.1614（阻力 0.1618）"
+      ]
+    },
+    "features": {
+      "score": 101.0,
+      "rsi": 43.6,
+      "atr_pct": 0.537,
+      "funding": -0.0601128886228,
+      "vol_ratio": 0.7,
+      "adx": 20.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 23.6
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.3,
+      "atr_pct": 0.537,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-06-21 01:07",
+    "date": "2026-06-21",
+    "order_id": "1781974142-BF17FB2B",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1614,
+    "close": 0.1614,
+    "close_type": "TP3",
+    "pnl": 0.0,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 101,
+    "funding_rate": -6.01128886228e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.7,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.1643,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02009,
+      "bb_pct_b": 0.351,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 20.3,
+      "atr_pct": 0.537,
+      "learning_notes": [
+        "score:90+ (n=35, 勝率 83%) → +2",
+        "fund:neutral (n=49, 勝率 73%) → +2",
+        "sess:asia_dawn (n=11, 勝率 27%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 0.1633→0.1614（阻力 0.1618）",
+        "TP2 0.1653→0.1614（阻力 0.1618）",
+        "TP3 0.1679→0.1614（阻力 0.1618）"
+      ]
+    },
+    "features": {
+      "score": 101.0,
+      "rsi": 43.6,
+      "atr_pct": 0.537,
+      "funding": -0.0601128886228,
+      "vol_ratio": 0.7,
+      "adx": 20.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 23.6
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.3,
+      "atr_pct": 0.537,
+      "volatile": false
+    }
   }
 ]
