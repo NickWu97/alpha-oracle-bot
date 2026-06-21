@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 42,
-      "loss": 7,
+      "loss": 8,
       "be": 2,
-      "total": 51
+      "total": 52
     },
     "rsishort:50-59": {
       "win": 19,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 49,
-      "loss": 14,
+      "loss": 15,
       "be": 3,
-      "total": 66
+      "total": 67
     },
     "sess:asia_day": {
       "win": 41,
-      "loss": 6,
+      "loss": 7,
       "be": 3,
-      "total": 50
+      "total": 51
     },
     "coin:BTC": {
       "win": 11,
@@ -44,9 +44,9 @@
     },
     "coin:DOGE": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:DOGESHORT": {
       "win": 3,
@@ -206,9 +206,9 @@
     },
     "rsilong:60-69": {
       "win": 10,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "coin_side:BTCLONG": {
       "win": 4,
@@ -224,9 +224,9 @@
     },
     "coin_side:DOGELONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsilong:50-59": {
       "win": 1,
@@ -280,9 +280,9 @@
     },
     "DOGE": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "SOL": {
       "win": 7,
@@ -388,7 +388,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1782013698.6018558,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1782005542.0768607
+  "updated_at": 1782013698.1322906
 }
