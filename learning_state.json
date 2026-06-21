@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 42,
-      "loss": 8,
+      "loss": 9,
       "be": 2,
-      "total": 52
+      "total": 53
     },
     "rsishort:50-59": {
       "win": 19,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 49,
-      "loss": 15,
+      "loss": 16,
       "be": 3,
-      "total": 67
+      "total": 68
     },
     "sess:asia_day": {
       "win": 41,
@@ -164,9 +164,9 @@
     },
     "sess:europe": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:XRP": {
       "win": 3,
@@ -182,9 +182,9 @@
     },
     "coin:DOT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:DOTSHORT": {
       "win": 0,
@@ -230,9 +230,9 @@
     },
     "rsilong:50-59": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:SOLLONG": {
       "win": 1,
@@ -265,6 +265,12 @@
       "total": 1
     },
     "rsilong:70-79": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:DOTLONG": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -328,9 +334,9 @@
     },
     "DOT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "ETH": {
       "win": 0,
@@ -395,7 +401,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1782021668.5980794,
+      "coin": "DOT",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1782013698.1322906
+  "updated_at": 1782021668.0861816
 }
