@@ -8026,5 +8026,99 @@
       "atr_pct": 0.248,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-22 21:41",
+    "date": "2026-06-22",
+    "order_id": "1782128506-155B23B2",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 8.06,
+    "close": 8.1335,
+    "close_type": "TP1",
+    "pnl": 0.91,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 89,
+    "funding_rate": -8.297802117e-07,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.7,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 5,
+      "volume_ratio": 1.96,
+      "obv": 5,
+      "vwap": 7.9152,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01504,
+      "bb_pct_b": 0.942,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 27.7,
+      "atr_pct": 0.407,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "rsilong:60-69 (n=14, 勝率 71%) → +2",
+        "fund:neutral (n=79, 勝率 75%) → +2",
+        "sess:europe (n=13, 勝率 85%) → +2",
+        "coin:LINK (n=12, 勝率 83%) → +2",
+        "coin_side:LINKLONG (n=6, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 12
+    },
+    "features": {
+      "score": 89.0,
+      "rsi": 64.7,
+      "atr_pct": 0.407,
+      "funding": -0.0008297802117,
+      "vol_ratio": 1.96,
+      "adx": 27.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 27.7,
+      "atr_pct": 0.407,
+      "volatile": false
+    }
   }
 ]

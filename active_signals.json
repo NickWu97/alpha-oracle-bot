@@ -83,8 +83,8 @@
     "hit_tp3": false,
     "activated_at": 1782112741.1726565,
     "entry_message_id": 6091,
-    "last_checked_ts": 1782133200.0,
-    "current_price": 64957.8
+    "last_checked_ts": 1782134100.0,
+    "current_price": 65243.0
   },
   "BNB-USDT-SWAPLONG1782128499-F762324E": {
     "instId": "BNB-USDT-SWAP",
@@ -173,15 +173,15 @@
     "hit_tp3": false,
     "activated_at": 1782128499.3201106,
     "entry_message_id": 6116,
-    "last_checked_ts": 1782133200.0,
-    "current_price": 599.0
+    "last_checked_ts": 1782134100.0,
+    "current_price": 600.1
   },
   "LINK-USDT-SWAPLONG1782128506-155B23B2": {
     "instId": "LINK-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 8.06,
-    "sl": 8.011,
+    "sl": 8.06,
     "tp1": 8.1335,
     "tp2": 8.2069,
     "tp3": 8.3049,
@@ -258,13 +258,13 @@
     "created": 1782128506.3351574,
     "expires": 1782214906.335158,
     "order_id": "1782128506-155B23B2",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782128506.3351989,
     "entry_message_id": 6117,
-    "last_checked_ts": 1782133200.0,
-    "current_price": 8.088
+    "last_checked_ts": 1782134100.0,
+    "current_price": 8.118
   }
 }
