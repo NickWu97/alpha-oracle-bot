@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 64,
-      "loss": 16,
+      "loss": 17,
       "be": 6,
-      "total": 86
+      "total": 87
     },
     "sess:asia_day": {
       "win": 41,
@@ -38,9 +38,9 @@
     },
     "score:80-89": {
       "win": 12,
-      "loss": 6,
+      "loss": 7,
       "be": 3,
-      "total": 21
+      "total": 22
     },
     "coin:DOGE": {
       "win": 3,
@@ -104,9 +104,9 @@
     },
     "coin:BNB": {
       "win": 13,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 17
+      "total": 18
     },
     "coin_side:BNBSHORT": {
       "win": 6,
@@ -146,9 +146,9 @@
     },
     "sess:asia_dawn": {
       "win": 8,
-      "loss": 9,
+      "loss": 10,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "coin:NEAR": {
       "win": 3,
@@ -194,9 +194,9 @@
     },
     "rsilong:40-49": {
       "win": 4,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 6
+      "total": 7
     },
     "coin_side:LINKLONG": {
       "win": 5,
@@ -248,9 +248,9 @@
     },
     "coin_side:BNBLONG": {
       "win": 7,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 8
+      "total": 9
     },
     "coin:ETH": {
       "win": 0,
@@ -310,9 +310,9 @@
     },
     "BNB": {
       "win": 13,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 17
+      "total": 18
     },
     "AVAX": {
       "win": 6,
@@ -408,7 +408,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1782157767.0648794,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1782148181.7256186
+  "updated_at": 1782157766.5263374
 }
