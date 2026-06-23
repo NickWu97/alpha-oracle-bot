@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 61,
-      "loss": 11,
+      "win": 64,
+      "loss": 12,
       "be": 6,
-      "total": 78
+      "total": 82
     },
     "rsishort:50-59": {
       "win": 22,
@@ -13,16 +13,16 @@
       "total": 28
     },
     "fund:neutral": {
-      "win": 73,
-      "loss": 20,
+      "win": 76,
+      "loss": 21,
       "be": 9,
-      "total": 102
+      "total": 106
     },
     "sess:asia_day": {
-      "win": 50,
-      "loss": 7,
+      "win": 53,
+      "loss": 8,
       "be": 6,
-      "total": 63
+      "total": 67
     },
     "coin:BTC": {
       "win": 14,
@@ -67,22 +67,22 @@
       "total": 9
     },
     "rsishort:40-49": {
-      "win": 14,
+      "win": 17,
       "loss": 3,
       "be": 2,
-      "total": 19
+      "total": 22
     },
     "coin:LINK": {
       "win": 14,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 17
+      "total": 18
     },
     "coin_side:LINKSHORT": {
       "win": 9,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin:ADA": {
       "win": 10,
@@ -98,21 +98,21 @@
     },
     "rsishort:30-39": {
       "win": 13,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 17
+      "total": 18
     },
     "coin:BNB": {
-      "win": 13,
+      "win": 16,
       "loss": 5,
       "be": 1,
-      "total": 19
+      "total": 22
     },
     "coin_side:BNBSHORT": {
-      "win": 6,
+      "win": 9,
       "loss": 3,
       "be": 0,
-      "total": 9
+      "total": 12
     },
     "fund:neg": {
       "win": 9,
@@ -316,9 +316,9 @@
     },
     "LINK": {
       "win": 14,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 17
+      "total": 18
     },
     "ADA": {
       "win": 10,
@@ -327,10 +327,10 @@
       "total": 11
     },
     "BNB": {
-      "win": 13,
+      "win": 16,
       "loss": 5,
       "be": 1,
-      "total": 19
+      "total": 22
     },
     "AVAX": {
       "win": 6,
@@ -440,7 +440,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1782179991.717203,
+      "coin": "LINK",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1782177199.623065
+  "updated_at": 1782180034.9132242
 }
