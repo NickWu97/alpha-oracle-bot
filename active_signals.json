@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 1.839,
-    "sl": 1.8648,
+    "sl": 1.839,
     "tp1": 1.8066,
     "tp2": 1.8066,
     "tp3": 1.8066,
@@ -86,13 +86,13 @@
     "created": 1782423439.7948895,
     "expires": 1782509839.79489,
     "order_id": "1782423439-3377806D",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782423439.7949576,
     "entry_message_id": 6429,
-    "last_checked_ts": 1782424800.0,
-    "current_price": 1.819
+    "last_checked_ts": 1782426600.0,
+    "current_price": 1.797
   }
 }
