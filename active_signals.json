@@ -1,97 +1,98 @@
 {
-  "BTC-USDT-SWAPSHORT1782420931-4AE51917": {
-    "instId": "BTC-USDT-SWAP",
+  "NEAR-USDT-SWAPSHORT1782423439-3377806D": {
+    "instId": "NEAR-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
-    "entry": 59315.4,
-    "sl": 59834.3687,
-    "tp1": 59160.752,
-    "tp2": 59160.752,
-    "tp3": 59160.752,
-    "atr": 345.97912284,
-    "score": 92,
+    "entry": 1.839,
+    "sl": 1.8648,
+    "tp1": 1.8066,
+    "tp2": 1.8066,
+    "tp3": 1.8066,
+    "atr": 0.01721879,
+    "score": 86,
     "grade": "A 強力 ⭐",
     "detail": {
       "trend": 30,
-      "rsi_value": 46.8,
+      "rsi_value": 43.6,
       "rsi": 15,
       "ob": 20,
-      "fvg": 15,
+      "fvg": 0,
       "snr": 5,
-      "pa": 5,
+      "pa": 0,
       "liq": 0,
-      "mom": 0,
+      "mom": 5,
       "mtf": 15,
       "mtf_desc": "1H=順 / 4H=順",
       "weekly_penalty": -12,
       "weekly_trend": "逆週線",
-      "volume": -10,
-      "volume_ratio": 0.41,
+      "volume": 0,
+      "volume_ratio": 0.85,
       "obv": -6,
       "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 61150.48,
+      "vwap": 1.9519,
       "vwap_score": 5,
-      "bb_bandwidth": 0.01073,
-      "bb_pct_b": 0.558,
+      "bb_bandwidth": 0.04113,
+      "bb_pct_b": 0.366,
       "bb_squeeze": false,
       "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
-      "rsi_div_score": 6,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
       "macd": "MACD逆向⚠️",
       "macd_score": -5,
-      "regime": "transitional",
-      "adx": 19.9,
-      "atr_pct": 0.582,
+      "regime": "trend",
+      "adx": 32.2,
+      "atr_pct": 0.94,
+      "adx_bonus": 4,
       "learning_notes": [
-        "score:80-89 (n=43, 勝率 63%) → +1",
+        "score:70-79 (n=9, 勝率 67%) → +1",
         "rsishort:40-49 (n=25, 勝率 80%) → +2",
         "fund:neutral (n=132, 勝率 73%) → +2",
         "sess:asia_dawn (n=47, 勝率 62%) → +1",
-        "coin:BTC (n=19, 勝率 74%) → +2",
-        "coin_side:BTCSHORT (n=10, 勝率 70%) → +1",
+        "coin:NEAR (n=6, 勝率 100%) → +2",
+        "coin_side:NEARSHORT (n=6, 勝率 100%) → +2",
         "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
       ],
-      "learning_adjust": 9,
+      "learning_adjust": 10,
       "tp_adjust_notes": [
-        "TP1 58536.9470→59160.7520（支撐 59042.6667）",
-        "TP2 57758.4939→59160.7520（支撐 59042.6667）",
-        "TP3 56720.5566→59160.7520（支撐 59042.6667）"
+        "TP1 1.8003→1.8066（支撐 1.8030）",
+        "TP2 1.7615→1.8066（支撐 1.8030）",
+        "TP3 1.7099→1.8066（支撐 1.8030）"
       ]
     },
-    "funding_rate": -1.71157455562e-05,
+    "funding_rate": 0.0001,
     "mtf_snapshot": {
       "1H": {
         "supertrend": -1,
         "trend": "down",
-        "rsi": 38.1
+        "rsi": 33.2
       },
       "4H": {
         "supertrend": -1,
         "trend": "down",
-        "rsi": 31.2
+        "rsi": 28.1
       },
       "1W": {
         "supertrend": 1,
         "trend": "up",
-        "rsi": 33.5
+        "rsi": 61.2
       }
     },
     "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 19.9,
-      "atr_pct": 0.582,
+      "regime": "trend",
+      "adx": 32.2,
+      "atr_pct": 0.94,
       "volatile": false
     },
-    "created": 1782420931.1015072,
-    "expires": 1782507331.1015077,
-    "order_id": "1782420931-4AE51917",
+    "created": 1782423439.7948895,
+    "expires": 1782509839.79489,
+    "order_id": "1782423439-3377806D",
     "status": "ACTIVE",
     "hit_tp1": false,
     "hit_tp2": false,
     "hit_tp3": false,
-    "activated_at": 1782420931.1015365,
-    "entry_message_id": 6426,
-    "last_checked_ts": 1782420931.1015365
+    "activated_at": 1782423439.7949576,
+    "entry_message_id": 6429,
+    "last_checked_ts": 1782423439.7949576,
+    "current_price": 1.839
   }
 }
