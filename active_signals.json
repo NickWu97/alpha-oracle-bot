@@ -1,99 +1,4 @@
 {
-  "XRP-USDT-SWAPSHORT1782430389-F87DF4A0": {
-    "instId": "XRP-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 1.0474,
-    "sl": 1.0427,
-    "tp1": 1.0427,
-    "tp2": 1.0427,
-    "tp3": 1.0427,
-    "atr": 0.00549702,
-    "score": 81,
-    "grade": "觀望 ⚪",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 58.1,
-      "rsi": 25,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 2,
-      "volume_ratio": 1.3,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 1.076,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01654,
-      "bb_pct_b": 1.069,
-      "bb_squeeze": false,
-      "bb_score": 2,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "transitional",
-      "adx": 18.9,
-      "atr_pct": 0.526,
-      "learning_notes": [
-        "rsishort:50-59 (n=37, 勝率 76%) → +2",
-        "fund:neg (n=16, 勝率 75%) → +2",
-        "sess:asia_day (n=82, 勝率 79%) → +2",
-        "coin:XRP (n=14, 勝率 86%) → +2",
-        "coin_side:XRPSHORT (n=8, 勝率 75%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 15,
-      "tp_adjust_notes": [
-        "TP1 1.0350→1.0427（支撐 1.0406）",
-        "TP2 1.0227→1.0427（支撐 1.0406）",
-        "TP3 1.0062→1.0427（支撐 1.0406）"
-      ]
-    },
-    "funding_rate": -0.0002565472392419,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 41.6
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 26.6
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 26.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 18.9,
-      "atr_pct": 0.526,
-      "volatile": false
-    },
-    "created": 1782430389.4815464,
-    "expires": 1782516789.481547,
-    "order_id": "1782430389-F87DF4A0",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1782430389.4815748,
-    "entry_message_id": 6443,
-    "last_checked_ts": 1782431100.0,
-    "current_price": 1.0439
-  },
   "LINK-USDT-SWAPSHORT1782430394-0B95947E": {
     "instId": "LINK-USDT-SWAP",
     "side": "SHORT",
@@ -182,7 +87,7 @@
     "hit_tp3": false,
     "activated_at": 1782430394.0048692,
     "entry_message_id": 6444,
-    "last_checked_ts": 1782431100.0,
-    "current_price": 7.243
+    "last_checked_ts": 1782435600.0,
+    "current_price": 7.212
   }
 }
