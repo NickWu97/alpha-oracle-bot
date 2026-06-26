@@ -90,15 +90,15 @@
     "hit_tp3": false,
     "activated_at": 1782503663.1321466,
     "entry_message_id": 6524,
-    "last_checked_ts": 1782512100.0,
-    "current_price": 0.1469
+    "last_checked_ts": 1782513000.0,
+    "current_price": 0.1475
   },
   "SOL-USDT-SWAPLONG1782512203-6E835AF3": {
     "instId": "SOL-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 71.73,
-    "sl": 70.8118,
+    "sl": 71.73,
     "tp1": 71.8609,
     "tp2": 71.8609,
     "tp3": 71.8609,
@@ -179,12 +179,13 @@
     "created": 1782512203.9920177,
     "expires": 1782598603.992018,
     "order_id": "1782512203-6E835AF3",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782512203.992061,
     "entry_message_id": 6550,
-    "last_checked_ts": 1782512203.992061
+    "last_checked_ts": 1782513000.0,
+    "current_price": 71.75
   }
 }
