@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 7.286,
-    "sl": 7.3432,
+    "sl": 7.286,
     "tp1": 7.2001,
     "tp2": 7.1143,
     "tp3": 6.9998,
@@ -81,14 +81,14 @@
     "created": 1782430394.004837,
     "expires": 1782516794.0048375,
     "order_id": "1782430394-0B95947E",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782430394.0048692,
     "entry_message_id": 6444,
-    "last_checked_ts": 1782435600.0,
-    "current_price": 7.212
+    "last_checked_ts": 1782438300.0,
+    "current_price": 7.169
   },
   "BNB-USDT-SWAPSHORT1782436876-00A51DAB": {
     "instId": "BNB-USDT-SWAP",
@@ -177,14 +177,15 @@
     "hit_tp3": false,
     "activated_at": 1782436876.5115852,
     "entry_message_id": 6459,
-    "last_checked_ts": 1782436876.5115852
+    "last_checked_ts": 1782438300.0,
+    "current_price": 557.9
   },
   "DOT-USDT-SWAPSHORT1782436883-3EFAE6FA": {
     "instId": "DOT-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 0.8351,
-    "sl": 0.8424,
+    "sl": 0.8351,
     "tp1": 0.8242,
     "tp2": 0.8132,
     "tp3": 0.7986,
@@ -258,13 +259,14 @@
     "created": 1782436883.3182588,
     "expires": 1782523283.318259,
     "order_id": "1782436883-3EFAE6FA",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782436883.3182847,
     "entry_message_id": 6460,
-    "last_checked_ts": 1782436883.3182847
+    "last_checked_ts": 1782438300.0,
+    "current_price": 0.8235
   },
   "NEAR-USDT-SWAPSHORT1782436887-7D601BFC": {
     "instId": "NEAR-USDT-SWAP",
@@ -357,6 +359,7 @@
     "hit_tp3": false,
     "activated_at": 1782436887.9965413,
     "entry_message_id": 6461,
-    "last_checked_ts": 1782436887.9965413
+    "last_checked_ts": 1782438300.0,
+    "current_price": 1.805
   }
 }
