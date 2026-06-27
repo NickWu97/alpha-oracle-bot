@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 86,
-      "loss": 19,
+      "loss": 21,
       "be": 7,
-      "total": 112
+      "total": 114
     },
     "rsishort:50-59": {
       "win": 42,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 131,
-      "loss": 33,
+      "loss": 35,
       "be": 13,
-      "total": 177
+      "total": 179
     },
     "sess:asia_day": {
       "win": 93,
@@ -146,15 +146,15 @@
     },
     "sess:asia_dawn": {
       "win": 35,
-      "loss": 24,
+      "loss": 26,
       "be": 2,
-      "total": 61
+      "total": 63
     },
     "coin:NEAR": {
       "win": 12,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "coin_side:NEARSHORT": {
       "win": 12,
@@ -194,9 +194,9 @@
     },
     "rsilong:40-49": {
       "win": 13,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 19
+      "total": 20
     },
     "coin_side:LINKLONG": {
       "win": 5,
@@ -230,9 +230,9 @@
     },
     "rsilong:50-59": {
       "win": 14,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 16
+      "total": 17
     },
     "coin_side:SOLLONG": {
       "win": 4,
@@ -254,15 +254,15 @@
     },
     "coin:ETH": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "coin_side:ETHLONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsilong:70-79": {
       "win": 3,
@@ -305,6 +305,12 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin_side:NEARLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -352,9 +358,9 @@
     },
     "NEAR": {
       "win": 12,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "XRP": {
       "win": 15,
@@ -370,9 +376,9 @@
     },
     "ETH": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     }
   },
   "loss_reasons": [
@@ -466,7 +472,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1782589549.1952918,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1782580506.8021843
+  "updated_at": 1782589550.2809465
 }
