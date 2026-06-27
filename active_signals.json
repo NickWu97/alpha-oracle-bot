@@ -90,7 +90,8 @@
     "hit_tp3": false,
     "activated_at": 1782576877.3335197,
     "entry_message_id": 6596,
-    "last_checked_ts": 1782576877.3335197
+    "last_checked_ts": 1782576900.0,
+    "current_price": 60749.9
   },
   "SOL-USDT-SWAPLONG1782576879-114D5485": {
     "instId": "SOL-USDT-SWAP",
@@ -182,14 +183,15 @@
     "hit_tp3": false,
     "activated_at": 1782576879.2582386,
     "entry_message_id": 6597,
-    "last_checked_ts": 1782576879.2582386
+    "last_checked_ts": 1782576900.0,
+    "current_price": 72.74
   },
   "BNB-USDT-SWAPLONG1782576881-494594DD": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 565.0,
-    "sl": 563.2686,
+    "sl": 565.0,
     "tp1": 565.2724,
     "tp2": 565.2724,
     "tp3": 565.2724,
@@ -270,12 +272,293 @@
     "created": 1782576881.1937337,
     "expires": 1782663281.1937342,
     "order_id": "1782576881-494594DD",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782576881.1937716,
     "entry_message_id": 6598,
-    "last_checked_ts": 1782576881.1937716
+    "last_checked_ts": 1782576900.0,
+    "current_price": 566.2
+  },
+  "XRP-USDT-SWAPLONG1782578563-45B97359": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.0709,
+    "sl": 1.0659,
+    "tp1": 1.0744,
+    "tp2": 1.0744,
+    "tp3": 1.0744,
+    "atr": 0.00330733,
+    "score": 107,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.15,
+      "obv": 5,
+      "vwap": 1.0472,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02337,
+      "bb_pct_b": 0.755,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 37.7,
+      "atr_pct": 0.309,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=103, 勝率 80%) → +2",
+        "rsilong:60-69 (n=23, 勝率 70%) → +1",
+        "fund:neg (n=19, 勝率 79%) → +2",
+        "coin:XRP (n=17, 勝率 88%) → +2",
+        "coin_side:XRPLONG (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 1.0783→1.0744（阻力 1.0766）",
+        "TP2 1.0858→1.0744（阻力 1.0766）",
+        "TP3 1.0957→1.0744（阻力 1.0766）"
+      ]
+    },
+    "funding_rate": -0.0001888668658569,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 70.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 26.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 37.7,
+      "atr_pct": 0.309,
+      "volatile": false
+    },
+    "created": 1782578563.5126176,
+    "expires": 1782664963.512618,
+    "order_id": "1782578563-45B97359",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1782578563.5126638,
+    "entry_message_id": 6604,
+    "last_checked_ts": 1782578563.5126638
+  },
+  "DOGE-USDT-SWAPLONG1782578565-1D257515": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.0762,
+    "sl": 0.0759,
+    "tp1": 0.0763,
+    "tp2": 0.0763,
+    "tp3": 0.0763,
+    "atr": 0.00022374,
+    "score": 112,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 5,
+      "volume_ratio": 1.64,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0747,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01804,
+      "bb_pct_b": 0.695,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 32.5,
+      "atr_pct": 0.294,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=103, 勝率 80%) → +2",
+        "rsilong:50-59 (n=11, 勝率 91%) → +2",
+        "fund:neutral (n=169, 勝率 75%) → +2",
+        "coin:DOGE (n=21, 勝率 62%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP1 0.0767→0.0763（阻力 0.0764）",
+        "TP2 0.0772→0.0763（阻力 0.0764）",
+        "TP3 0.0779→0.0763（阻力 0.0764）"
+      ]
+    },
+    "funding_rate": 4.30038136856e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.0
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 32.5,
+      "atr_pct": 0.294,
+      "volatile": false
+    },
+    "created": 1782578565.6206455,
+    "expires": 1782664965.6206462,
+    "order_id": "1782578565-1D257515",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1782578565.6206872,
+    "entry_message_id": 6605,
+    "last_checked_ts": 1782578565.6206872
+  },
+  "LINK-USDT-SWAPLONG1782578567-8C2E26AF": {
+    "instId": "LINK-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 7.444,
+    "sl": 7.4137,
+    "tp1": 7.4581,
+    "tp2": 7.4581,
+    "tp3": 7.4581,
+    "atr": 0.02022642,
+    "score": 108,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.65,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 7.2716,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02115,
+      "bb_pct_b": 0.761,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 35.4,
+      "atr_pct": 0.272,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=103, 勝率 80%) → +2",
+        "rsilong:60-69 (n=23, 勝率 70%) → +1",
+        "fund:neutral (n=169, 勝率 75%) → +2",
+        "coin:LINK (n=24, 勝率 75%) → +2",
+        "coin_side:LINKLONG (n=8, 勝率 62%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 8,
+      "tp_adjust_notes": [
+        "TP1 7.4895→7.4581（阻力 7.4730）",
+        "TP2 7.5350→7.4581（阻力 7.4730）",
+        "TP3 7.5957→7.4581（阻力 7.4730）"
+      ]
+    },
+    "funding_rate": 6.64968769026e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 35.4,
+      "atr_pct": 0.272,
+      "volatile": false
+    },
+    "created": 1782578567.6736703,
+    "expires": 1782664967.6736708,
+    "order_id": "1782578567-8C2E26AF",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1782578567.6737115,
+    "entry_message_id": 6606,
+    "last_checked_ts": 1782578567.6737115
   }
 }
