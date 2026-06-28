@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 59794.0,
-    "sl": 60024.6334,
+    "sl": 59794.0,
     "tp1": 59448.0499,
     "tp2": 59102.0999,
     "tp3": 58640.8331,
@@ -79,14 +79,14 @@
     "created": 1782663307.3361356,
     "expires": 1782749707.3361359,
     "order_id": "1782663307-2C79F02C",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782663307.3361595,
     "entry_message_id": 6671,
-    "last_checked_ts": 1782666000.0,
-    "current_price": 59648.0
+    "last_checked_ts": 1782667800.0,
+    "current_price": 59520.8
   },
   "BNB-USDT-SWAPSHORT1782666987-22E45A53": {
     "instId": "BNB-USDT-SWAP",
@@ -175,108 +175,15 @@
     "hit_tp3": false,
     "activated_at": 1782666987.4967053,
     "entry_message_id": 6686,
-    "last_checked_ts": 1782666987.4967053
-  },
-  "ADA-USDT-SWAPSHORT1782666990-BD50E1DA": {
-    "instId": "ADA-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.1433,
-    "sl": 0.1443,
-    "tp1": 0.1432,
-    "tp2": 0.1432,
-    "tp3": 0.1432,
-    "atr": 0.00069964,
-    "score": 107,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 37.6,
-      "rsi": 15,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 5,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 2,
-      "volume_ratio": 1.08,
-      "obv": 5,
-      "vwap": 0.1447,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01425,
-      "bb_pct_b": 0.006,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "range",
-      "adx": 17.8,
-      "atr_pct": 0.488,
-      "pullback": true,
-      "learning_notes": [
-        "score:90+ (n=118, 勝率 75%) → +2",
-        "rsishort:30-39 (n=32, 勝率 69%) → +1",
-        "fund:neg (n=20, 勝率 75%) → +2",
-        "coin:ADA (n=14, 勝率 79%) → +2",
-        "coin_side:ADASHORT (n=6, 勝率 67%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 13,
-      "tp_adjust_notes": [
-        "TP1 0.1417→0.1432（支撐 0.1429）",
-        "TP2 0.1402→0.1432（支撐 0.1429）",
-        "TP3 0.1381→0.1432（支撐 0.1429）"
-      ]
-    },
-    "funding_rate": -0.0001180820212094,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 37.5
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 41.9
-      },
-      "1W": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 22.3
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 17.8,
-      "atr_pct": 0.488,
-      "volatile": false
-    },
-    "created": 1782666990.3880253,
-    "expires": 1782753390.3880258,
-    "order_id": "1782666990-BD50E1DA",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1782666990.3880613,
-    "entry_message_id": 6687,
-    "last_checked_ts": 1782666990.3880613
+    "last_checked_ts": 1782667800.0,
+    "current_price": 550.8
   },
   "LINK-USDT-SWAPSHORT1782666993-E22B9D2C": {
     "instId": "LINK-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 7.243,
-    "sl": 7.2881,
+    "sl": 7.243,
     "tp1": 7.2304,
     "tp2": 7.2304,
     "tp3": 7.2304,
@@ -357,12 +264,13 @@
     "created": 1782666993.2426097,
     "expires": 1782753393.24261,
     "order_id": "1782666993-E22B9D2C",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1782666993.2426386,
     "entry_message_id": 6688,
-    "last_checked_ts": 1782666993.2426386
+    "last_checked_ts": 1782667800.0,
+    "current_price": 7.236
   }
 }
