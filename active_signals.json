@@ -182,5 +182,96 @@
     "entry_message_id": 6772,
     "last_checked_ts": 1782760500.0,
     "current_price": 60420.9
+  },
+  "DOT-USDT-SWAPLONG1782761828-7DCE18F1": {
+    "instId": "DOT-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.8314,
+    "sl": 0.8239,
+    "tp1": 0.838,
+    "tp2": 0.838,
+    "tp3": 0.838,
+    "atr": 0.00499947,
+    "score": 87,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.1,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.47,
+      "obv": 5,
+      "vwap": 0.8237,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.03771,
+      "bb_pct_b": 0.721,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 19.0,
+      "atr_pct": 0.6,
+      "learning_notes": [
+        "rsilong:50-59 (n=21, 勝率 81%) → +2",
+        "fund:neutral (n=203, 勝率 74%) → +2",
+        "sess:asia_dawn (n=89, 勝率 65%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 10,
+      "tp_adjust_notes": [
+        "TP1 0.8426→0.8380（阻力 0.8397）",
+        "TP2 0.8539→0.8380（阻力 0.8397）",
+        "TP3 0.8689→0.8380（阻力 0.8397）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 19.0,
+      "atr_pct": 0.6,
+      "volatile": false
+    },
+    "created": 1782761828.3189046,
+    "expires": 1782848228.3189056,
+    "order_id": "1782761828-7DCE18F1",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1782761828.318957,
+    "entry_message_id": 6782,
+    "last_checked_ts": 1782761828.318957
   }
 }
