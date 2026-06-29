@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 103,
-      "loss": 23,
+      "loss": 24,
       "be": 9,
-      "total": 135
+      "total": 136
     },
     "rsishort:50-59": {
       "win": 42,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 151,
-      "loss": 37,
+      "loss": 39,
       "be": 15,
-      "total": 203
+      "total": 205
     },
     "sess:asia_day": {
       "win": 93,
@@ -38,9 +38,9 @@
     },
     "score:80-89": {
       "win": 60,
-      "loss": 14,
+      "loss": 15,
       "be": 6,
-      "total": 80
+      "total": 81
     },
     "coin:DOGE": {
       "win": 20,
@@ -122,9 +122,9 @@
     },
     "coin:AVAX": {
       "win": 15,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 16
+      "total": 17
     },
     "coin_side:AVAXSHORT": {
       "win": 6,
@@ -146,9 +146,9 @@
     },
     "sess:asia_dawn": {
       "win": 58,
-      "loss": 28,
+      "loss": 30,
       "be": 3,
-      "total": 89
+      "total": 91
     },
     "coin:NEAR": {
       "win": 12,
@@ -182,9 +182,9 @@
     },
     "coin:DOT": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:DOTSHORT": {
       "win": 3,
@@ -206,9 +206,9 @@
     },
     "rsilong:60-69": {
       "win": 19,
-      "loss": 7,
+      "loss": 8,
       "be": 4,
-      "total": 30
+      "total": 31
     },
     "coin_side:BTCLONG": {
       "win": 7,
@@ -230,9 +230,9 @@
     },
     "rsilong:50-59": {
       "win": 17,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 21
+      "total": 22
     },
     "coin_side:SOLLONG": {
       "win": 7,
@@ -272,9 +272,9 @@
     },
     "coin_side:DOTLONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsilong:30-39": {
       "win": 3,
@@ -296,9 +296,9 @@
     },
     "coin_side:AVAXLONG": {
       "win": 9,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "rsishort:10-19": {
       "win": 3,
@@ -352,9 +352,9 @@
     },
     "AVAX": {
       "win": 15,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 16
+      "total": 17
     },
     "NEAR": {
       "win": 12,
@@ -370,9 +370,9 @@
     },
     "DOT": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "ETH": {
       "win": 4,
@@ -479,7 +479,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1782767094.3833423,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1782761474.897956
+  "updated_at": 1782767096.024192
 }
