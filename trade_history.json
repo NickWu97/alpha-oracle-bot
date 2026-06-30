@@ -175,5 +175,183 @@
       "atr_pct": 0.568,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-30 11:26",
+    "date": "2026-06-30",
+    "order_id": "1782781137-D6AE5736",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 74.41,
+    "close": 74.7203,
+    "close_type": "TP2",
+    "pnl": 0.42,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.7,
+      "rsi": 25,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 8,
+      "volume_ratio": 5.89,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 72.5223,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01893,
+      "bb_pct_b": -0.166,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.568,
+      "tp_adjust_notes": [
+        "TP1 75.3608→74.7203（阻力 74.8700）",
+        "TP2 76.3117→74.7203（阻力 74.8700）",
+        "TP3 77.5794→74.7203（阻力 74.8700）"
+      ]
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 37.7,
+      "atr_pct": 0.568,
+      "funding": 0.1,
+      "vol_ratio": 5.89,
+      "adx": 20.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.7
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.568,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-06-30 11:27",
+    "date": "2026-06-30",
+    "order_id": "1782781137-D6AE5736",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 74.41,
+    "close": 74.7203,
+    "close_type": "TP3",
+    "pnl": 0.42,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.7,
+      "rsi": 25,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 8,
+      "volume_ratio": 5.89,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 72.5223,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01893,
+      "bb_pct_b": -0.166,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.568,
+      "tp_adjust_notes": [
+        "TP1 75.3608→74.7203（阻力 74.8700）",
+        "TP2 76.3117→74.7203（阻力 74.8700）",
+        "TP3 77.5794→74.7203（阻力 74.8700）"
+      ]
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 37.7,
+      "atr_pct": 0.568,
+      "funding": 0.1,
+      "vol_ratio": 5.89,
+      "adx": 20.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.7
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.568,
+      "volatile": false
+    }
   }
 ]
