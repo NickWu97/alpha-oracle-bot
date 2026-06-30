@@ -13,16 +13,16 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 15,
+      "win": 16,
       "loss": 9,
       "be": 0,
-      "total": 24
+      "total": 25
     },
     "sess:asia_day": {
-      "win": 3,
+      "win": 4,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin:DOT": {
       "win": 3,
@@ -37,10 +37,10 @@
       "total": 4
     },
     "score:80-89": {
-      "win": 12,
+      "win": 13,
       "loss": 3,
       "be": 0,
-      "total": 15
+      "total": 16
     },
     "coin:SOL": {
       "win": 9,
@@ -133,10 +133,10 @@
       "total": 7
     },
     "rsishort:30-39": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:BTC": {
       "win": 0,
@@ -159,6 +159,18 @@
     "coin_side:ADALONG": {
       "win": 0,
       "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:BNB": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BNBSHORT": {
+      "win": 1,
+      "loss": 0,
       "be": 0,
       "total": 1
     }
@@ -211,6 +223,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "BNB": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -257,5 +275,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1782852254.92113
+  "updated_at": 1782856834.5360048
 }
