@@ -7,22 +7,22 @@
       "total": 1
     },
     "rsilong:30-39": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "fund:neutral": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "sess:asia_day": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:DOT": {
       "win": 0,
@@ -35,6 +35,24 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "score:80-89": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin:SOL": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:SOLLONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -43,8 +61,14 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "SOL": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1782785513.5786326
+  "updated_at": 1782789280.6152766
 }
