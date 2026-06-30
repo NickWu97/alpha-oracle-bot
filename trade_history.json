@@ -972,5 +972,189 @@
       "atr_pct": 0.309,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-06-30 19:41",
+    "date": "2026-06-30",
+    "order_id": "1782810863-A7A3576B",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 73.77,
+    "close": 73.3002,
+    "close_type": "SL",
+    "pnl": -0.64,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 106,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 37.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 8,
+      "volume_ratio": 3.15,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 72.6988,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00913,
+      "bb_pct_b": -0.085,
+      "bb_squeeze": true,
+      "bb_score": 10,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📈 正規多頭背離（價格新低但 RSI 不新低）→ 底部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 32.5,
+      "atr_pct": 0.426,
+      "adx_bonus": 4,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 5 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 74.4747→73.9684（阻力 74.1167）",
+        "TP2 75.1794→73.9684（阻力 74.1167）",
+        "TP3 76.1191→73.9684（阻力 74.1167）"
+      ]
+    },
+    "features": {
+      "score": 106.0,
+      "rsi": 37.8,
+      "atr_pct": 0.426,
+      "funding": 0.1,
+      "vol_ratio": 3.15,
+      "adx": 32.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 45.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 32.5,
+      "atr_pct": 0.426,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-06-30 19:41",
+    "date": "2026-06-30",
+    "order_id": "1782810868-797ED654",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0724,
+    "close": 0.072,
+    "close_type": "SL",
+    "pnl": -0.55,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 5.28245436232e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 8,
+      "volume_ratio": 2.21,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0735,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.00532,
+      "bb_pct_b": 0.419,
+      "bb_squeeze": true,
+      "bb_score": 8,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📈 正規多頭背離（價格新低但 RSI 不新低）→ 底部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 23.4,
+      "atr_pct": 0.311,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 5 (勝率 50%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 44.8,
+      "atr_pct": 0.311,
+      "funding": 0.0528245436232,
+      "vol_ratio": 2.21,
+      "adx": 23.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 38.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 30.3
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.4,
+      "atr_pct": 0.311,
+      "volatile": false
+    }
   }
 ]

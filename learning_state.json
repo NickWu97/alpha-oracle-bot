@@ -2,21 +2,21 @@
   "buckets": {
     "score:90+": {
       "win": 0,
-      "loss": 4,
+      "loss": 6,
       "be": 0,
-      "total": 4
+      "total": 6
     },
     "rsilong:30-39": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "fund:neutral": {
       "win": 6,
-      "loss": 5,
+      "loss": 7,
       "be": 0,
-      "total": 11
+      "total": 13
     },
     "sess:asia_day": {
       "win": 3,
@@ -44,39 +44,39 @@
     },
     "coin:SOL": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin_side:SOLLONG": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "rsilong:40-49": {
       "win": 3,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "sess:europe": {
       "win": 3,
-      "loss": 4,
+      "loss": 6,
       "be": 0,
-      "total": 7
+      "total": 9
     },
     "coin:DOGE": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:DOGELONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:AVAX": {
       "win": 0,
@@ -112,15 +112,15 @@
     },
     "SOL": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "DOGE": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "AVAX": {
       "win": 0,
@@ -149,7 +149,21 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1782819688.2355597,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1782819690.1662478,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1782809469.8077857
+  "updated_at": 1782819689.453949
 }
