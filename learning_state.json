@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsilong:30-39": {
       "win": 3,
@@ -13,10 +13,10 @@
       "total": 4
     },
     "fund:neutral": {
-      "win": 3,
-      "loss": 1,
+      "win": 6,
+      "loss": 3,
       "be": 0,
-      "total": 4
+      "total": 9
     },
     "sess:asia_day": {
       "win": 3,
@@ -25,22 +25,22 @@
       "total": 4
     },
     "coin:DOT": {
-      "win": 0,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "coin_side:DOTLONG": {
-      "win": 0,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "score:80-89": {
-      "win": 3,
-      "loss": 0,
+      "win": 6,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 7
     },
     "coin:SOL": {
       "win": 3,
@@ -53,22 +53,70 @@
       "loss": 0,
       "be": 0,
       "total": 3
-    }
-  },
-  "by_coin": {
-    "DOT": {
+    },
+    "rsilong:40-49": {
+      "win": 3,
+      "loss": 2,
+      "be": 0,
+      "total": 5
+    },
+    "sess:europe": {
+      "win": 3,
+      "loss": 2,
+      "be": 0,
+      "total": 5
+    },
+    "coin:DOGE": {
       "win": 0,
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin_side:DOGELONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    }
+  },
+  "by_coin": {
+    "DOT": {
+      "win": 3,
+      "loss": 1,
+      "be": 0,
+      "total": 4
     },
     "SOL": {
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "DOGE": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1782790026.6795204
+  "updated_at": 1782800730.7131023
 }
