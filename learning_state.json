@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 0,
-      "loss": 2,
+      "loss": 4,
       "be": 0,
-      "total": 2
+      "total": 4
     },
     "rsilong:30-39": {
       "win": 3,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 6,
-      "loss": 3,
+      "loss": 5,
       "be": 0,
-      "total": 9
+      "total": 11
     },
     "sess:asia_day": {
       "win": 3,
@@ -44,27 +44,27 @@
     },
     "coin:SOL": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:SOLLONG": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsilong:40-49": {
       "win": 3,
-      "loss": 2,
+      "loss": 4,
       "be": 0,
-      "total": 5
+      "total": 7
     },
     "sess:europe": {
       "win": 3,
-      "loss": 2,
+      "loss": 4,
       "be": 0,
-      "total": 5
+      "total": 7
     },
     "coin:DOGE": {
       "win": 0,
@@ -89,6 +89,18 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin:LINK": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:LINKLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -100,9 +112,9 @@
     },
     "SOL": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "DOGE": {
       "win": 0,
@@ -115,8 +127,29 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "LINK": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1782800730.7131023
+  "loss_reasons": [
+    {
+      "ts": 1782809468.3826714,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1782809470.437258,
+      "coin": "LINK",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    }
+  ],
+  "updated_at": 1782809469.8077857
 }
