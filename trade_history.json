@@ -3982,5 +3982,287 @@
       "atr_pct": 0.479,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-02 04:54",
+    "date": "2026-07-02",
+    "order_id": "1782937507-C5852A15",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1531,
+    "close": 0.1538,
+    "close_type": "TP1",
+    "pnl": 0.46,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 5.22533333406e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.9,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.11,
+      "obv": 5,
+      "vwap": 0.1475,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02472,
+      "bb_pct_b": 0.229,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 23.2,
+      "atr_pct": 0.677,
+      "learning_notes": [
+        "rsilong:40-49 (n=8, 勝率 38%) → -2",
+        "fund:neutral (n=41, 勝率 68%) → +1",
+        "sess:asia_dawn (n=17, 勝率 88%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 0.1554→0.1538（阻力 0.1541）",
+        "TP2 0.1578→0.1538（阻力 0.1541）",
+        "TP3 0.1609→0.1538（阻力 0.1541）"
+      ]
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 47.9,
+      "atr_pct": 0.677,
+      "funding": 0.0522533333406,
+      "vol_ratio": 1.11,
+      "adx": 23.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.6
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 22.3
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.2,
+      "atr_pct": 0.677,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-02 04:55",
+    "date": "2026-07-02",
+    "order_id": "1782937507-C5852A15",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1531,
+    "close": 0.1538,
+    "close_type": "TP2",
+    "pnl": 0.46,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 5.22533333406e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.9,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.11,
+      "obv": 5,
+      "vwap": 0.1475,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02472,
+      "bb_pct_b": 0.229,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 23.2,
+      "atr_pct": 0.677,
+      "learning_notes": [
+        "rsilong:40-49 (n=8, 勝率 38%) → -2",
+        "fund:neutral (n=41, 勝率 68%) → +1",
+        "sess:asia_dawn (n=17, 勝率 88%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 0.1554→0.1538（阻力 0.1541）",
+        "TP2 0.1578→0.1538（阻力 0.1541）",
+        "TP3 0.1609→0.1538（阻力 0.1541）"
+      ]
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 47.9,
+      "atr_pct": 0.677,
+      "funding": 0.0522533333406,
+      "vol_ratio": 1.11,
+      "adx": 23.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.6
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 22.3
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.2,
+      "atr_pct": 0.677,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-02 04:55",
+    "date": "2026-07-02",
+    "order_id": "1782937507-C5852A15",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1531,
+    "close": 0.1538,
+    "close_type": "TP3",
+    "pnl": 0.46,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 5.22533333406e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.9,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.11,
+      "obv": 5,
+      "vwap": 0.1475,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02472,
+      "bb_pct_b": 0.229,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 23.2,
+      "atr_pct": 0.677,
+      "learning_notes": [
+        "rsilong:40-49 (n=8, 勝率 38%) → -2",
+        "fund:neutral (n=41, 勝率 68%) → +1",
+        "sess:asia_dawn (n=17, 勝率 88%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 0.1554→0.1538（阻力 0.1541）",
+        "TP2 0.1578→0.1538（阻力 0.1541）",
+        "TP3 0.1609→0.1538（阻力 0.1541）"
+      ]
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 47.9,
+      "atr_pct": 0.677,
+      "funding": 0.0522533333406,
+      "vol_ratio": 1.11,
+      "adx": 23.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.6
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 22.3
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.2,
+      "atr_pct": 0.677,
+      "volatile": false
+    }
   }
 ]
