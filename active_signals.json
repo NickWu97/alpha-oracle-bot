@@ -87,8 +87,8 @@
     "hit_tp3": false,
     "activated_at": 1782922876.8010752,
     "entry_message_id": 6993,
-    "last_checked_ts": 1782930600.0,
-    "current_price": 1613.62
+    "last_checked_ts": 1782933300.0,
+    "current_price": 1619.94
   },
   "BNB-USDT-SWAPLONG1782922880-ED910140": {
     "instId": "BNB-USDT-SWAP",
@@ -178,8 +178,8 @@
     "hit_tp3": false,
     "activated_at": 1782922880.695697,
     "entry_message_id": 6994,
-    "last_checked_ts": 1782930600.0,
-    "current_price": 552.6
+    "last_checked_ts": 1782933300.0,
+    "current_price": 551.0
   },
   "SOL-USDT-SWAPLONG1782926244-47C2EDFB": {
     "instId": "SOL-USDT-SWAP",
@@ -273,8 +273,8 @@
     "hit_tp3": false,
     "activated_at": 1782926244.2619443,
     "entry_message_id": 7001,
-    "last_checked_ts": 1782930600.0,
-    "current_price": 77.35
+    "last_checked_ts": 1782933300.0,
+    "current_price": 77.27
   },
   "LINK-USDT-SWAPLONG1782926248-BF10E6DE": {
     "instId": "LINK-USDT-SWAP",
@@ -362,15 +362,15 @@
     "hit_tp3": false,
     "activated_at": 1782926248.128471,
     "entry_message_id": 7002,
-    "last_checked_ts": 1782930600.0,
-    "current_price": 7.356
+    "last_checked_ts": 1782933300.0,
+    "current_price": 7.373
   },
   "XRP-USDT-SWAPLONG1782932339-62EECF3A": {
     "instId": "XRP-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 1.059,
-    "sl": 1.0527,
+    "sl": 1.063,
     "tp1": 1.063,
     "tp2": 1.063,
     "tp3": 1.063,
@@ -448,13 +448,14 @@
     "created": 1782932339.5684068,
     "expires": 1783018739.568407,
     "order_id": "1782932339-62EECF3A",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
+    "status": "TRAIL",
+    "hit_tp1": true,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1782932339.568446,
     "entry_message_id": 7018,
-    "last_checked_ts": 1782932339.568446
+    "last_checked_ts": 1782933300.0,
+    "current_price": 1.0626
   },
   "DOGE-USDT-SWAPLONG1782932341-7FD9A352": {
     "instId": "DOGE-USDT-SWAP",
@@ -544,6 +545,7 @@
     "hit_tp3": false,
     "activated_at": 1782932341.519371,
     "entry_message_id": 7019,
-    "last_checked_ts": 1782932341.519371
+    "last_checked_ts": 1782933300.0,
+    "current_price": 0.07303
   }
 }
