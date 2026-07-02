@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 21,
+      "win": 25,
       "loss": 7,
       "be": 3,
-      "total": 31
+      "total": 35
     },
     "rsilong:30-39": {
       "win": 3,
@@ -13,10 +13,10 @@
       "total": 5
     },
     "fund:neutral": {
-      "win": 43,
+      "win": 47,
       "loss": 11,
       "be": 7,
-      "total": 61
+      "total": 65
     },
     "sess:asia_day": {
       "win": 13,
@@ -109,10 +109,10 @@
       "total": 3
     },
     "sess:asia_dawn": {
-      "win": 27,
+      "win": 31,
       "loss": 4,
       "be": 0,
-      "total": 31
+      "total": 35
     },
     "coin:ETH": {
       "win": 6,
@@ -127,10 +127,10 @@
       "total": 3
     },
     "rsilong:50-59": {
-      "win": 12,
+      "win": 16,
       "loss": 1,
       "be": 3,
-      "total": 16
+      "total": 20
     },
     "rsishort:30-39": {
       "win": 1,
@@ -163,10 +163,10 @@
       "total": 4
     },
     "coin:BNB": {
-      "win": 4,
+      "win": 7,
       "loss": 1,
       "be": 1,
-      "total": 6
+      "total": 9
     },
     "coin_side:BNBSHORT": {
       "win": 1,
@@ -187,10 +187,10 @@
       "total": 3
     },
     "coin:XRP": {
-      "win": 8,
+      "win": 9,
       "loss": 0,
       "be": 2,
-      "total": 10
+      "total": 11
     },
     "coin_side:XRPSHORT": {
       "win": 1,
@@ -205,16 +205,16 @@
       "total": 14
     },
     "coin_side:XRPLONG": {
-      "win": 7,
+      "win": 8,
       "loss": 0,
       "be": 1,
-      "total": 8
+      "total": 9
     },
     "coin_side:BNBLONG": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "coin_side:ETHLONG": {
       "win": 3,
@@ -279,16 +279,16 @@
       "total": 4
     },
     "BNB": {
-      "win": 4,
+      "win": 7,
       "loss": 1,
       "be": 1,
-      "total": 6
+      "total": 9
     },
     "XRP": {
-      "win": 8,
+      "win": 9,
       "loss": 0,
       "be": 2,
-      "total": 10
+      "total": 11
     }
   },
   "loss_reasons": [
@@ -342,5 +342,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1782951268.5099542
+  "updated_at": 1783012329.8147125
 }
