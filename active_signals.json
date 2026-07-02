@@ -86,15 +86,15 @@
     "hit_tp3": false,
     "activated_at": 1783009735.8879225,
     "entry_message_id": 7099,
-    "last_checked_ts": 1783010700.0,
-    "current_price": 1697.19
+    "last_checked_ts": 1783015200.0,
+    "current_price": 1700.01
   },
   "XRP-USDT-SWAPLONG1783009741-556B1622": {
     "instId": "XRP-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 1.0869,
-    "sl": 1.0869,
+    "sl": 1.0934,
     "tp1": 1.0934,
     "tp2": 1.0934,
     "tp3": 1.0934,
@@ -177,13 +177,13 @@
     "created": 1783009741.2816966,
     "expires": 1783096141.2816968,
     "order_id": "1783009741-556B1622",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1783009741.2817287,
     "entry_message_id": 7101,
-    "last_checked_ts": 1783010700.0,
-    "current_price": 1.0897
+    "last_checked_ts": 1783015200.0,
+    "current_price": 1.089
   }
 }
