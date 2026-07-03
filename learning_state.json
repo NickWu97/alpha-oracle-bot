@@ -1,405 +1,50 @@
 {
   "buckets": {
     "score:90+": {
-<<<<<<< Updated upstream
-      "win": 43,
-      "loss": 7,
-      "be": 7,
-      "total": 57
-=======
-      "win": 45,
-      "loss": 7,
-      "be": 7,
-      "total": 59
->>>>>>> Stashed changes
-    },
-    "rsilong:30-39": {
-      "win": 6,
-      "loss": 2,
-      "be": 0,
-      "total": 8
-    },
-    "fund:neutral": {
-<<<<<<< Updated upstream
-      "win": 74,
-      "loss": 11,
-      "be": 12,
-      "total": 97
-=======
-      "win": 76,
-      "loss": 11,
-      "be": 12,
-      "total": 99
->>>>>>> Stashed changes
-    },
-    "sess:asia_day": {
-      "win": 21,
-      "loss": 1,
-      "be": 8,
-      "total": 30
-    },
-    "coin:DOT": {
-      "win": 3,
-      "loss": 1,
-      "be": 0,
-      "total": 4
-    },
-    "coin_side:DOTLONG": {
-      "win": 3,
-      "loss": 1,
-      "be": 0,
-      "total": 4
-    },
-    "score:80-89": {
-      "win": 30,
-      "loss": 4,
-      "be": 4,
-      "total": 38
-    },
-    "coin:SOL": {
-      "win": 15,
-      "loss": 2,
-      "be": 1,
-      "total": 18
-    },
-    "coin_side:SOLLONG": {
-      "win": 15,
-      "loss": 2,
-      "be": 1,
-      "total": 18
-    },
-    "rsilong:40-49": {
-      "win": 14,
-      "loss": 5,
-      "be": 6,
-      "total": 25
-    },
-    "sess:europe": {
-      "win": 4,
-      "loss": 6,
-      "be": 0,
-      "total": 10
-    },
-    "coin:DOGE": {
-      "win": 8,
-      "loss": 3,
-      "be": 2,
-      "total": 13
-    },
-    "coin_side:DOGELONG": {
-      "win": 5,
-      "loss": 3,
-      "be": 2,
-      "total": 10
-    },
-    "coin:AVAX": {
-      "win": 0,
-      "loss": 1,
-      "be": 0,
-      "total": 1
-    },
-    "coin_side:AVAXLONG": {
-      "win": 0,
-      "loss": 1,
-      "be": 0,
-      "total": 1
-    },
-    "coin:LINK": {
-      "win": 4,
-      "loss": 1,
-      "be": 2,
-      "total": 7
-    },
-    "coin_side:LINKLONG": {
-      "win": 4,
-      "loss": 1,
-      "be": 2,
-      "total": 7
-    },
-    "rsishort:40-49": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "sess:asia_dawn": {
-<<<<<<< Updated upstream
-      "win": 49,
-      "loss": 4,
-      "be": 4,
-      "total": 57
-=======
-      "win": 51,
-      "loss": 4,
-      "be": 4,
-      "total": 59
->>>>>>> Stashed changes
-    },
-    "coin:ETH": {
-      "win": 8,
-      "loss": 0,
-      "be": 0,
-      "total": 8
-    },
-    "coin_side:ETHSHORT": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "rsilong:50-59": {
-      "win": 21,
-      "loss": 1,
-      "be": 3,
-      "total": 25
-    },
-    "rsishort:30-39": {
-      "win": 1,
-      "loss": 1,
-      "be": 1,
-      "total": 3
-    },
-    "coin:BTC": {
-      "win": 1,
-      "loss": 1,
-      "be": 1,
-      "total": 3
-    },
-    "coin_side:BTCSHORT": {
-      "win": 1,
-      "loss": 1,
-      "be": 1,
-      "total": 3
-    },
-    "coin:ADA": {
-      "win": 6,
-      "loss": 1,
-      "be": 0,
-      "total": 7
-    },
-    "coin_side:ADALONG": {
-      "win": 6,
-      "loss": 1,
-      "be": 0,
-      "total": 7
-    },
-    "coin:BNB": {
-<<<<<<< Updated upstream
-      "win": 13,
-      "loss": 1,
-      "be": 3,
-      "total": 17
-=======
-      "win": 15,
-      "loss": 1,
-      "be": 3,
-      "total": 19
->>>>>>> Stashed changes
-    },
-    "coin_side:BNBSHORT": {
-      "win": 1,
-      "loss": 0,
-      "be": 1,
-      "total": 2
-    },
-    "rsishort:50-59": {
-      "win": 5,
-      "loss": 0,
-      "be": 2,
-      "total": 7
-    },
-    "coin_side:DOGESHORT": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "coin:XRP": {
-      "win": 16,
-      "loss": 0,
-      "be": 3,
-      "total": 19
-    },
-    "coin_side:XRPSHORT": {
       "win": 1,
       "loss": 0,
       "be": 1,
       "total": 2
     },
     "rsilong:60-69": {
-      "win": 22,
-      "loss": 2,
-      "be": 0,
-      "total": 24
-    },
-    "coin_side:XRPLONG": {
-      "win": 15,
-      "loss": 0,
-      "be": 2,
-      "total": 17
-    },
-    "coin_side:BNBLONG": {
-<<<<<<< Updated upstream
-      "win": 12,
-      "loss": 1,
-      "be": 2,
-      "total": 15
-=======
-      "win": 14,
-      "loss": 1,
-      "be": 2,
-      "total": 17
->>>>>>> Stashed changes
-    },
-    "coin_side:ETHLONG": {
-      "win": 5,
-      "loss": 0,
-      "be": 0,
-      "total": 5
-    },
-    "score:70-79": {
       "win": 1,
       "loss": 0,
       "be": 1,
       "total": 2
     },
-    "rsilong:70-79": {
-<<<<<<< Updated upstream
-      "win": 2,
+    "fund:neutral": {
+      "win": 1,
       "loss": 0,
-      "be": 0,
+      "be": 1,
       "total": 2
-=======
-      "win": 4,
+    },
+    "sess:asia_day": {
+      "win": 1,
       "loss": 0,
-      "be": 0,
-      "total": 4
->>>>>>> Stashed changes
+      "be": 1,
+      "total": 2
+    },
+    "coin:BNB": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "coin_side:BNBLONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
     }
   },
   "by_coin": {
-    "DOT": {
-      "win": 3,
-      "loss": 1,
-      "be": 0,
-      "total": 4
-    },
-    "SOL": {
-      "win": 15,
-      "loss": 2,
-      "be": 1,
-      "total": 18
-    },
-    "DOGE": {
-      "win": 8,
-      "loss": 3,
-      "be": 2,
-      "total": 13
-    },
-    "AVAX": {
-      "win": 0,
-      "loss": 1,
-      "be": 0,
-      "total": 1
-    },
-    "LINK": {
-      "win": 4,
-      "loss": 1,
-      "be": 2,
-      "total": 7
-    },
-    "ETH": {
-      "win": 8,
-      "loss": 0,
-      "be": 0,
-      "total": 8
-    },
-    "BTC": {
-      "win": 1,
-      "loss": 1,
-      "be": 1,
-      "total": 3
-    },
-    "ADA": {
-      "win": 6,
-      "loss": 1,
-      "be": 0,
-      "total": 7
-    },
     "BNB": {
-<<<<<<< Updated upstream
-      "win": 13,
-      "loss": 1,
-      "be": 3,
-      "total": 17
-=======
-      "win": 15,
-      "loss": 1,
-      "be": 3,
-      "total": 19
->>>>>>> Stashed changes
-    },
-    "XRP": {
-      "win": 16,
+      "win": 1,
       "loss": 0,
-      "be": 3,
-      "total": 19
+      "be": 1,
+      "total": 2
     }
   },
-  "loss_reasons": [
-    {
-      "ts": 1782809468.3826714,
-      "coin": "SOL",
-      "side": "LONG",
-      "code": "INSUFFICIENT",
-      "title": "📋 資料不足"
-    },
-    {
-      "ts": 1782809470.437258,
-      "coin": "LINK",
-      "side": "LONG",
-      "code": "INSUFFICIENT",
-      "title": "📋 資料不足"
-    },
-    {
-      "ts": 1782819688.2355597,
-      "coin": "SOL",
-      "side": "LONG",
-      "code": "INSUFFICIENT",
-      "title": "📋 資料不足"
-    },
-    {
-      "ts": 1782819690.1662478,
-      "coin": "DOGE",
-      "side": "LONG",
-      "code": "INSUFFICIENT",
-      "title": "📋 資料不足"
-    },
-    {
-      "ts": 1782849334.4259245,
-      "coin": "BTC",
-      "side": "SHORT",
-      "code": "INSUFFICIENT",
-      "title": "📋 資料不足"
-    },
-    {
-      "ts": 1782852255.4935243,
-      "coin": "ADA",
-      "side": "LONG",
-      "code": "INSUFFICIENT",
-      "title": "📋 資料不足"
-    },
-    {
-      "ts": 1782937512.6531198,
-      "coin": "BNB",
-      "side": "LONG",
-      "code": "INSUFFICIENT",
-      "title": "📋 資料不足"
-    }
-  ],
-<<<<<<< Updated upstream
-  "updated_at": 1783111482.4289799
-=======
-  "updated_at": 1783111556.925993
->>>>>>> Stashed changes
+  "loss_reasons": [],
+  "updated_at": 1783118760.2346394
 }

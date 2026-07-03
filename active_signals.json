@@ -82,7 +82,8 @@
     "hit_tp3": false,
     "activated_at": 1783115307.197349,
     "entry_message_id": 7223,
-    "last_checked_ts": 1783115307.197349
+    "last_checked_ts": 1783117800.0,
+    "current_price": 62610.0
   },
   "SOL-USDT-SWAPLONG1783115309-6FB16B52": {
     "instId": "SOL-USDT-SWAP",
@@ -167,90 +168,7 @@
     "hit_tp3": false,
     "activated_at": 1783115309.1165516,
     "entry_message_id": 7224,
-    "last_checked_ts": 1783115309.1165516
-  },
-  "BNB-USDT-SWAPLONG1783115311-74F302A7": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 572.9,
-    "sl": 570.7041,
-    "tp1": 573.5506,
-    "tp2": 573.5506,
-    "tp3": 573.5506,
-    "atr": 1.46393268,
-    "score": 103,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 67.1,
-      "rsi": 0,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.82,
-      "obv": 5,
-      "vwap": 554.7961,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01604,
-      "bb_pct_b": 0.78,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 48.5,
-      "atr_pct": 0.256,
-      "adx_bonus": 4,
-      "tp_adjust_notes": [
-        "TP1 576.1938→573.5506（阻力 574.7000）",
-        "TP2 579.4877→573.5506（阻力 574.7000）",
-        "TP3 583.8795→573.5506（阻力 574.7000）"
-      ]
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 74.7
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 62.7
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 33.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 48.5,
-      "atr_pct": 0.256,
-      "volatile": false
-    },
-    "created": 1783115311.0657413,
-    "expires": 1783201711.0657418,
-    "order_id": "1783115311-74F302A7",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1783115311.0657942,
-    "entry_message_id": 7225,
-    "last_checked_ts": 1783115311.0657942
+    "last_checked_ts": 1783117800.0,
+    "current_price": 82.33
   }
 }
