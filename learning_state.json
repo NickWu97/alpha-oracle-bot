@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 40,
+      "win": 43,
       "loss": 7,
       "be": 7,
-      "total": 54
+      "total": 57
     },
     "rsilong:30-39": {
       "win": 6,
@@ -13,10 +13,10 @@
       "total": 8
     },
     "fund:neutral": {
-      "win": 71,
+      "win": 74,
       "loss": 11,
       "be": 12,
-      "total": 94
+      "total": 97
     },
     "sess:asia_day": {
       "win": 21,
@@ -91,16 +91,16 @@
       "total": 1
     },
     "coin:LINK": {
-      "win": 3,
+      "win": 4,
       "loss": 1,
       "be": 2,
-      "total": 6
+      "total": 7
     },
     "coin_side:LINKLONG": {
-      "win": 3,
+      "win": 4,
       "loss": 1,
       "be": 2,
-      "total": 6
+      "total": 7
     },
     "rsishort:40-49": {
       "win": 3,
@@ -109,10 +109,10 @@
       "total": 3
     },
     "sess:asia_dawn": {
-      "win": 46,
+      "win": 49,
       "loss": 4,
       "be": 4,
-      "total": 54
+      "total": 57
     },
     "coin:ETH": {
       "win": 8,
@@ -163,10 +163,10 @@
       "total": 7
     },
     "coin:BNB": {
-      "win": 12,
+      "win": 13,
       "loss": 1,
       "be": 3,
-      "total": 16
+      "total": 17
     },
     "coin_side:BNBSHORT": {
       "win": 1,
@@ -187,10 +187,10 @@
       "total": 3
     },
     "coin:XRP": {
-      "win": 15,
+      "win": 16,
       "loss": 0,
       "be": 3,
-      "total": 18
+      "total": 19
     },
     "coin_side:XRPSHORT": {
       "win": 1,
@@ -199,22 +199,22 @@
       "total": 2
     },
     "rsilong:60-69": {
-      "win": 21,
+      "win": 22,
       "loss": 2,
       "be": 0,
-      "total": 23
+      "total": 24
     },
     "coin_side:XRPLONG": {
-      "win": 14,
+      "win": 15,
       "loss": 0,
       "be": 2,
-      "total": 16
+      "total": 17
     },
     "coin_side:BNBLONG": {
-      "win": 11,
+      "win": 12,
       "loss": 1,
       "be": 2,
-      "total": 14
+      "total": 15
     },
     "coin_side:ETHLONG": {
       "win": 5,
@@ -226,6 +226,12 @@
       "win": 1,
       "loss": 0,
       "be": 1,
+      "total": 2
+    },
+    "rsilong:70-79": {
+      "win": 2,
+      "loss": 0,
+      "be": 0,
       "total": 2
     }
   },
@@ -255,10 +261,10 @@
       "total": 1
     },
     "LINK": {
-      "win": 3,
+      "win": 4,
       "loss": 1,
       "be": 2,
-      "total": 6
+      "total": 7
     },
     "ETH": {
       "win": 8,
@@ -279,16 +285,16 @@
       "total": 7
     },
     "BNB": {
-      "win": 12,
+      "win": 13,
       "loss": 1,
       "be": 3,
-      "total": 16
+      "total": 17
     },
     "XRP": {
-      "win": 15,
+      "win": 16,
       "loss": 0,
       "be": 3,
-      "total": 18
+      "total": 19
     }
   },
   "loss_reasons": [
@@ -342,5 +348,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1783107843.2858486
+  "updated_at": 1783111482.4289799
 }
