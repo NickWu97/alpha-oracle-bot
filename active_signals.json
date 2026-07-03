@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 1688.01,
-    "sl": 1688.01,
+    "sl": 1714.7183,
     "tp1": 1714.7183,
     "tp2": 1741.4265,
     "tp3": 1777.0375,
@@ -80,13 +80,13 @@
     "created": 1783009735.887888,
     "expires": 1783096135.8878882,
     "order_id": "1783009735-BADD52A2",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1783009735.8879225,
     "entry_message_id": 7099,
-    "last_checked_ts": 1783072800.0,
-    "current_price": 1732.12
+    "last_checked_ts": 1783075500.0,
+    "current_price": 1740.54
   }
 }
