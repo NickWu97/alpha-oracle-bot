@@ -441,5 +441,94 @@
       "atr_pct": 0.455,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-04 08:17",
+    "date": "2026-07-04",
+    "order_id": "1783115307-2EC5C73B",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 62675.0,
+    "close": 62807.7328,
+    "close_type": "TP1",
+    "pnl": 0.21,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 80,
+    "funding_rate": 2.96987108808e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.8,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.74,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 60501.7305,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01446,
+      "bb_pct_b": 0.784,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 34.8,
+      "atr_pct": 0.284,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 63075.2618→62807.7328（阻力 62933.6000）",
+        "TP2 63475.5235→62807.7328（阻力 62933.6000）",
+        "TP3 64009.2058→62807.7328（阻力 62933.6000）"
+      ]
+    },
+    "features": {
+      "score": 80.0,
+      "rsi": 64.8,
+      "atr_pct": 0.284,
+      "funding": 0.0296987108808,
+      "vol_ratio": 0.74,
+      "adx": 34.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.6
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 34.8,
+      "atr_pct": 0.284,
+      "volatile": false
+    }
   }
 ]
