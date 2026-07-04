@@ -1,22 +1,22 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 15,
+      "win": 18,
       "loss": 7,
-      "be": 5,
-      "total": 27
+      "be": 6,
+      "total": 31
     },
     "rsilong:60-69": {
       "win": 11,
       "loss": 1,
-      "be": 4,
-      "total": 16
+      "be": 5,
+      "total": 17
     },
     "fund:neutral": {
-      "win": 18,
+      "win": 21,
       "loss": 8,
-      "be": 5,
-      "total": 31
+      "be": 6,
+      "total": 35
     },
     "sess:asia_day": {
       "win": 8,
@@ -37,22 +37,22 @@
       "total": 7
     },
     "rsilong:50-59": {
-      "win": 6,
+      "win": 9,
       "loss": 5,
       "be": 0,
-      "total": 11
+      "total": 14
     },
     "coin:XRP": {
       "win": 5,
       "loss": 0,
-      "be": 1,
-      "total": 6
+      "be": 2,
+      "total": 7
     },
     "coin_side:XRPLONG": {
       "win": 5,
       "loss": 0,
-      "be": 1,
-      "total": 6
+      "be": 2,
+      "total": 7
     },
     "score:80-89": {
       "win": 3,
@@ -145,10 +145,10 @@
       "total": 2
     },
     "sess:asia_dawn": {
-      "win": 9,
+      "win": 12,
       "loss": 1,
-      "be": 2,
-      "total": 12
+      "be": 3,
+      "total": 16
     },
     "coin:ETH": {
       "win": 1,
@@ -161,6 +161,18 @@
       "loss": 0,
       "be": 1,
       "total": 2
+    },
+    "coin:AVAX": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:AVAXLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -173,8 +185,8 @@
     "XRP": {
       "win": 5,
       "loss": 0,
-      "be": 1,
-      "total": 6
+      "be": 2,
+      "total": 7
     },
     "BTC": {
       "win": 6,
@@ -211,6 +223,12 @@
       "loss": 0,
       "be": 1,
       "total": 2
+    },
+    "AVAX": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -250,5 +268,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1783192618.9503837
+  "updated_at": 1783194790.4599836
 }
