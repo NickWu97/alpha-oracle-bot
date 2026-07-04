@@ -1149,5 +1149,94 @@
       "atr_pct": 0.284,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-04 12:57",
+    "date": "2026-07-04",
+    "order_id": "1783138319-11DDB2D8",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 82.93,
+    "close": 83.6056,
+    "close_type": "TP1",
+    "pnl": 0.81,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 97,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.4,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.14,
+      "obv": 5,
+      "vwap": 79.0169,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01173,
+      "bb_pct_b": 0.941,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 26.2,
+      "atr_pct": 0.363,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "rsilong:60-69 (n=6, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 97.0,
+      "rsi": 64.4,
+      "atr_pct": 0.363,
+      "funding": 0.1,
+      "vol_ratio": 1.14,
+      "adx": 26.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 71.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 26.2,
+      "atr_pct": 0.363,
+      "volatile": false
+    }
   }
 ]
