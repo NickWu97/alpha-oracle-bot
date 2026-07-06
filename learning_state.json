@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsilong:80-89": {
       "win": 0,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 3,
-      "loss": 1,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 8
     },
     "sess:asia_day": {
       "win": 3,
-      "loss": 1,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 8
     },
     "coin:BTC": {
       "win": 0,
@@ -38,15 +38,15 @@
     },
     "score:90+": {
       "win": 3,
-      "loss": 0,
+      "loss": 3,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "rsilong:50-59": {
       "win": 3,
-      "loss": 0,
+      "loss": 2,
       "be": 0,
-      "total": 3
+      "total": 5
     },
     "coin:BNB": {
       "win": 3,
@@ -59,6 +59,60 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "rsilong:60-69": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "coin:SOL": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:SOLLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ETHLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:XRPLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:DOGE": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:DOGELONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -73,8 +127,61 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "SOL": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "DOGE": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1783300392.4978628
+  "loss_reasons": [
+    {
+      "ts": 1783316172.9124877,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1783316174.8266807,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1783316176.7367744,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1783316178.6309679,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    }
+  ],
+  "updated_at": 1783316178.0042899
 }
