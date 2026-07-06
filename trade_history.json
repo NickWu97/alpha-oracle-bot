@@ -701,5 +701,92 @@
       "atr_pct": 0.557,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-07 02:29",
+    "date": "2026-07-07",
+    "order_id": "1783358515-AE3AD2A2",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.1527,
+    "close": 1.1426,
+    "close_type": "SL",
+    "pnl": -0.88,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 73.8,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.8,
+      "obv": 5,
+      "vwap": 1.142,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.05223,
+      "bb_pct_b": 0.95,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.581,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=8, 勝率 38%) → -2"
+      ],
+      "learning_adjust": -2
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 73.8,
+      "atr_pct": 0.581,
+      "funding": 0.1,
+      "vol_ratio": 0.8,
+      "adx": 30.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 31.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.581,
+      "volatile": false
+    }
   }
 ]
