@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 3,
-      "loss": 9,
+      "loss": 10,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "sess:asia_day": {
       "win": 3,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin:BTC": {
       "win": 0,
@@ -38,9 +38,9 @@
     },
     "score:90+": {
       "win": 3,
-      "loss": 6,
+      "loss": 7,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "rsilong:50-59": {
       "win": 3,
@@ -68,9 +68,9 @@
     },
     "coin:SOL": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:SOLLONG": {
       "win": 0,
@@ -131,6 +131,18 @@
       "loss": 2,
       "be": 0,
       "total": 2
+    },
+    "rsishort:40-49": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:SOLSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -148,9 +160,9 @@
     },
     "SOL": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "ETH": {
       "win": 0,
@@ -199,7 +211,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1783554714.803536,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1783460494.2162318
+  "updated_at": 1783554714.29028
 }

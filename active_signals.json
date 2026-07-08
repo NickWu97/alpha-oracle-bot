@@ -1,90 +1,4 @@
 {
-  "SOL-USDT-SWAPSHORT1783546924-CC160CBB": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 77.19,
-    "sl": 77.6402,
-    "tp1": 76.5147,
-    "tp2": 75.8394,
-    "tp3": 74.9391,
-    "atr": 0.30012373,
-    "score": 100,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 47.8,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": -10,
-      "volume_ratio": 0.47,
-      "obv": 5,
-      "vwap": 80.1467,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00842,
-      "bb_pct_b": 0.338,
-      "bb_squeeze": true,
-      "bb_score": 8,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD死叉✅",
-      "macd_score": 8,
-      "regime": "range",
-      "adx": 15.0,
-      "atr_pct": 0.389,
-      "learning_notes": [
-        "score:90+ (n=9, 勝率 33%) → -2",
-        "fund:neutral (n=12, 勝率 25%) → -3",
-        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
-        "KNN 偏低勝率 → -4"
-      ],
-      "learning_adjust": -9
-    },
-    "funding_rate": 8.1639264794e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.6
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 37.4
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 41.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 15.0,
-      "atr_pct": 0.389,
-      "volatile": false
-    },
-    "created": 1783546924.3044052,
-    "expires": 1783633324.3044055,
-    "order_id": "1783546924-CC160CBB",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1783546924.3044338,
-    "entry_message_id": 7490,
-    "last_checked_ts": 1783552500.0,
-    "current_price": 77.47
-  },
   "DOT-USDT-SWAPSHORT1783546932-F40E729D": {
     "instId": "DOT-USDT-SWAP",
     "side": "SHORT",
@@ -172,7 +86,7 @@
     "hit_tp3": false,
     "activated_at": 1783546932.5582237,
     "entry_message_id": 7491,
-    "last_checked_ts": 1783552500.0,
-    "current_price": 0.8229
+    "last_checked_ts": 1783553400.0,
+    "current_price": 0.8236
   }
 }
