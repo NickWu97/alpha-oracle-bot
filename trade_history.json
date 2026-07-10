@@ -1975,5 +1975,94 @@
       "atr_pct": 0.223,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-10 23:34",
+    "date": "2026-07-10",
+    "order_id": "1783683261-DF828B6E",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.1099,
+    "close": 1.105,
+    "close_type": "SL",
+    "pnl": -0.44,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 94,
+    "funding_rate": 6.93141771839e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.82,
+      "obv": 5,
+      "vwap": 1.0991,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01573,
+      "bb_pct_b": 0.524,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.293,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "fund:neutral (n=18, 勝率 33%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -6
+    },
+    "features": {
+      "score": 94.0,
+      "rsi": 52.1,
+      "atr_pct": 0.293,
+      "funding": 0.06931417718390001,
+      "vol_ratio": 0.82,
+      "adx": 29.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 31.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.293,
+      "volatile": false
+    }
   }
 ]
