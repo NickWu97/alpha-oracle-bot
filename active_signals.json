@@ -83,7 +83,182 @@
     "hit_tp3": false,
     "activated_at": 1783672890.2249136,
     "entry_message_id": 7525,
-    "last_checked_ts": 1783678500.0,
-    "current_price": 576.3
+    "last_checked_ts": 1783682100.0,
+    "current_price": 575.0
+  },
+  "BTC-USDT-SWAPLONG1783683257-2FC0DC7F": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 64320.2,
+    "sl": 64104.4554,
+    "tp1": 64353.3354,
+    "tp2": 64353.3354,
+    "tp3": 64353.3354,
+    "atr": 143.82974603,
+    "score": 103,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.5,
+      "obv": 5,
+      "vwap": 62928.5518,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0135,
+      "bb_pct_b": 0.735,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 36.9,
+      "atr_pct": 0.223,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=18, 勝率 33%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -6,
+      "tp_adjust_notes": [
+        "TP1 64643.8169→64353.3354（阻力 64482.3000）",
+        "TP2 64967.4339→64353.3354（阻力 64482.3000）",
+        "TP3 65398.9231→64353.3354（阻力 64482.3000）"
+      ]
+    },
+    "funding_rate": 7.04142665769e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 34.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 36.9,
+      "atr_pct": 0.223,
+      "volatile": false
+    },
+    "created": 1783683257.4890916,
+    "expires": 1783769657.4890919,
+    "order_id": "1783683257-2FC0DC7F",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1783683257.48913,
+    "entry_message_id": 7535,
+    "last_checked_ts": 1783683257.48913
+  },
+  "XRP-USDT-SWAPLONG1783683261-DF828B6E": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.1099,
+    "sl": 1.105,
+    "tp1": 1.1172,
+    "tp2": 1.1246,
+    "tp3": 1.1343,
+    "atr": 0.00325583,
+    "score": 94,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.82,
+      "obv": 5,
+      "vwap": 1.0991,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01573,
+      "bb_pct_b": 0.524,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.293,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "fund:neutral (n=18, 勝率 33%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -6
+    },
+    "funding_rate": 6.93141771839e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 31.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.293,
+      "volatile": false
+    },
+    "created": 1783683261.4248111,
+    "expires": 1783769661.4248114,
+    "order_id": "1783683261-DF828B6E",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1783683261.4248676,
+    "entry_message_id": 7536,
+    "last_checked_ts": 1783683261.4248676
   }
 }
