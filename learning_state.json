@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsilong:80-89": {
       "win": 0,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 9,
-      "loss": 14,
+      "loss": 15,
       "be": 0,
-      "total": 23
+      "total": 24
     },
     "sess:asia_day": {
       "win": 3,
-      "loss": 7,
+      "loss": 8,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "coin:BTC": {
       "win": 6,
@@ -179,6 +179,24 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsishort:30-39": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:NEAR": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:NEARSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -225,6 +243,12 @@
       "total": 1
     },
     "AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "NEAR": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -287,7 +311,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1783721790.6682196,
+      "coin": "NEAR",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1783697645.1257997
+  "updated_at": 1783721789.9865227
 }
