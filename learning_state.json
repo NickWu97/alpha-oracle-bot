@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 3,
-      "loss": 11,
+      "win": 6,
+      "loss": 12,
       "be": 0,
-      "total": 14
+      "total": 18
     },
     "sess:asia_day": {
       "win": 3,
@@ -25,28 +25,28 @@
       "total": 10
     },
     "coin:BTC": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "coin_side:BTCLONG": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "score:90+": {
-      "win": 3,
-      "loss": 8,
+      "win": 6,
+      "loss": 9,
       "be": 0,
-      "total": 11
+      "total": 15
     },
     "rsilong:50-59": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin:BNB": {
       "win": 3,
@@ -115,10 +115,10 @@
       "total": 1
     },
     "rsilong:70-79": {
-      "win": 0,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "sess:asia_dawn": {
       "win": 0,
@@ -155,14 +155,32 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "sess:europe": {
+      "win": 3,
+      "loss": 1,
+      "be": 0,
+      "total": 4
+    },
+    "coin:AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "BTC": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "BNB": {
       "win": 3,
@@ -195,6 +213,12 @@
       "total": 1
     },
     "DOT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "AVAX": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -245,5 +269,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1783559547.2874076
+  "updated_at": 1783680272.9944656
 }
