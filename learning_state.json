@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 32,
-      "loss": 20,
+      "loss": 21,
       "be": 5,
-      "total": 57
+      "total": 58
     },
     "sess:asia_day": {
       "win": 3,
-      "loss": 11,
+      "loss": 12,
       "be": 0,
-      "total": 14
+      "total": 15
     },
     "coin:BTC": {
       "win": 12,
@@ -38,27 +38,27 @@
     },
     "score:90+": {
       "win": 26,
-      "loss": 16,
+      "loss": 17,
       "be": 5,
-      "total": 47
+      "total": 48
     },
     "rsilong:50-59": {
       "win": 19,
-      "loss": 8,
+      "loss": 9,
       "be": 1,
-      "total": 28
+      "total": 29
     },
     "coin:BNB": {
       "win": 7,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "coin_side:BNBLONG": {
       "win": 7,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "rsilong:60-69": {
       "win": 8,
@@ -226,9 +226,9 @@
     },
     "BNB": {
       "win": 7,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "SOL": {
       "win": 1,
@@ -370,7 +370,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1783814210.9087055,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "RSI_COLLAPSE",
+      "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1783810287.9952064
+  "updated_at": 1783814210.3535657
 }
