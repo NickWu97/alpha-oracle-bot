@@ -84,15 +84,15 @@
     "hit_tp3": false,
     "activated_at": 1783768761.079552,
     "entry_message_id": 7594,
-    "last_checked_ts": 1783769400.0,
-    "current_price": 64182.0
+    "last_checked_ts": 1783771200.0,
+    "current_price": 64160.0
   },
   "BNB-USDT-SWAPLONG1783768763-160F7CB5": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 577.7,
-    "sl": 576.3787,
+    "sl": 577.7,
     "tp1": 579.6819,
     "tp2": 578.6404,
     "tp3": 578.6404,
@@ -168,13 +168,96 @@
     "created": 1783768763.0786235,
     "expires": 1783855163.0786238,
     "order_id": "1783768763-160F7CB5",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1783768763.078658,
     "entry_message_id": 7595,
-    "last_checked_ts": 1783769400.0,
-    "current_price": 578.8
+    "last_checked_ts": 1783771200.0,
+    "current_price": 579.0
+  },
+  "DOT-USDT-SWAPLONG1783772934-60C93A1A": {
+    "instId": "DOT-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.8781,
+    "sl": 0.8738,
+    "tp1": 0.8846,
+    "tp2": 0.8911,
+    "tp3": 0.8998,
+    "atr": 0.00289667,
+    "score": 106,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 49.7,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.72,
+      "obv": 5,
+      "vwap": 0.852,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01117,
+      "bb_pct_b": 0.524,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.3,
+      "atr_pct": 0.33,
+      "learning_notes": [
+        "sess:europe (n=16, 勝率 69%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 18.3,
+      "atr_pct": 0.33,
+      "volatile": false
+    },
+    "created": 1783772934.7248435,
+    "expires": 1783859334.7248437,
+    "order_id": "1783772934-60C93A1A",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1783772934.7248795,
+    "entry_message_id": 7599,
+    "last_checked_ts": 1783772934.7248795
   }
 }
