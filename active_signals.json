@@ -86,8 +86,8 @@
     "hit_tp3": false,
     "activated_at": 1783787128.557752,
     "entry_message_id": 7617,
-    "last_checked_ts": 1783801800.0,
-    "current_price": 580.7
+    "last_checked_ts": 1783803600.0,
+    "current_price": 581.2
   },
   "AVAX-USDT-SWAPLONG1783787133-5007AB23": {
     "instId": "AVAX-USDT-SWAP",
@@ -172,8 +172,8 @@
     "hit_tp3": false,
     "activated_at": 1783787133.3992965,
     "entry_message_id": 7619,
-    "last_checked_ts": 1783801800.0,
-    "current_price": 6.748
+    "last_checked_ts": 1783803600.0,
+    "current_price": 6.733
   },
   "LINK-USDT-SWAPLONG1783791027-E594BD28": {
     "instId": "LINK-USDT-SWAP",
@@ -258,99 +258,8 @@
     "hit_tp3": false,
     "activated_at": 1783791027.8378906,
     "entry_message_id": 7631,
-    "last_checked_ts": 1783801800.0,
-    "current_price": 8.072
-  },
-  "BTC-USDT-SWAPLONG1783794952-AE879294": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 64327.1,
-    "sl": 64327.1,
-    "tp1": 64355.8304,
-    "tp2": 64355.8304,
-    "tp3": 64355.8304,
-    "atr": 107.75583793,
-    "score": 90,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 0,
-      "rsi_value": 55.9,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": -10,
-      "volume_ratio": 0.3,
-      "obv": 5,
-      "vwap": 63314.2275,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00612,
-      "bb_pct_b": 0.644,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 21.5,
-      "atr_pct": 0.168,
-      "learning_notes": [
-        "rsilong:50-59 (n=21, 勝率 71%) → +2",
-        "coin:BTC (n=11, 勝率 82%) → +2",
-        "coin_side:BTCLONG (n=11, 勝率 82%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
-      ],
-      "learning_adjust": 6,
-      "tp_adjust_notes": [
-        "TP1 64569.5506→64355.8304（阻力 64484.8000）",
-        "TP2 64812.0013→64355.8304（阻力 64484.8000）",
-        "TP3 65135.2688→64355.8304（阻力 64484.8000）"
-      ]
-    },
-    "funding_rate": 6.68433366328e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 59.6
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 60.4
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 34.8
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 21.5,
-      "atr_pct": 0.168,
-      "volatile": false
-    },
-    "created": 1783794952.23909,
-    "expires": 1783881352.2390902,
-    "order_id": "1783794952-AE879294",
-    "status": "BE",
-    "hit_tp1": true,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1783794952.2391312,
-    "entry_message_id": 7646,
-    "last_checked_ts": 1783801800.0,
-    "current_price": 64371.0
+    "last_checked_ts": 1783803600.0,
+    "current_price": 8.063
   },
   "XRP-USDT-SWAPLONG1783799515-ABA3F107": {
     "instId": "XRP-USDT-SWAP",
@@ -440,7 +349,7 @@
     "hit_tp3": false,
     "activated_at": 1783799515.565982,
     "entry_message_id": 7656,
-    "last_checked_ts": 1783801800.0,
-    "current_price": 1.1147
+    "last_checked_ts": 1783803600.0,
+    "current_price": 1.1143
   }
 }
