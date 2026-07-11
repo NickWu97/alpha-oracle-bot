@@ -4932,5 +4932,94 @@
       "atr_pct": 0.168,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-12 05:52",
+    "date": "2026-07-12",
+    "order_id": "1783791027-E594BD28",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 8.089,
+    "close": 8.0527,
+    "close_type": "SL",
+    "pnl": -0.45,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 100,
+    "funding_rate": 7.82254541586e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": 5,
+      "vwap": 7.8256,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01096,
+      "bb_pct_b": 0.965,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD金叉✅",
+      "macd_score": 8,
+      "regime": "trend",
+      "adx": 31.4,
+      "atr_pct": 0.299,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "sess:asia_dawn (n=6, 勝率 17%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": -3
+    },
+    "features": {
+      "score": 100.0,
+      "rsi": 65.3,
+      "atr_pct": 0.299,
+      "funding": 0.0782254541586,
+      "vol_ratio": 0.52,
+      "adx": 31.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 70.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.6
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.4,
+      "atr_pct": 0.299,
+      "volatile": false
+    }
   }
 ]

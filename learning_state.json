@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 32,
-      "loss": 17,
+      "loss": 18,
       "be": 5,
-      "total": 54
+      "total": 55
     },
     "sess:asia_day": {
       "win": 3,
@@ -38,9 +38,9 @@
     },
     "score:90+": {
       "win": 26,
-      "loss": 13,
+      "loss": 14,
       "be": 5,
-      "total": 44
+      "total": 45
     },
     "rsilong:50-59": {
       "win": 19,
@@ -62,9 +62,9 @@
     },
     "rsilong:60-69": {
       "win": 8,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 12
+      "total": 13
     },
     "coin:SOL": {
       "win": 1,
@@ -122,9 +122,9 @@
     },
     "sess:asia_dawn": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 19
+      "total": 20
     },
     "rsilong:40-49": {
       "win": 1,
@@ -203,6 +203,18 @@
       "loss": 0,
       "be": 1,
       "total": 5
+    },
+    "coin:LINK": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:LINKLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -255,6 +267,12 @@
       "total": 2
     },
     "NEAR": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "LINK": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -331,7 +349,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1783806722.2257967,
+      "coin": "LINK",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1783805166.7588353
+  "updated_at": 1783806721.7532003
 }
