@@ -5297,5 +5297,97 @@
       "atr_pct": 0.201,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-13 01:18",
+    "date": "2026-07-13",
+    "order_id": "1783873784-DBFC13F4",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 581.0,
+    "close": 579.0917,
+    "close_type": "SL",
+    "pnl": -0.33,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 88,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.36,
+      "obv": 5,
+      "vwap": 575.3805,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00917,
+      "bb_pct_b": 0.508,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 39.5,
+      "atr_pct": 0.219,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsilong:60-69 (n=13, 勝率 62%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP2 586.7248→583.4308（阻力 584.6000）",
+        "TP3 590.5413→583.4308（阻力 584.6000）"
+      ]
+    },
+    "features": {
+      "score": 88.0,
+      "rsi": 60.5,
+      "atr_pct": 0.219,
+      "funding": 0.1,
+      "vol_ratio": 0.36,
+      "adx": 39.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 58.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 39.5,
+      "atr_pct": 0.219,
+      "volatile": false
+    }
   }
 ]
