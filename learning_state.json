@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 32,
+      "win": 35,
       "loss": 23,
       "be": 5,
-      "total": 60
+      "total": 63
     },
     "sess:asia_day": {
       "win": 3,
@@ -37,10 +37,10 @@
       "total": 14
     },
     "score:90+": {
-      "win": 26,
+      "win": 29,
       "loss": 18,
       "be": 5,
-      "total": 49
+      "total": 52
     },
     "rsilong:50-59": {
       "win": 19,
@@ -121,10 +121,10 @@
       "total": 4
     },
     "sess:asia_dawn": {
-      "win": 12,
+      "win": 15,
       "loss": 7,
       "be": 3,
-      "total": 22
+      "total": 25
     },
     "rsilong:40-49": {
       "win": 1,
@@ -133,10 +133,10 @@
       "total": 6
     },
     "rsishort:40-49": {
-      "win": 1,
+      "win": 4,
       "loss": 2,
       "be": 1,
-      "total": 4
+      "total": 7
     },
     "coin_side:SOLSHORT": {
       "win": 1,
@@ -205,16 +205,22 @@
       "total": 5
     },
     "coin:LINK": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "coin_side:LINKLONG": {
       "win": 0,
       "loss": 2,
       "be": 0,
       "total": 2
+    },
+    "coin_side:LINKSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -273,10 +279,10 @@
       "total": 1
     },
     "LINK": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     }
   },
   "loss_reasons": [
@@ -379,5 +385,5 @@
       "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1783879966.2101092
+  "updated_at": 1783977946.0358763
 }
