@@ -6139,5 +6139,93 @@
       "atr_pct": 0.472,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-14 07:36",
+    "date": "2026-07-14",
+    "order_id": "1783978569-18936D81",
+    "coin": "BNB",
+    "side": "SHORT",
+    "entry": 564.7,
+    "close": 566.568,
+    "close_type": "SL",
+    "pnl": -0.33,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 95,
+    "funding_rate": -7.27282123667e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 42.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.4,
+      "obv": 5,
+      "vwap": 574.0802,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00728,
+      "bb_pct_b": 0.482,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.221,
+      "adx_bonus": 4,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 0
+    },
+    "features": {
+      "score": 95.0,
+      "rsi": 42.8,
+      "atr_pct": 0.221,
+      "funding": -0.0727282123667,
+      "vol_ratio": 0.4,
+      "adx": 30.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.221,
+      "volatile": false
+    }
   }
 ]
