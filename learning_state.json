@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 35,
-      "loss": 23,
+      "loss": 24,
       "be": 5,
-      "total": 63
+      "total": 64
     },
     "sess:asia_day": {
-      "win": 3,
-      "loss": 12,
+      "win": 5,
+      "loss": 13,
       "be": 0,
-      "total": 15
+      "total": 18
     },
     "coin:BTC": {
       "win": 12,
@@ -37,10 +37,10 @@
       "total": 14
     },
     "score:90+": {
-      "win": 30,
-      "loss": 18,
+      "win": 32,
+      "loss": 19,
       "be": 5,
-      "total": 53
+      "total": 56
     },
     "rsilong:50-59": {
       "win": 19,
@@ -104,9 +104,9 @@
     },
     "coin:DOGE": {
       "win": 2,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 5
+      "total": 6
     },
     "coin_side:DOGELONG": {
       "win": 2,
@@ -134,9 +134,9 @@
     },
     "rsishort:40-49": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "coin_side:SOLSHORT": {
       "win": 1,
@@ -181,10 +181,10 @@
       "total": 6
     },
     "rsishort:30-39": {
-      "win": 1,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 2
+      "total": 4
     },
     "coin:NEAR": {
       "win": 0,
@@ -223,20 +223,26 @@
       "total": 3
     },
     "fund:neg": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 3
     },
     "coin:ADA": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 3
     },
     "coin_side:ADASHORT": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:DOGESHORT": {
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
     }
@@ -274,9 +280,9 @@
     },
     "DOGE": {
       "win": 2,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 5
+      "total": 6
     },
     "DOT": {
       "win": 4,
@@ -303,10 +309,10 @@
       "total": 5
     },
     "ADA": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -409,5 +415,5 @@
       "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1783978576.9924867
+  "updated_at": 1783981549.74968
 }
