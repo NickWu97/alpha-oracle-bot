@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 0.1574,
-    "sl": 0.1585,
+    "sl": 0.1574,
     "tp1": 0.1565,
     "tp2": 0.1565,
     "tp3": 0.1565,
@@ -82,14 +82,14 @@
     "created": 1783969489.6391294,
     "expires": 1784055889.6391296,
     "order_id": "1783969489-A85AC0E8",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1783969489.639158,
     "entry_message_id": 7735,
-    "last_checked_ts": 1783976400.0,
-    "current_price": 0.157
+    "last_checked_ts": 1783977300.0,
+    "current_price": 0.1565
   },
   "BTC-USDT-SWAPSHORT1783974870-67C0A769": {
     "instId": "BTC-USDT-SWAP",
@@ -176,7 +176,179 @@
     "hit_tp3": false,
     "activated_at": 1783974870.2036357,
     "entry_message_id": 7739,
-    "last_checked_ts": 1783976400.0,
-    "current_price": 62020.1
+    "last_checked_ts": 1783977300.0,
+    "current_price": 62013.3
+  },
+  "BNB-USDT-SWAPSHORT1783978569-18936D81": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 564.7,
+    "sl": 566.568,
+    "tp1": 561.8981,
+    "tp2": 559.0961,
+    "tp3": 555.3602,
+    "atr": 1.24530079,
+    "score": 95,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 42.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.4,
+      "obv": 5,
+      "vwap": 574.0802,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00728,
+      "bb_pct_b": 0.482,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.221,
+      "adx_bonus": 4,
+      "pullback": true,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 0
+    },
+    "funding_rate": -7.27282123667e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.0
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.221,
+      "volatile": false
+    },
+    "created": 1783978569.0746074,
+    "expires": 1784064969.0746076,
+    "order_id": "1783978569-18936D81",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1783978569.0746377,
+    "entry_message_id": 7748,
+    "last_checked_ts": 1783978569.0746377
+  },
+  "DOGE-USDT-SWAPSHORT1783978571-2490A87F": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.0714,
+    "sl": 0.0718,
+    "tp1": 0.071,
+    "tp2": 0.071,
+    "tp3": 0.071,
+    "atr": 0.00028829,
+    "score": 102,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 42.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.1,
+      "obv": 5,
+      "vwap": 0.0732,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01436,
+      "bb_pct_b": 0.43,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 27.8,
+      "atr_pct": 0.404,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 0.0707→0.0710（支撐 0.0709）",
+        "TP2 0.0701→0.0710（支撐 0.0709）",
+        "TP3 0.0692→0.0710（支撐 0.0709）"
+      ]
+    },
+    "funding_rate": -6.08565441977e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 27.8,
+      "atr_pct": 0.404,
+      "volatile": false
+    },
+    "created": 1783978571.0296881,
+    "expires": 1784064971.0296886,
+    "order_id": "1783978571-2490A87F",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1783978571.0297158,
+    "entry_message_id": 7749,
+    "last_checked_ts": 1783978571.0297158
   }
 }
