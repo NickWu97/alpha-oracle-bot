@@ -6499,5 +6499,94 @@
       "atr_pct": 0.188,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-14 18:13",
+    "date": "2026-07-14",
+    "order_id": "1784019298-AF7A3692",
+    "coin": "DOT",
+    "side": "SHORT",
+    "entry": 0.8434,
+    "close": 0.8481,
+    "close_type": "SL",
+    "pnl": -0.56,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 55.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.85,
+      "obv": 5,
+      "vwap": 0.8471,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01713,
+      "bb_pct_b": 0.621,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "transitional",
+      "adx": 24.5,
+      "atr_pct": 0.375,
+      "learning_notes": [
+        "sess:europe (n=17, 勝率 71%) → +2",
+        "coin:DOT (n=6, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -1
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 55.8,
+      "atr_pct": 0.375,
+      "funding": 0.1,
+      "vol_ratio": 0.85,
+      "adx": 24.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 30.2
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 24.5,
+      "atr_pct": 0.375,
+      "volatile": false
+    }
   }
 ]
