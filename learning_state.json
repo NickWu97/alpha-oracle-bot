@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 35,
-      "loss": 30,
+      "loss": 31,
       "be": 5,
-      "total": 70
+      "total": 71
     },
     "sess:asia_day": {
       "win": 5,
@@ -26,9 +26,9 @@
     },
     "coin:BTC": {
       "win": 12,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 15
+      "total": 16
     },
     "coin_side:BTCLONG": {
       "win": 12,
@@ -38,9 +38,9 @@
     },
     "score:90+": {
       "win": 32,
-      "loss": 23,
+      "loss": 24,
       "be": 5,
-      "total": 60
+      "total": 61
     },
     "rsilong:50-59": {
       "win": 19,
@@ -158,9 +158,9 @@
     },
     "sess:europe": {
       "win": 12,
-      "loss": 6,
+      "loss": 7,
       "be": 2,
-      "total": 20
+      "total": 21
     },
     "coin:AVAX": {
       "win": 0,
@@ -254,15 +254,15 @@
     },
     "coin_side:BTCSHORT": {
       "win": 0,
-      "loss": 1,
-      "be": 0,
-      "total": 1
-    },
-    "rsishort:50-59": {
-      "win": 0,
       "loss": 2,
       "be": 0,
       "total": 2
+    },
+    "rsishort:50-59": {
+      "win": 0,
+      "loss": 3,
+      "be": 0,
+      "total": 3
     },
     "coin_side:NEARLONG": {
       "win": 0,
@@ -274,9 +274,9 @@
   "by_coin": {
     "BTC": {
       "win": 12,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 15
+      "total": 16
     },
     "BNB": {
       "win": 7,
@@ -465,7 +465,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1784033627.125178,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "VOL_SPIKE",
+      "title": "🌪 波動率激增"
     }
   ],
-  "updated_at": 1784029514.80477
+  "updated_at": 1784033626.5995634
 }
