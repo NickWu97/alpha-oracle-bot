@@ -14,33 +14,33 @@
     },
     "fund:neutral": {
       "win": 39,
-      "loss": 31,
+      "loss": 32,
       "be": 6,
-      "total": 76
+      "total": 77
     },
     "sess:asia_day": {
       "win": 6,
-      "loss": 16,
+      "loss": 17,
       "be": 1,
-      "total": 23
+      "total": 24
     },
     "coin:BTC": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 16
+      "total": 17
     },
     "coin_side:BTCLONG": {
       "win": 12,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 14
+      "total": 15
     },
     "score:90+": {
       "win": 36,
-      "loss": 24,
+      "loss": 25,
       "be": 6,
-      "total": 66
+      "total": 67
     },
     "rsilong:50-59": {
       "win": 23,
@@ -128,9 +128,9 @@
     },
     "rsilong:40-49": {
       "win": 1,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 6
+      "total": 7
     },
     "rsishort:40-49": {
       "win": 4,
@@ -274,9 +274,9 @@
   "by_coin": {
     "BTC": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 16
+      "total": 17
     },
     "BNB": {
       "win": 7,
@@ -472,7 +472,14 @@
       "side": "SHORT",
       "code": "VOL_SPIKE",
       "title": "🌪 波動率激增"
+    },
+    {
+      "ts": 1784163641.575401,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1784158276.2231836
+  "updated_at": 1784163641.0424874
 }
