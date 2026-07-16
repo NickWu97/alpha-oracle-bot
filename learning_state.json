@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 39,
-      "loss": 33,
+      "loss": 35,
       "be": 6,
-      "total": 78
+      "total": 80
     },
     "sess:asia_day": {
       "win": 6,
@@ -26,21 +26,21 @@
     },
     "coin:BTC": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "coin_side:BTCLONG": {
       "win": 12,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 15
+      "total": 16
     },
     "score:90+": {
       "win": 36,
-      "loss": 26,
+      "loss": 28,
       "be": 6,
-      "total": 68
+      "total": 70
     },
     "rsilong:50-59": {
       "win": 23,
@@ -62,9 +62,9 @@
     },
     "rsilong:60-69": {
       "win": 8,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "coin:SOL": {
       "win": 1,
@@ -128,9 +128,9 @@
     },
     "rsilong:40-49": {
       "win": 1,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "rsishort:40-49": {
       "win": 4,
@@ -146,9 +146,9 @@
     },
     "coin:DOT": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "coin_side:DOTSHORT": {
       "win": 0,
@@ -158,9 +158,9 @@
     },
     "sess:europe": {
       "win": 12,
-      "loss": 8,
+      "loss": 10,
       "be": 2,
-      "total": 22
+      "total": 24
     },
     "coin:AVAX": {
       "win": 0,
@@ -200,9 +200,9 @@
     },
     "coin_side:DOTLONG": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "coin:LINK": {
       "win": 3,
@@ -274,9 +274,9 @@
   "by_coin": {
     "BTC": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "BNB": {
       "win": 7,
@@ -310,9 +310,9 @@
     },
     "DOT": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "AVAX": {
       "win": 0,
@@ -479,7 +479,21 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1784190888.9522195,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1784190890.8610375,
+      "coin": "DOT",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1784183628.7777023
+  "updated_at": 1784190890.2071588
 }
