@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 10,
+      "win": 12,
       "loss": 7,
       "be": 0,
-      "total": 17
+      "total": 19
     },
     "rsilong:80-89": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 54,
+      "win": 56,
       "loss": 38,
-      "be": 6,
-      "total": 98
+      "be": 7,
+      "total": 101
     },
     "sess:asia_day": {
       "win": 6,
@@ -25,46 +25,46 @@
       "total": 25
     },
     "coin:BTC": {
-      "win": 16,
+      "win": 18,
       "loss": 6,
       "be": 0,
-      "total": 22
+      "total": 24
     },
     "coin_side:BTCLONG": {
-      "win": 16,
+      "win": 18,
       "loss": 4,
       "be": 0,
-      "total": 20
+      "total": 22
     },
     "score:90+": {
       "win": 48,
       "loss": 32,
-      "be": 7,
-      "total": 87
+      "be": 8,
+      "total": 88
     },
     "rsilong:50-59": {
       "win": 27,
       "loss": 12,
-      "be": 2,
-      "total": 41
+      "be": 3,
+      "total": 42
     },
     "coin:BNB": {
       "win": 11,
       "loss": 8,
-      "be": 1,
-      "total": 20
+      "be": 2,
+      "total": 21
     },
     "coin_side:BNBLONG": {
       "win": 11,
       "loss": 6,
-      "be": 1,
-      "total": 18
+      "be": 2,
+      "total": 19
     },
     "rsilong:60-69": {
-      "win": 9,
+      "win": 11,
       "loss": 7,
       "be": 2,
-      "total": 18
+      "total": 20
     },
     "coin:SOL": {
       "win": 4,
@@ -121,10 +121,10 @@
       "total": 4
     },
     "sess:asia_dawn": {
-      "win": 27,
+      "win": 29,
       "loss": 7,
-      "be": 3,
-      "total": 37
+      "be": 4,
+      "total": 40
     },
     "rsilong:40-49": {
       "win": 8,
@@ -285,16 +285,16 @@
   },
   "by_coin": {
     "BTC": {
-      "win": 16,
+      "win": 18,
       "loss": 6,
       "be": 0,
-      "total": 22
+      "total": 24
     },
     "BNB": {
       "win": 11,
       "loss": 8,
-      "be": 1,
-      "total": 20
+      "be": 2,
+      "total": 21
     },
     "SOL": {
       "win": 4,
@@ -514,5 +514,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1784407906.553114
+  "updated_at": 1784408703.7202969
 }
