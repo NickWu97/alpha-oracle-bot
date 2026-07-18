@@ -8732,5 +8732,94 @@
       "atr_pct": 0.106,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-18 23:38",
+    "date": "2026-07-18",
+    "order_id": "1784385277-0A6C7F0C",
+    "coin": "NEAR",
+    "side": "SHORT",
+    "entry": 1.913,
+    "close": 1.9248,
+    "close_type": "SL",
+    "pnl": -0.62,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 93,
+    "funding_rate": -6.66648138855e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 56.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 5,
+      "volume_ratio": 1.56,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 1.9991,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01267,
+      "bb_pct_b": 0.927,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.9,
+      "atr_pct": 0.409,
+      "learning_notes": [
+        "sess:us (n=9, 勝率 89%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 1 / 敗 9 (勝率 10%)",
+        "KNN 低勝率 → -8"
+      ],
+      "learning_adjust": -6
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 56.6,
+      "atr_pct": 0.409,
+      "funding": -0.0666648138855,
+      "vol_ratio": 1.56,
+      "adx": 18.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.2
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.9,
+      "atr_pct": 0.409,
+      "volatile": false
+    }
   }
 ]
