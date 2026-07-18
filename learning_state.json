@@ -37,10 +37,10 @@
       "total": 16
     },
     "score:90+": {
-      "win": 39,
-      "loss": 30,
-      "be": 6,
-      "total": 75
+      "win": 40,
+      "loss": 31,
+      "be": 7,
+      "total": 78
     },
     "rsilong:50-59": {
       "win": 23,
@@ -134,9 +134,9 @@
     },
     "rsishort:40-49": {
       "win": 7,
-      "loss": 6,
+      "loss": 7,
       "be": 1,
-      "total": 14
+      "total": 15
     },
     "coin_side:SOLSHORT": {
       "win": 4,
@@ -145,10 +145,10 @@
       "total": 6
     },
     "coin:DOT": {
-      "win": 4,
+      "win": 5,
       "loss": 4,
-      "be": 1,
-      "total": 9
+      "be": 2,
+      "total": 11
     },
     "coin_side:DOTSHORT": {
       "win": 0,
@@ -157,10 +157,10 @@
       "total": 2
     },
     "sess:europe": {
-      "win": 15,
-      "loss": 11,
-      "be": 2,
-      "total": 28
+      "win": 16,
+      "loss": 12,
+      "be": 3,
+      "total": 31
     },
     "coin:AVAX": {
       "win": 0,
@@ -188,21 +188,21 @@
     },
     "coin:NEAR": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "coin_side:NEARSHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:DOTLONG": {
-      "win": 4,
+      "win": 5,
       "loss": 2,
-      "be": 1,
-      "total": 7
+      "be": 2,
+      "total": 9
     },
     "coin:LINK": {
       "win": 3,
@@ -223,10 +223,10 @@
       "total": 3
     },
     "fund:neg": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
+      "win": 4,
+      "loss": 1,
+      "be": 1,
+      "total": 6
     },
     "coin:ADA": {
       "win": 3,
@@ -275,6 +275,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsilong:30-39": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
     }
   },
   "by_coin": {
@@ -315,10 +321,10 @@
       "total": 6
     },
     "DOT": {
-      "win": 4,
+      "win": 5,
       "loss": 4,
-      "be": 1,
-      "total": 9
+      "be": 2,
+      "total": 11
     },
     "AVAX": {
       "win": 0,
@@ -328,9 +334,9 @@
     },
     "NEAR": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "LINK": {
       "win": 3,
@@ -508,5 +514,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1784366864.698339
+  "updated_at": 1784377943.8533616
 }
