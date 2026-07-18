@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 42,
-      "loss": 36,
+      "loss": 37,
       "be": 6,
-      "total": 84
+      "total": 85
     },
     "sess:asia_day": {
       "win": 6,
@@ -38,15 +38,15 @@
     },
     "score:90+": {
       "win": 39,
-      "loss": 29,
+      "loss": 30,
       "be": 6,
-      "total": 74
+      "total": 75
     },
     "rsilong:50-59": {
       "win": 23,
-      "loss": 11,
+      "loss": 12,
       "be": 2,
-      "total": 36
+      "total": 37
     },
     "coin:BNB": {
       "win": 7,
@@ -158,9 +158,9 @@
     },
     "sess:europe": {
       "win": 15,
-      "loss": 10,
+      "loss": 11,
       "be": 2,
-      "total": 27
+      "total": 28
     },
     "coin:AVAX": {
       "win": 0,
@@ -230,9 +230,9 @@
     },
     "coin:ADA": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin_side:ADASHORT": {
       "win": 3,
@@ -269,6 +269,12 @@
       "loss": 1,
       "be": 1,
       "total": 6
+    },
+    "coin_side:ADALONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -334,9 +340,9 @@
     },
     "ADA": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     }
   },
   "loss_reasons": [
@@ -493,7 +499,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1784366865.3693175,
+      "coin": "ADA",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1784359181.28578
+  "updated_at": 1784366864.698339
 }

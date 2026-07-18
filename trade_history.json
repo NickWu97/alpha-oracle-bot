@@ -7978,5 +7978,99 @@
       "atr_pct": 0.188,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-18 17:27",
+    "date": "2026-07-18",
+    "order_id": "1784353935-64D546C6",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1667,
+    "close": 0.1655,
+    "close_type": "SL",
+    "pnl": -0.72,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.73,
+      "obv": 5,
+      "vwap": 0.1637,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01548,
+      "bb_pct_b": 0.336,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 25.7,
+      "atr_pct": 0.47,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "rsilong:50-59 (n=36, 勝率 64%) → +1",
+        "sess:asia_day (n=25, 勝率 24%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": -2,
+      "tp_adjust_notes": [
+        "TP1 0.1685→0.1670（阻力 0.1674）",
+        "TP2 0.1702→0.1670（阻力 0.1674）",
+        "TP3 0.1726→0.1670（阻力 0.1674）"
+      ]
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 50.8,
+      "atr_pct": 0.47,
+      "funding": 0.1,
+      "vol_ratio": 0.73,
+      "adx": 25.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.7
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 25.7,
+      "atr_pct": 0.47,
+      "volatile": false
+    }
   }
 ]
