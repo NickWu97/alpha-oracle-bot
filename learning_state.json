@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 6,
+      "win": 9,
       "loss": 7,
       "be": 0,
-      "total": 13
+      "total": 16
     },
     "rsilong:80-89": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 42,
+      "win": 45,
       "loss": 37,
       "be": 6,
-      "total": 85
+      "total": 88
     },
     "sess:asia_day": {
       "win": 6,
@@ -127,10 +127,10 @@
       "total": 29
     },
     "rsilong:40-49": {
-      "win": 1,
+      "win": 4,
       "loss": 6,
       "be": 1,
-      "total": 8
+      "total": 11
     },
     "rsishort:40-49": {
       "win": 7,
@@ -163,22 +163,22 @@
       "total": 31
     },
     "coin:AVAX": {
-      "win": 0,
+      "win": 3,
       "loss": 3,
-      "be": 0,
-      "total": 3
-    },
-    "coin_side:AVAXLONG": {
-      "win": 0,
-      "loss": 3,
-      "be": 0,
-      "total": 3
-    },
-    "sess:us": {
-      "win": 5,
-      "loss": 1,
       "be": 0,
       "total": 6
+    },
+    "coin_side:AVAXLONG": {
+      "win": 3,
+      "loss": 3,
+      "be": 0,
+      "total": 6
+    },
+    "sess:us": {
+      "win": 8,
+      "loss": 1,
+      "be": 0,
+      "total": 9
     },
     "rsishort:30-39": {
       "win": 3,
@@ -327,10 +327,10 @@
       "total": 11
     },
     "AVAX": {
-      "win": 0,
+      "win": 3,
       "loss": 3,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "NEAR": {
       "win": 4,
@@ -514,5 +514,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1784377943.8533616
+  "updated_at": 1784383254.3056905
 }
