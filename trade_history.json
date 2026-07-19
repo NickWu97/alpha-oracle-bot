@@ -10751,5 +10751,185 @@
       "atr_pct": 0.292,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-20 01:12",
+    "date": "2026-07-20",
+    "order_id": "1784478418-81A289A1",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 569.8,
+    "close": 568.5841,
+    "close_type": "SL",
+    "pnl": -0.21,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 4.01192478479e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 1.0,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 568.1791,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0075,
+      "bb_pct_b": 0.862,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.8,
+      "atr_pct": 0.142,
+      "learning_notes": [
+        "sess:asia_dawn (n=40, 勝率 72%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 61.4,
+      "atr_pct": 0.142,
+      "funding": 0.0401192478479,
+      "vol_ratio": 1.0,
+      "adx": 15.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 46.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 34.3
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.8,
+      "atr_pct": 0.142,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-20 01:12",
+    "date": "2026-07-20",
+    "order_id": "1784478420-7C88BD9C",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.095,
+    "close": 1.0914,
+    "close_type": "SL",
+    "pnl": -0.33,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 89,
+    "funding_rate": 1.4551826429e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 47.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.41,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 1.0908,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00747,
+      "bb_pct_b": 0.45,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 22.6,
+      "atr_pct": 0.221,
+      "learning_notes": [
+        "score:80-89 (n=19, 勝率 63%) → +1",
+        "sess:asia_dawn (n=40, 勝率 72%) → +2",
+        "coin:XRP (n=8, 勝率 38%) → -2",
+        "coin_side:XRPLONG (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 89.0,
+      "rsi": 47.6,
+      "atr_pct": 0.221,
+      "funding": 0.014551826429,
+      "vol_ratio": 1.41,
+      "adx": 22.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.5
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 22.6,
+      "atr_pct": 0.221,
+      "volatile": false
+    }
   }
 ]
