@@ -10931,5 +10931,99 @@
       "atr_pct": 0.221,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-20 01:32",
+    "date": "2026-07-20",
+    "order_id": "1784478423-BE3FAF8B",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 6.445,
+    "close": 6.4736,
+    "close_type": "SL",
+    "pnl": -0.44,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 108,
+    "funding_rate": -0.0001049531005743,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 5,
+      "volume_ratio": 1.76,
+      "obv": 5,
+      "vwap": 6.5329,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01453,
+      "bb_pct_b": 0.521,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 22.8,
+      "atr_pct": 0.296,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neg (n=8, 勝率 62%) → +1",
+        "sess:asia_dawn (n=40, 勝率 72%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": 3,
+      "tp_adjust_notes": [
+        "TP2 6.3591→6.4108（支撐 6.3980）",
+        "TP3 6.3018→6.4108（支撐 6.3980）"
+      ]
+    },
+    "features": {
+      "score": 108.0,
+      "rsi": 43.0,
+      "atr_pct": 0.296,
+      "funding": -0.10495310057429999,
+      "vol_ratio": 1.76,
+      "adx": 22.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 38.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 25.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 22.8,
+      "atr_pct": 0.296,
+      "volatile": false
+    }
   }
 ]
