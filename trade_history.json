@@ -11025,5 +11025,185 @@
       "atr_pct": 0.296,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-20 02:08",
+    "date": "2026-07-20",
+    "order_id": "1784482364-54E42221",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 1872.5,
+    "close": 1864.3926,
+    "close_type": "SL",
+    "pnl": -0.43,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 104,
+    "funding_rate": 6.57771266796e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 49.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.99,
+      "obv": 5,
+      "vwap": 1848.8233,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00448,
+      "bb_pct_b": 0.394,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 17.2,
+      "atr_pct": 0.289,
+      "learning_notes": [
+        "sess:asia_dawn (n=42, 勝率 69%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 1884.6611→1876.0504（阻力 1879.8100）",
+        "TP2 1896.8222→1876.0504（阻力 1879.8100）",
+        "TP3 1913.0370→1876.0504（阻力 1879.8100）"
+      ]
+    },
+    "features": {
+      "score": 104.0,
+      "rsi": 49.1,
+      "atr_pct": 0.289,
+      "funding": 0.0657771266796,
+      "vol_ratio": 0.99,
+      "adx": 17.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.8
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 17.2,
+      "atr_pct": 0.289,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-20 02:08",
+    "date": "2026-07-20",
+    "order_id": "1784482367-4D84149C",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1652,
+    "close": 0.1642,
+    "close_type": "SL",
+    "pnl": -0.61,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 101,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 1.0,
+      "obv": 5,
+      "vwap": 0.164,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01365,
+      "bb_pct_b": 0.268,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📈 正規多頭背離（價格新低但 RSI 不新低）→ 底部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.9,
+      "atr_pct": 0.417,
+      "learning_notes": [
+        "sess:asia_dawn (n=42, 勝率 69%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 101.0,
+      "rsi": 43.3,
+      "atr_pct": 0.417,
+      "funding": 0.1,
+      "vol_ratio": 1.0,
+      "adx": 18.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 45.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 53.0
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 29.7
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.9,
+      "atr_pct": 0.417,
+      "volatile": false
+    }
   }
 ]
