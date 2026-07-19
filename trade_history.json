@@ -10483,5 +10483,183 @@
       "atr_pct": 0.16,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-19 13:56",
+    "date": "2026-07-19",
+    "order_id": "1784399872-56C79A9D",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0723,
+    "close": 0.0723,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 118,
+    "funding_rate": 7.67731930738e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 8,
+      "volume_ratio": 3.46,
+      "obv": 5,
+      "vwap": 0.0728,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.00505,
+      "bb_pct_b": 1.109,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 16.9,
+      "atr_pct": 0.227,
+      "learning_notes": [
+        "sess:asia_dawn (n=33, 勝率 70%) → +1",
+        "coin:DOGE (n=6, 勝率 33%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 118.0,
+      "rsi": 60.1,
+      "atr_pct": 0.227,
+      "funding": 0.0767731930738,
+      "vol_ratio": 3.46,
+      "adx": 16.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.4
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.9,
+      "atr_pct": 0.227,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-19 13:56",
+    "date": "2026-07-19",
+    "order_id": "1784399874-EF1EAE20",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 6.572,
+    "close": 6.572,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 123,
+    "funding_rate": 6.86254415888e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 5,
+      "volume_ratio": 1.69,
+      "obv": 5,
+      "vwap": 6.5718,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.00876,
+      "bb_pct_b": 1.058,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.7,
+      "atr_pct": 0.301,
+      "learning_notes": [
+        "sess:asia_dawn (n=33, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 123.0,
+      "rsi": 60.7,
+      "atr_pct": 0.301,
+      "funding": 0.0686254415888,
+      "vol_ratio": 1.69,
+      "adx": 15.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 45.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 29.9
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.7,
+      "atr_pct": 0.301,
+      "volatile": false
+    }
   }
 ]
