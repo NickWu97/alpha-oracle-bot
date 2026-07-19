@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 8.267,
-    "sl": 8.267,
+    "sl": 8.3214,
     "tp1": 8.3214,
     "tp2": 8.3758,
     "tp3": 8.4483,
@@ -77,21 +77,21 @@
     "created": 1784389088.0354948,
     "expires": 1784475488.0354958,
     "order_id": "1784389088-245D8630",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1784389088.0355394,
     "entry_message_id": 7956,
-    "last_checked_ts": 1784418300.0,
-    "current_price": 8.343
+    "last_checked_ts": 1784428200.0,
+    "current_price": 8.372
   },
   "DOT-USDT-SWAPLONG1784396495-8BC97077": {
     "instId": "DOT-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 0.8348,
-    "sl": 0.8313,
+    "sl": 0.8348,
     "tp1": 0.8401,
     "tp2": 0.8454,
     "tp3": 0.8525,
@@ -165,21 +165,21 @@
     "created": 1784396495.2550883,
     "expires": 1784482895.2550886,
     "order_id": "1784396495-8BC97077",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1784396495.2551296,
     "entry_message_id": 7968,
-    "last_checked_ts": 1784418300.0,
-    "current_price": 0.8377
+    "last_checked_ts": 1784428200.0,
+    "current_price": 0.8366
   },
   "DOGE-USDT-SWAPLONG1784399872-56C79A9D": {
     "instId": "DOGE-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 0.0723,
-    "sl": 0.0721,
+    "sl": 0.0723,
     "tp1": 0.0727,
     "tp2": 0.0731,
     "tp3": 0.0736,
@@ -252,21 +252,21 @@
     "created": 1784399872.0820405,
     "expires": 1784486272.0820408,
     "order_id": "1784399872-56C79A9D",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1784399872.0820777,
     "entry_message_id": 7979,
-    "last_checked_ts": 1784418300.0,
-    "current_price": 0.07249
+    "last_checked_ts": 1784428200.0,
+    "current_price": 0.07263
   },
   "AVAX-USDT-SWAPLONG1784399874-EF1EAE20": {
     "instId": "AVAX-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 6.572,
-    "sl": 6.5423,
+    "sl": 6.572,
     "tp1": 6.6166,
     "tp2": 6.6611,
     "tp3": 6.7206,
@@ -337,14 +337,14 @@
     "created": 1784399874.5825684,
     "expires": 1784486274.5825686,
     "order_id": "1784399874-EF1EAE20",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1784399874.5825977,
     "entry_message_id": 7980,
-    "last_checked_ts": 1784418300.0,
-    "current_price": 6.575
+    "last_checked_ts": 1784428200.0,
+    "current_price": 6.616
   },
   "BTC-USDT-SWAPLONG1784411573-255C3D30": {
     "instId": "BTC-USDT-SWAP",
@@ -433,8 +433,8 @@
     "hit_tp3": false,
     "activated_at": 1784411573.4128938,
     "entry_message_id": 8011,
-    "last_checked_ts": 1784418300.0,
-    "current_price": 64810.0
+    "last_checked_ts": 1784428200.0,
+    "current_price": 64810.1
   },
   "BNB-USDT-SWAPLONG1784411575-F1F68416": {
     "instId": "BNB-USDT-SWAP",
@@ -520,7 +520,7 @@
     "hit_tp3": false,
     "activated_at": 1784411575.6334882,
     "entry_message_id": 8012,
-    "last_checked_ts": 1784418300.0,
-    "current_price": 570.6
+    "last_checked_ts": 1784428200.0,
+    "current_price": 570.8
   }
 }
