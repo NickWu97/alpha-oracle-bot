@@ -11205,5 +11205,199 @@
       "atr_pct": 0.417,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-21 06:16",
+    "date": "2026-07-21",
+    "order_id": "1784578129-D85ABC97",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.1149,
+    "close": 1.1181,
+    "close_type": "TP1",
+    "pnl": 0.29,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 117,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.05,
+      "obv": 5,
+      "vwap": 1.0961,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01468,
+      "bb_pct_b": 0.72,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 30.3,
+      "atr_pct": 0.37,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "sess:asia_dawn (n=45, 勝率 64%) → +1",
+        "coin:XRP (n=9, 勝率 33%) → -2",
+        "coin_side:XRPLONG (n=9, 勝率 33%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 1.1242→1.1181（阻力 1.1203）",
+        "TP2 1.1335→1.1181（阻力 1.1203）",
+        "TP3 1.1459→1.1181（阻力 1.1203）"
+      ]
+    },
+    "features": {
+      "score": 117.0,
+      "rsi": 60.8,
+      "atr_pct": 0.37,
+      "funding": 0.1,
+      "vol_ratio": 1.05,
+      "adx": 30.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.3,
+      "atr_pct": 0.37,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-21 06:16",
+    "date": "2026-07-21",
+    "order_id": "1784578129-D85ABC97",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.1149,
+    "close": 1.1149,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 117,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.05,
+      "obv": 5,
+      "vwap": 1.0961,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01468,
+      "bb_pct_b": 0.72,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 30.3,
+      "atr_pct": 0.37,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "sess:asia_dawn (n=45, 勝率 64%) → +1",
+        "coin:XRP (n=9, 勝率 33%) → -2",
+        "coin_side:XRPLONG (n=9, 勝率 33%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 1.1242→1.1181（阻力 1.1203）",
+        "TP2 1.1335→1.1181（阻力 1.1203）",
+        "TP3 1.1459→1.1181（阻力 1.1203）"
+      ]
+    },
+    "features": {
+      "score": 117.0,
+      "rsi": 60.8,
+      "atr_pct": 0.37,
+      "funding": 0.1,
+      "vol_ratio": 1.05,
+      "adx": 30.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.3,
+      "atr_pct": 0.37,
+      "volatile": false
+    }
   }
 ]
