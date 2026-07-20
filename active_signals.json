@@ -82,8 +82,8 @@
     "hit_tp3": false,
     "activated_at": 1784578123.7706761,
     "entry_message_id": 8109,
-    "last_checked_ts": 1784588400.0,
-    "current_price": 1900.25
+    "last_checked_ts": 1784589300.0,
+    "current_price": 1900.13
   },
   "SOL-USDT-SWAPLONG1784578125-54B500E0": {
     "instId": "SOL-USDT-SWAP",
@@ -167,7 +167,92 @@
     "hit_tp3": false,
     "activated_at": 1784578125.7492383,
     "entry_message_id": 8110,
-    "last_checked_ts": 1784588400.0,
-    "current_price": 77.63
+    "last_checked_ts": 1784589300.0,
+    "current_price": 77.65
+  },
+  "DOT-USDT-SWAPLONG1784590860-9C936865": {
+    "instId": "DOT-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.8269,
+    "sl": 0.8221,
+    "tp1": 0.8341,
+    "tp2": 0.8413,
+    "tp3": 0.851,
+    "atr": 0.00320834,
+    "score": 101,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 63.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.71,
+      "obv": 5,
+      "vwap": 0.8226,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01207,
+      "bb_pct_b": 0.915,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 27.5,
+      "atr_pct": 0.387,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "sess:asia_day (n=39, 勝率 36%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 23.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 27.5,
+      "atr_pct": 0.387,
+      "volatile": false
+    },
+    "created": 1784590860.9965491,
+    "expires": 1784677260.9965496,
+    "order_id": "1784590860-9C936865",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1784590860.9965858,
+    "entry_message_id": 8131,
+    "last_checked_ts": 1784590860.9965858
   }
 }
