@@ -14006,5 +14006,93 @@
       "atr_pct": 0.259,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-22 07:12",
+    "date": "2026-07-22",
+    "order_id": "1784671468-29AA6548",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 573.3,
+    "close": 571.9892,
+    "close_type": "SL",
+    "pnl": -0.23,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 87,
+    "funding_rate": 5.49106139904e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 46.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.28,
+      "obv": 5,
+      "vwap": 571.1563,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00282,
+      "bb_pct_b": 0.605,
+      "bb_squeeze": true,
+      "bb_score": 8,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 34.8,
+      "atr_pct": 0.152,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "sess:asia_day (n=43, 勝率 40%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": -2
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 46.1,
+      "atr_pct": 0.152,
+      "funding": 0.0549106139904,
+      "vol_ratio": 0.28,
+      "adx": 34.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 47.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 52.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 34.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 34.8,
+      "atr_pct": 0.152,
+      "volatile": false
+    }
   }
 ]
