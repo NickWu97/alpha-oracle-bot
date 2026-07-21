@@ -83,8 +83,8 @@
     "hit_tp3": false,
     "activated_at": 1784661940.618794,
     "entry_message_id": 8198,
-    "last_checked_ts": 1784673900.0,
-    "current_price": 66261.5
+    "last_checked_ts": 1784675700.0,
+    "current_price": 66403.7
   },
   "SOL-USDT-SWAPLONG1784666716-70EC2DBB": {
     "instId": "SOL-USDT-SWAP",
@@ -170,8 +170,8 @@
     "hit_tp3": false,
     "activated_at": 1784666716.5507503,
     "entry_message_id": 8211,
-    "last_checked_ts": 1784673900.0,
-    "current_price": 77.81
+    "last_checked_ts": 1784675700.0,
+    "current_price": 77.97
   },
   "LINK-USDT-SWAPLONG1784671470-D7A75BA8": {
     "instId": "LINK-USDT-SWAP",
@@ -257,15 +257,15 @@
     "hit_tp3": false,
     "activated_at": 1784671470.2242668,
     "entry_message_id": 8220,
-    "last_checked_ts": 1784673900.0,
-    "current_price": 8.62
+    "last_checked_ts": 1784675700.0,
+    "current_price": 8.642
   },
   "DOGE-USDT-SWAPLONG1784675528-E41FF354": {
     "instId": "DOGE-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 0.073,
-    "sl": 0.0728,
+    "sl": 0.0731,
     "tp1": 0.0731,
     "tp2": 0.0731,
     "tp3": 0.0731,
@@ -343,13 +343,13 @@
     "created": 1784675528.6344187,
     "expires": 1784761928.6344194,
     "order_id": "1784675528-E41FF354",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
+    "status": "TRAIL",
+    "hit_tp1": true,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1784675528.6344671,
     "entry_message_id": 8228,
-    "last_checked_ts": 1784675528.6344671,
-    "current_price": 0.07302
+    "last_checked_ts": 1784675700.0,
+    "current_price": 0.07312
   }
 }
