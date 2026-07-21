@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 1898.2,
-    "sl": 1898.2,
+    "sl": 1917.4015,
     "tp1": 1917.4015,
     "tp2": 1936.6031,
     "tp3": 1962.2051,
@@ -76,14 +76,14 @@
     "created": 1784578123.7706394,
     "expires": 1784664523.7706397,
     "order_id": "1784578123-C36E9791",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1784578123.7706761,
     "entry_message_id": 8109,
-    "last_checked_ts": 1784613600.0,
-    "current_price": 1929.4
+    "last_checked_ts": 1784617200.0,
+    "current_price": 1935.25
   },
   "SOL-USDT-SWAPLONG1784578125-54B500E0": {
     "instId": "SOL-USDT-SWAP",
@@ -167,7 +167,7 @@
     "hit_tp3": false,
     "activated_at": 1784578125.7492383,
     "entry_message_id": 8110,
-    "last_checked_ts": 1784613600.0,
-    "current_price": 78.31
+    "last_checked_ts": 1784617200.0,
+    "current_price": 78.57
   }
 }
