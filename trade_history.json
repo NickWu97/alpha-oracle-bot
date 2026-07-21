@@ -11779,5 +11779,272 @@
       "atr_pct": 0.45,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-21 11:48",
+    "date": "2026-07-21",
+    "order_id": "1784578125-54B500E0",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 77.62,
+    "close": 78.4093,
+    "close_type": "TP1",
+    "pnl": 1.02,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 92,
+    "funding_rate": 4.65066763034e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 55.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.59,
+      "obv": 5,
+      "vwap": 76.1972,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01435,
+      "bb_pct_b": 0.539,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.5,
+      "atr_pct": 0.452,
+      "learning_notes": [
+        "rsilong:50-59 (n=42, 勝率 64%) → +1",
+        "sess:asia_dawn (n=45, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 92.0,
+      "rsi": 55.7,
+      "atr_pct": 0.452,
+      "funding": 0.046506676303399996,
+      "vol_ratio": 0.59,
+      "adx": 18.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.5
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.5,
+      "atr_pct": 0.452,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-21 11:48",
+    "date": "2026-07-21",
+    "order_id": "1784590860-9C936865",
+    "coin": "DOT",
+    "side": "LONG",
+    "entry": 0.8269,
+    "close": 0.8341,
+    "close_type": "TP1",
+    "pnl": 0.87,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 101,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 63.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.71,
+      "obv": 5,
+      "vwap": 0.8226,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01207,
+      "bb_pct_b": 0.915,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 27.5,
+      "atr_pct": 0.387,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "sess:asia_day (n=39, 勝率 36%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 101.0,
+      "rsi": 63.1,
+      "atr_pct": 0.387,
+      "funding": 0.1,
+      "vol_ratio": 0.71,
+      "adx": 27.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 23.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 27.5,
+      "atr_pct": 0.387,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-21 11:48",
+    "date": "2026-07-21",
+    "order_id": "1784596236-0F75C3E1",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 8.631,
+    "close": 8.5833,
+    "close_type": "SL",
+    "pnl": -0.55,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 97,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.39,
+      "obv": 5,
+      "vwap": 8.4088,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01199,
+      "bb_pct_b": 0.867,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 20.5,
+      "atr_pct": 0.369,
+      "learning_notes": [
+        "rsilong:50-59 (n=45, 勝率 67%) → +1",
+        "sess:asia_day (n=39, 勝率 36%) → -2",
+        "coin:LINK (n=11, 勝率 82%) → +2",
+        "coin_side:LINKLONG (n=8, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 6 (勝率 40%)"
+      ],
+      "learning_adjust": 3
+    },
+    "features": {
+      "score": 97.0,
+      "rsi": 59.9,
+      "atr_pct": 0.369,
+      "funding": 0.1,
+      "vol_ratio": 0.39,
+      "adx": 20.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 68.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 36.8
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.5,
+      "atr_pct": 0.369,
+      "volatile": false
+    }
   }
 ]
