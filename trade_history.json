@@ -14469,5 +14469,185 @@
       "atr_pct": 0.222,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-22 09:01",
+    "date": "2026-07-22",
+    "order_id": "1784666716-70EC2DBB",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 78.0,
+    "close": 78.495,
+    "close_type": "TP1",
+    "pnl": 0.63,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 81,
+    "funding_rate": 6.76272744183e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 50.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.25,
+      "obv": 5,
+      "vwap": 76.8915,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0061,
+      "bb_pct_b": 0.641,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 26.4,
+      "atr_pct": 0.282,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "rsilong:50-59 (n=60, 勝率 72%) → +2",
+        "sess:asia_dawn (n=52, 勝率 65%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8
+    },
+    "features": {
+      "score": 81.0,
+      "rsi": 50.7,
+      "atr_pct": 0.282,
+      "funding": 0.06762727441829999,
+      "vol_ratio": 1.25,
+      "adx": 26.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 49.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 26.4,
+      "atr_pct": 0.282,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-22 09:01",
+    "date": "2026-07-22",
+    "order_id": "1784671470-D7A75BA8",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 8.623,
+    "close": 8.7158,
+    "close_type": "TP2",
+    "pnl": 1.08,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 88,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.5,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.43,
+      "obv": 5,
+      "vwap": 8.5091,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00586,
+      "bb_pct_b": 0.522,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 28.8,
+      "atr_pct": 0.239,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "sess:asia_day (n=43, 勝率 40%) → -2",
+        "coin:LINK (n=15, 勝率 80%) → +2",
+        "coin_side:LINKLONG (n=12, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 88.0,
+      "rsi": 44.5,
+      "atr_pct": 0.239,
+      "funding": 0.1,
+      "vol_ratio": 0.43,
+      "adx": 28.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 36.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.8,
+      "atr_pct": 0.239,
+      "volatile": false
+    }
   }
 ]
