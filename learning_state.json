@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 15,
+      "win": 16,
       "loss": 10,
       "be": 1,
-      "total": 26
+      "total": 27
     },
     "rsilong:80-89": {
       "win": 0,
@@ -13,10 +13,10 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 90,
-      "loss": 48,
+      "win": 91,
+      "loss": 49,
       "be": 13,
-      "total": 151
+      "total": 153
     },
     "sess:asia_day": {
       "win": 23,
@@ -26,21 +26,21 @@
     },
     "coin:BTC": {
       "win": 18,
-      "loss": 7,
+      "loss": 8,
       "be": 0,
-      "total": 25
+      "total": 26
     },
     "coin_side:BTCLONG": {
       "win": 18,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 23
+      "total": 24
     },
     "score:90+": {
       "win": 80,
-      "loss": 40,
+      "loss": 41,
       "be": 14,
-      "total": 134
+      "total": 135
     },
     "rsilong:50-59": {
       "win": 44,
@@ -127,10 +127,10 @@
       "total": 52
     },
     "rsilong:40-49": {
-      "win": 14,
-      "loss": 12,
+      "win": 15,
+      "loss": 13,
       "be": 3,
-      "total": 29
+      "total": 31
     },
     "rsishort:40-49": {
       "win": 7,
@@ -157,10 +157,10 @@
       "total": 2
     },
     "sess:europe": {
-      "win": 29,
-      "loss": 12,
+      "win": 30,
+      "loss": 13,
       "be": 3,
-      "total": 44
+      "total": 46
     },
     "coin:AVAX": {
       "win": 5,
@@ -205,16 +205,16 @@
       "total": 14
     },
     "coin:LINK": {
-      "win": 14,
+      "win": 15,
       "loss": 3,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "coin_side:LINKLONG": {
-      "win": 11,
+      "win": 12,
       "loss": 3,
       "be": 0,
-      "total": 14
+      "total": 15
     },
     "coin_side:LINKSHORT": {
       "win": 3,
@@ -292,9 +292,9 @@
   "by_coin": {
     "BTC": {
       "win": 18,
-      "loss": 7,
+      "loss": 8,
       "be": 0,
-      "total": 25
+      "total": 26
     },
     "BNB": {
       "win": 14,
@@ -345,10 +345,10 @@
       "total": 9
     },
     "LINK": {
-      "win": 14,
+      "win": 15,
       "loss": 3,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "ADA": {
       "win": 3,
@@ -539,7 +539,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1784701818.5473597,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "RSI_COLLAPSE",
+      "title": "📉 多頭動能瓦解"
     }
   ],
-  "updated_at": 1784692010.699234
+  "updated_at": 1784701819.8441322
 }

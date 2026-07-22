@@ -14739,5 +14739,185 @@
       "atr_pct": 0.282,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-22 14:30",
+    "date": "2026-07-22",
+    "order_id": "1784661940-1F135FFE",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 66333.1,
+    "close": 66071.3368,
+    "close_type": "SL",
+    "pnl": -0.39,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 97,
+    "funding_rate": 3.31918523982e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 43.7,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.56,
+      "obv": 5,
+      "vwap": 65134.5196,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01122,
+      "bb_pct_b": 0.209,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.263,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "sess:asia_dawn (n=47, 勝率 64%) → +1",
+        "coin:BTC (n=25, 勝率 72%) → +2",
+        "coin_side:BTCLONG (n=23, 勝率 78%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 97.0,
+      "rsi": 43.7,
+      "atr_pct": 0.263,
+      "funding": 0.0331918523982,
+      "vol_ratio": 0.56,
+      "adx": 29.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 71.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.263,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-22 14:30",
+    "date": "2026-07-22",
+    "order_id": "1784671470-D7A75BA8",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 8.623,
+    "close": 8.6694,
+    "close_type": "LOCK",
+    "pnl": 0.54,
+    "exit_rr": 1.5,
+    "exit_weight": 1.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 88,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.5,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.43,
+      "obv": 5,
+      "vwap": 8.5091,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00586,
+      "bb_pct_b": 0.522,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 28.8,
+      "atr_pct": 0.239,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "sess:asia_day (n=43, 勝率 40%) → -2",
+        "coin:LINK (n=15, 勝率 80%) → +2",
+        "coin_side:LINKLONG (n=12, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": 2
+    },
+    "features": {
+      "score": 88.0,
+      "rsi": 44.5,
+      "atr_pct": 0.239,
+      "funding": 0.1,
+      "vol_ratio": 0.43,
+      "adx": 28.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 36.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.8,
+      "atr_pct": 0.239,
+      "volatile": false
+    }
   }
 ]
