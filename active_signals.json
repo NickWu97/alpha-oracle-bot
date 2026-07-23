@@ -1,1 +1,90 @@
-{}
+{
+  "NEAR-USDT-SWAPSHORT1784781285-EA3ABE5A": {
+    "instId": "NEAR-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.869,
+    "sl": 1.8795,
+    "tp1": 1.8677,
+    "tp2": 1.8677,
+    "tp3": 1.8677,
+    "atr": 0.0069798,
+    "score": 112,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.9,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.09,
+      "obv": 5,
+      "vwap": 1.9397,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0089,
+      "bb_pct_b": 0.566,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 25.8,
+      "atr_pct": 0.373,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 1.8533→1.8677（支撐 1.8640）",
+        "TP2 1.8376→1.8677（支撐 1.8640）",
+        "TP3 1.8167→1.8677（支撐 1.8640）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 25.8,
+      "atr_pct": 0.373,
+      "volatile": false
+    },
+    "created": 1784781285.9979756,
+    "expires": 1784867685.9979758,
+    "order_id": "1784781285-EA3ABE5A",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1784781285.9980116,
+    "entry_message_id": 8291,
+    "last_checked_ts": 1784781285.9980116
+  }
+}
