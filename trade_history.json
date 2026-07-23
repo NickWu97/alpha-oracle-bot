@@ -15202,5 +15202,95 @@
       "atr_pct": 0.394,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-23 09:01",
+    "date": "2026-07-23",
+    "order_id": "1784762135-AEF8F07A",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 1925.55,
+    "close": 1940.838,
+    "close_type": "TP1",
+    "pnl": 0.79,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 123,
+    "funding_rate": -7.8879859389e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 43.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 5,
+      "volume_ratio": 1.88,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 1909.6427,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00958,
+      "bb_pct_b": 0.25,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.7,
+      "atr_pct": 0.353,
+      "learning_notes": [
+        "coin:ETH (n=9, 勝率 67%) → +1",
+        "coin_side:ETHLONG (n=9, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 1 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 123.0,
+      "rsi": 43.4,
+      "atr_pct": 0.353,
+      "funding": -0.0078879859389,
+      "vol_ratio": 1.88,
+      "adx": 15.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.8
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.7,
+      "atr_pct": 0.353,
+      "volatile": false
+    }
   }
 ]
