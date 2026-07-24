@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 105,
-      "loss": 54,
-      "be": 17,
-      "total": 176
+      "loss": 55,
+      "be": 18,
+      "total": 178
     },
     "sess:asia_day": {
-      "win": 28,
-      "loss": 24,
-      "be": 7,
-      "total": 59
+      "win": 29,
+      "loss": 25,
+      "be": 8,
+      "total": 62
     },
     "coin:BTC": {
       "win": 18,
@@ -37,10 +37,10 @@
       "total": 24
     },
     "score:90+": {
-      "win": 91,
-      "loss": 45,
-      "be": 18,
-      "total": 154
+      "win": 92,
+      "loss": 46,
+      "be": 19,
+      "total": 157
     },
     "rsilong:50-59": {
       "win": 47,
@@ -50,9 +50,9 @@
     },
     "coin:BNB": {
       "win": 15,
-      "loss": 11,
+      "loss": 12,
       "be": 3,
-      "total": 29
+      "total": 30
     },
     "coin_side:BNBLONG": {
       "win": 15,
@@ -105,8 +105,8 @@
     "coin:DOGE": {
       "win": 14,
       "loss": 3,
-      "be": 4,
-      "total": 21
+      "be": 5,
+      "total": 22
     },
     "coin_side:DOGELONG": {
       "win": 12,
@@ -135,8 +135,8 @@
     "rsishort:40-49": {
       "win": 8,
       "loss": 8,
-      "be": 1,
-      "total": 17
+      "be": 2,
+      "total": 18
     },
     "coin_side:SOLSHORT": {
       "win": 4,
@@ -163,10 +163,10 @@
       "total": 57
     },
     "coin:AVAX": {
-      "win": 5,
+      "win": 6,
       "loss": 5,
       "be": 2,
-      "total": 12
+      "total": 13
     },
     "coin_side:AVAXLONG": {
       "win": 5,
@@ -181,10 +181,10 @@
       "total": 14
     },
     "rsishort:30-39": {
-      "win": 7,
+      "win": 8,
       "loss": 1,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "coin:NEAR": {
       "win": 5,
@@ -223,10 +223,10 @@
       "total": 3
     },
     "fund:neg": {
-      "win": 5,
+      "win": 6,
       "loss": 2,
       "be": 2,
-      "total": 9
+      "total": 10
     },
     "coin:ADA": {
       "win": 6,
@@ -243,14 +243,14 @@
     "coin_side:DOGESHORT": {
       "win": 2,
       "loss": 1,
-      "be": 1,
-      "total": 4
+      "be": 2,
+      "total": 5
     },
     "coin_side:BNBSHORT": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:BTCSHORT": {
       "win": 0,
@@ -260,9 +260,9 @@
     },
     "rsishort:50-59": {
       "win": 1,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 6
+      "total": 7
     },
     "coin_side:NEARLONG": {
       "win": 4,
@@ -283,10 +283,10 @@
       "total": 9
     },
     "coin_side:AVAXSHORT": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     }
   },
   "by_coin": {
@@ -298,9 +298,9 @@
     },
     "BNB": {
       "win": 15,
-      "loss": 11,
+      "loss": 12,
       "be": 3,
-      "total": 29
+      "total": 30
     },
     "SOL": {
       "win": 9,
@@ -323,8 +323,8 @@
     "DOGE": {
       "win": 14,
       "loss": 3,
-      "be": 4,
-      "total": 21
+      "be": 5,
+      "total": 22
     },
     "DOT": {
       "win": 9,
@@ -333,10 +333,10 @@
       "total": 16
     },
     "AVAX": {
-      "win": 5,
+      "win": 6,
       "loss": 5,
       "be": 2,
-      "total": 12
+      "total": 13
     },
     "NEAR": {
       "win": 5,
@@ -567,7 +567,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1784867148.857942,
+      "coin": "BNB",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1784855069.547117
+  "updated_at": 1784867148.1142766
 }
