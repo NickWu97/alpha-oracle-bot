@@ -172,5 +172,257 @@
     "entry_message_id": 8354,
     "last_checked_ts": 1784853900.0,
     "current_price": 6.274
+  },
+  "ETH-USDT-SWAPSHORT1784855414-82B48AA2": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1874.92,
+    "sl": 1884.0467,
+    "tp1": 1861.2299,
+    "tp2": 1847.5399,
+    "tp3": 1829.2865,
+    "atr": 6.08447148,
+    "score": 107,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.92,
+      "obv": 5,
+      "vwap": 1920.4412,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01149,
+      "bb_pct_b": 0.08,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 34.3,
+      "atr_pct": 0.325,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsishort:30-39 (n=9, 勝率 78%) → +2",
+        "coin:ETH (n=15, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 8
+    },
+    "funding_rate": -2.96868629599e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 29.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 34.3,
+      "atr_pct": 0.325,
+      "volatile": false
+    },
+    "created": 1784855414.6613932,
+    "expires": 1784941814.6613934,
+    "order_id": "1784855414-82B48AA2",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1784855414.6614501,
+    "entry_message_id": 8363,
+    "last_checked_ts": 1784855414.6614501
+  },
+  "BNB-USDT-SWAPSHORT1784855416-96DE39F8": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 567.9,
+    "sl": 569.2478,
+    "tp1": 565.8783,
+    "tp2": 563.8565,
+    "tp3": 561.1609,
+    "atr": 0.89854655,
+    "score": 93,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 54.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.59,
+      "obv": 5,
+      "vwap": 571.5142,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00342,
+      "bb_pct_b": 0.681,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.3,
+      "atr_pct": 0.158,
+      "learning_notes": [
+        "rsishort:50-59 (n=6, 勝率 17%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": -3
+    },
+    "funding_rate": -2.52361707549e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 40.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 34.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 18.3,
+      "atr_pct": 0.158,
+      "volatile": false
+    },
+    "created": 1784855416.8576405,
+    "expires": 1784941816.8576407,
+    "order_id": "1784855416-96DE39F8",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1784855416.8576696,
+    "entry_message_id": 8364,
+    "last_checked_ts": 1784855416.8576696
+  },
+  "XRP-USDT-SWAPSHORT1784855419-C6324824": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.1091,
+    "sl": 1.1133,
+    "tp1": 1.1028,
+    "tp2": 1.0965,
+    "tp3": 1.0881,
+    "atr": 0.00280205,
+    "score": 105,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 44.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.58,
+      "obv": 5,
+      "vwap": 1.1329,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00727,
+      "bb_pct_b": 0.21,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 24.7,
+      "atr_pct": 0.253,
+      "learning_notes": [
+        "coin:XRP (n=13, 勝率 31%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": -2
+    },
+    "funding_rate": 5.34038154178e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 24.7,
+      "atr_pct": 0.253,
+      "volatile": false
+    },
+    "created": 1784855419.0315173,
+    "expires": 1784941819.0315175,
+    "order_id": "1784855419-C6324824",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1784855419.0315485,
+    "entry_message_id": 8365,
+    "last_checked_ts": 1784855419.0315485
   }
 }
