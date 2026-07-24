@@ -19496,5 +19496,95 @@
       "atr_pct": 0.268,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-25 07:33",
+    "date": "2026-07-25",
+    "order_id": "1784931515-37480B55",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0691,
+    "close": 0.0694,
+    "close_type": "SL",
+    "pnl": -0.43,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 104,
+    "funding_rate": 7.8616263506e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.9,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.14,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0707,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00699,
+      "bb_pct_b": 0.513,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 22.4,
+      "atr_pct": 0.309,
+      "learning_notes": [
+        "rsishort:50-59 (n=7, 勝率 14%) → -3",
+        "fund:neutral (n=196, 勝率 60%) → +1",
+        "coin_side:DOGESHORT (n=8, 勝率 38%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": -4
+    },
+    "features": {
+      "score": 104.0,
+      "rsi": 50.9,
+      "atr_pct": 0.309,
+      "funding": 0.0078616263506,
+      "vol_ratio": 1.14,
+      "adx": 22.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 32.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.6
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 22.4,
+      "atr_pct": 0.309,
+      "volatile": false
+    }
   }
 ]
