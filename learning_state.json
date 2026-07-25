@@ -1,147 +1,50 @@
 {
   "buckets": {
-    "score:90+": {
-<<<<<<< Updated upstream
-      "win": 4,
-      "loss": 0,
-      "be": 1,
-      "total": 5
-    },
-    "rsilong:70-79": {
-      "win": 4,
-      "loss": 0,
-      "be": 1,
-      "total": 5
-    },
-    "fund:neutral": {
-      "win": 7,
-      "loss": 0,
-      "be": 1,
-      "total": 8
-    },
-    "sess:asia_dawn": {
-      "win": 7,
-      "loss": 0,
-      "be": 1,
-      "total": 8
-=======
-      "win": 2,
-      "loss": 0,
-      "be": 1,
-      "total": 3
-    },
-    "rsilong:70-79": {
-      "win": 2,
-      "loss": 0,
-      "be": 1,
-      "total": 3
-    },
-    "fund:neutral": {
-      "win": 5,
-      "loss": 0,
-      "be": 1,
-      "total": 6
-    },
-    "sess:asia_dawn": {
-      "win": 5,
-      "loss": 0,
-      "be": 1,
-      "total": 6
->>>>>>> Stashed changes
-    },
-    "coin:XRP": {
-      "win": 1,
-      "loss": 0,
-      "be": 1,
-      "total": 2
-    },
-    "coin_side:XRPLONG": {
-      "win": 1,
-      "loss": 0,
-      "be": 1,
-      "total": 2
-    },
     "score:80-89": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "rsilong:60-69": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "coin:LINK": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "coin_side:LINKLONG": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "coin:AVAX": {
-<<<<<<< Updated upstream
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "coin_side:AVAXLONG": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-=======
-      "win": 1,
-      "loss": 0,
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
     },
-    "coin_side:AVAXLONG": {
-      "win": 1,
-      "loss": 0,
+    "rsilong:50-59": {
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
->>>>>>> Stashed changes
+    },
+    "fund:neutral": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "sess:asia_day": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:DOGE": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:DOGELONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
-    "XRP": {
-      "win": 1,
-      "loss": 0,
-      "be": 1,
-      "total": 2
-    },
-    "LINK": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    },
-    "AVAX": {
-<<<<<<< Updated upstream
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
-    }
-  },
-  "loss_reasons": [],
-  "updated_at": 1785011747.7533138
-=======
-      "win": 1,
-      "loss": 0,
+    "DOGE": {
+      "win": 0,
+      "loss": 1,
       "be": 0,
       "total": 1
     }
   },
   "loss_reasons": [],
-  "updated_at": 1785011771.4317765
->>>>>>> Stashed changes
+  "updated_at": 1785022399.131645
 }
