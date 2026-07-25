@@ -1,6 +1,7 @@
 {
   "buckets": {
     "score:90+": {
+<<<<<<< Updated upstream
       "win": 4,
       "loss": 0,
       "be": 1,
@@ -23,6 +24,30 @@
       "loss": 0,
       "be": 1,
       "total": 8
+=======
+      "win": 2,
+      "loss": 0,
+      "be": 1,
+      "total": 3
+    },
+    "rsilong:70-79": {
+      "win": 2,
+      "loss": 0,
+      "be": 1,
+      "total": 3
+    },
+    "fund:neutral": {
+      "win": 5,
+      "loss": 0,
+      "be": 1,
+      "total": 6
+    },
+    "sess:asia_dawn": {
+      "win": 5,
+      "loss": 0,
+      "be": 1,
+      "total": 6
+>>>>>>> Stashed changes
     },
     "coin:XRP": {
       "win": 1,
@@ -61,6 +86,7 @@
       "total": 3
     },
     "coin:AVAX": {
+<<<<<<< Updated upstream
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -71,6 +97,18 @@
       "loss": 0,
       "be": 0,
       "total": 3
+=======
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXLONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+>>>>>>> Stashed changes
     }
   },
   "by_coin": {
@@ -87,6 +125,7 @@
       "total": 3
     },
     "AVAX": {
+<<<<<<< Updated upstream
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -95,4 +134,14 @@
   },
   "loss_reasons": [],
   "updated_at": 1785011747.7533138
+=======
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    }
+  },
+  "loss_reasons": [],
+  "updated_at": 1785011771.4317765
+>>>>>>> Stashed changes
 }
