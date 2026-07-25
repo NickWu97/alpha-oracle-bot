@@ -1,28 +1,28 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "rsilong:70-79": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "fund:neutral": {
-      "win": 4,
+      "win": 7,
       "loss": 0,
       "be": 1,
-      "total": 5
+      "total": 8
     },
     "sess:asia_dawn": {
-      "win": 4,
+      "win": 7,
       "loss": 0,
       "be": 1,
-      "total": 5
+      "total": 8
     },
     "coin:XRP": {
       "win": 1,
@@ -59,6 +59,18 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin:AVAX": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:AVAXLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -73,8 +85,14 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "AVAX": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [],
-  "updated_at": 1785004307.7166908
+  "updated_at": 1785011747.7533138
 }
