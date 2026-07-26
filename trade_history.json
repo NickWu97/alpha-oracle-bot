@@ -1582,5 +1582,93 @@
       "atr_pct": 0.172,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-26 23:39",
+    "date": "2026-07-26",
+    "order_id": "1785051712-23A84E3A",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 1880.64,
+    "close": 1904.8716,
+    "close_type": "TP3",
+    "pnl": 1.29,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 1.59465225399e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.43,
+      "obv": 5,
+      "vwap": 1882.2078,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.00542,
+      "bb_pct_b": 0.487,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 33.2,
+      "atr_pct": 0.172,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=6, 勝率 33%) → -2"
+      ],
+      "learning_adjust": -2
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 52.9,
+      "atr_pct": 0.172,
+      "funding": 0.0159465225399,
+      "vol_ratio": 0.43,
+      "adx": 33.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.2,
+      "atr_pct": 0.172,
+      "volatile": false
+    }
   }
 ]

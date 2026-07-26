@@ -1,89 +1,4 @@
 {
-  "ETH-USDT-SWAPLONG1785051712-23A84E3A": {
-    "instId": "ETH-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 1880.64,
-    "sl": 1887.9095,
-    "tp1": 1887.9095,
-    "tp2": 1895.179,
-    "tp3": 1904.8716,
-    "atr": 3.23088648,
-    "score": 86,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 52.9,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": -10,
-      "volume_ratio": 0.43,
-      "obv": 5,
-      "vwap": 1882.2078,
-      "vwap_score": 0,
-      "bb_bandwidth": 0.00542,
-      "bb_pct_b": 0.487,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 33.2,
-      "atr_pct": 0.172,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "fund:neutral (n=6, 勝率 33%) → -2"
-      ],
-      "learning_adjust": -2
-    },
-    "funding_rate": 1.59465225399e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 64.4
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 50.2
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 35.8
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 33.2,
-      "atr_pct": 0.172,
-      "volatile": false
-    },
-    "created": 1785051712.7223356,
-    "expires": 1785138112.7223358,
-    "order_id": "1785051712-23A84E3A",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1785051712.722374,
-    "entry_message_id": 8556,
-    "last_checked_ts": 1785077100.0,
-    "current_price": 1898.42
-  },
   "DOGE-USDT-SWAPLONG1785051718-1465AD90": {
     "instId": "DOGE-USDT-SWAP",
     "side": "LONG",
@@ -171,7 +86,7 @@
     "hit_tp3": false,
     "activated_at": 1785051718.4838645,
     "entry_message_id": 8557,
-    "last_checked_ts": 1785077100.0,
-    "current_price": 0.07295
+    "last_checked_ts": 1785078900.0,
+    "current_price": 0.0731
   }
 }
