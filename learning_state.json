@@ -2,21 +2,21 @@
   "buckets": {
     "score:80-89": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "rsilong:50-59": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "fund:neutral": {
       "win": 12,
-      "loss": 11,
+      "loss": 13,
       "be": 0,
-      "total": 23
+      "total": 25
     },
     "sess:asia_day": {
       "win": 1,
@@ -26,15 +26,15 @@
     },
     "coin:DOGE": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:DOGELONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "score:70-79": {
       "win": 0,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 6,
-      "loss": 6,
+      "loss": 7,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "coin:XRP": {
       "win": 0,
@@ -92,21 +92,21 @@
     },
     "rsilong:60-69": {
       "win": 3,
+      "loss": 4,
+      "be": 0,
+      "total": 7
+    },
+    "coin:BNB": {
+      "win": 3,
       "loss": 3,
       "be": 0,
       "total": 6
     },
-    "coin:BNB": {
-      "win": 3,
-      "loss": 2,
-      "be": 0,
-      "total": 5
-    },
     "coin_side:BNBLONG": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "sess:europe": {
       "win": 6,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 3,
-      "loss": 1,
+      "loss": 3,
       "be": 0,
-      "total": 4
+      "total": 6
     },
     "coin_side:BTCLONG": {
       "win": 0,
@@ -196,9 +196,9 @@
   "by_coin": {
     "DOGE": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "BTC": {
       "win": 0,
@@ -220,9 +220,9 @@
     },
     "BNB": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "AVAX": {
       "win": 0,
@@ -291,7 +291,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785091487.0053504,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1785089581.9857924
+  "updated_at": 1785091488.340029
 }
