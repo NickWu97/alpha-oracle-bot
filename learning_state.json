@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 9,
-      "loss": 10,
+      "loss": 11,
       "be": 0,
-      "total": 19
+      "total": 20
     },
     "sess:asia_day": {
       "win": 1,
@@ -50,9 +50,9 @@
     },
     "coin:BTC": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:BTCSHORT": {
       "win": 0,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 3,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin:XRP": {
       "win": 0,
@@ -92,9 +92,9 @@
     },
     "rsilong:60-69": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin:BNB": {
       "win": 3,
@@ -179,6 +179,18 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "sess:asia_dawn": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BTCLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -190,9 +202,9 @@
     },
     "BTC": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "SOL": {
       "win": 3,
@@ -281,5 +293,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785080361.958226
+  "updated_at": 1785086026.2611306
 }
