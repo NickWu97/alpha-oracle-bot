@@ -587,5 +587,97 @@
       "atr_pct": 0.122,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-26 19:01",
+    "date": "2026-07-26",
+    "order_id": "1785051722-D3BA7230",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 6.774,
+    "close": 6.724,
+    "close_type": "SL",
+    "pnl": -0.74,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 102,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 44.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.81,
+      "obv": 5,
+      "vwap": 6.4695,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00876,
+      "bb_pct_b": 0.106,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 28.9,
+      "atr_pct": 0.494,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "fund:neutral (n=6, 勝率 33%) → -2"
+      ],
+      "learning_adjust": -2,
+      "tp_adjust_notes": [
+        "TP1 6.8490→6.7994（阻力 6.8130）",
+        "TP2 6.9240→6.7994（阻力 6.8130）",
+        "TP3 7.0240→6.7994（阻力 6.8130）"
+      ]
+    },
+    "features": {
+      "score": 102.0,
+      "rsi": 44.6,
+      "atr_pct": 0.494,
+      "funding": 0.1,
+      "vol_ratio": 0.81,
+      "adx": 28.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 79.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 25.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.9,
+      "atr_pct": 0.494,
+      "volatile": false
+    }
   }
 ]

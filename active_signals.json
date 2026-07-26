@@ -81,8 +81,8 @@
     "hit_tp3": false,
     "activated_at": 1785051712.722374,
     "entry_message_id": 8556,
-    "last_checked_ts": 1785058200.0,
-    "current_price": 1883.76
+    "last_checked_ts": 1785062700.0,
+    "current_price": 1885.15
   },
   "DOGE-USDT-SWAPLONG1785051718-1465AD90": {
     "instId": "DOGE-USDT-SWAP",
@@ -171,97 +171,8 @@
     "hit_tp3": false,
     "activated_at": 1785051718.4838645,
     "entry_message_id": 8557,
-    "last_checked_ts": 1785058200.0,
-    "current_price": 0.07324
-  },
-  "AVAX-USDT-SWAPLONG1785051722-D3BA7230": {
-    "instId": "AVAX-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 6.774,
-    "sl": 6.724,
-    "tp1": 6.7994,
-    "tp2": 6.7994,
-    "tp3": 6.7994,
-    "atr": 0.03333863,
-    "score": 102,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 44.6,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.81,
-      "obv": 5,
-      "vwap": 6.4695,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00876,
-      "bb_pct_b": 0.106,
-      "bb_squeeze": false,
-      "bb_score": 2,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 28.9,
-      "atr_pct": 0.494,
-      "adx_bonus": 2,
-      "learning_notes": [
-        "fund:neutral (n=6, 勝率 33%) → -2"
-      ],
-      "learning_adjust": -2,
-      "tp_adjust_notes": [
-        "TP1 6.8490→6.7994（阻力 6.8130）",
-        "TP2 6.9240→6.7994（阻力 6.8130）",
-        "TP3 7.0240→6.7994（阻力 6.8130）"
-      ]
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 79.6
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 66.9
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 25.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 28.9,
-      "atr_pct": 0.494,
-      "volatile": false
-    },
-    "created": 1785051722.3375294,
-    "expires": 1785138122.3375297,
-    "order_id": "1785051722-D3BA7230",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1785051722.3375647,
-    "entry_message_id": 8558,
-    "last_checked_ts": 1785058200.0,
-    "current_price": 6.745
+    "last_checked_ts": 1785062700.0,
+    "current_price": 0.07322
   },
   "BNB-USDT-SWAPLONG1785059194-E1B6B99A": {
     "instId": "BNB-USDT-SWAP",
@@ -346,7 +257,8 @@
     "hit_tp3": false,
     "activated_at": 1785059194.5022519,
     "entry_message_id": 8567,
-    "last_checked_ts": 1785059194.5022519
+    "last_checked_ts": 1785062700.0,
+    "current_price": 570.9
   },
   "DOT-USDT-SWAPLONG1785059198-D6A88982": {
     "instId": "DOT-USDT-SWAP",
@@ -425,6 +337,7 @@
     "hit_tp3": false,
     "activated_at": 1785059198.7682912,
     "entry_message_id": 8568,
-    "last_checked_ts": 1785059198.7682912
+    "last_checked_ts": 1785062700.0,
+    "current_price": 0.8247
   }
 }

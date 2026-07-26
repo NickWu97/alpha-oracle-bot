@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 3,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "sess:asia_day": {
       "win": 1,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin:XRP": {
       "win": 0,
@@ -110,9 +110,27 @@
     },
     "sess:europe": {
       "win": 2,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 2
+      "total": 3
+    },
+    "rsilong:40-49": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -145,6 +163,12 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "AVAX": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -168,7 +192,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785063687.9491503,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785058046.3906407
+  "updated_at": 1785063687.4170141
 }
