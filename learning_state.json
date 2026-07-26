@@ -13,10 +13,10 @@
       "total": 2
     },
     "fund:neutral": {
-      "win": 2,
+      "win": 3,
       "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "sess:asia_day": {
       "win": 1,
@@ -73,10 +73,10 @@
       "total": 1
     },
     "score:90+": {
-      "win": 2,
+      "win": 3,
       "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:XRP": {
       "win": 0,
@@ -91,28 +91,28 @@
       "total": 1
     },
     "rsilong:60-69": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin:BNB": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:BNBLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "sess:europe": {
       "win": 2,
       "loss": 0,
       "be": 0,
       "total": 2
-    },
-    "sess:europe": {
-      "win": 1,
-      "loss": 0,
-      "be": 0,
-      "total": 1
     }
   },
   "by_coin": {
@@ -141,10 +141,10 @@
       "total": 1
     },
     "BNB": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 2
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -170,5 +170,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785050327.500542
+  "updated_at": 1785058046.3906407
 }

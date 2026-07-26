@@ -1,84 +1,4 @@
 {
-  "BNB-USDT-SWAPLONG1785019088-A8CB9C52": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 569.4,
-    "sl": 570.9583,
-    "tp1": 570.9583,
-    "tp2": 572.5167,
-    "tp3": 574.5944,
-    "atr": 0.6925928,
-    "score": 102,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 61.1,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.55,
-      "obv": 5,
-      "vwap": 565.7061,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00253,
-      "bb_pct_b": 1.0,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 48.7,
-      "atr_pct": 0.122,
-      "adx_bonus": 4
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 62.8
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 52.1
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 34.3
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 48.7,
-      "atr_pct": 0.122,
-      "volatile": false
-    },
-    "created": 1785019088.0731094,
-    "expires": 1785105488.07311,
-    "order_id": "1785019088-A8CB9C52",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1785019088.073155,
-    "entry_message_id": 8526,
-    "last_checked_ts": 1785050100.0,
-    "current_price": 571.7
-  },
   "ETH-USDT-SWAPLONG1785051712-23A84E3A": {
     "instId": "ETH-USDT-SWAP",
     "side": "LONG",
@@ -161,7 +81,8 @@
     "hit_tp3": false,
     "activated_at": 1785051712.722374,
     "entry_message_id": 8556,
-    "last_checked_ts": 1785051712.722374
+    "last_checked_ts": 1785056400.0,
+    "current_price": 1882.95
   },
   "DOGE-USDT-SWAPLONG1785051718-1465AD90": {
     "instId": "DOGE-USDT-SWAP",
@@ -250,7 +171,8 @@
     "hit_tp3": false,
     "activated_at": 1785051718.4838645,
     "entry_message_id": 8557,
-    "last_checked_ts": 1785051718.4838645
+    "last_checked_ts": 1785056400.0,
+    "current_price": 0.0731
   },
   "AVAX-USDT-SWAPLONG1785051722-D3BA7230": {
     "instId": "AVAX-USDT-SWAP",
@@ -338,6 +260,7 @@
     "hit_tp3": false,
     "activated_at": 1785051722.3375647,
     "entry_message_id": 8558,
-    "last_checked_ts": 1785051722.3375647
+    "last_checked_ts": 1785056400.0,
+    "current_price": 6.741
   }
 }
