@@ -13,10 +13,10 @@
       "total": 14
     },
     "fund:neutral": {
-      "win": 12,
+      "win": 16,
       "loss": 14,
       "be": 0,
-      "total": 26
+      "total": 30
     },
     "sess:asia_day": {
       "win": 1,
@@ -25,16 +25,16 @@
       "total": 5
     },
     "coin:DOGE": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "coin_side:DOGELONG": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "score:70-79": {
       "win": 0,
@@ -61,10 +61,10 @@
       "total": 1
     },
     "coin:SOL": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:SOLSHORT": {
       "win": 0,
@@ -73,10 +73,10 @@
       "total": 1
     },
     "score:90+": {
-      "win": 6,
+      "win": 10,
       "loss": 8,
       "be": 0,
-      "total": 14
+      "total": 18
     },
     "coin:XRP": {
       "win": 0,
@@ -115,10 +115,10 @@
       "total": 9
     },
     "rsilong:40-49": {
-      "win": 0,
+      "win": 1,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin:AVAX": {
       "win": 0,
@@ -157,10 +157,10 @@
       "total": 1
     },
     "coin_side:SOLLONG": {
-      "win": 6,
+      "win": 7,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "sess:us": {
       "win": 2,
@@ -181,24 +181,30 @@
       "total": 1
     },
     "sess:asia_dawn": {
-      "win": 3,
+      "win": 7,
       "loss": 4,
       "be": 0,
-      "total": 7
+      "total": 11
     },
     "coin_side:BTCLONG": {
       "win": 0,
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsilong:30-39": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
     "DOGE": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "BTC": {
       "win": 0,
@@ -207,10 +213,10 @@
       "total": 2
     },
     "SOL": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "XRP": {
       "win": 0,
@@ -307,5 +313,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785099954.0331562
+  "updated_at": 1785101526.5638695
 }

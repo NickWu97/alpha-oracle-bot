@@ -2313,5 +2313,372 @@
       "atr_pct": 0.208,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-27 05:31",
+    "date": "2026-07-27",
+    "order_id": "1785095866-F5E4B64B",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 75.26,
+    "close": 75.6408,
+    "close_type": "TP1",
+    "pnl": 0.51,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 100,
+    "funding_rate": 2.96302237511e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 49.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.21,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 74.7416,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00908,
+      "bb_pct_b": 0.356,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 30.1,
+      "atr_pct": 0.225,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "coin:SOL (n=7, 勝率 86%) → +2",
+        "coin_side:SOLLONG (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 100.0,
+      "rsi": 49.6,
+      "atr_pct": 0.225,
+      "funding": 0.029630223751100002,
+      "vol_ratio": 0.21,
+      "adx": 30.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 52.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.6
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.1,
+      "atr_pct": 0.225,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-27 05:31",
+    "date": "2026-07-27",
+    "order_id": "1785099949-F51ED5AB",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0726,
+    "close": 0.0726,
+    "close_type": "TP1",
+    "pnl": 0.0,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.4,
+      "obv": 5,
+      "vwap": 0.0712,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01305,
+      "bb_pct_b": 0.206,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.266,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -4,
+      "tp_adjust_notes": [
+        "TP1 0.0730→0.0726（阻力 0.0728）",
+        "TP2 0.0734→0.0726（阻力 0.0728）",
+        "TP3 0.0740→0.0726（阻力 0.0728）"
+      ]
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 37.2,
+      "atr_pct": 0.266,
+      "funding": 0.1,
+      "vol_ratio": 0.4,
+      "adx": 19.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 26.7
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.266,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-27 05:31",
+    "date": "2026-07-27",
+    "order_id": "1785099949-F51ED5AB",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0726,
+    "close": 0.0726,
+    "close_type": "TP2",
+    "pnl": 0.0,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.4,
+      "obv": 5,
+      "vwap": 0.0712,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01305,
+      "bb_pct_b": 0.206,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.266,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -4,
+      "tp_adjust_notes": [
+        "TP1 0.0730→0.0726（阻力 0.0728）",
+        "TP2 0.0734→0.0726（阻力 0.0728）",
+        "TP3 0.0740→0.0726（阻力 0.0728）"
+      ]
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 37.2,
+      "atr_pct": 0.266,
+      "funding": 0.1,
+      "vol_ratio": 0.4,
+      "adx": 19.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 26.7
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.266,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-07-27 05:32",
+    "date": "2026-07-27",
+    "order_id": "1785099949-F51ED5AB",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0726,
+    "close": 0.0726,
+    "close_type": "TP3",
+    "pnl": 0.0,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.4,
+      "obv": 5,
+      "vwap": 0.0712,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01305,
+      "bb_pct_b": 0.206,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.266,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 3 / 敗 7 (勝率 30%)",
+        "KNN 偏低勝率 → -4"
+      ],
+      "learning_adjust": -4,
+      "tp_adjust_notes": [
+        "TP1 0.0730→0.0726（阻力 0.0728）",
+        "TP2 0.0734→0.0726（阻力 0.0728）",
+        "TP3 0.0740→0.0726（阻力 0.0728）"
+      ]
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 37.2,
+      "atr_pct": 0.266,
+      "funding": 0.1,
+      "vol_ratio": 0.4,
+      "adx": 19.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 26.7
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.266,
+      "volatile": false
+    }
   }
 ]
