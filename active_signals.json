@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 1880.64,
-    "sl": 1880.64,
+    "sl": 1887.9095,
     "tp1": 1887.9095,
     "tp2": 1895.179,
     "tp3": 1904.8716,
@@ -75,14 +75,14 @@
     "created": 1785051712.7223356,
     "expires": 1785138112.7223358,
     "order_id": "1785051712-23A84E3A",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1785051712.722374,
     "entry_message_id": 8556,
-    "last_checked_ts": 1785072600.0,
-    "current_price": 1885.27
+    "last_checked_ts": 1785074400.0,
+    "current_price": 1893.09
   },
   "DOGE-USDT-SWAPLONG1785051718-1465AD90": {
     "instId": "DOGE-USDT-SWAP",
@@ -171,7 +171,7 @@
     "hit_tp3": false,
     "activated_at": 1785051718.4838645,
     "entry_message_id": 8557,
-    "last_checked_ts": 1785072600.0,
-    "current_price": 0.07301
+    "last_checked_ts": 1785074400.0,
+    "current_price": 0.07313
   }
 }
