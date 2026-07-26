@@ -2,27 +2,27 @@
   "buckets": {
     "score:80-89": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsilong:50-59": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "fund:neutral": {
       "win": 0,
-      "loss": 1,
+      "loss": 4,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "sess:asia_day": {
       "win": 0,
-      "loss": 1,
+      "loss": 4,
       "be": 0,
-      "total": 1
+      "total": 4
     },
     "coin:DOGE": {
       "win": 0,
@@ -35,6 +35,60 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "score:70-79": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "rsishort:50-59": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "coin:BTC": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BTCSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:SOL": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:SOLSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "score:90+": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:XRPLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -43,8 +97,48 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "BTC": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "SOL": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1785022399.131645
+  "loss_reasons": [
+    {
+      "ts": 1785028206.3267817,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785028207.9925866,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785028210.1143155,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    }
+  ],
+  "updated_at": 1785028209.599827
 }
