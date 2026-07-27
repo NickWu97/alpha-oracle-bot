@@ -1,1 +1,265 @@
-{}
+{
+  "BTC-USDT-SWAPSHORT1785169711-41B231FD": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 64732.6,
+    "sl": 65075.8749,
+    "tp1": 64217.6876,
+    "tp2": 63702.7753,
+    "tp3": 63016.2255,
+    "atr": 228.84993883,
+    "score": 95,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 40.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.4,
+      "obv": 5,
+      "vwap": 64611.4778,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.01822,
+      "bb_pct_b": 0.219,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 19.4,
+      "atr_pct": 0.354,
+      "learning_notes": [
+        "score:90+ (n=23, 勝率 65%) → +1",
+        "fund:neutral (n=44, 勝率 68%) → +1",
+        "sess:asia_dawn (n=11, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 5 (勝率 50%)"
+      ],
+      "learning_adjust": 3
+    },
+    "funding_rate": 1.47796745776e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 19.4,
+      "atr_pct": 0.354,
+      "volatile": false
+    },
+    "created": 1785169711.6421013,
+    "expires": 1785256111.6421015,
+    "order_id": "1785169711-41B231FD",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1785169711.642129,
+    "entry_message_id": 8699,
+    "last_checked_ts": 1785169711.642129
+  },
+  "BNB-USDT-SWAPSHORT1785169714-825EB84D": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 570.8,
+    "sl": 573.5642,
+    "tp1": 566.6537,
+    "tp2": 562.5075,
+    "tp3": 556.9791,
+    "atr": 1.84278013,
+    "score": 91,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 41.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 568.1671,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.01987,
+      "bb_pct_b": 0.279,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 20.1,
+      "atr_pct": 0.324,
+      "learning_notes": [
+        "score:80-89 (n=20, 勝率 75%) → +2",
+        "fund:neutral (n=44, 勝率 68%) → +1",
+        "sess:asia_dawn (n=11, 勝率 64%) → +1",
+        "coin:BNB (n=9, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 5 (勝率 50%)"
+      ],
+      "learning_adjust": 5
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 20.1,
+      "atr_pct": 0.324,
+      "volatile": false
+    },
+    "created": 1785169714.8329487,
+    "expires": 1785256114.8329492,
+    "order_id": "1785169714-825EB84D",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1785169714.8329723,
+    "entry_message_id": 8700,
+    "last_checked_ts": 1785169714.8329723
+  },
+  "XRP-USDT-SWAPSHORT1785169716-102090D0": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.0935,
+    "sl": 1.1005,
+    "tp1": 1.0934,
+    "tp2": 1.0934,
+    "tp3": 1.0934,
+    "atr": 0.00466196,
+    "score": 99,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 34.6,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.64,
+      "obv": 5,
+      "vwap": 1.0981,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02975,
+      "bb_pct_b": 0.165,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 33.9,
+      "atr_pct": 0.429,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=23, 勝率 65%) → +1",
+        "fund:neutral (n=44, 勝率 68%) → +1",
+        "sess:asia_dawn (n=11, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 3,
+      "tp_adjust_notes": [
+        "TP1 1.0830→1.0934（支撐 1.0913）",
+        "TP2 1.0725→1.0934（支撐 1.0913）",
+        "TP3 1.0585→1.0934（支撐 1.0913）"
+      ]
+    },
+    "funding_rate": -9.0393764274e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 28.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 33.9,
+      "atr_pct": 0.429,
+      "volatile": false
+    },
+    "created": 1785169716.810843,
+    "expires": 1785256116.8108432,
+    "order_id": "1785169716-102090D0",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1785169716.8108683,
+    "entry_message_id": 8701,
+    "last_checked_ts": 1785169716.8108683
+  }
+}
