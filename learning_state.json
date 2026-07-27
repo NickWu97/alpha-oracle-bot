@@ -13,16 +13,16 @@
       "total": 26
     },
     "fund:neutral": {
-      "win": 33,
+      "win": 37,
       "loss": 15,
       "be": 0,
-      "total": 48
+      "total": 52
     },
     "sess:asia_day": {
-      "win": 15,
+      "win": 19,
       "loss": 4,
       "be": 0,
-      "total": 19
+      "total": 23
     },
     "coin:DOGE": {
       "win": 3,
@@ -73,16 +73,16 @@
       "total": 1
     },
     "score:90+": {
-      "win": 18,
+      "win": 22,
       "loss": 9,
       "be": 0,
-      "total": 27
+      "total": 31
     },
     "coin:XRP": {
-      "win": 6,
+      "win": 7,
       "loss": 2,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin_side:XRPLONG": {
       "win": 3,
@@ -199,10 +199,10 @@
       "total": 3
     },
     "rsishort:40-49": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:BNBSHORT": {
       "win": 0,
@@ -211,12 +211,24 @@
       "total": 1
     },
     "rsishort:30-39": {
+      "win": 6,
+      "loss": 0,
+      "be": 0,
+      "total": 6
+    },
+    "coin_side:XRPSHORT": {
+      "win": 4,
+      "loss": 0,
+      "be": 0,
+      "total": 4
+    },
+    "coin:NEAR": {
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
     },
-    "coin_side:XRPSHORT": {
+    "coin_side:NEARSHORT": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -243,10 +255,10 @@
       "total": 10
     },
     "XRP": {
-      "win": 6,
+      "win": 7,
       "loss": 2,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "BNB": {
       "win": 6,
@@ -277,6 +289,12 @@
       "loss": 1,
       "be": 0,
       "total": 4
+    },
+    "NEAR": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -337,5 +355,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785175627.0358799
+  "updated_at": 1785189996.4363823
 }
