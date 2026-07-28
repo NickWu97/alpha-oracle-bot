@@ -6505,5 +6505,96 @@
       "atr_pct": 0.38,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-29 04:45",
+    "date": "2026-07-29",
+    "order_id": "1785266843-EF72DE96",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 63718.3,
+    "close": 63995.2182,
+    "close_type": "SL",
+    "pnl": -0.43,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 4.84462627926e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 55.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 64328.9868,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01283,
+      "bb_pct_b": 0.581,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.7,
+      "atr_pct": 0.29,
+      "learning_notes": [
+        "fund:neutral (n=69, 勝率 78%) → +2",
+        "sess:asia_dawn (n=21, 勝率 76%) → +2",
+        "coin:BTC (n=8, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 55.4,
+      "atr_pct": 0.29,
+      "funding": 0.0484462627926,
+      "vol_ratio": 0.52,
+      "adx": 15.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 35.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.7,
+      "atr_pct": 0.29,
+      "volatile": false
+    }
   }
 ]
