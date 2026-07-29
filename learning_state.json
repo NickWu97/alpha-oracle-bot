@@ -2,21 +2,21 @@
   "buckets": {
     "score:80-89": {
       "win": 22,
-      "loss": 10,
+      "loss": 11,
       "be": 0,
-      "total": 32
+      "total": 33
     },
     "rsilong:50-59": {
-      "win": 21,
+      "win": 22,
       "loss": 6,
-      "be": 0,
-      "total": 27
+      "be": 1,
+      "total": 29
     },
     "fund:neutral": {
-      "win": 62,
-      "loss": 22,
-      "be": 1,
-      "total": 85
+      "win": 63,
+      "loss": 23,
+      "be": 2,
+      "total": 88
     },
     "sess:asia_day": {
       "win": 34,
@@ -73,28 +73,28 @@
       "total": 6
     },
     "score:90+": {
-      "win": 40,
+      "win": 41,
       "loss": 11,
-      "be": 1,
-      "total": 52
+      "be": 2,
+      "total": 54
     },
     "coin:XRP": {
       "win": 9,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "coin_side:XRPLONG": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "rsilong:60-69": {
       "win": 3,
-      "loss": 6,
+      "loss": 7,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin:BNB": {
       "win": 13,
@@ -133,16 +133,16 @@
       "total": 2
     },
     "coin:ETH": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
-      "be": 0,
-      "total": 7
+      "be": 1,
+      "total": 9
     },
     "coin_side:ETHLONG": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
-      "be": 0,
-      "total": 7
+      "be": 1,
+      "total": 9
     },
     "coin:DOT": {
       "win": 0,
@@ -181,10 +181,10 @@
       "total": 4
     },
     "sess:asia_dawn": {
-      "win": 20,
-      "loss": 10,
-      "be": 0,
-      "total": 30
+      "win": 21,
+      "loss": 11,
+      "be": 1,
+      "total": 33
     },
     "coin_side:BTCLONG": {
       "win": 3,
@@ -274,9 +274,9 @@
     },
     "XRP": {
       "win": 9,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "BNB": {
       "win": 13,
@@ -291,10 +291,10 @@
       "total": 4
     },
     "ETH": {
-      "win": 6,
+      "win": 7,
       "loss": 1,
-      "be": 0,
-      "total": 7
+      "be": 1,
+      "total": 9
     },
     "DOT": {
       "win": 0,
@@ -387,5 +387,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785350489.8052568
+  "updated_at": 1785353075.3409772
 }
