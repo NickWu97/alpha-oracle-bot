@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 18,
-      "loss": 9,
+      "win": 21,
+      "loss": 10,
       "be": 0,
-      "total": 27
+      "total": 31
     },
     "rsilong:50-59": {
       "win": 21,
@@ -13,10 +13,10 @@
       "total": 27
     },
     "fund:neutral": {
-      "win": 58,
-      "loss": 20,
+      "win": 61,
+      "loss": 21,
       "be": 1,
-      "total": 79
+      "total": 83
     },
     "sess:asia_day": {
       "win": 34,
@@ -50,9 +50,9 @@
     },
     "coin:BTC": {
       "win": 6,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin_side:BTCSHORT": {
       "win": 3,
@@ -169,10 +169,10 @@
       "total": 5
     },
     "coin:LINK": {
-      "win": 6,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "coin_side:LINKLONG": {
       "win": 3,
@@ -181,22 +181,22 @@
       "total": 4
     },
     "sess:asia_dawn": {
-      "win": 16,
-      "loss": 8,
+      "win": 19,
+      "loss": 9,
       "be": 0,
-      "total": 24
+      "total": 28
     },
     "coin_side:BTCLONG": {
+      "win": 3,
+      "loss": 2,
+      "be": 0,
+      "total": 5
+    },
+    "rsilong:30-39": {
       "win": 3,
       "loss": 1,
       "be": 0,
       "total": 4
-    },
-    "rsilong:30-39": {
-      "win": 3,
-      "loss": 0,
-      "be": 0,
-      "total": 3
     },
     "rsishort:40-49": {
       "win": 6,
@@ -211,10 +211,10 @@
       "total": 4
     },
     "rsishort:30-39": {
-      "win": 12,
+      "win": 15,
       "loss": 0,
       "be": 0,
-      "total": 12
+      "total": 15
     },
     "coin_side:XRPSHORT": {
       "win": 6,
@@ -235,10 +235,10 @@
       "total": 3
     },
     "coin_side:LINKSHORT": {
-      "win": 3,
+      "win": 6,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "rsilong:70-79": {
       "win": 3,
@@ -262,9 +262,9 @@
     },
     "BTC": {
       "win": 6,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "SOL": {
       "win": 13,
@@ -303,10 +303,10 @@
       "total": 1
     },
     "LINK": {
-      "win": 6,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "NEAR": {
       "win": 3,
@@ -387,5 +387,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785309567.7245946
+  "updated_at": 1785343640.6093278
 }
