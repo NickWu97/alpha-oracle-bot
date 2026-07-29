@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 21,
+      "win": 22,
       "loss": 10,
       "be": 0,
-      "total": 31
+      "total": 32
     },
     "rsilong:50-59": {
       "win": 21,
@@ -13,10 +13,10 @@
       "total": 27
     },
     "fund:neutral": {
-      "win": 61,
-      "loss": 21,
+      "win": 62,
+      "loss": 22,
       "be": 1,
-      "total": 83
+      "total": 85
     },
     "sess:asia_day": {
       "win": 34,
@@ -44,9 +44,9 @@
     },
     "rsishort:50-59": {
       "win": 4,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "coin:BTC": {
       "win": 6,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 40,
-      "loss": 10,
+      "loss": 11,
       "be": 1,
-      "total": 51
+      "total": 52
     },
     "coin:XRP": {
       "win": 9,
@@ -97,16 +97,16 @@
       "total": 9
     },
     "coin:BNB": {
-      "win": 12,
+      "win": 13,
       "loss": 5,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "coin_side:BNBLONG": {
-      "win": 9,
+      "win": 10,
       "loss": 4,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "sess:europe": {
       "win": 6,
@@ -115,16 +115,16 @@
       "total": 10
     },
     "rsilong:40-49": {
-      "win": 6,
+      "win": 7,
       "loss": 2,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin:AVAX": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:AVAXLONG": {
       "win": 0,
@@ -181,10 +181,10 @@
       "total": 4
     },
     "sess:asia_dawn": {
-      "win": 19,
-      "loss": 9,
+      "win": 20,
+      "loss": 10,
       "be": 0,
-      "total": 28
+      "total": 30
     },
     "coin_side:BTCLONG": {
       "win": 3,
@@ -248,9 +248,9 @@
     },
     "coin_side:AVAXSHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     }
   },
   "by_coin": {
@@ -279,16 +279,16 @@
       "total": 12
     },
     "BNB": {
-      "win": 12,
+      "win": 13,
       "loss": 5,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "AVAX": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "ETH": {
       "win": 6,
@@ -387,5 +387,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785343640.6093278
+  "updated_at": 1785350489.8052568
 }
