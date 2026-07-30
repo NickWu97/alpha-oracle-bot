@@ -86,97 +86,8 @@
     "hit_tp3": false,
     "activated_at": 1785430816.2508287,
     "entry_message_id": 8905,
-    "last_checked_ts": 1785447000.0,
-    "current_price": 64707.7
-  },
-  "BNB-USDT-SWAPLONG1785430823-A411735A": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 593.3,
-    "sl": 590.7355,
-    "tp1": 597.1467,
-    "tp2": 600.9935,
-    "tp3": 606.1225,
-    "atr": 1.70966302,
-    "score": 95,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 72.0,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.59,
-      "obv": 5,
-      "vwap": 574.344,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01626,
-      "bb_pct_b": 0.979,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 59.7,
-      "atr_pct": 0.288,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "score:80-89 (n=34, 勝率 65%) → +1",
-        "fund:neutral (n=100, 勝率 69%) → +1",
-        "sess:asia_dawn (n=37, 勝率 65%) → +1",
-        "coin:BNB (n=22, 勝率 73%) → +2",
-        "coin_side:BNBLONG (n=18, 勝率 72%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 3 (勝率 60%)"
-      ],
-      "learning_adjust": 7
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 78.2
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 72.2
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 33.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 59.7,
-      "atr_pct": 0.288,
-      "volatile": false
-    },
-    "created": 1785430823.3606744,
-    "expires": 1785517223.3606746,
-    "order_id": "1785430823-A411735A",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1785430823.3607252,
-    "entry_message_id": 8907,
-    "last_checked_ts": 1785447000.0,
-    "current_price": 591.0
+    "last_checked_ts": 1785450600.0,
+    "current_price": 64864.9
   },
   "SOL-USDT-SWAPLONG1785442514-4542E9E0": {
     "instId": "SOL-USDT-SWAP",
@@ -267,8 +178,8 @@
     "hit_tp3": false,
     "activated_at": 1785442514.8302202,
     "entry_message_id": 8929,
-    "last_checked_ts": 1785447000.0,
-    "current_price": 74.43
+    "last_checked_ts": 1785450600.0,
+    "current_price": 74.78
   },
   "XRP-USDT-SWAPLONG1785442517-DE7DA64F": {
     "instId": "XRP-USDT-SWAP",
@@ -356,15 +267,15 @@
     "hit_tp3": false,
     "activated_at": 1785442517.1082113,
     "entry_message_id": 8930,
-    "last_checked_ts": 1785447000.0,
-    "current_price": 1.0839
+    "last_checked_ts": 1785450600.0,
+    "current_price": 1.0866
   },
   "LINK-USDT-SWAPLONG1785447783-FA5BD160": {
     "instId": "LINK-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 8.481,
-    "sl": 8.4416,
+    "sl": 8.481,
     "tp1": 8.4873,
     "tp2": 8.4873,
     "tp3": 8.4873,
@@ -444,12 +355,13 @@
     "created": 1785447783.9140923,
     "expires": 1785534183.9140925,
     "order_id": "1785447783-FA5BD160",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1785447783.9141295,
     "entry_message_id": 8936,
-    "last_checked_ts": 1785447783.9141295
+    "last_checked_ts": 1785450600.0,
+    "current_price": 8.482
   }
 }

@@ -13,16 +13,16 @@
       "total": 37
     },
     "fund:neutral": {
-      "win": 76,
-      "loss": 28,
+      "win": 77,
+      "loss": 29,
       "be": 4,
-      "total": 108
+      "total": 110
     },
     "sess:asia_day": {
-      "win": 35,
-      "loss": 10,
+      "win": 36,
+      "loss": 11,
       "be": 0,
-      "total": 45
+      "total": 47
     },
     "coin:DOGE": {
       "win": 3,
@@ -73,10 +73,10 @@
       "total": 6
     },
     "score:90+": {
-      "win": 54,
-      "loss": 16,
+      "win": 55,
+      "loss": 17,
       "be": 3,
-      "total": 73
+      "total": 75
     },
     "coin:XRP": {
       "win": 9,
@@ -98,15 +98,15 @@
     },
     "coin:BNB": {
       "win": 16,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 22
+      "total": 23
     },
     "coin_side:BNBLONG": {
       "win": 13,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 18
+      "total": 19
     },
     "sess:europe": {
       "win": 8,
@@ -115,10 +115,10 @@
       "total": 13
     },
     "rsilong:40-49": {
-      "win": 7,
+      "win": 8,
       "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "coin:AVAX": {
       "win": 3,
@@ -169,16 +169,16 @@
       "total": 5
     },
     "coin:LINK": {
-      "win": 10,
+      "win": 11,
       "loss": 3,
       "be": 1,
-      "total": 14
+      "total": 15
     },
     "coin_side:LINKLONG": {
-      "win": 4,
+      "win": 5,
       "loss": 1,
       "be": 1,
-      "total": 6
+      "total": 7
     },
     "sess:asia_dawn": {
       "win": 31,
@@ -242,9 +242,9 @@
     },
     "rsilong:70-79": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:AVAXSHORT": {
       "win": 3,
@@ -298,9 +298,9 @@
     },
     "BNB": {
       "win": 16,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 22
+      "total": 23
     },
     "AVAX": {
       "win": 3,
@@ -321,10 +321,10 @@
       "total": 1
     },
     "LINK": {
-      "win": 10,
+      "win": 11,
       "loss": 3,
       "be": 1,
-      "total": 14
+      "total": 15
     },
     "NEAR": {
       "win": 3,
@@ -437,7 +437,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1785451640.5327818,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1785440997.656886
+  "updated_at": 1785451642.9819832
 }
