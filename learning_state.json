@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 66,
-      "loss": 24,
+      "loss": 26,
       "be": 3,
-      "total": 93
+      "total": 95
     },
     "sess:asia_day": {
       "win": 34,
-      "loss": 7,
+      "loss": 9,
       "be": 0,
-      "total": 41
+      "total": 43
     },
     "coin:DOGE": {
       "win": 3,
@@ -44,9 +44,9 @@
     },
     "rsishort:50-59": {
       "win": 4,
-      "loss": 5,
+      "loss": 7,
       "be": 1,
-      "total": 10
+      "total": 12
     },
     "coin:BTC": {
       "win": 6,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 44,
-      "loss": 12,
+      "loss": 14,
       "be": 2,
-      "total": 58
+      "total": 60
     },
     "coin:XRP": {
       "win": 9,
@@ -170,9 +170,9 @@
     },
     "coin:LINK": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "coin_side:LINKLONG": {
       "win": 3,
@@ -224,21 +224,21 @@
     },
     "coin:NEAR": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:NEARSHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:LINKSHORT": {
       "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "rsilong:70-79": {
       "win": 3,
@@ -304,15 +304,15 @@
     },
     "LINK": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "NEAR": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     }
   },
   "loss_reasons": [
@@ -392,7 +392,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785372893.7508357,
+      "coin": "NEAR",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785363314.290079
+  "updated_at": 1785372895.5436144
 }
