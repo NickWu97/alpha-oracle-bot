@@ -8964,5 +8964,97 @@
       "atr_pct": 0.248,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-07-30 17:17",
+    "date": "2026-07-30",
+    "order_id": "1785372885-7548F936",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 570.9,
+    "close": 577.2854,
+    "close_type": "TP2",
+    "pnl": 1.12,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 124,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 54.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.62,
+      "obv": 5,
+      "vwap": 569.8567,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01434,
+      "bb_pct_b": 0.666,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 18.1,
+      "atr_pct": 0.248,
+      "learning_notes": [
+        "score:90+ (n=58, 勝率 76%) → +2",
+        "rsilong:50-59 (n=29, 勝率 76%) → +2",
+        "fund:neutral (n=93, 勝率 71%) → +2",
+        "sess:asia_day (n=41, 勝率 83%) → +2",
+        "coin:BNB (n=19, 勝率 68%) → +1",
+        "coin_side:BNBLONG (n=15, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 10
+    },
+    "features": {
+      "score": 124.0,
+      "rsi": 54.1,
+      "atr_pct": 0.248,
+      "funding": 0.1,
+      "vol_ratio": 0.62,
+      "adx": 18.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.4
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.1,
+      "atr_pct": 0.248,
+      "volatile": false
+    }
   }
 ]
