@@ -2,21 +2,21 @@
   "buckets": {
     "score:80-89": {
       "win": 25,
-      "loss": 11,
+      "loss": 12,
       "be": 1,
-      "total": 37
+      "total": 38
     },
     "rsilong:50-59": {
       "win": 31,
-      "loss": 7,
+      "loss": 9,
       "be": 4,
-      "total": 42
+      "total": 44
     },
     "fund:neutral": {
       "win": 87,
-      "loss": 32,
+      "loss": 34,
       "be": 6,
-      "total": 125
+      "total": 127
     },
     "sess:asia_day": {
       "win": 40,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 62,
-      "loss": 20,
+      "loss": 21,
       "be": 5,
-      "total": 87
+      "total": 88
     },
     "coin:XRP": {
       "win": 12,
@@ -98,15 +98,15 @@
     },
     "coin:BNB": {
       "win": 16,
-      "loss": 6,
+      "loss": 7,
       "be": 1,
-      "total": 23
+      "total": 24
     },
     "coin_side:BNBLONG": {
       "win": 13,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 19
+      "total": 20
     },
     "sess:europe": {
       "win": 8,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 37,
-      "loss": 13,
+      "loss": 15,
       "be": 3,
-      "total": 53
+      "total": 55
     },
     "coin_side:BTCLONG": {
       "win": 4,
@@ -260,15 +260,15 @@
     },
     "coin:ADA": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:ADALONG": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsishort:20-29": {
       "win": 0,
@@ -304,9 +304,9 @@
     },
     "BNB": {
       "win": 16,
-      "loss": 6,
+      "loss": 7,
       "be": 1,
-      "total": 23
+      "total": 24
     },
     "AVAX": {
       "win": 3,
@@ -340,9 +340,9 @@
     },
     "ADA": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     }
   },
   "loss_reasons": [
@@ -457,7 +457,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785532737.2802868,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785528534.3000908
+  "updated_at": 1785532738.8957016
 }
