@@ -86,8 +86,8 @@
     "hit_tp3": false,
     "activated_at": 1785430816.2508287,
     "entry_message_id": 8905,
-    "last_checked_ts": 1785450600.0,
-    "current_price": 64830.3
+    "last_checked_ts": 1785455100.0,
+    "current_price": 64835.5
   },
   "SOL-USDT-SWAPLONG1785442514-4542E9E0": {
     "instId": "SOL-USDT-SWAP",
@@ -178,96 +178,7 @@
     "hit_tp3": false,
     "activated_at": 1785442514.8302202,
     "entry_message_id": 8929,
-    "last_checked_ts": 1785450600.0,
-    "current_price": 74.72
-  },
-  "XRP-USDT-SWAPLONG1785442517-DE7DA64F": {
-    "instId": "XRP-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 1.0874,
-    "sl": 1.0828,
-    "tp1": 1.0943,
-    "tp2": 1.1011,
-    "tp3": 1.1103,
-    "atr": 0.00304879,
-    "score": 111,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 52.1,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 5,
-      "volume_ratio": 1.84,
-      "obv": 5,
-      "vwap": 1.072,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00657,
-      "bb_pct_b": 0.327,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "transitional",
-      "adx": 19.5,
-      "atr_pct": 0.28,
-      "learning_notes": [
-        "score:90+ (n=73, 勝率 74%) → +2",
-        "rsilong:50-59 (n=37, 勝率 78%) → +2",
-        "fund:neutral (n=108, 勝率 70%) → +2",
-        "sess:asia_dawn (n=45, 勝率 69%) → +1",
-        "coin:XRP (n=13, 勝率 69%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
-        "KNN 中高勝率 → +3"
-      ],
-      "learning_adjust": 11
-    },
-    "funding_rate": 7.34571728944e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 60.2
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 53.0
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 24.9
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 19.5,
-      "atr_pct": 0.28,
-      "volatile": false
-    },
-    "created": 1785442517.1081715,
-    "expires": 1785528917.108172,
-    "order_id": "1785442517-DE7DA64F",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1785442517.1082113,
-    "entry_message_id": 8930,
-    "last_checked_ts": 1785450600.0,
-    "current_price": 1.0854
+    "last_checked_ts": 1785455100.0,
+    "current_price": 74.56
   }
 }

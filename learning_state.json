@@ -8,21 +8,21 @@
     },
     "rsilong:50-59": {
       "win": 29,
-      "loss": 6,
+      "loss": 7,
       "be": 2,
-      "total": 37
+      "total": 38
     },
     "fund:neutral": {
       "win": 79,
-      "loss": 29,
+      "loss": 30,
       "be": 4,
-      "total": 112
+      "total": 113
     },
     "sess:asia_day": {
       "win": 38,
-      "loss": 11,
+      "loss": 12,
       "be": 0,
-      "total": 49
+      "total": 50
     },
     "coin:DOGE": {
       "win": 3,
@@ -74,21 +74,21 @@
     },
     "score:90+": {
       "win": 57,
-      "loss": 17,
+      "loss": 18,
       "be": 3,
-      "total": 77
+      "total": 78
     },
     "coin:XRP": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "coin_side:XRPLONG": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "rsilong:60-69": {
       "win": 6,
@@ -292,9 +292,9 @@
     },
     "XRP": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "BNB": {
       "win": 16,
@@ -444,7 +444,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1785456238.163734,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785452300.5486095
+  "updated_at": 1785456237.6776161
 }
