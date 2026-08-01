@@ -1,91 +1,4 @@
 {
-  "BTC-USDT-SWAPSHORT1785526528-855B0B22": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 62990.1,
-    "sl": 62633.4902,
-    "tp1": 62633.4902,
-    "tp2": 62276.8804,
-    "tp3": 61801.4007,
-    "atr": 158.49323779,
-    "score": 94,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 44.6,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": -10,
-      "volume_ratio": 0.15,
-      "obv": 5,
-      "vwap": 64020.6405,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01141,
-      "bb_pct_b": 0.655,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 28.8,
-      "atr_pct": 0.252,
-      "adx_bonus": 2,
-      "learning_notes": [
-        "score:90+ (n=87, 勝率 71%) → +2",
-        "fund:neutral (n=122, 勝率 69%) → +1",
-        "sess:asia_dawn (n=50, 勝率 68%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
-      ],
-      "learning_adjust": 4
-    },
-    "funding_rate": 7.65194680975e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.7
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 33.1
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 35.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 28.8,
-      "atr_pct": 0.252,
-      "volatile": false
-    },
-    "created": 1785526528.2825456,
-    "expires": 1785612928.2825463,
-    "order_id": "1785526528-855B0B22",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1785526528.2825818,
-    "entry_message_id": 8993,
-    "last_checked_ts": 1785616200.0,
-    "current_price": 62621.2
-  },
   "BNB-USDT-SWAPSHORT1785613563-7D0AC6FF": {
     "instId": "BNB-USDT-SWAP",
     "side": "SHORT",
@@ -178,7 +91,7 @@
     "hit_tp3": false,
     "activated_at": 1785613563.9191768,
     "entry_message_id": 9070,
-    "last_checked_ts": 1785616200.0,
-    "current_price": 574.9
+    "last_checked_ts": 1785618900.0,
+    "current_price": 575.3
   }
 }
