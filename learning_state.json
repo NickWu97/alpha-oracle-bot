@@ -2,9 +2,9 @@
   "buckets": {
     "score:80-89": {
       "win": 25,
-      "loss": 14,
+      "loss": 15,
       "be": 1,
-      "total": 40
+      "total": 41
     },
     "rsilong:50-59": {
       "win": 31,
@@ -13,16 +13,16 @@
       "total": 44
     },
     "fund:neutral": {
-      "win": 92,
+      "win": 93,
       "loss": 38,
       "be": 6,
-      "total": 136
+      "total": 137
     },
     "sess:asia_day": {
-      "win": 42,
-      "loss": 16,
+      "win": 43,
+      "loss": 17,
       "be": 2,
-      "total": 60
+      "total": 62
     },
     "coin:DOGE": {
       "win": 3,
@@ -73,10 +73,10 @@
       "total": 10
     },
     "score:90+": {
-      "win": 67,
+      "win": 68,
       "loss": 23,
       "be": 5,
-      "total": 95
+      "total": 96
     },
     "coin:XRP": {
       "win": 12,
@@ -115,16 +115,16 @@
       "total": 13
     },
     "rsilong:40-49": {
-      "win": 12,
+      "win": 13,
       "loss": 2,
       "be": 1,
-      "total": 15
+      "total": 16
     },
     "coin:AVAX": {
       "win": 3,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:AVAXLONG": {
       "win": 0,
@@ -200,9 +200,9 @@
     },
     "rsishort:40-49": {
       "win": 9,
-      "loss": 6,
+      "loss": 7,
       "be": 0,
-      "total": 15
+      "total": 16
     },
     "coin_side:BNBSHORT": {
       "win": 3,
@@ -248,9 +248,9 @@
     },
     "coin_side:AVAXSHORT": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:DOGESHORT": {
       "win": 0,
@@ -259,18 +259,24 @@
       "total": 2
     },
     "coin:ADA": {
-      "win": 5,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "coin_side:ADALONG": {
-      "win": 5,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "rsishort:20-29": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "fund:neg": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -310,9 +316,9 @@
     },
     "AVAX": {
       "win": 3,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "ETH": {
       "win": 7,
@@ -339,10 +345,10 @@
       "total": 4
     },
     "ADA": {
-      "win": 5,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 6
+      "total": 7
     }
   },
   "loss_reasons": [
@@ -494,5 +500,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1785629552.5172887
+  "updated_at": 1785632979.0587864
 }
