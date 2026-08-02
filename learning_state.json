@@ -1,22 +1,22 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 29,
+      "win": 32,
       "loss": 16,
       "be": 1,
-      "total": 46
+      "total": 49
     },
     "rsilong:50-59": {
-      "win": 31,
+      "win": 38,
       "loss": 9,
       "be": 4,
-      "total": 44
+      "total": 51
     },
     "fund:neutral": {
-      "win": 101,
+      "win": 108,
       "loss": 40,
       "be": 6,
-      "total": 147
+      "total": 154
     },
     "sess:asia_day": {
       "win": 49,
@@ -25,16 +25,16 @@
       "total": 70
     },
     "coin:DOGE": {
-      "win": 3,
+      "win": 4,
       "loss": 4,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:DOGELONG": {
-      "win": 3,
+      "win": 4,
       "loss": 2,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "score:70-79": {
       "win": 0,
@@ -73,10 +73,10 @@
       "total": 10
     },
     "score:90+": {
-      "win": 72,
+      "win": 76,
       "loss": 24,
       "be": 5,
-      "total": 101
+      "total": 105
     },
     "coin:XRP": {
       "win": 15,
@@ -169,22 +169,22 @@
       "total": 5
     },
     "coin:LINK": {
-      "win": 13,
+      "win": 16,
       "loss": 4,
       "be": 1,
-      "total": 18
+      "total": 21
     },
     "coin_side:LINKLONG": {
-      "win": 7,
+      "win": 10,
       "loss": 1,
       "be": 1,
-      "total": 9
+      "total": 12
     },
     "sess:asia_dawn": {
-      "win": 42,
+      "win": 49,
       "loss": 15,
       "be": 3,
-      "total": 60
+      "total": 67
     },
     "coin_side:BTCLONG": {
       "win": 4,
@@ -259,16 +259,16 @@
       "total": 2
     },
     "coin:ADA": {
-      "win": 6,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "coin_side:ADALONG": {
-      "win": 6,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "rsishort:20-29": {
       "win": 0,
@@ -297,10 +297,10 @@
   },
   "by_coin": {
     "DOGE": {
-      "win": 3,
+      "win": 4,
       "loss": 4,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "BTC": {
       "win": 10,
@@ -345,10 +345,10 @@
       "total": 1
     },
     "LINK": {
-      "win": 13,
+      "win": 16,
       "loss": 4,
       "be": 1,
-      "total": 18
+      "total": 21
     },
     "NEAR": {
       "win": 3,
@@ -357,10 +357,10 @@
       "total": 4
     },
     "ADA": {
-      "win": 6,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 10
     }
   },
   "loss_reasons": [
@@ -526,5 +526,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785691093.2974434
+  "updated_at": 1785692668.3540406
 }
