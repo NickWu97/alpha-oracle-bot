@@ -17409,5 +17409,95 @@
       "atr_pct": 0.255,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-04 07:39",
+    "date": "2026-08-04",
+    "order_id": "1785791633-AA50A44A",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0704,
+    "close": 0.0701,
+    "close_type": "SL",
+    "pnl": -0.43,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 118,
+    "funding_rate": 5.40170093456e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.58,
+      "obv": 5,
+      "vwap": 0.0698,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00425,
+      "bb_pct_b": 0.911,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.261,
+      "learning_notes": [
+        "score:90+ (n=122, 勝率 75%) → +2",
+        "fund:neutral (n=179, 勝率 73%) → +2",
+        "sess:asia_dawn (n=89, 勝率 79%) → +2",
+        "coin_side:DOGELONG (n=8, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 8
+    },
+    "features": {
+      "score": 118.0,
+      "rsi": 60.0,
+      "atr_pct": 0.261,
+      "funding": 0.0540170093456,
+      "vol_ratio": 0.58,
+      "adx": 20.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 25.8
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.261,
+      "volatile": false
+    }
   }
 ]
