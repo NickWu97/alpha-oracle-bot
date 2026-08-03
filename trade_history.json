@@ -16929,5 +16929,103 @@
       "atr_pct": 0.275,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-04 05:13",
+    "date": "2026-08-04",
+    "order_id": "1785787103-B81AE334",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 63871.2,
+    "close": 63921.9,
+    "close_type": "TP1",
+    "pnl": 0.08,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 103,
+    "funding_rate": -2.31238193082e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.4,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.77,
+      "obv": 5,
+      "vwap": 63134.0117,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00503,
+      "bb_pct_b": 0.79,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.285,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=122, 勝率 75%) → +2",
+        "fund:neutral (n=179, 勝率 73%) → +2",
+        "sess:asia_dawn (n=89, 勝率 79%) → +2",
+        "coin:BTC (n=26, 勝率 73%) → +2",
+        "coin_side:BTCLONG (n=16, 勝率 81%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 10,
+      "tp_adjust_notes": [
+        "TP1 64280.9429→63921.9000（阻力 64050.0000）",
+        "TP2 64690.6858→63921.9000（阻力 64050.0000）",
+        "TP3 65237.0097→63921.9000（阻力 64050.0000）"
+      ]
+    },
+    "features": {
+      "score": 103.0,
+      "rsi": 65.4,
+      "atr_pct": 0.285,
+      "funding": -0.0231238193082,
+      "vol_ratio": 0.77,
+      "adx": 36.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 53.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 31.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.285,
+      "volatile": false
+    }
   }
 ]
