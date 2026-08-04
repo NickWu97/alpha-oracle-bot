@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 63502.4,
-    "sl": 63274.8434,
+    "sl": 63502.4,
     "tp1": 63843.7349,
     "tp2": 64185.0698,
     "tp3": 64640.1831,
@@ -81,13 +81,13 @@
     "created": 1785796093.1282604,
     "expires": 1785882493.128261,
     "order_id": "1785796093-979C2144",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1785796093.1283226,
     "entry_message_id": 9239,
-    "last_checked_ts": 1785804300.0,
-    "current_price": 63404.0
+    "last_checked_ts": 1785816000.0,
+    "current_price": 63827.4
   }
 }
