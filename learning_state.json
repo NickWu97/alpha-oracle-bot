@@ -8,15 +8,15 @@
     },
     "rsilong:50-59": {
       "win": 58,
-      "loss": 10,
+      "loss": 11,
       "be": 4,
-      "total": 72
+      "total": 73
     },
     "fund:neutral": {
       "win": 151,
-      "loss": 49,
+      "loss": 51,
       "be": 13,
-      "total": 213
+      "total": 215
     },
     "sess:asia_day": {
       "win": 53,
@@ -62,9 +62,9 @@
     },
     "coin:SOL": {
       "win": 28,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 35
+      "total": 36
     },
     "coin_side:SOLSHORT": {
       "win": 7,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 111,
-      "loss": 32,
+      "loss": 34,
       "be": 12,
-      "total": 155
+      "total": 157
     },
     "coin:XRP": {
       "win": 18,
@@ -92,9 +92,9 @@
     },
     "rsilong:60-69": {
       "win": 13,
-      "loss": 12,
+      "loss": 13,
       "be": 4,
-      "total": 29
+      "total": 30
     },
     "coin:BNB": {
       "win": 26,
@@ -158,9 +158,9 @@
     },
     "coin_side:SOLLONG": {
       "win": 21,
-      "loss": 1,
+      "loss": 2,
       "be": 3,
-      "total": 25
+      "total": 26
     },
     "sess:us": {
       "win": 3,
@@ -170,21 +170,21 @@
     },
     "coin:LINK": {
       "win": 19,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "coin_side:LINKLONG": {
       "win": 13,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 15
+      "total": 16
     },
     "sess:asia_dawn": {
       "win": 81,
-      "loss": 17,
+      "loss": 19,
       "be": 6,
-      "total": 104
+      "total": 106
     },
     "coin_side:BTCLONG": {
       "win": 22,
@@ -310,9 +310,9 @@
     },
     "SOL": {
       "win": 28,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 35
+      "total": 36
     },
     "XRP": {
       "win": 18,
@@ -346,9 +346,9 @@
     },
     "LINK": {
       "win": 19,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "NEAR": {
       "win": 3,
@@ -573,7 +573,21 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785966585.203289,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785966586.7411041,
+      "coin": "LINK",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785964861.7032187
+  "updated_at": 1785966586.2700522
 }
