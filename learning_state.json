@@ -2,27 +2,27 @@
   "buckets": {
     "score:80-89": {
       "win": 40,
-      "loss": 17,
+      "loss": 18,
       "be": 1,
-      "total": 58
+      "total": 59
     },
     "rsilong:50-59": {
       "win": 58,
-      "loss": 11,
+      "loss": 12,
       "be": 4,
-      "total": 73
+      "total": 74
     },
     "fund:neutral": {
       "win": 157,
-      "loss": 53,
+      "loss": 55,
       "be": 13,
-      "total": 223
+      "total": 225
     },
     "sess:asia_day": {
       "win": 59,
-      "loss": 25,
+      "loss": 27,
       "be": 4,
-      "total": 88
+      "total": 90
     },
     "coin:DOGE": {
       "win": 6,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 117,
-      "loss": 36,
+      "loss": 37,
       "be": 12,
-      "total": 165
+      "total": 166
     },
     "coin:XRP": {
       "win": 18,
@@ -116,9 +116,9 @@
     },
     "rsilong:40-49": {
       "win": 28,
-      "loss": 5,
+      "loss": 6,
       "be": 4,
-      "total": 37
+      "total": 38
     },
     "coin:AVAX": {
       "win": 6,
@@ -134,15 +134,15 @@
     },
     "coin:ETH": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "coin_side:ETHLONG": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "coin:DOT": {
       "win": 0,
@@ -170,15 +170,15 @@
     },
     "coin:LINK": {
       "win": 19,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 25
+      "total": 26
     },
     "coin_side:LINKLONG": {
       "win": 13,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 16
+      "total": 17
     },
     "sess:asia_dawn": {
       "win": 81,
@@ -340,9 +340,9 @@
     },
     "ETH": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "DOT": {
       "win": 0,
@@ -352,9 +352,9 @@
     },
     "LINK": {
       "win": 19,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 25
+      "total": 26
     },
     "NEAR": {
       "win": 3,
@@ -600,7 +600,21 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1785987512.3012712,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1785987513.9445245,
+      "coin": "LINK",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1785977740.5795946
+  "updated_at": 1785987513.4590101
 }
