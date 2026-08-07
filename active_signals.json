@@ -1,91 +1,4 @@
 {
-  "BNB-USDT-SWAPSHORT1786125298-E3026B28": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 591.4,
-    "sl": 593.254,
-    "tp1": 588.619,
-    "tp2": 585.8379,
-    "tp3": 582.1299,
-    "atr": 1.23601368,
-    "score": 81,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 0,
-      "rsi_value": 54.2,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.51,
-      "obv": 5,
-      "vwap": 595.089,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00568,
-      "bb_pct_b": 0.612,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 25.1,
-      "atr_pct": 0.209,
-      "adx_bonus": 2,
-      "learning_notes": [
-        "fund:neutral (n=247, 勝率 70%) → +1",
-        "sess:asia_dawn (n=106, 勝率 76%) → +2",
-        "coin:BNB (n=43, 勝率 63%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 5 (勝率 50%)"
-      ],
-      "learning_adjust": 4
-    },
-    "funding_rate": 6.09437484744e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 52.3
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 50.1
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 32.8
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 25.1,
-      "atr_pct": 0.209,
-      "volatile": false
-    },
-    "created": 1786125298.384425,
-    "expires": 1786211698.3844252,
-    "order_id": "1786125298-E3026B28",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1786125298.3844566,
-    "entry_message_id": 9518,
-    "last_checked_ts": 1786131000.0,
-    "current_price": 592.8
-  },
   "DOGE-USDT-SWAPLONG1786125300-C5D64B77": {
     "instId": "DOGE-USDT-SWAP",
     "side": "LONG",
@@ -173,8 +86,8 @@
     "hit_tp3": false,
     "activated_at": 1786125300.4178092,
     "entry_message_id": 9519,
-    "last_checked_ts": 1786131000.0,
-    "current_price": 0.06978
+    "last_checked_ts": 1786131900.0,
+    "current_price": 0.06981
   },
   "LINK-USDT-SWAPLONG1786125302-C8DFC5BD": {
     "instId": "LINK-USDT-SWAP",
@@ -264,7 +177,7 @@
     "hit_tp3": false,
     "activated_at": 1786125302.2974398,
     "entry_message_id": 9520,
-    "last_checked_ts": 1786131000.0,
-    "current_price": 8.208
+    "last_checked_ts": 1786131900.0,
+    "current_price": 8.207
   }
 }
