@@ -22791,5 +22791,190 @@
       "atr_pct": 0.215,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-07 17:32",
+    "date": "2026-08-07",
+    "order_id": "1786085230-D4579EAE",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.0273,
+    "close": 1.0327,
+    "close_type": "SL",
+    "pnl": -0.53,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 87,
+    "funding_rate": 1.30112469273e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.93,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 1.0525,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02272,
+      "bb_pct_b": 0.608,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 39.2,
+      "atr_pct": 0.352,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:80-89 (n=59, 勝率 68%) → +1",
+        "fund:neutral (n=238, 勝率 70%) → +1",
+        "sess:europe (n=27, 勝率 63%) → +1",
+        "coin:XRP (n=27, 勝率 67%) → +1",
+        "coin_side:XRPSHORT (n=12, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 6
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 52.0,
+      "atr_pct": 0.352,
+      "funding": 0.0130112469273,
+      "vol_ratio": 0.93,
+      "adx": 39.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 26.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 26.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 24.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 39.2,
+      "atr_pct": 0.352,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-07 17:32",
+    "date": "2026-08-07",
+    "order_id": "1786090515-34A36116",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 6.412,
+    "close": 6.4373,
+    "close_type": "SL",
+    "pnl": -0.39,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 116,
+    "funding_rate": -8.31772849971e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 5,
+      "volume_ratio": 1.56,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 6.603,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00788,
+      "bb_pct_b": 0.639,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 30.1,
+      "atr_pct": 0.263,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=179, 勝率 70%) → +2",
+        "fund:neutral (n=238, 勝率 70%) → +1",
+        "sess:europe (n=27, 勝率 63%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 116.0,
+      "rsi": 50.1,
+      "atr_pct": 0.263,
+      "funding": -0.08317728499709999,
+      "vol_ratio": 1.56,
+      "adx": 30.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.1,
+      "atr_pct": 0.263,
+      "volatile": false
+    }
   }
 ]
