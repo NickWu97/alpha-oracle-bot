@@ -86,8 +86,8 @@
     "hit_tp3": false,
     "activated_at": 1786125300.4178092,
     "entry_message_id": 9519,
-    "last_checked_ts": 1786193100.0,
-    "current_price": 0.07047
+    "last_checked_ts": 1786195800.0,
+    "current_price": 0.07053
   },
   "LINK-USDT-SWAPLONG1786125302-C8DFC5BD": {
     "instId": "LINK-USDT-SWAP",
@@ -177,8 +177,8 @@
     "hit_tp3": false,
     "activated_at": 1786125302.2974398,
     "entry_message_id": 9520,
-    "last_checked_ts": 1786193100.0,
-    "current_price": 8.309
+    "last_checked_ts": 1786195800.0,
+    "current_price": 8.327
   },
   "AVAX-USDT-SWAPLONG1786165528-05C5ADAB": {
     "instId": "AVAX-USDT-SWAP",
@@ -267,15 +267,15 @@
     "hit_tp3": false,
     "activated_at": 1786165528.6489232,
     "entry_message_id": 9576,
-    "last_checked_ts": 1786193100.0,
-    "current_price": 6.524
+    "last_checked_ts": 1786195800.0,
+    "current_price": 6.518
   },
   "BNB-USDT-SWAPLONG1786179177-832EC0DC": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 594.4,
-    "sl": 594.4,
+    "sl": 595.8686,
     "tp1": 595.8686,
     "tp2": 597.3373,
     "tp3": 599.2955,
@@ -352,13 +352,13 @@
     "created": 1786179177.2699227,
     "expires": 1786265577.2699232,
     "order_id": "1786179177-832EC0DC",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1786179177.269969,
     "entry_message_id": 9608,
-    "last_checked_ts": 1786193100.0,
-    "current_price": 596.2
+    "last_checked_ts": 1786195800.0,
+    "current_price": 597.5
   }
 }
