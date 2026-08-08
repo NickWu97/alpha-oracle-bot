@@ -1,94 +1,4 @@
 {
-  "DOGE-USDT-SWAPLONG1786125300-C5D64B77": {
-    "instId": "DOGE-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 0.0696,
-    "sl": 0.0701,
-    "tp1": 0.0701,
-    "tp2": 0.0706,
-    "tp3": 0.0714,
-    "atr": 0.00024052,
-    "score": 107,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 47.5,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.75,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 0.0696,
-      "vwap_score": 0,
-      "bb_bandwidth": 0.01099,
-      "bb_pct_b": 0.228,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "transitional",
-      "adx": 22.8,
-      "atr_pct": 0.345,
-      "learning_notes": [
-        "score:90+ (n=186, 勝率 71%) → +2",
-        "rsilong:40-49 (n=38, 勝率 74%) → +2",
-        "fund:neutral (n=247, 勝率 70%) → +1",
-        "sess:asia_dawn (n=106, 勝率 76%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 12
-    },
-    "funding_rate": 5.35538219507e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 53.2
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 52.8
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 25.8
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 22.8,
-      "atr_pct": 0.345,
-      "volatile": false
-    },
-    "created": 1786125300.417771,
-    "expires": 1786211700.4177713,
-    "order_id": "1786125300-C5D64B77",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1786125300.4178092,
-    "entry_message_id": 9519,
-    "last_checked_ts": 1786198500.0,
-    "current_price": 0.0708
-  },
   "LINK-USDT-SWAPLONG1786125302-C8DFC5BD": {
     "instId": "LINK-USDT-SWAP",
     "side": "LONG",
@@ -177,8 +87,8 @@
     "hit_tp3": false,
     "activated_at": 1786125302.2974398,
     "entry_message_id": 9520,
-    "last_checked_ts": 1786198500.0,
-    "current_price": 8.342
+    "last_checked_ts": 1786199400.0,
+    "current_price": 8.368
   },
   "AVAX-USDT-SWAPLONG1786165528-05C5ADAB": {
     "instId": "AVAX-USDT-SWAP",
@@ -267,7 +177,7 @@
     "hit_tp3": false,
     "activated_at": 1786165528.6489232,
     "entry_message_id": 9576,
-    "last_checked_ts": 1786198500.0,
-    "current_price": 6.547
+    "last_checked_ts": 1786199400.0,
+    "current_price": 6.558
   }
 }
