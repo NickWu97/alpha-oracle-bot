@@ -86,8 +86,8 @@
     "hit_tp3": false,
     "activated_at": 1786125300.4178092,
     "entry_message_id": 9519,
-    "last_checked_ts": 1786189500.0,
-    "current_price": 0.07041
+    "last_checked_ts": 1786193100.0,
+    "current_price": 0.0704
   },
   "LINK-USDT-SWAPLONG1786125302-C8DFC5BD": {
     "instId": "LINK-USDT-SWAP",
@@ -177,99 +177,8 @@
     "hit_tp3": false,
     "activated_at": 1786125302.2974398,
     "entry_message_id": 9520,
-    "last_checked_ts": 1786189500.0,
-    "current_price": 8.322
-  },
-  "BTC-USDT-SWAPLONG1786165522-60E9A6AA": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 64975.0,
-    "sl": 64889.5089,
-    "tp1": 65103.2366,
-    "tp2": 65231.4732,
-    "tp3": 65402.4553,
-    "atr": 56.99404666,
-    "score": 126,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 56.3,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": -10,
-      "volume_ratio": 0.42,
-      "obv": 5,
-      "vwap": 64610.3109,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00318,
-      "bb_pct_b": 0.776,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 26.2,
-      "atr_pct": 0.088,
-      "adx_bonus": 2,
-      "learning_notes": [
-        "score:90+ (n=191, 勝率 70%) → +2",
-        "rsilong:50-59 (n=83, 勝率 78%) → +2",
-        "fund:neutral (n=254, 勝率 69%) → +1",
-        "sess:asia_day (n=101, 勝率 66%) → +1",
-        "coin:BTC (n=44, 勝率 73%) → +2",
-        "coin_side:BTCLONG (n=34, 勝率 76%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 15
-    },
-    "funding_rate": 4.2209158058e-06,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 58.8
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 61.5
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 31.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 26.2,
-      "atr_pct": 0.088,
-      "volatile": false
-    },
-    "created": 1786165522.616055,
-    "expires": 1786251922.6160553,
-    "order_id": "1786165522-60E9A6AA",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1786165522.6160948,
-    "entry_message_id": 9574,
-    "last_checked_ts": 1786189500.0,
-    "current_price": 64925.3
+    "last_checked_ts": 1786193100.0,
+    "current_price": 8.309
   },
   "AVAX-USDT-SWAPLONG1786165528-05C5ADAB": {
     "instId": "AVAX-USDT-SWAP",
@@ -358,8 +267,8 @@
     "hit_tp3": false,
     "activated_at": 1786165528.6489232,
     "entry_message_id": 9576,
-    "last_checked_ts": 1786189500.0,
-    "current_price": 6.548
+    "last_checked_ts": 1786193100.0,
+    "current_price": 6.534
   },
   "BNB-USDT-SWAPLONG1786179177-832EC0DC": {
     "instId": "BNB-USDT-SWAP",
@@ -449,15 +358,15 @@
     "hit_tp3": false,
     "activated_at": 1786179177.269969,
     "entry_message_id": 9608,
-    "last_checked_ts": 1786189500.0,
-    "current_price": 595.5
+    "last_checked_ts": 1786193100.0,
+    "current_price": 595.8
   },
   "XRP-USDT-SWAPLONG1786188590-CDD27F8A": {
     "instId": "XRP-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 1.0374,
-    "sl": 1.0345,
+    "sl": 1.0374,
     "tp1": 1.0417,
     "tp2": 1.0396,
     "tp3": 1.0396,
@@ -535,13 +444,13 @@
     "created": 1786188590.3315868,
     "expires": 1786274990.3315876,
     "order_id": "1786188590-CDD27F8A",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1786188590.3316383,
     "entry_message_id": 9638,
-    "last_checked_ts": 1786189500.0,
-    "current_price": 1.037
+    "last_checked_ts": 1786193100.0,
+    "current_price": 1.0406
   }
 }
