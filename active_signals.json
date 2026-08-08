@@ -86,15 +86,15 @@
     "hit_tp3": false,
     "activated_at": 1786125300.4178092,
     "entry_message_id": 9519,
-    "last_checked_ts": 1786182300.0,
-    "current_price": 0.07038
+    "last_checked_ts": 1786185000.0,
+    "current_price": 0.07029
   },
   "LINK-USDT-SWAPLONG1786125302-C8DFC5BD": {
     "instId": "LINK-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 8.182,
-    "sl": 8.182,
+    "sl": 8.2672,
     "tp1": 8.2672,
     "tp2": 8.3524,
     "tp3": 8.466,
@@ -171,14 +171,14 @@
     "created": 1786125302.297395,
     "expires": 1786211702.2973952,
     "order_id": "1786125302-C8DFC5BD",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1786125302.2974398,
     "entry_message_id": 9520,
-    "last_checked_ts": 1786182300.0,
-    "current_price": 8.309
+    "last_checked_ts": 1786185000.0,
+    "current_price": 8.339
   },
   "BTC-USDT-SWAPLONG1786165522-60E9A6AA": {
     "instId": "BTC-USDT-SWAP",
@@ -268,8 +268,8 @@
     "hit_tp3": false,
     "activated_at": 1786165522.6160948,
     "entry_message_id": 9574,
-    "last_checked_ts": 1786182300.0,
-    "current_price": 64956.1
+    "last_checked_ts": 1786185000.0,
+    "current_price": 64978.5
   },
   "AVAX-USDT-SWAPLONG1786165528-05C5ADAB": {
     "instId": "AVAX-USDT-SWAP",
@@ -358,8 +358,8 @@
     "hit_tp3": false,
     "activated_at": 1786165528.6489232,
     "entry_message_id": 9576,
-    "last_checked_ts": 1786182300.0,
-    "current_price": 6.55
+    "last_checked_ts": 1786185000.0,
+    "current_price": 6.518
   },
   "BNB-USDT-SWAPLONG1786179177-832EC0DC": {
     "instId": "BNB-USDT-SWAP",
@@ -449,7 +449,7 @@
     "hit_tp3": false,
     "activated_at": 1786179177.269969,
     "entry_message_id": 9608,
-    "last_checked_ts": 1786182300.0,
-    "current_price": 594.6
+    "last_checked_ts": 1786185000.0,
+    "current_price": 594.8
   }
 }
