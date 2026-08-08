@@ -451,5 +451,99 @@
     "entry_message_id": 9688,
     "last_checked_ts": 1786207500.0,
     "current_price": 1.0459
+  },
+  "DOGE-USDT-SWAPLONG1786209150-F9079789": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.0712,
+    "sl": 0.0709,
+    "tp1": 0.0714,
+    "tp2": 0.0714,
+    "tp3": 0.0714,
+    "atr": 0.0001994,
+    "score": 108,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0697,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01944,
+      "bb_pct_b": 0.786,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 54.8,
+      "atr_pct": 0.28,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=205, 勝率 71%) → +2",
+        "fund:neutral (n=268, 勝率 69%) → +1",
+        "sess:asia_dawn (n=111, 勝率 73%) → +2",
+        "coin_side:DOGELONG (n=13, 勝率 69%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11,
+      "tp_adjust_notes": [
+        "TP1 0.0716→0.0714（阻力 0.0715）",
+        "TP2 0.0721→0.0714（阻力 0.0715）",
+        "TP3 0.0727→0.0714（阻力 0.0715）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 74.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 25.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 54.8,
+      "atr_pct": 0.28,
+      "volatile": false
+    },
+    "created": 1786209150.9952369,
+    "expires": 1786295550.995237,
+    "order_id": "1786209150-F9079789",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1786209150.9952776,
+    "entry_message_id": 9695,
+    "last_checked_ts": 1786209150.9952776
   }
 }
