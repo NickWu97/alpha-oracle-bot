@@ -87,14 +87,14 @@
     "activated_at": 1786125300.4178092,
     "entry_message_id": 9519,
     "last_checked_ts": 1786159800.0,
-    "current_price": 0.07032
+    "current_price": 0.07031
   },
   "LINK-USDT-SWAPLONG1786125302-C8DFC5BD": {
     "instId": "LINK-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 8.182,
-    "sl": 8.1252,
+    "sl": 8.182,
     "tp1": 8.2672,
     "tp2": 8.3524,
     "tp3": 8.466,
@@ -171,13 +171,13 @@
     "created": 1786125302.297395,
     "expires": 1786211702.2973952,
     "order_id": "1786125302-C8DFC5BD",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1786125302.2974398,
     "entry_message_id": 9520,
     "last_checked_ts": 1786159800.0,
-    "current_price": 8.254
+    "current_price": 8.266
   }
 }
