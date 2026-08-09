@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "rsilong:50-59": {
       "win": 0,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "sess:asia_dawn": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin:LINK": {
       "win": 0,
@@ -53,6 +53,24 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "rsishort:50-59": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:XRPSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -63,6 +81,12 @@
       "total": 1
     },
     "BTC": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "XRP": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -83,7 +107,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1786310114.3014958,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786307505.062161
+  "updated_at": 1786310113.8006487
 }

@@ -171,5 +171,91 @@
       "atr_pct": 0.079,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-10 05:15",
+    "date": "2026-08-10",
+    "order_id": "1786300962-56F9E550",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.0396,
+    "close": 1.042,
+    "close_type": "SL",
+    "pnl": -0.23,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 93,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 52.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.96,
+      "obv": 5,
+      "vwap": 1.0324,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.00696,
+      "bb_pct_b": 0.442,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📉 正規空頭背離（價格新高但 RSI 不新高）→ 頂部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 27.8,
+      "atr_pct": 0.154,
+      "adx_bonus": 2,
+      "pullback": true
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 52.2,
+      "atr_pct": 0.154,
+      "funding": 0.1,
+      "vol_ratio": 0.96,
+      "adx": 27.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 57.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 25.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 27.8,
+      "atr_pct": 0.154,
+      "volatile": false
+    }
   }
 ]
