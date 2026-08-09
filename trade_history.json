@@ -1452,5 +1452,95 @@
       "atr_pct": 0.063,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-10 07:06",
+    "date": "2026-08-10",
+    "order_id": "1786315217-EB9F24EE",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 6.517,
+    "close": 6.4871,
+    "close_type": "SL",
+    "pnl": -0.46,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 99,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.67,
+      "obv": 5,
+      "vwap": 6.4793,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00715,
+      "bb_pct_b": 0.436,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 35.9,
+      "atr_pct": 0.304,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=9, 勝率 67%) → +1",
+        "fund:neutral (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 51.7,
+      "atr_pct": 0.304,
+      "funding": 0.1,
+      "vol_ratio": 0.67,
+      "adx": 35.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 30.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 35.9,
+      "atr_pct": 0.304,
+      "volatile": false
+    }
   }
 ]
