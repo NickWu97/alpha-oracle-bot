@@ -27432,5 +27432,189 @@
       "atr_pct": 0.097,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-09 16:50",
+    "date": "2026-08-09",
+    "order_id": "1786249126-043587BD",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 1914.68,
+    "close": 1923.0544,
+    "close_type": "TP2",
+    "pnl": 0.44,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 9.67715216201e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.25,
+      "obv": 5,
+      "vwap": 1912.407,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00367,
+      "bb_pct_b": 0.353,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.097,
+      "learning_notes": [
+        "score:80-89 (n=64, 勝率 62%) → +1",
+        "rsilong:40-49 (n=49, 勝率 76%) → +2",
+        "fund:neutral (n=282, 勝率 68%) → +1",
+        "sess:asia_day (n=107, 勝率 64%) → +1",
+        "coin:ETH (n=14, 勝率 71%) → +2",
+        "coin_side:ETHLONG (n=13, 勝率 77%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 44.4,
+      "atr_pct": 0.097,
+      "funding": 0.0967715216201,
+      "vol_ratio": 1.25,
+      "adx": 24.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.9
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.097,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-09 16:50",
+    "date": "2026-08-09",
+    "order_id": "1786249126-043587BD",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 1914.68,
+    "close": 1918.8672,
+    "close_type": "LOCK",
+    "pnl": 0.22,
+    "exit_rr": 1.5,
+    "exit_weight": 1.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 91,
+    "funding_rate": 9.67715216201e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.25,
+      "obv": 5,
+      "vwap": 1912.407,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00367,
+      "bb_pct_b": 0.353,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.097,
+      "learning_notes": [
+        "score:80-89 (n=64, 勝率 62%) → +1",
+        "rsilong:40-49 (n=49, 勝率 76%) → +2",
+        "fund:neutral (n=282, 勝率 68%) → +1",
+        "sess:asia_day (n=107, 勝率 64%) → +1",
+        "coin:ETH (n=14, 勝率 71%) → +2",
+        "coin_side:ETHLONG (n=13, 勝率 77%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 44.4,
+      "atr_pct": 0.097,
+      "funding": 0.0967715216201,
+      "vol_ratio": 1.25,
+      "adx": 24.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.9
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.097,
+      "volatile": false
+    }
   }
 ]
