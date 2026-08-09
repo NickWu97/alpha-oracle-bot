@@ -1202,5 +1202,255 @@
       "atr_pct": 0.306,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-10 06:47",
+    "date": "2026-08-10",
+    "order_id": "1786293425-D9ACCDF2",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 607.6,
+    "close": 607.6,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 93,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 55.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.32,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 598.5096,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01361,
+      "bb_pct_b": 0.574,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 38.7,
+      "atr_pct": 0.21,
+      "adx_bonus": 4
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 55.4,
+      "atr_pct": 0.21,
+      "funding": 0.1,
+      "vol_ratio": 0.32,
+      "adx": 38.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 68.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 38.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 38.7,
+      "atr_pct": 0.21,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-10 06:47",
+    "date": "2026-08-10",
+    "order_id": "1786305483-FA04EA50",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 8.318,
+    "close": 8.318,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 105,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 48.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.22,
+      "obv": 5,
+      "vwap": 8.2629,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0064,
+      "bb_pct_b": 0.297,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.203
+    },
+    "features": {
+      "score": 105.0,
+      "rsi": 48.4,
+      "atr_pct": 0.203,
+      "funding": 0.1,
+      "vol_ratio": 0.22,
+      "adx": 19.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.2
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.1,
+      "atr_pct": 0.203,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-10 06:47",
+    "date": "2026-08-10",
+    "order_id": "1786308194-CC7B23D3",
+    "coin": "BTC",
+    "side": "LONG",
+    "entry": 65112.9,
+    "close": 65205.6624,
+    "close_type": "LOCK",
+    "pnl": 0.14,
+    "exit_rr": 1.5,
+    "exit_weight": 1.0,
+    "is_win": true,
+    "is_be": false,
+    "score": 82,
+    "funding_rate": 8.20651834181e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 44.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.36,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 64831.7441,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00249,
+      "bb_pct_b": -0.007,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.063,
+      "adx_bonus": 4
+    },
+    "features": {
+      "score": 82.0,
+      "rsi": 44.8,
+      "atr_pct": 0.063,
+      "funding": 0.0820651834181,
+      "vol_ratio": 1.36,
+      "adx": 30.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.4
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 30.2,
+      "atr_pct": 0.063,
+      "volatile": false
+    }
   }
 ]
