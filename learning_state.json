@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 16,
+      "win": 17,
       "loss": 5,
       "be": 3,
-      "total": 24
+      "total": 25
     },
     "rsilong:50-59": {
       "win": 1,
@@ -13,10 +13,10 @@
       "total": 4
     },
     "fund:neutral": {
-      "win": 23,
+      "win": 27,
       "loss": 5,
       "be": 4,
-      "total": 32
+      "total": 36
     },
     "sess:asia_dawn": {
       "win": 16,
@@ -55,22 +55,22 @@
       "total": 4
     },
     "rsishort:50-59": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin:XRP": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "coin_side:XRPSHORT": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "coin:SOL": {
       "win": 7,
@@ -85,10 +85,10 @@
       "total": 6
     },
     "score:80-89": {
-      "win": 7,
+      "win": 10,
       "loss": 0,
       "be": 1,
-      "total": 8
+      "total": 11
     },
     "rsilong:40-49": {
       "win": 4,
@@ -97,10 +97,10 @@
       "total": 5
     },
     "sess:asia_day": {
-      "win": 7,
+      "win": 11,
       "loss": 2,
       "be": 2,
-      "total": 11
+      "total": 15
     },
     "coin:BNB": {
       "win": 4,
@@ -145,10 +145,10 @@
       "total": 1
     },
     "rsishort:40-49": {
-      "win": 7,
+      "win": 10,
       "loss": 0,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "coin_side:BNBSHORT": {
       "win": 3,
@@ -157,16 +157,16 @@
       "total": 3
     },
     "coin:DOGE": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOGESHORT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "rsishort:30-39": {
       "win": 5,
@@ -201,10 +201,10 @@
       "total": 4
     },
     "XRP": {
-      "win": 3,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 7
     },
     "SOL": {
       "win": 7,
@@ -231,10 +231,10 @@
       "total": 2
     },
     "DOGE": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     }
   },
   "loss_reasons": [
@@ -260,5 +260,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786396428.6312418
+  "updated_at": 1786401065.6631887
 }
