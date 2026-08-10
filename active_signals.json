@@ -83,8 +83,8 @@
     "hit_tp3": false,
     "activated_at": 1786382734.2055924,
     "entry_message_id": 9972,
-    "last_checked_ts": 1786401900.0,
-    "current_price": 8.305
+    "last_checked_ts": 1786403700.0,
+    "current_price": 8.289
   },
   "BTC-USDT-SWAPSHORT1786390270-2B967C6E": {
     "instId": "BTC-USDT-SWAP",
@@ -176,8 +176,8 @@
     "hit_tp3": false,
     "activated_at": 1786390270.7904687,
     "entry_message_id": 9985,
-    "last_checked_ts": 1786401900.0,
-    "current_price": 63963.7
+    "last_checked_ts": 1786403700.0,
+    "current_price": 63928.9
   },
   "BNB-USDT-SWAPSHORT1786390272-49A9E640": {
     "instId": "BNB-USDT-SWAP",
@@ -265,96 +265,8 @@
     "hit_tp3": false,
     "activated_at": 1786390272.5559523,
     "entry_message_id": 9986,
-    "last_checked_ts": 1786401900.0,
-    "current_price": 599.4
-  },
-  "DOGE-USDT-SWAPSHORT1786393396-80BC6AEF": {
-    "instId": "DOGE-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.0699,
-    "sl": 0.0699,
-    "tp1": 0.0695,
-    "tp2": 0.0691,
-    "tp3": 0.0686,
-    "atr": 0.00017155,
-    "score": 91,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 58.8,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.65,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 0.0702,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00597,
-      "bb_pct_b": 1.038,
-      "bb_squeeze": false,
-      "bb_score": 2,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "range",
-      "adx": 18.0,
-      "atr_pct": 0.245,
-      "learning_notes": [
-        "score:80-89 (n=8, 勝率 88%) → +2",
-        "fund:neutral (n=31, 勝率 71%) → +2",
-        "sess:asia_dawn (n=20, 勝率 75%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 1 (勝率 70%)",
-        "KNN 中高勝率 → +3"
-      ],
-      "learning_adjust": 9
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 47.1
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 48.1
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 28.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "range",
-      "adx": 18.0,
-      "atr_pct": 0.245,
-      "volatile": false
-    },
-    "created": 1786393396.0787199,
-    "expires": 1786479796.07872,
-    "order_id": "1786393396-80BC6AEF",
-    "status": "BE",
-    "hit_tp1": true,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1786393396.0787504,
-    "entry_message_id": 9997,
-    "last_checked_ts": 1786401900.0,
-    "current_price": 0.06982
+    "last_checked_ts": 1786403700.0,
+    "current_price": 598.4
   },
   "AVAX-USDT-SWAPSHORT1786393397-5BEF93F0": {
     "instId": "AVAX-USDT-SWAP",
@@ -441,7 +353,7 @@
     "hit_tp3": false,
     "activated_at": 1786393397.7678082,
     "entry_message_id": 9998,
-    "last_checked_ts": 1786401900.0,
-    "current_price": 6.422
+    "last_checked_ts": 1786403700.0,
+    "current_price": 6.428
   }
 }

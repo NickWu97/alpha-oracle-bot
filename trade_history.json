@@ -3234,5 +3234,96 @@
       "atr_pct": 0.271,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-11 07:38",
+    "date": "2026-08-11",
+    "order_id": "1786393396-80BC6AEF",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0699,
+    "close": 0.0699,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 91,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.65,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0702,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00597,
+      "bb_pct_b": 1.038,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 18.0,
+      "atr_pct": 0.245,
+      "learning_notes": [
+        "score:80-89 (n=8, 勝率 88%) → +2",
+        "fund:neutral (n=31, 勝率 71%) → +2",
+        "sess:asia_dawn (n=20, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 1 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 91.0,
+      "rsi": 58.8,
+      "atr_pct": 0.245,
+      "funding": 0.1,
+      "vol_ratio": 0.65,
+      "adx": 18.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 48.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 28.5
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 18.0,
+      "atr_pct": 0.245,
+      "volatile": false
+    }
   }
 ]
