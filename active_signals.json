@@ -84,7 +84,7 @@
     "activated_at": 1786382734.2055924,
     "entry_message_id": 9972,
     "last_checked_ts": 1786394700.0,
-    "current_price": 8.296
+    "current_price": 8.291
   },
   "BTC-USDT-SWAPSHORT1786390270-2B967C6E": {
     "instId": "BTC-USDT-SWAP",
@@ -177,7 +177,7 @@
     "activated_at": 1786390270.7904687,
     "entry_message_id": 9985,
     "last_checked_ts": 1786394700.0,
-    "current_price": 64089.5
+    "current_price": 64083.5
   },
   "BNB-USDT-SWAPSHORT1786390272-49A9E640": {
     "instId": "BNB-USDT-SWAP",
@@ -266,7 +266,7 @@
     "activated_at": 1786390272.5559523,
     "entry_message_id": 9986,
     "last_checked_ts": 1786394700.0,
-    "current_price": 600.2
+    "current_price": 599.6
   },
   "XRP-USDT-SWAPSHORT1786390274-37321B54": {
     "instId": "XRP-USDT-SWAP",
@@ -358,7 +358,7 @@
     "activated_at": 1786390274.328828,
     "entry_message_id": 9987,
     "last_checked_ts": 1786394700.0,
-    "current_price": 1.0194
+    "current_price": 1.0183
   },
   "DOGE-USDT-SWAPSHORT1786393396-80BC6AEF": {
     "instId": "DOGE-USDT-SWAP",
@@ -446,14 +446,14 @@
     "activated_at": 1786393396.0787504,
     "entry_message_id": 9997,
     "last_checked_ts": 1786394700.0,
-    "current_price": 0.0699
+    "current_price": 0.06975
   },
   "AVAX-USDT-SWAPSHORT1786393397-5BEF93F0": {
     "instId": "AVAX-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 6.463,
-    "sl": 6.4983,
+    "sl": 6.463,
     "tp1": 6.41,
     "tp2": 6.3571,
     "tp3": 6.2864,
@@ -527,13 +527,13 @@
     "created": 1786393397.7677805,
     "expires": 1786479797.7677808,
     "order_id": "1786393397-5BEF93F0",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1786393397.7678082,
     "entry_message_id": 9998,
     "last_checked_ts": 1786394700.0,
-    "current_price": 6.441
+    "current_price": 6.417
   }
 }
