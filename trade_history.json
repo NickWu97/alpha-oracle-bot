@@ -2575,5 +2575,101 @@
       "atr_pct": 0.349,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-11 03:31",
+    "date": "2026-08-11",
+    "order_id": "1786382730-A541DACB",
+    "coin": "SOL",
+    "side": "SHORT",
+    "entry": 75.98,
+    "close": 75.6811,
+    "close_type": "TP1",
+    "pnl": 0.39,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 87,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 39.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": 5,
+      "vwap": 75.9543,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.02004,
+      "bb_pct_b": 0.307,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 33.6,
+      "atr_pct": 0.372,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=26, 勝率 69%) → +1",
+        "sess:asia_dawn (n=15, 勝率 73%) → +2",
+        "coin:SOL (n=6, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 8,
+      "tp_adjust_notes": [
+        "TP1 75.3436→75.6811（支撐 75.5300）",
+        "TP2 74.7072→75.6811（支撐 75.5300）",
+        "TP3 73.8587→75.6811（支撐 75.5300）"
+      ]
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 39.6,
+      "atr_pct": 0.372,
+      "funding": 0.1,
+      "vol_ratio": 0.52,
+      "adx": 33.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.6
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.6,
+      "atr_pct": 0.372,
+      "volatile": false
+    }
   }
 ]
