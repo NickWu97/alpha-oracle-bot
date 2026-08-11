@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 24,
+      "win": 26,
       "loss": 9,
       "be": 6,
-      "total": 39
+      "total": 41
     },
     "rsilong:50-59": {
       "win": 4,
@@ -13,10 +13,10 @@
       "total": 7
     },
     "fund:neutral": {
-      "win": 35,
+      "win": 39,
       "loss": 11,
       "be": 7,
-      "total": 53
+      "total": 57
     },
     "sess:asia_dawn": {
       "win": 24,
@@ -43,10 +43,10 @@
       "total": 7
     },
     "coin:BTC": {
-      "win": 5,
+      "win": 7,
       "loss": 2,
       "be": 1,
-      "total": 8
+      "total": 10
     },
     "coin_side:BTCLONG": {
       "win": 3,
@@ -55,10 +55,10 @@
       "total": 4
     },
     "rsishort:50-59": {
-      "win": 3,
+      "win": 7,
       "loss": 2,
       "be": 1,
-      "total": 6
+      "total": 10
     },
     "coin:XRP": {
       "win": 6,
@@ -85,10 +85,10 @@
       "total": 6
     },
     "score:80-89": {
-      "win": 11,
+      "win": 13,
       "loss": 2,
       "be": 1,
-      "total": 14
+      "total": 16
     },
     "rsilong:40-49": {
       "win": 6,
@@ -97,10 +97,10 @@
       "total": 7
     },
     "sess:asia_day": {
-      "win": 11,
+      "win": 15,
       "loss": 3,
       "be": 4,
-      "total": 18
+      "total": 22
     },
     "coin:BNB": {
       "win": 4,
@@ -199,10 +199,10 @@
       "total": 2
     },
     "coin_side:BTCSHORT": {
-      "win": 2,
+      "win": 4,
       "loss": 1,
       "be": 1,
-      "total": 4
+      "total": 6
     },
     "rsishort:20-29": {
       "win": 1,
@@ -217,16 +217,16 @@
       "total": 3
     },
     "coin:DOT": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 3
     },
     "coin_side:DOTSHORT": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 3
     }
   },
   "by_coin": {
@@ -237,10 +237,10 @@
       "total": 6
     },
     "BTC": {
-      "win": 5,
+      "win": 7,
       "loss": 2,
       "be": 1,
-      "total": 8
+      "total": 10
     },
     "XRP": {
       "win": 6,
@@ -279,10 +279,10 @@
       "total": 8
     },
     "DOT": {
-      "win": 1,
+      "win": 3,
       "loss": 0,
       "be": 0,
-      "total": 1
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -336,5 +336,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786485038.4913096
+  "updated_at": 1786485768.4598787
 }
