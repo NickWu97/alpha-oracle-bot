@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 17,
+      "win": 18,
       "loss": 7,
       "be": 5,
-      "total": 29
+      "total": 30
     },
     "rsilong:50-59": {
       "win": 1,
@@ -13,16 +13,16 @@
       "total": 4
     },
     "fund:neutral": {
-      "win": 27,
+      "win": 28,
       "loss": 9,
       "be": 6,
-      "total": 42
+      "total": 43
     },
     "sess:asia_dawn": {
-      "win": 16,
+      "win": 17,
       "loss": 4,
       "be": 2,
-      "total": 22
+      "total": 23
     },
     "coin:LINK": {
       "win": 1,
@@ -43,10 +43,10 @@
       "total": 7
     },
     "coin:BTC": {
-      "win": 3,
+      "win": 4,
       "loss": 2,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:BTCLONG": {
       "win": 3,
@@ -199,8 +199,14 @@
       "total": 2
     },
     "coin_side:BTCSHORT": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
+      "be": 0,
+      "total": 2
+    },
+    "rsishort:20-29": {
+      "win": 1,
+      "loss": 0,
       "be": 0,
       "total": 1
     }
@@ -213,10 +219,10 @@
       "total": 4
     },
     "BTC": {
-      "win": 3,
+      "win": 4,
       "loss": 2,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "XRP": {
       "win": 6,
@@ -299,5 +305,5 @@
       "title": "📈 空頭動能反轉"
     }
   ],
-  "updated_at": 1786469482.1500065
+  "updated_at": 1786473447.357608
 }
