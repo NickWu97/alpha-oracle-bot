@@ -13,16 +13,16 @@
       "total": 10
     },
     "fund:neutral": {
-      "win": 43,
+      "win": 46,
       "loss": 12,
       "be": 7,
-      "total": 62
+      "total": 65
     },
     "sess:asia_dawn": {
-      "win": 24,
+      "win": 27,
       "loss": 7,
       "be": 3,
-      "total": 34
+      "total": 37
     },
     "coin:LINK": {
       "win": 4,
@@ -61,10 +61,10 @@
       "total": 13
     },
     "coin:XRP": {
-      "win": 6,
+      "win": 9,
       "loss": 2,
       "be": 0,
-      "total": 8
+      "total": 11
     },
     "coin_side:XRPSHORT": {
       "win": 6,
@@ -233,6 +233,24 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "score:70-79": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "rsilong:30-39": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:XRPLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -249,10 +267,10 @@
       "total": 10
     },
     "XRP": {
-      "win": 6,
+      "win": 9,
       "loss": 2,
       "be": 0,
-      "total": 8
+      "total": 11
     },
     "SOL": {
       "win": 7,
@@ -349,5 +367,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786562776.1806538
+  "updated_at": 1786563621.0655363
 }
