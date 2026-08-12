@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 46,
-      "loss": 12,
+      "loss": 13,
       "be": 7,
-      "total": 65
+      "total": 66
     },
     "sess:asia_dawn": {
       "win": 27,
-      "loss": 7,
+      "loss": 8,
       "be": 3,
-      "total": 37
+      "total": 38
     },
     "coin:LINK": {
       "win": 4,
@@ -86,15 +86,15 @@
     },
     "score:80-89": {
       "win": 13,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 16
+      "total": 17
     },
     "rsilong:40-49": {
       "win": 7,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 8
+      "total": 9
     },
     "sess:asia_day": {
       "win": 21,
@@ -104,15 +104,15 @@
     },
     "coin:BNB": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "coin_side:BNBLONG": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "rsishort:60-69": {
       "win": 0,
@@ -280,9 +280,9 @@
     },
     "BNB": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "ADA": {
       "win": 1,
@@ -365,7 +365,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1786565356.8832445,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786563621.0655363
+  "updated_at": 1786565356.2715065
 }
