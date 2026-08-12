@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 29,
+      "win": 32,
       "loss": 9,
       "be": 6,
-      "total": 44
+      "total": 47
     },
     "rsilong:50-59": {
       "win": 7,
@@ -55,10 +55,10 @@
       "total": 4
     },
     "rsishort:50-59": {
-      "win": 7,
+      "win": 10,
       "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 13
     },
     "coin:XRP": {
       "win": 6,
@@ -97,10 +97,10 @@
       "total": 7
     },
     "sess:asia_day": {
-      "win": 18,
+      "win": 21,
       "loss": 3,
       "be": 4,
-      "total": 25
+      "total": 28
     },
     "coin:BNB": {
       "win": 7,
@@ -133,10 +133,10 @@
       "total": 4
     },
     "coin:AVAX": {
-      "win": 1,
+      "win": 4,
       "loss": 1,
       "be": 1,
-      "total": 3
+      "total": 6
     },
     "coin_side:AVAXLONG": {
       "win": 0,
@@ -181,10 +181,10 @@
       "total": 3
     },
     "coin_side:AVAXSHORT": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "coin_side:LINKSHORT": {
       "win": 0,
@@ -223,6 +223,12 @@
       "total": 3
     },
     "coin_side:DOTSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "fund:neg": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -267,10 +273,10 @@
       "total": 4
     },
     "AVAX": {
-      "win": 1,
+      "win": 4,
       "loss": 1,
       "be": 1,
-      "total": 3
+      "total": 6
     },
     "DOGE": {
       "win": 7,
@@ -336,5 +342,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786488948.588729
+  "updated_at": 1786495237.9913568
 }
