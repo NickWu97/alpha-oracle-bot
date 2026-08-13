@@ -76,7 +76,178 @@
     "hit_tp3": false,
     "activated_at": 1786600936.491452,
     "entry_message_id": 10248,
-    "last_checked_ts": 1786614300.0,
-    "current_price": 0.7715
+    "last_checked_ts": 1786616100.0,
+    "current_price": 0.772
+  },
+  "ETH-USDT-SWAPSHORT1786617008-64E374B4": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1883.57,
+    "sl": 1889.3161,
+    "tp1": 1880.9277,
+    "tp2": 1880.9277,
+    "tp3": 1880.9277,
+    "atr": 3.83073207,
+    "score": 105,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 42.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.24,
+      "obv": 5,
+      "vwap": 1888.3722,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00975,
+      "bb_pct_b": 0.12,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 23.9,
+      "atr_pct": 0.203,
+      "learning_notes": [
+        "fund:neutral (n=8, 勝率 38%) → -2",
+        "sess:europe (n=8, 勝率 38%) → -2"
+      ],
+      "learning_adjust": -4,
+      "tp_adjust_notes": [
+        "TP1 1874.9509→1880.9277（支撐 1877.1733）",
+        "TP2 1866.3317→1880.9277（支撐 1877.1733）",
+        "TP3 1854.8395→1880.9277（支撐 1877.1733）"
+      ]
+    },
+    "funding_rate": 3.20782897141e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.0
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 23.9,
+      "atr_pct": 0.203,
+      "volatile": false
+    },
+    "created": 1786617008.6173518,
+    "expires": 1786703408.617352,
+    "order_id": "1786617008-64E374B4",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1786617008.6173778,
+    "entry_message_id": 10272,
+    "last_checked_ts": 1786617008.6173778
+  },
+  "SOL-USDT-SWAPSHORT1786617010-CEE6DFBB": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 75.8,
+    "sl": 76.0386,
+    "tp1": 75.4421,
+    "tp2": 75.0842,
+    "tp3": 74.607,
+    "atr": 0.15906668,
+    "score": 93,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 38.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.5,
+      "obv": 5,
+      "vwap": 76.055,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01197,
+      "bb_pct_b": 0.037,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 22.6,
+      "atr_pct": 0.21,
+      "learning_notes": [
+        "fund:neutral (n=8, 勝率 38%) → -2",
+        "sess:europe (n=8, 勝率 38%) → -2"
+      ],
+      "learning_adjust": -4
+    },
+    "funding_rate": 2.25742502325e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 54.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 22.6,
+      "atr_pct": 0.21,
+      "volatile": false
+    },
+    "created": 1786617010.3445766,
+    "expires": 1786703410.3445768,
+    "order_id": "1786617010-CEE6DFBB",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1786617010.344614,
+    "entry_message_id": 10273,
+    "last_checked_ts": 1786617010.344614
   }
 }
