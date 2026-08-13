@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 37,
-      "loss": 11,
+      "loss": 12,
       "be": 7,
-      "total": 55
+      "total": 56
     },
     "rsilong:50-59": {
       "win": 7,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 50,
-      "loss": 15,
+      "loss": 16,
       "be": 8,
-      "total": 73
+      "total": 74
     },
     "sess:asia_dawn": {
       "win": 31,
@@ -74,9 +74,9 @@
     },
     "coin:SOL": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "coin_side:SOLLONG": {
       "win": 6,
@@ -98,9 +98,9 @@
     },
     "sess:asia_day": {
       "win": 21,
-      "loss": 4,
+      "loss": 5,
       "be": 5,
-      "total": 30
+      "total": 31
     },
     "coin:BNB": {
       "win": 7,
@@ -146,9 +146,9 @@
     },
     "rsishort:40-49": {
       "win": 11,
-      "loss": 3,
+      "loss": 4,
       "be": 2,
-      "total": 16
+      "total": 17
     },
     "coin_side:BNBSHORT": {
       "win": 3,
@@ -176,9 +176,9 @@
     },
     "coin_side:SOLSHORT": {
       "win": 1,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 4
+      "total": 5
     },
     "coin_side:AVAXSHORT": {
       "win": 4,
@@ -274,9 +274,9 @@
     },
     "SOL": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "BNB": {
       "win": 7,
@@ -379,7 +379,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1786595394.5416033,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1786588605.806448
+  "updated_at": 1786595393.950563
 }
