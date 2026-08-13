@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsilong:60-69": {
       "win": 0,
@@ -13,16 +13,16 @@
       "total": 1
     },
     "fund:neutral": {
-      "win": 1,
-      "loss": 1,
-      "be": 1,
-      "total": 3
+      "win": 3,
+      "loss": 2,
+      "be": 3,
+      "total": 8
     },
     "sess:europe": {
-      "win": 1,
-      "loss": 1,
-      "be": 1,
-      "total": 3
+      "win": 3,
+      "loss": 2,
+      "be": 3,
+      "total": 8
     },
     "coin:BNB": {
       "win": 0,
@@ -37,10 +37,10 @@
       "total": 1
     },
     "score:70-79": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
-      "be": 1,
-      "total": 2
+      "be": 2,
+      "total": 4
     },
     "rsilong:70-79": {
       "win": 1,
@@ -49,12 +49,54 @@
       "total": 2
     },
     "coin:AVAX": {
+      "win": 2,
+      "loss": 0,
+      "be": 2,
+      "total": 4
+    },
+    "coin_side:AVAXLONG": {
+      "win": 2,
+      "loss": 0,
+      "be": 2,
+      "total": 4
+    },
+    "rsishort:50-59": {
+      "win": 1,
+      "loss": 1,
+      "be": 1,
+      "total": 3
+    },
+    "coin:BTC": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BTCSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:DOGE": {
       "win": 1,
       "loss": 0,
       "be": 1,
       "total": 2
     },
-    "coin_side:AVAXLONG": {
+    "coin_side:DOGESHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "score:80-89": {
+      "win": 1,
+      "loss": 0,
+      "be": 1,
+      "total": 2
+    },
+    "rsilong:50-59": {
       "win": 1,
       "loss": 0,
       "be": 1,
@@ -69,6 +111,18 @@
       "total": 1
     },
     "AVAX": {
+      "win": 2,
+      "loss": 0,
+      "be": 2,
+      "total": 4
+    },
+    "BTC": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "DOGE": {
       "win": 1,
       "loss": 0,
       "be": 1,
@@ -76,5 +130,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1786607186.531158
+  "updated_at": 1786615403.014973
 }
