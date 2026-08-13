@@ -1845,5 +1845,94 @@
       "atr_pct": 0.251,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-14 07:22",
+    "date": "2026-08-14",
+    "order_id": "1786648991-7441D10A",
+    "coin": "DOT",
+    "side": "SHORT",
+    "entry": 0.7729,
+    "close": 0.7766,
+    "close_type": "SL",
+    "pnl": -0.48,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 2.4764037005e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 56.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.87,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.7869,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01149,
+      "bb_pct_b": 0.712,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 28.3,
+      "atr_pct": 0.316,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "rsishort:50-59 (n=6, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 1
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 56.0,
+      "atr_pct": 0.316,
+      "funding": 0.0024764037005000003,
+      "vol_ratio": 0.87,
+      "adx": 28.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 46.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 29.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 25.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 28.3,
+      "atr_pct": 0.316,
+      "volatile": false
+    }
   }
 ]
