@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 6,
-      "loss": 4,
+      "loss": 6,
       "be": 0,
-      "total": 10
+      "total": 12
     },
     "rsilong:60-69": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 9,
-      "loss": 5,
+      "loss": 7,
       "be": 3,
-      "total": 17
+      "total": 19
     },
     "sess:europe": {
       "win": 7,
@@ -68,15 +68,15 @@
     },
     "coin:BTC": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:BTCSHORT": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin:DOGE": {
       "win": 1,
@@ -104,9 +104,9 @@
     },
     "rsishort:40-49": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin:ETH": {
       "win": 3,
@@ -134,9 +134,9 @@
     },
     "rsishort:30-39": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "sess:us": {
       "win": 2,
@@ -146,15 +146,21 @@
     },
     "coin:SOL": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:SOLSHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
+    },
+    "sess:asia_dawn": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
     }
   },
   "by_coin": {
@@ -172,9 +178,9 @@
     },
     "BTC": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "DOGE": {
       "win": 1,
@@ -196,9 +202,9 @@
     },
     "SOL": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     }
   },
   "loss_reasons": [
@@ -208,7 +214,21 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1786648995.904862,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1786648997.7563035,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786631566.8017864
+  "updated_at": 1786648997.2663019
 }
