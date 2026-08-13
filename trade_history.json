@@ -1059,5 +1059,276 @@
       "atr_pct": 0.203,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-13 21:11",
+    "date": "2026-08-13",
+    "order_id": "1786617010-CEE6DFBB",
+    "coin": "SOL",
+    "side": "SHORT",
+    "entry": 75.8,
+    "close": 76.0386,
+    "close_type": "SL",
+    "pnl": -0.31,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 93,
+    "funding_rate": 2.25742502325e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 38.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.5,
+      "obv": 5,
+      "vwap": 76.055,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01197,
+      "bb_pct_b": 0.037,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 22.6,
+      "atr_pct": 0.21,
+      "learning_notes": [
+        "fund:neutral (n=8, 勝率 38%) → -2",
+        "sess:europe (n=8, 勝率 38%) → -2"
+      ],
+      "learning_adjust": -4
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 38.8,
+      "atr_pct": 0.21,
+      "funding": 0.0225742502325,
+      "vol_ratio": 0.5,
+      "adx": 22.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 51.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 54.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.6
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 22.6,
+      "atr_pct": 0.21,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-13 21:11",
+    "date": "2026-08-13",
+    "order_id": "1786620189-74DF6236",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0701,
+    "close": 0.0703,
+    "close_type": "SL",
+    "pnl": -0.29,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 4.42727300619e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 44.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.56,
+      "obv": 5,
+      "vwap": 0.0707,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01181,
+      "bb_pct_b": 0.201,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 23.0,
+      "atr_pct": 0.236,
+      "learning_notes": [
+        "fund:neutral (n=8, 勝率 38%) → -2",
+        "sess:europe (n=8, 勝率 38%) → -2"
+      ],
+      "learning_adjust": -4,
+      "tp_adjust_notes": [
+        "TP2 0.0693→0.0699（支撐 0.0698）",
+        "TP3 0.0688→0.0699（支撐 0.0698）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 44.3,
+      "atr_pct": 0.236,
+      "funding": 0.044272730061899995,
+      "vol_ratio": 0.56,
+      "adx": 23.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 28.5
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.0,
+      "atr_pct": 0.236,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-13 21:11",
+    "date": "2026-08-13",
+    "order_id": "1786623005-8B2E569D",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 63520.0,
+    "close": 63658.3459,
+    "close_type": "SL",
+    "pnl": -0.22,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 94,
+    "funding_rate": 8.40187764454e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 37.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.84,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 63921.5756,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00844,
+      "bb_pct_b": 0.101,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 25.1,
+      "atr_pct": 0.145,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "score:90+ (n=6, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP2 63104.9624→63406.5600（支撐 63280.0000）",
+        "TP3 62828.2707→63406.5600（支撐 63280.0000）"
+      ]
+    },
+    "features": {
+      "score": 94.0,
+      "rsi": 37.9,
+      "atr_pct": 0.145,
+      "funding": 0.0840187764454,
+      "vol_ratio": 0.84,
+      "adx": 25.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 37.4
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 25.1,
+      "atr_pct": 0.145,
+      "volatile": false
+    }
   }
 ]
