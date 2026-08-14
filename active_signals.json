@@ -1,1 +1,86 @@
-{}
+{
+  "XRP-USDT-SWAPSHORT1786749793-F1499591": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.9953,
+    "sl": 0.9995,
+    "tp1": 0.9891,
+    "tp2": 0.9828,
+    "tp3": 0.9745,
+    "atr": 0.00276816,
+    "score": 117,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 40.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 5,
+      "volume_ratio": 1.53,
+      "obv": 5,
+      "vwap": 1.0087,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01232,
+      "bb_pct_b": 0.251,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 33.2,
+      "atr_pct": 0.278,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 5 (勝率 50%)"
+      ],
+      "learning_adjust": 0
+    },
+    "funding_rate": 1.3175540908e-06,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 29.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 25.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 33.2,
+      "atr_pct": 0.278,
+      "volatile": false
+    },
+    "created": 1786749793.1740139,
+    "expires": 1786836193.174014,
+    "order_id": "1786749793-F1499591",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1786749793.1740465,
+    "entry_message_id": 10379,
+    "last_checked_ts": 1786749793.1740465
+  }
+}
