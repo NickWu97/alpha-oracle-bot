@@ -2749,5 +2749,92 @@
       "atr_pct": 0.178,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-15 15:07",
+    "date": "2026-08-15",
+    "order_id": "1786773147-28334B69",
+    "coin": "ETH",
+    "side": "SHORT",
+    "entry": 1879.45,
+    "close": 1882.199,
+    "close_type": "SL",
+    "pnl": -0.15,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 98,
+    "funding_rate": 3.25931000297e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 43.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 8,
+      "volume_ratio": 2.76,
+      "obv": 5,
+      "vwap": 1887.3436,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00236,
+      "bb_pct_b": -0.088,
+      "bb_squeeze": true,
+      "bb_score": 8,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.4,
+      "atr_pct": 0.097,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 43.9,
+      "atr_pct": 0.097,
+      "funding": 0.0325931000297,
+      "vol_ratio": 2.76,
+      "adx": 15.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 53.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.0
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 15.4,
+      "atr_pct": 0.097,
+      "volatile": false
+    }
   }
 ]
