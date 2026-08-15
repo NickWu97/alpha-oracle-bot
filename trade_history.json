@@ -3843,5 +3843,93 @@
       "atr_pct": 0.589,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-16 01:39",
+    "date": "2026-08-16",
+    "order_id": "1786811180-1EFF4E95",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 1884.66,
+    "close": 1882.256,
+    "close_type": "SL",
+    "pnl": -0.13,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 109,
+    "funding_rate": 3.5551798917e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.16,
+      "obv": 5,
+      "vwap": 1883.016,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.0046,
+      "bb_pct_b": 0.746,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 25.8,
+      "atr_pct": 0.085,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 1 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 3
+    },
+    "features": {
+      "score": 109.0,
+      "rsi": 60.2,
+      "atr_pct": 0.085,
+      "funding": 0.035551798917,
+      "vol_ratio": 1.16,
+      "adx": 25.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 25.8,
+      "atr_pct": 0.085,
+      "volatile": false
+    }
   }
 ]
