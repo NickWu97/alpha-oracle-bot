@@ -2022,5 +2022,97 @@
       "atr_pct": 0.278,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-15 09:19",
+    "date": "2026-08-15",
+    "order_id": "1786751320-5404FD5D",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 8.975,
+    "close": 8.997,
+    "close_type": "TP1",
+    "pnl": 0.25,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 114,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.88,
+      "obv": 5,
+      "vwap": 8.8035,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01003,
+      "bb_pct_b": 0.765,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 35.0,
+      "atr_pct": 0.403,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 9.0565→8.9970（阻力 9.0150）",
+        "TP2 9.1379→8.9970（阻力 9.0150）",
+        "TP3 9.2465→8.9970（阻力 9.0150）"
+      ]
+    },
+    "features": {
+      "score": 114.0,
+      "rsi": 59.5,
+      "atr_pct": 0.403,
+      "funding": 0.1,
+      "vol_ratio": 0.88,
+      "adx": 35.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 35.0,
+      "atr_pct": 0.403,
+      "volatile": false
+    }
   }
 ]
