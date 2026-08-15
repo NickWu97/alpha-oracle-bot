@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 12,
-      "loss": 10,
+      "loss": 11,
       "be": 0,
-      "total": 22
+      "total": 23
     },
     "rsilong:60-69": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 15,
-      "loss": 12,
+      "loss": 13,
       "be": 3,
-      "total": 30
+      "total": 31
     },
     "sess:europe": {
       "win": 7,
@@ -44,9 +44,9 @@
     },
     "rsilong:70-79": {
       "win": 1,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin:AVAX": {
       "win": 2,
@@ -80,9 +80,9 @@
     },
     "coin:DOGE": {
       "win": 1,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOGESHORT": {
       "win": 1,
@@ -170,9 +170,9 @@
     },
     "sess:asia_day": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "coin:XRP": {
       "win": 0,
@@ -221,6 +221,12 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin_side:DOGELONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -244,9 +250,9 @@
     },
     "DOGE": {
       "win": 1,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 3
+      "total": 4
     },
     "ETH": {
       "win": 3,
@@ -335,5 +341,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786770062.0549877
+  "updated_at": 1786771594.3163495
 }
