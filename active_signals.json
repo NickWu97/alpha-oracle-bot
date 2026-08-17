@@ -260,5 +260,262 @@
     "entry_message_id": 10776,
     "last_checked_ts": 1786994100.0,
     "current_price": 64359.1
+  },
+  "BNB-USDT-SWAPLONG1786995244-B6EB4D90": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 604.6,
+    "sl": 603.3108,
+    "tp1": 606.5338,
+    "tp2": 608.4677,
+    "tp3": 611.0461,
+    "atr": 0.85948366,
+    "score": 92,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 45.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.19,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 606.6767,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.0045,
+      "bb_pct_b": 0.139,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 22.1,
+      "atr_pct": 0.142,
+      "learning_notes": [
+        "rsilong:40-49 (n=6, 勝率 67%) → +1",
+        "coin:BNB (n=6, 勝率 0%) → -3",
+        "coin_side:BNBLONG (n=5, 勝率 0%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": -5
+    },
+    "funding_rate": -1.75113523252e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 48.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 22.1,
+      "atr_pct": 0.142,
+      "volatile": false
+    },
+    "created": 1786995244.9314778,
+    "expires": 1787081644.9314783,
+    "order_id": "1786995244-B6EB4D90",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1786995244.93153,
+    "entry_message_id": 10787,
+    "last_checked_ts": 1786995244.93153
+  },
+  "XRP-USDT-SWAPLONG1786995246-80354C6F": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.9996,
+    "sl": 0.9964,
+    "tp1": 1.0044,
+    "tp2": 1.0093,
+    "tp3": 1.0157,
+    "atr": 0.00214713,
+    "score": 92,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 46.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.24,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.9992,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.00708,
+      "bb_pct_b": 0.227,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.0,
+      "atr_pct": 0.215,
+      "learning_notes": [
+        "rsilong:40-49 (n=6, 勝率 67%) → +1",
+        "coin:XRP (n=5, 勝率 0%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": -2
+    },
+    "funding_rate": 6.28896423204e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 18.0,
+      "atr_pct": 0.215,
+      "volatile": false
+    },
+    "created": 1786995246.8748958,
+    "expires": 1787081646.874896,
+    "order_id": "1786995246-80354C6F",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1786995246.8749335,
+    "entry_message_id": 10788,
+    "last_checked_ts": 1786995246.8749335
+  },
+  "DOGE-USDT-SWAPLONG1786995248-1BB394ED": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.0702,
+    "sl": 0.07,
+    "tp1": 0.0705,
+    "tp2": 0.0708,
+    "tp3": 0.0712,
+    "atr": 0.0001289,
+    "score": 97,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 49.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.36,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.07,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00447,
+      "bb_pct_b": 0.327,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 16.4,
+      "atr_pct": 0.183,
+      "learning_notes": [
+        "rsilong:40-49 (n=6, 勝率 67%) → +1",
+        "coin:DOGE (n=8, 勝率 25%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": -2
+    },
+    "funding_rate": 9.83893152782e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 16.4,
+      "atr_pct": 0.183,
+      "volatile": false
+    },
+    "created": 1786995248.8746946,
+    "expires": 1787081648.8746948,
+    "order_id": "1786995248-1BB394ED",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1786995248.8747342,
+    "entry_message_id": 10789,
+    "last_checked_ts": 1786995248.8747342
   }
 }
