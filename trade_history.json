@@ -4461,5 +4461,189 @@
       "atr_pct": 0.166,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-17 11:34",
+    "date": "2026-08-17",
+    "order_id": "1786935675-5D22AA81",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 75.45,
+    "close": 75.5286,
+    "close_type": "TP1",
+    "pnl": 0.1,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 116,
+    "funding_rate": -4.3539288606e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 67.9,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 8,
+      "volume_ratio": 2.2,
+      "obv": 5,
+      "vwap": 75.26,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01898,
+      "bb_pct_b": 0.98,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 31.6,
+      "atr_pct": 0.299,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 6 (勝率 40%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 75.9583→75.5286（阻力 75.6800）",
+        "TP2 76.4666→75.5286（阻力 75.6800）",
+        "TP3 77.1443→75.5286（阻力 75.6800）"
+      ]
+    },
+    "features": {
+      "score": 116.0,
+      "rsi": 67.9,
+      "atr_pct": 0.299,
+      "funding": -0.043539288605999996,
+      "vol_ratio": 2.2,
+      "adx": 31.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 38.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 41.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.6,
+      "atr_pct": 0.299,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-17 11:35",
+    "date": "2026-08-17",
+    "order_id": "1786935675-5D22AA81",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 75.45,
+    "close": 75.45,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 116,
+    "funding_rate": -4.3539288606e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 67.9,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 8,
+      "volume_ratio": 2.2,
+      "obv": 5,
+      "vwap": 75.26,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01898,
+      "bb_pct_b": 0.98,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 31.6,
+      "atr_pct": 0.299,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 6 (勝率 40%)"
+      ],
+      "learning_adjust": 0,
+      "tp_adjust_notes": [
+        "TP1 75.9583→75.5286（阻力 75.6800）",
+        "TP2 76.4666→75.5286（阻力 75.6800）",
+        "TP3 77.1443→75.5286（阻力 75.6800）"
+      ]
+    },
+    "features": {
+      "score": 116.0,
+      "rsi": 67.9,
+      "atr_pct": 0.299,
+      "funding": -0.043539288605999996,
+      "vol_ratio": 2.2,
+      "adx": 31.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 38.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 41.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 31.6,
+      "atr_pct": 0.299,
+      "volatile": false
+    }
   }
 ]
