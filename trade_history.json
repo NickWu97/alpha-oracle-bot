@@ -7071,5 +7071,182 @@
       "atr_pct": 0.21,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-18 03:31",
+    "date": "2026-08-18",
+    "order_id": "1786984162-3B566294",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 606.6,
+    "close": 605.1123,
+    "close_type": "SL",
+    "pnl": -0.25,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 106,
+    "funding_rate": 5.15896744664e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.64,
+      "obv": 5,
+      "vwap": 606.5798,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.00699,
+      "bb_pct_b": 0.898,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 25.1,
+      "atr_pct": 0.163,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "sess:asia_dawn (n=10, 勝率 30%) → -2",
+        "coin:BNB (n=5, 勝率 0%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": -5
+    },
+    "features": {
+      "score": 106.0,
+      "rsi": 61.5,
+      "atr_pct": 0.163,
+      "funding": 0.0515896744664,
+      "vol_ratio": 0.64,
+      "adx": 25.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 55.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 48.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 25.1,
+      "atr_pct": 0.163,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-18 03:31",
+    "date": "2026-08-18",
+    "order_id": "1786985876-E380F63A",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.003,
+    "close": 0.9995,
+    "close_type": "SL",
+    "pnl": -0.35,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 121,
+    "funding_rate": 4.12026812319e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 55.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.62,
+      "obv": 5,
+      "vwap": 0.9993,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01019,
+      "bb_pct_b": 0.696,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 21.0,
+      "atr_pct": 0.235,
+      "learning_notes": [
+        "rsilong:50-59 (n=14, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 121.0,
+      "rsi": 55.3,
+      "atr_pct": 0.235,
+      "funding": 0.041202681231900004,
+      "vol_ratio": 0.62,
+      "adx": 21.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 50.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.5
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 21.0,
+      "atr_pct": 0.235,
+      "volatile": false
+    }
   }
 ]

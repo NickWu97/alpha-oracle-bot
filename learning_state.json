@@ -2,21 +2,21 @@
   "buckets": {
     "score:90+": {
       "win": 37,
-      "loss": 25,
+      "loss": 27,
       "be": 4,
-      "total": 66
+      "total": 68
     },
     "rsilong:60-69": {
       "win": 16,
-      "loss": 7,
+      "loss": 8,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "fund:neutral": {
       "win": 43,
-      "loss": 28,
+      "loss": 30,
       "be": 7,
-      "total": 78
+      "total": 80
     },
     "sess:europe": {
       "win": 16,
@@ -26,15 +26,15 @@
     },
     "coin:BNB": {
       "win": 0,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:BNBLONG": {
       "win": 0,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "score:70-79": {
       "win": 2,
@@ -98,9 +98,9 @@
     },
     "rsilong:50-59": {
       "win": 12,
-      "loss": 3,
+      "loss": 4,
       "be": 3,
-      "total": 18
+      "total": 19
     },
     "rsishort:40-49": {
       "win": 3,
@@ -158,9 +158,9 @@
     },
     "sess:asia_dawn": {
       "win": 11,
-      "loss": 7,
+      "loss": 9,
       "be": 2,
-      "total": 20
+      "total": 22
     },
     "coin_side:BNBSHORT": {
       "win": 0,
@@ -176,9 +176,9 @@
     },
     "coin:XRP": {
       "win": 0,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin_side:XRPSHORT": {
       "win": 0,
@@ -254,9 +254,9 @@
     },
     "coin_side:XRPLONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:BTCLONG": {
       "win": 3,
@@ -268,9 +268,9 @@
   "by_coin": {
     "BNB": {
       "win": 0,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "AVAX": {
       "win": 2,
@@ -310,9 +310,9 @@
     },
     "XRP": {
       "win": 0,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "LINK": {
       "win": 9,
@@ -403,7 +403,21 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1786995104.8153677,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1786995106.2561262,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786988652.3865604
+  "updated_at": 1786995105.7801647
 }
