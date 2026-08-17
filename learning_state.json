@@ -1,22 +1,22 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 29,
+      "win": 35,
       "loss": 25,
       "be": 2,
-      "total": 56
+      "total": 62
     },
     "rsilong:60-69": {
-      "win": 10,
+      "win": 16,
       "loss": 7,
       "be": 1,
-      "total": 18
+      "total": 24
     },
     "fund:neutral": {
-      "win": 35,
+      "win": 41,
       "loss": 28,
       "be": 5,
-      "total": 68
+      "total": 74
     },
     "sess:europe": {
       "win": 16,
@@ -67,10 +67,10 @@
       "total": 12
     },
     "coin:BTC": {
-      "win": 0,
+      "win": 3,
       "loss": 5,
       "be": 0,
-      "total": 5
+      "total": 8
     },
     "coin_side:BTCSHORT": {
       "win": 0,
@@ -145,10 +145,10 @@
       "total": 14
     },
     "coin:SOL": {
-      "win": 4,
+      "win": 7,
       "loss": 3,
       "be": 1,
-      "total": 8
+      "total": 11
     },
     "coin_side:SOLSHORT": {
       "win": 0,
@@ -157,10 +157,10 @@
       "total": 2
     },
     "sess:asia_dawn": {
-      "win": 3,
+      "win": 9,
       "loss": 7,
       "be": 0,
-      "total": 10
+      "total": 16
     },
     "coin_side:BNBSHORT": {
       "win": 0,
@@ -247,16 +247,22 @@
       "total": 3
     },
     "coin_side:SOLLONG": {
-      "win": 4,
+      "win": 7,
       "loss": 1,
       "be": 1,
-      "total": 6
+      "total": 9
     },
     "coin_side:XRPLONG": {
       "win": 0,
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin_side:BTCLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -273,10 +279,10 @@
       "total": 4
     },
     "BTC": {
-      "win": 0,
+      "win": 3,
       "loss": 5,
       "be": 0,
-      "total": 5
+      "total": 8
     },
     "DOGE": {
       "win": 1,
@@ -297,10 +303,10 @@
       "total": 8
     },
     "SOL": {
-      "win": 4,
+      "win": 7,
       "loss": 3,
       "be": 1,
-      "total": 8
+      "total": 11
     },
     "XRP": {
       "win": 0,
@@ -399,5 +405,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1786975493.0944428
+  "updated_at": 1786985126.8487468
 }
