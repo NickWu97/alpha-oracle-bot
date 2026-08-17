@@ -5298,5 +5298,93 @@
       "atr_pct": 0.203,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-17 16:24",
+    "date": "2026-08-17",
+    "order_id": "1786947635-DA1DB37D",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0703,
+    "close": 0.0701,
+    "close_type": "SL",
+    "pnl": -0.28,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 93,
+    "funding_rate": 9.27613496164e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 63.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.24,
+      "obv": 5,
+      "vwap": 0.0698,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00448,
+      "bb_pct_b": 0.844,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.191,
+      "learning_notes": [
+        "sess:europe (n=20, 勝率 65%) → +1",
+        "coin:DOGE (n=5, 勝率 20%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 3 (勝率 50%)"
+      ],
+      "learning_adjust": -2
+    },
+    "features": {
+      "score": 93.0,
+      "rsi": 63.7,
+      "atr_pct": 0.191,
+      "funding": 0.09276134961640001,
+      "vol_ratio": 1.24,
+      "adx": 24.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 58.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 52.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 24.6,
+      "atr_pct": 0.191,
+      "volatile": false
+    }
   }
 ]
