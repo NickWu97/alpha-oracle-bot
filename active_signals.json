@@ -1,1 +1,262 @@
-{}
+{
+  "ETH-USDT-SWAPLONG1787070777-744BD3B6": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1912.38,
+    "sl": 1904.6702,
+    "tp1": 1923.9447,
+    "tp2": 1935.5093,
+    "tp3": 1950.9289,
+    "atr": 5.13985376,
+    "score": 112,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 60.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.46,
+      "obv": 5,
+      "vwap": 1897.9516,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01652,
+      "bb_pct_b": 0.722,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 29.8,
+      "atr_pct": 0.269,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "rsilong:60-69 (n=25, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 1
+    },
+    "funding_rate": -1.32940157487e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 29.8,
+      "atr_pct": 0.269,
+      "volatile": false
+    },
+    "created": 1787070777.627153,
+    "expires": 1787157177.6271534,
+    "order_id": "1787070777-744BD3B6",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1787070777.627218,
+    "entry_message_id": 10900,
+    "last_checked_ts": 1787070777.627218
+  },
+  "SOL-USDT-SWAPLONG1787070779-DE060613": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 76.82,
+    "sl": 76.4613,
+    "tp1": 77.3581,
+    "tp2": 77.1454,
+    "tp3": 77.1454,
+    "atr": 0.23913381,
+    "score": 117,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.75,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 75.6422,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02,
+      "bb_pct_b": 0.713,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 46.6,
+      "atr_pct": 0.311,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsilong:60-69 (n=25, 勝率 64%) → +1",
+        "coin_side:SOLLONG (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5,
+      "tp_adjust_notes": [
+        "TP2 77.8961→77.1454（阻力 77.3000）",
+        "TP3 78.6135→77.1454（阻力 77.3000）"
+      ]
+    },
+    "funding_rate": 9.22518748008e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.8
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 64.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 41.3
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 46.6,
+      "atr_pct": 0.311,
+      "volatile": false
+    },
+    "created": 1787070779.4239888,
+    "expires": 1787157179.423989,
+    "order_id": "1787070779-DE060613",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1787070779.4240339,
+    "entry_message_id": 10901,
+    "last_checked_ts": 1787070779.4240339
+  },
+  "XRP-USDT-SWAPLONG1787070782-E4B48972": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.0004,
+    "sl": 0.9968,
+    "tp1": 1.0058,
+    "tp2": 1.0113,
+    "tp3": 1.0185,
+    "atr": 0.00241462,
+    "score": 102,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.4,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.79,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.9987,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01054,
+      "bb_pct_b": 0.562,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 29.9,
+      "atr_pct": 0.241,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "coin:XRP (n=7, 勝率 14%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 4 (勝率 40%)"
+      ],
+      "learning_adjust": -3
+    },
+    "funding_rate": 6.86176753299e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 27.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 29.9,
+      "atr_pct": 0.241,
+      "volatile": false
+    },
+    "created": 1787070782.983696,
+    "expires": 1787157182.9836965,
+    "order_id": "1787070782-E4B48972",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1787070782.983738,
+    "entry_message_id": 10902,
+    "last_checked_ts": 1787070782.983738
+  }
+}
