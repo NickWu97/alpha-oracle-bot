@@ -8826,5 +8826,94 @@
       "atr_pct": 0.311,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-19 04:30",
+    "date": "2026-08-19",
+    "order_id": "1787081607-D0F6E20C",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0705,
+    "close": 0.0703,
+    "close_type": "SL",
+    "pnl": -0.28,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 102,
+    "funding_rate": 7.41938766399e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 65.6,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.37,
+      "obv": 5,
+      "vwap": 0.07,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00688,
+      "bb_pct_b": 0.965,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 35.7,
+      "atr_pct": 0.183,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsilong:60-69 (n=28, 勝率 68%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 102.0,
+      "rsi": 65.6,
+      "atr_pct": 0.183,
+      "funding": 0.0741938766399,
+      "vol_ratio": 0.37,
+      "adx": 35.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 35.7,
+      "atr_pct": 0.183,
+      "volatile": false
+    }
   }
 ]
