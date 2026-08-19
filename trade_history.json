@@ -707,5 +707,271 @@
       "atr_pct": 0.734,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-20 03:55",
+    "date": "2026-08-20",
+    "order_id": "1787167608-1E8847AE",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0728,
+    "close": 0.073,
+    "close_type": "TP2",
+    "pnl": 0.27,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 110,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.29,
+      "obv": 5,
+      "vwap": 0.0708,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.04149,
+      "bb_pct_b": 0.553,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 36.5,
+      "atr_pct": 0.528,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.0737→0.0730（阻力 0.0731）",
+        "TP2 0.0746→0.0730（阻力 0.0731）",
+        "TP3 0.0757→0.0730（阻力 0.0731）"
+      ]
+    },
+    "features": {
+      "score": 110.0,
+      "rsi": 59.1,
+      "atr_pct": 0.528,
+      "funding": 0.1,
+      "vol_ratio": 0.29,
+      "adx": 36.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 76.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 36.5,
+      "atr_pct": 0.528,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-20 03:55",
+    "date": "2026-08-20",
+    "order_id": "1787167610-ECE2B93E",
+    "coin": "LINK",
+    "side": "LONG",
+    "entry": 10.052,
+    "close": 10.0558,
+    "close_type": "TP3",
+    "pnl": 0.04,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 83,
+    "funding_rate": -6.57382390741e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 63.0,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.54,
+      "obv": 5,
+      "vwap": 9.6206,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.04098,
+      "bb_pct_b": 0.768,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 40.5,
+      "atr_pct": 0.734,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 10.2176→10.0558（阻力 10.0760）",
+        "TP2 10.3831→10.0558（阻力 10.0760）",
+        "TP3 10.6039→10.0558（阻力 10.0760）"
+      ]
+    },
+    "features": {
+      "score": 83.0,
+      "rsi": 63.0,
+      "atr_pct": 0.734,
+      "funding": -0.0657382390741,
+      "vol_ratio": 0.54,
+      "adx": 40.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 71.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 74.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 40.5,
+      "atr_pct": 0.734,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-20 03:55",
+    "date": "2026-08-20",
+    "order_id": "1787167608-1E8847AE",
+    "coin": "DOGE",
+    "side": "LONG",
+    "entry": 0.0728,
+    "close": 0.073,
+    "close_type": "TP3",
+    "pnl": 0.27,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 110,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 59.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.29,
+      "obv": 5,
+      "vwap": 0.0708,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.04149,
+      "bb_pct_b": 0.553,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 36.5,
+      "atr_pct": 0.528,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.0737→0.0730（阻力 0.0731）",
+        "TP2 0.0746→0.0730（阻力 0.0731）",
+        "TP3 0.0757→0.0730（阻力 0.0731）"
+      ]
+    },
+    "features": {
+      "score": 110.0,
+      "rsi": 59.1,
+      "atr_pct": 0.528,
+      "funding": 0.1,
+      "vol_ratio": 0.29,
+      "adx": 36.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 76.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 72.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 32.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 36.5,
+      "atr_pct": 0.528,
+      "volatile": false
+    }
   }
 ]
