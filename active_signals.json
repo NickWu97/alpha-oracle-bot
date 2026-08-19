@@ -92,6 +92,98 @@
     "activated_at": 1787158988.9836283,
     "entry_message_id": 11022,
     "last_checked_ts": 1787159700.0,
+<<<<<<< Updated upstream
     "current_price": 1.69
+=======
+    "current_price": 1.689
+  },
+  "BNB-USDT-SWAPLONG1787161281-C1917243": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 615.1,
+    "sl": 611.8631,
+    "tp1": 619.9553,
+    "tp2": 624.8107,
+    "tp3": 631.2844,
+    "atr": 2.15792515,
+    "score": 102,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.87,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 607.1015,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.04138,
+      "bb_pct_b": 0.677,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 56.3,
+      "atr_pct": 0.351,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsilong:60-69 (n=32, 勝率 69%) → +1",
+        "coin:BNB (n=7, 勝率 0%) → -3",
+        "coin_side:BNBLONG (n=6, 勝率 0%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": -5
+    },
+    "funding_rate": 9.59662148809e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 85.6
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 56.3,
+      "atr_pct": 0.351,
+      "volatile": false
+    },
+    "created": 1787161281.5891464,
+    "expires": 1787247681.5891466,
+    "order_id": "1787161281-C1917243",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1787161281.5891976,
+    "entry_message_id": 11033,
+    "last_checked_ts": 1787161281.5891976,
+    "current_price": 615.1
+>>>>>>> Stashed changes
   }
 }
