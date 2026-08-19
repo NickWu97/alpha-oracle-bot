@@ -178,5 +178,93 @@
       "atr_pct": 0.774,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-20 03:26",
+    "date": "2026-08-20",
+    "order_id": "1787165272-573430AB",
+    "coin": "ADA",
+    "side": "LONG",
+    "entry": 0.1801,
+    "close": 0.1804,
+    "close_type": "TP1",
+    "pnl": 0.17,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 79,
+    "funding_rate": 2.1692301139e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 63.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.3,
+      "obv": 5,
+      "vwap": 0.176,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.05545,
+      "bb_pct_b": 0.685,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 21.9,
+      "atr_pct": 0.739,
+      "pullback": true,
+      "tp_adjust_notes": [
+        "TP1 0.1831→0.1804（阻力 0.1808）",
+        "TP2 0.1861→0.1804（阻力 0.1808）",
+        "TP3 0.1901→0.1804（阻力 0.1808）"
+      ]
+    },
+    "features": {
+      "score": 79.0,
+      "rsi": 63.0,
+      "atr_pct": 0.739,
+      "funding": 0.021692301139,
+      "vol_ratio": 0.3,
+      "adx": 21.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 58.7
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.6
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 21.9,
+      "atr_pct": 0.739,
+      "volatile": false
+    }
   }
 ]
