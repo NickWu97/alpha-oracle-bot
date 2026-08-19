@@ -1433,5 +1433,99 @@
       "atr_pct": 0.578,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-20 04:57",
+    "date": "2026-08-20",
+    "order_id": "1787169055-B37E1EFD",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 615.5,
+    "close": 619.6948,
+    "close_type": "TP1",
+    "pnl": 0.68,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 95,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 57.3,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.35,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 607.5416,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.016,
+      "bb_pct_b": 0.395,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 43.2,
+      "atr_pct": 0.303,
+      "adx_bonus": 4,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=6, 勝率 83%) → +2",
+        "sess:asia_dawn (n=6, 勝率 83%) → +2"
+      ],
+      "learning_adjust": 4,
+      "tp_adjust_notes": [
+        "TP2 623.8897→618.8598（阻力 620.1000）",
+        "TP3 629.4828→618.8598（阻力 620.1000）"
+      ]
+    },
+    "features": {
+      "score": 95.0,
+      "rsi": 57.3,
+      "atr_pct": 0.303,
+      "funding": 0.1,
+      "vol_ratio": 0.35,
+      "adx": 43.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 79.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 69.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 43.2,
+      "atr_pct": 0.303,
+      "volatile": false
+    }
   }
 ]
