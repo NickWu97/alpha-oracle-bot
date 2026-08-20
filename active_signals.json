@@ -1,96 +1,4 @@
 {
-  "BTC-USDT-SWAPLONG1787244643-35A90B49": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 72614.8,
-    "sl": 71995.4626,
-    "tp1": 72699.31,
-    "tp2": 72699.31,
-    "tp3": 72699.31,
-    "atr": 412.89163323,
-    "score": 79,
-    "grade": "觀望 ⚪",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 65.5,
-      "rsi": 0,
-      "ob": 0,
-      "fvg": 0,
-      "snr": 0,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.58,
-      "obv": 5,
-      "vwap": 67771.4129,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01818,
-      "bb_pct_b": 0.985,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 32.8,
-      "atr_pct": 0.569,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "rsilong:60-69 (n=11, 勝率 91%) → +2",
-        "fund:neutral (n=19, 勝率 89%) → +2",
-        "sess:asia_dawn (n=19, 勝率 89%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 11,
-      "tp_adjust_notes": [
-        "TP1 73543.8062→72699.3100（阻力 72845.0000）",
-        "TP2 74472.8123→72699.3100（阻力 72845.0000）",
-        "TP3 75711.4872→72699.3100（阻力 72845.0000）"
-      ]
-    },
-    "funding_rate": 6.39732997293e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 82.3
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 90.2
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 39.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 32.8,
-      "atr_pct": 0.569,
-      "volatile": false
-    },
-    "created": 1787244643.3794458,
-    "expires": 1787331043.379446,
-    "order_id": "1787244643-35A90B49",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1787244643.3794937,
-    "entry_message_id": 11116,
-    "last_checked_ts": 1787244643.3794937
-  },
   "SOL-USDT-SWAPLONG1787244645-D5C2F590": {
     "instId": "SOL-USDT-SWAP",
     "side": "LONG",
@@ -181,7 +89,8 @@
     "hit_tp3": false,
     "activated_at": 1787244645.3365805,
     "entry_message_id": 11117,
-    "last_checked_ts": 1787244645.3365805
+    "last_checked_ts": 1787245200.0,
+    "current_price": 87.25
   },
   "BNB-USDT-SWAPLONG1787244647-B8335811": {
     "instId": "BNB-USDT-SWAP",
@@ -269,6 +178,7 @@
     "hit_tp3": false,
     "activated_at": 1787244647.2264013,
     "entry_message_id": 11118,
-    "last_checked_ts": 1787244647.2264013
+    "last_checked_ts": 1787245200.0,
+    "current_price": 651.4
   }
 }
