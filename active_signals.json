@@ -92,15 +92,15 @@
     "hit_tp3": false,
     "activated_at": 1787251949.949189,
     "entry_message_id": 11148,
-    "last_checked_ts": 1787256900.0,
-    "current_price": 0.08003
+    "last_checked_ts": 1787257800.0,
+    "current_price": 0.07998
   },
   "BNB-USDT-SWAPLONG1787254346-2DCC3DE2": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 649.3,
-    "sl": 649.3,
+    "sl": 652.9914,
     "tp1": 652.9914,
     "tp2": 652.9914,
     "tp3": 652.9914,
@@ -181,13 +181,13 @@
     "created": 1787254346.339902,
     "expires": 1787340746.3399022,
     "order_id": "1787254346-2DCC3DE2",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1787254346.3399491,
     "entry_message_id": 11154,
-    "last_checked_ts": 1787256900.0,
-    "current_price": 652.8
+    "last_checked_ts": 1787257800.0,
+    "current_price": 651.9
   }
 }
