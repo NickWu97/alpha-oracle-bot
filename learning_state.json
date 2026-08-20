@@ -1,28 +1,28 @@
 {
   "buckets": {
     "score:80-89": {
-      "win": 4,
+      "win": 5,
       "loss": 0,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "rsilong:50-59": {
-      "win": 10,
+      "win": 11,
       "loss": 0,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "fund:neutral": {
-      "win": 29,
+      "win": 33,
       "loss": 1,
       "be": 2,
-      "total": 32
+      "total": 36
     },
     "sess:asia_dawn": {
-      "win": 29,
+      "win": 33,
       "loss": 1,
       "be": 2,
-      "total": 32
+      "total": 36
     },
     "coin:AVAX": {
       "win": 1,
@@ -61,22 +61,22 @@
       "total": 3
     },
     "coin:LINK": {
-      "win": 6,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "coin_side:LINKLONG": {
-      "win": 6,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "score:90+": {
-      "win": 15,
+      "win": 18,
       "loss": 1,
       "be": 0,
-      "total": 16
+      "total": 19
     },
     "coin:DOGE": {
       "win": 3,
@@ -145,16 +145,16 @@
       "total": 3
     },
     "coin:DOT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOTLONG": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:SOL": {
       "win": 3,
@@ -163,6 +163,12 @@
       "total": 3
     },
     "coin_side:SOLLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "rsilong:40-49": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -183,10 +189,10 @@
       "total": 3
     },
     "LINK": {
-      "win": 6,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "DOGE": {
       "win": 3,
@@ -219,10 +225,10 @@
       "total": 3
     },
     "DOT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "SOL": {
       "win": 3,
@@ -232,5 +238,5 @@
     }
   },
   "loss_reasons": [],
-  "updated_at": 1787251951.7506304
+  "updated_at": 1787256077.8638148
 }
