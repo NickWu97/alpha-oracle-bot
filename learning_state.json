@@ -8,21 +8,21 @@
     },
     "rsilong:50-59": {
       "win": 22,
-      "loss": 1,
+      "loss": 3,
       "be": 1,
-      "total": 24
+      "total": 26
     },
     "fund:neutral": {
       "win": 47,
-      "loss": 2,
+      "loss": 4,
       "be": 2,
-      "total": 51
+      "total": 53
     },
     "sess:asia_dawn": {
       "win": 47,
-      "loss": 1,
+      "loss": 3,
       "be": 2,
-      "total": 50
+      "total": 52
     },
     "coin:AVAX": {
       "win": 1,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 30,
-      "loss": 2,
+      "loss": 4,
       "be": 0,
-      "total": 32
+      "total": 34
     },
     "coin:DOGE": {
       "win": 3,
@@ -104,27 +104,27 @@
     },
     "coin:XRP": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:XRPLONG": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:BNB": {
       "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin_side:BNBLONG": {
       "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "coin:BTC": {
       "win": 9,
@@ -214,15 +214,15 @@
     },
     "XRP": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "BNB": {
       "win": 6,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 7
+      "total": 8
     },
     "BTC": {
       "win": 9,
@@ -250,7 +250,21 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1787339299.4679134,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1787339301.1068523,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1787333222.9681337
+  "updated_at": 1787339300.4807642
 }
