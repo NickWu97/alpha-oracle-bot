@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 64,
-      "loss": 4,
+      "loss": 5,
       "be": 2,
-      "total": 70
+      "total": 71
     },
     "sess:asia_dawn": {
       "win": 64,
@@ -74,9 +74,9 @@
     },
     "score:90+": {
       "win": 39,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 43
+      "total": 44
     },
     "coin:DOGE": {
       "win": 3,
@@ -128,15 +128,15 @@
     },
     "coin:BTC": {
       "win": 9,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin_side:BTCLONG": {
       "win": 9,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "rsilong:70-79": {
       "win": 3,
@@ -170,15 +170,15 @@
     },
     "rsilong:40-49": {
       "win": 12,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "sess:asia_day": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "rsishort:40-49": {
       "win": 4,
@@ -256,9 +256,9 @@
     },
     "BTC": {
       "win": 9,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "DOT": {
       "win": 10,
@@ -294,7 +294,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1787436987.0625694,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1787435237.0688493
+  "updated_at": 1787436986.414448
 }
