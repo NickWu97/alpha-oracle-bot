@@ -87,102 +87,7 @@
     "activated_at": 1787415944.234359,
     "entry_message_id": 11331,
     "last_checked_ts": 1787419800.0,
-    "current_price": 77258.4
-  },
-  "BNB-USDT-SWAPSHORT1787415946-6D938AF7": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 694.9,
-    "sl": 694.1188,
-    "tp1": 694.1188,
-    "tp2": 694.1188,
-    "tp3": 694.1188,
-    "atr": 3.71223706,
-    "score": 86,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 45.4,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.78,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 666.0276,
-      "vwap_score": -6,
-      "vwap_warn": "⚠️ 價格在VWAP錯側",
-      "bb_bandwidth": 0.01372,
-      "bb_pct_b": 0.317,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 22.1,
-      "atr_pct": 0.537,
-      "learning_notes": [
-        "score:70-79 (n=11, 勝率 91%) → +2",
-        "fund:neutral (n=65, 勝率 91%) → +2",
-        "sess:asia_dawn (n=64, 勝率 92%) → +2",
-        "coin:BNB (n=8, 勝率 75%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 13,
-      "tp_adjust_notes": [
-        "TP1 686.5475→694.1188（支撐 692.7333）",
-        "TP2 678.1949→694.1188（支撐 692.7333）",
-        "TP3 667.0582→694.1188（支撐 692.7333）"
-      ]
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 48.5
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 66.6
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 42.9
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 22.1,
-      "atr_pct": 0.537,
-      "volatile": false
-    },
-    "created": 1787415946.4529226,
-    "expires": 1787502346.4529228,
-    "order_id": "1787415946-6D938AF7",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1787415946.4529498,
-    "entry_message_id": 11332,
-    "last_checked_ts": 1787419800.0,
-    "current_price": 696.0
+    "current_price": 77295.9
   },
   "LINK-USDT-SWAPSHORT1787415952-F5A3221D": {
     "instId": "LINK-USDT-SWAP",
@@ -273,6 +178,6 @@
     "activated_at": 1787415952.1641097,
     "entry_message_id": 11333,
     "last_checked_ts": 1787419800.0,
-    "current_price": 11.721
+    "current_price": 11.74
   }
 }
