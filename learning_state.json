@@ -13,22 +13,22 @@
       "total": 29
     },
     "fund:neutral": {
-      "win": 62,
+      "win": 64,
       "loss": 4,
       "be": 2,
-      "total": 68
+      "total": 70
     },
     "sess:asia_dawn": {
-      "win": 62,
+      "win": 64,
       "loss": 3,
       "be": 2,
-      "total": 67
+      "total": 69
     },
     "coin:AVAX": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin_side:AVAXLONG": {
       "win": 1,
@@ -37,10 +37,10 @@
       "total": 2
     },
     "score:70-79": {
-      "win": 10,
+      "win": 12,
       "loss": 0,
       "be": 1,
-      "total": 11
+      "total": 13
     },
     "rsilong:60-69": {
       "win": 19,
@@ -145,10 +145,10 @@
       "total": 3
     },
     "coin:DOT": {
-      "win": 9,
+      "win": 10,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "coin_side:DOTLONG": {
       "win": 9,
@@ -181,24 +181,42 @@
       "total": 1
     },
     "rsishort:40-49": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:BNBSHORT": {
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin_side:DOTSHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "rsishort:50-59": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:AVAXSHORT": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
     "AVAX": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "ADA": {
       "win": 3,
@@ -243,10 +261,10 @@
       "total": 9
     },
     "DOT": {
-      "win": 9,
+      "win": 10,
       "loss": 0,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "SOL": {
       "win": 6,
@@ -278,5 +296,5 @@
       "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1787420925.2221377
+  "updated_at": 1787435237.0688493
 }
