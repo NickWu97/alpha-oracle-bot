@@ -87,14 +87,14 @@
     "activated_at": 1787415944.234359,
     "entry_message_id": 11331,
     "last_checked_ts": 1787418000.0,
-    "current_price": 77333.0
+    "current_price": 77142.0
   },
   "BNB-USDT-SWAPSHORT1787415946-6D938AF7": {
     "instId": "BNB-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 694.9,
-    "sl": 700.4684,
+    "sl": 694.9,
     "tp1": 694.1188,
     "tp2": 694.1188,
     "tp3": 694.1188,
@@ -175,14 +175,14 @@
     "created": 1787415946.4529226,
     "expires": 1787502346.4529228,
     "order_id": "1787415946-6D938AF7",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1787415946.4529498,
     "entry_message_id": 11332,
     "last_checked_ts": 1787418000.0,
-    "current_price": 696.9
+    "current_price": 694.7
   },
   "LINK-USDT-SWAPSHORT1787415952-F5A3221D": {
     "instId": "LINK-USDT-SWAP",
@@ -273,6 +273,6 @@
     "activated_at": 1787415952.1641097,
     "entry_message_id": 11333,
     "last_checked_ts": 1787418000.0,
-    "current_price": 11.769
+    "current_price": 11.696
   }
 }
