@@ -275,5 +275,98 @@
     "entry_message_id": 11567,
     "last_checked_ts": 1787522400.0,
     "current_price": 11.59
+  },
+  "BTC-USDT-SWAPLONG1787523796-664DB03B": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 77781.4,
+    "sl": 77429.2374,
+    "tp1": 77898.0916,
+    "tp2": 77898.0916,
+    "tp3": 77898.0916,
+    "atr": 234.77509537,
+    "score": 130,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 57.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 8,
+      "volume_ratio": 2.44,
+      "obv": 5,
+      "vwap": 76753.9572,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01111,
+      "bb_pct_b": 0.799,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 18.6,
+      "atr_pct": 0.302,
+      "learning_notes": [
+        "score:90+ (n=58, 勝率 88%) → +2",
+        "rsilong:50-59 (n=36, 勝率 89%) → +2",
+        "fund:neutral (n=98, 勝率 89%) → +2",
+        "coin:BTC (n=12, 勝率 75%) → +2",
+        "coin_side:BTCLONG (n=12, 勝率 75%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 15,
+      "tp_adjust_notes": [
+        "TP1 78309.6440→77898.0916（阻力 78054.2000）",
+        "TP2 78837.8879→77898.0916（阻力 78054.2000）",
+        "TP3 79542.2132→77898.0916（阻力 78054.2000）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.0
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 71.2
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 61.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 18.6,
+      "atr_pct": 0.302,
+      "volatile": false
+    },
+    "created": 1787523796.8210115,
+    "expires": 1787610196.8210118,
+    "order_id": "1787523796-664DB03B",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1787523796.8210511,
+    "entry_message_id": 11572,
+    "last_checked_ts": 1787523796.8210511
   }
 }
