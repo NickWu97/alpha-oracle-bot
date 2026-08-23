@@ -7067,5 +7067,188 @@
       "atr_pct": 0.447,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-23 09:25",
+    "date": "2026-08-23",
+    "order_id": "1787425461-BC0D4B3D",
+    "coin": "DOT",
+    "side": "SHORT",
+    "entry": 0.9292,
+    "close": 0.9292,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 75,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.9,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.24,
+      "obv": 5,
+      "vwap": 0.8932,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02493,
+      "bb_pct_b": 0.501,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📉 正規空頭背離（價格新高但 RSI 不新高）→ 頂部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 22.3,
+      "atr_pct": 0.781,
+      "learning_notes": [
+        "fund:neutral (n=68, 勝率 91%) → +2",
+        "sess:asia_dawn (n=67, 勝率 93%) → +2",
+        "coin:DOT (n=9, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11
+    },
+    "features": {
+      "score": 75.0,
+      "rsi": 47.9,
+      "atr_pct": 0.781,
+      "funding": 0.1,
+      "vol_ratio": 1.24,
+      "adx": 22.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.1
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 28.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 22.3,
+      "atr_pct": 0.781,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-23 09:25",
+    "date": "2026-08-23",
+    "order_id": "1787430557-121E4A0E",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 7.56,
+    "close": 7.56,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 78,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 55.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.93,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 7.3321,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02372,
+      "bb_pct_b": 0.715,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 18.4,
+      "atr_pct": 0.61,
+      "learning_notes": [
+        "fund:neutral (n=68, 勝率 91%) → +2",
+        "sess:asia_dawn (n=67, 勝率 93%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 78.0,
+      "rsi": 55.6,
+      "atr_pct": 0.61,
+      "funding": 0.1,
+      "vol_ratio": 0.93,
+      "adx": 18.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 33.8
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.4,
+      "atr_pct": 0.61,
+      "volatile": false
+    }
   }
 ]
