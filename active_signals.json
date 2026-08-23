@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 11.676,
-    "sl": 11.676,
+    "sl": 11.4273,
     "tp1": 11.4273,
     "tp2": 11.1787,
     "tp3": 10.8471,
@@ -81,14 +81,14 @@
     "created": 1787415952.1640794,
     "expires": 1787502352.1640797,
     "order_id": "1787415952-F5A3221D",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1787415952.1641097,
     "entry_message_id": 11333,
-    "last_checked_ts": 1787460300.0,
-    "current_price": 11.239
+    "last_checked_ts": 1787461200.0,
+    "current_price": 11.244
   },
   "AVAX-USDT-SWAPSHORT1787453174-E11758B9": {
     "instId": "AVAX-USDT-SWAP",
@@ -176,7 +176,7 @@
     "hit_tp3": false,
     "activated_at": 1787453174.1740441,
     "entry_message_id": 11432,
-    "last_checked_ts": 1787460300.0,
-    "current_price": 7.346
+    "last_checked_ts": 1787461200.0,
+    "current_price": 7.365
   }
 }
