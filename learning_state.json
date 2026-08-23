@@ -13,10 +13,10 @@
       "total": 29
     },
     "fund:neutral": {
-      "win": 68,
-      "loss": 5,
+      "win": 69,
+      "loss": 6,
       "be": 4,
-      "total": 77
+      "total": 79
     },
     "sess:asia_dawn": {
       "win": 64,
@@ -25,10 +25,10 @@
       "total": 69
     },
     "coin:AVAX": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 5
     },
     "coin_side:AVAXLONG": {
       "win": 1,
@@ -73,10 +73,10 @@
       "total": 12
     },
     "score:90+": {
-      "win": 42,
-      "loss": 5,
+      "win": 43,
+      "loss": 6,
       "be": 0,
-      "total": 47
+      "total": 49
     },
     "coin:DOGE": {
       "win": 3,
@@ -128,15 +128,15 @@
     },
     "coin:BTC": {
       "win": 9,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "coin_side:BTCLONG": {
       "win": 9,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "rsilong:70-79": {
       "win": 3,
@@ -170,21 +170,21 @@
     },
     "rsilong:40-49": {
       "win": 12,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "sess:asia_day": {
-      "win": 4,
-      "loss": 2,
+      "win": 5,
+      "loss": 3,
       "be": 2,
-      "total": 8
+      "total": 10
     },
     "rsishort:40-49": {
-      "win": 8,
+      "win": 9,
       "loss": 0,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "coin_side:BNBSHORT": {
       "win": 6,
@@ -205,10 +205,10 @@
       "total": 2
     },
     "coin_side:AVAXSHORT": {
-      "win": 1,
+      "win": 2,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 3
     },
     "coin_side:LINKSHORT": {
       "win": 1,
@@ -219,10 +219,10 @@
   },
   "by_coin": {
     "AVAX": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 5
     },
     "ADA": {
       "win": 3,
@@ -262,9 +262,9 @@
     },
     "BTC": {
       "win": 9,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "DOT": {
       "win": 10,
@@ -307,7 +307,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1787458835.0793588,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1787456232.7352614
+  "updated_at": 1787458835.992408
 }
