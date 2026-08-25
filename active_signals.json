@@ -82,7 +82,11 @@
     "activated_at": 1787694921.5217495,
     "entry_message_id": 11739,
     "last_checked_ts": 1787699700.0,
+<<<<<<< Updated upstream
     "current_price": 11.337
+=======
+    "current_price": 11.341
+>>>>>>> Stashed changes
   },
   "BNB-USDT-SWAPSHORT1787696920-CF4B1067": {
     "instId": "BNB-USDT-SWAP",
@@ -163,7 +167,11 @@
     "activated_at": 1787696920.479209,
     "entry_message_id": 11744,
     "last_checked_ts": 1787699700.0,
+<<<<<<< Updated upstream
     "current_price": 695.1
+=======
+    "current_price": 695.0
+>>>>>>> Stashed changes
   },
   "DOGE-USDT-SWAPSHORT1787696923-A551AB66": {
     "instId": "DOGE-USDT-SWAP",
@@ -249,7 +257,11 @@
     "activated_at": 1787696923.910828,
     "entry_message_id": 11745,
     "last_checked_ts": 1787699700.0,
+<<<<<<< Updated upstream
     "current_price": 0.08634
+=======
+    "current_price": 0.08638
+>>>>>>> Stashed changes
   },
   "ADA-USDT-SWAPSHORT1787696925-F28E8E3A": {
     "instId": "ADA-USDT-SWAP",
@@ -335,5 +347,92 @@
     "entry_message_id": 11746,
     "last_checked_ts": 1787699700.0,
     "current_price": 0.211
+<<<<<<< Updated upstream
+=======
+  },
+  "ETH-USDT-SWAPLONG1787700723-13F46FBB": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 2449.22,
+    "sl": 2434.6644,
+    "tp1": 2454.058,
+    "tp2": 2454.058,
+    "tp3": 2454.058,
+    "atr": 9.70371047,
+    "score": 88,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 0,
+      "rsi_value": 47.6,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.45,
+      "obv": 5,
+      "vwap": 2460.9109,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.01777,
+      "bb_pct_b": 0.511,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 34.0,
+      "atr_pct": 0.396,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 2471.0533→2454.0580（阻力 2458.9760）",
+        "TP2 2492.8867→2454.0580（阻力 2458.9760）",
+        "TP3 2521.9978→2454.0580（阻力 2458.9760）"
+      ]
+    },
+    "funding_rate": 6.81705972447e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 43.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 34.0,
+      "atr_pct": 0.396,
+      "volatile": false
+    },
+    "created": 1787700723.6470459,
+    "expires": 1787787123.647046,
+    "order_id": "1787700723-13F46FBB",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1787700723.6470785,
+    "entry_message_id": 11759,
+    "last_checked_ts": 1787700723.6470785
+>>>>>>> Stashed changes
   }
 }
