@@ -1,10 +1,17 @@
 {
   "buckets": {
     "score:80-89": {
+<<<<<<< Updated upstream
       "win": 30,
       "loss": 0,
       "be": 1,
       "total": 31
+=======
+      "win": 28,
+      "loss": 0,
+      "be": 1,
+      "total": 29
+>>>>>>> Stashed changes
     },
     "rsilong:50-59": {
       "win": 34,
@@ -13,6 +20,7 @@
       "total": 43
     },
     "fund:neutral": {
+<<<<<<< Updated upstream
       "win": 110,
       "loss": 15,
       "be": 5,
@@ -23,6 +31,18 @@
       "loss": 8,
       "be": 2,
       "total": 109
+=======
+      "win": 108,
+      "loss": 15,
+      "be": 5,
+      "total": 128
+    },
+    "sess:asia_dawn": {
+      "win": 97,
+      "loss": 8,
+      "be": 2,
+      "total": 107
+>>>>>>> Stashed changes
     },
     "coin:AVAX": {
       "win": 6,
@@ -49,10 +69,17 @@
       "total": 23
     },
     "coin:ADA": {
+<<<<<<< Updated upstream
       "win": 6,
       "loss": 0,
       "be": 0,
       "total": 6
+=======
+      "win": 4,
+      "loss": 0,
+      "be": 0,
+      "total": 4
+>>>>>>> Stashed changes
     },
     "coin_side:ADALONG": {
       "win": 3,
@@ -217,10 +244,17 @@
       "total": 5
     },
     "rsishort:30-39": {
+<<<<<<< Updated upstream
       "win": 6,
       "loss": 0,
       "be": 0,
       "total": 6
+=======
+      "win": 4,
+      "loss": 0,
+      "be": 0,
+      "total": 4
+>>>>>>> Stashed changes
     },
     "coin_side:DOGESHORT": {
       "win": 9,
@@ -247,10 +281,17 @@
       "total": 3
     },
     "coin_side:ADASHORT": {
+<<<<<<< Updated upstream
       "win": 3,
       "loss": 0,
       "be": 0,
       "total": 3
+=======
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
+>>>>>>> Stashed changes
     }
   },
   "by_coin": {
@@ -261,10 +302,17 @@
       "total": 8
     },
     "ADA": {
+<<<<<<< Updated upstream
       "win": 6,
       "loss": 0,
       "be": 0,
       "total": 6
+=======
+      "win": 4,
+      "loss": 0,
+      "be": 0,
+      "total": 4
+>>>>>>> Stashed changes
     },
     "LINK": {
       "win": 17,
@@ -358,5 +406,9 @@
       "title": "📊 正常波動"
     }
   ],
+<<<<<<< Updated upstream
   "updated_at": 1787690772.7755973
+=======
+  "updated_at": 1787690786.4139388
+>>>>>>> Stashed changes
 }
