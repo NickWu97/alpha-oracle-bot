@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 6,
-      "loss": 4,
+      "loss": 6,
       "be": 0,
-      "total": 10
+      "total": 12
     },
     "rsishort:30-39": {
       "win": 3,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 21,
-      "loss": 6,
+      "loss": 8,
       "be": 0,
-      "total": 27
+      "total": 29
     },
     "sess:asia_day": {
       "win": 18,
@@ -26,15 +26,15 @@
     },
     "coin:BTC": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:BTCSHORT": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin:NEAR": {
       "win": 0,
@@ -56,9 +56,9 @@
     },
     "rsishort:40-49": {
       "win": 9,
-      "loss": 0,
+      "loss": 2,
       "be": 0,
-      "total": 9
+      "total": 11
     },
     "coin:DOGE": {
       "win": 3,
@@ -104,15 +104,15 @@
     },
     "coin:SOL": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:SOLSHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:XRP": {
       "win": 3,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 3,
-      "loss": 0,
+      "loss": 2,
       "be": 0,
-      "total": 3
+      "total": 5
     },
     "coin:ADA": {
       "win": 3,
@@ -202,9 +202,9 @@
   "by_coin": {
     "BTC": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "NEAR": {
       "win": 0,
@@ -232,9 +232,9 @@
     },
     "SOL": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "XRP": {
       "win": 3,
@@ -283,5 +283,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1787763164.8173046
+  "updated_at": 1787768092.4669101
 }
