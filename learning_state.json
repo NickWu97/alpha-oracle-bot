@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 18,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 22
+      "total": 23
     },
     "sess:asia_day": {
       "win": 18,
@@ -74,9 +74,9 @@
     },
     "rsishort:50-59": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "coin:AVAX": {
       "win": 3,
@@ -140,6 +140,24 @@
     },
     "sess:europe": {
       "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "score:70-79": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:BNB": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:BNBSHORT": {
+      "win": 0,
       "loss": 1,
       "be": 0,
       "total": 1
@@ -193,8 +211,22 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "BNB": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1787725079.5197248
+  "loss_reasons": [
+    {
+      "ts": 1787729137.968047,
+      "coin": "BNB",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    }
+  ],
+  "updated_at": 1787729137.4562905
 }
