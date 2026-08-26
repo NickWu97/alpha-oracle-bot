@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "rsishort:30-39": {
       "win": 0,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 18,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 23
+      "total": 24
     },
     "sess:asia_day": {
       "win": 18,
@@ -140,9 +140,9 @@
     },
     "sess:europe": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "score:70-79": {
       "win": 0,
@@ -157,6 +157,24 @@
       "total": 1
     },
     "coin_side:BNBSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "rsilong:50-59": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ETHLONG": {
       "win": 0,
       "loss": 1,
       "be": 0,
@@ -217,6 +235,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -226,7 +250,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1787737879.6155922,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1787729137.4562905
+  "updated_at": 1787737879.0044754
 }
