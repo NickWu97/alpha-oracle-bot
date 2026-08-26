@@ -440,5 +440,93 @@
       "atr_pct": 0.634,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-26 11:06",
+    "date": "2026-08-26",
+    "order_id": "1787709083-FD20A333",
+    "coin": "BTC",
+    "side": "SHORT",
+    "entry": 78790.6,
+    "close": 79210.2977,
+    "close_type": "SL",
+    "pnl": -0.53,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 87,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 53.4,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.52,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 78527.5687,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.01056,
+      "bb_pct_b": 0.799,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.8,
+      "atr_pct": 0.355,
+      "tp_adjust_notes": [
+        "TP1 78161.0535→78706.7689（支撐 78549.6696）",
+        "TP2 77531.5070→78706.7689（支撐 78549.6696）",
+        "TP3 76692.1116→78706.7689（支撐 78549.6696）"
+      ]
+    },
+    "features": {
+      "score": 87.0,
+      "rsi": 53.4,
+      "atr_pct": 0.355,
+      "funding": 0.1,
+      "vol_ratio": 0.52,
+      "adx": 19.8,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.7
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.3
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 61.2
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.8,
+      "atr_pct": 0.355,
+      "volatile": false
+    }
   }
 ]
