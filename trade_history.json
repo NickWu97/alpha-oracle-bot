@@ -528,5 +528,542 @@
       "atr_pct": 0.355,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-26 11:16",
+    "date": "2026-08-26",
+    "order_id": "1787713585-D63FDFDA",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 7.382,
+    "close": 7.3791,
+    "close_type": "TP1",
+    "pnl": 0.04,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 2.06899966866e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.37,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 7.5061,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01515,
+      "bb_pct_b": 0.758,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 33.1,
+      "atr_pct": 0.464,
+      "adx_bonus": 4,
+      "pullback": true,
+      "tp_adjust_notes": [
+        "TP1 7.3048→7.3791（支撐 7.3643）",
+        "TP2 7.2276→7.3791（支撐 7.3643）",
+        "TP3 7.1247→7.3791（支撐 7.3643）"
+      ]
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 52.1,
+      "atr_pct": 0.464,
+      "funding": 0.0206899966866,
+      "vol_ratio": 0.37,
+      "adx": 33.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 45.4
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.1,
+      "atr_pct": 0.464,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-26 11:16",
+    "date": "2026-08-26",
+    "order_id": "1787713587-F12FF830",
+    "coin": "DOT",
+    "side": "SHORT",
+    "entry": 0.8575,
+    "close": 0.8573,
+    "close_type": "TP1",
+    "pnl": 0.02,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 82,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.47,
+      "obv": 5,
+      "vwap": 0.8995,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02207,
+      "bb_pct_b": 0.704,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 39.6,
+      "atr_pct": 0.567,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.8465→0.8573（支撐 0.8556）",
+        "TP2 0.8356→0.8573（支撐 0.8556）",
+        "TP3 0.8210→0.8573（支撐 0.8556）"
+      ]
+    },
+    "features": {
+      "score": 82.0,
+      "rsi": 51.0,
+      "atr_pct": 0.567,
+      "funding": 0.1,
+      "vol_ratio": 0.47,
+      "adx": 39.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 39.6,
+      "atr_pct": 0.567,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-26 11:16",
+    "date": "2026-08-26",
+    "order_id": "1787713585-D63FDFDA",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 7.382,
+    "close": 7.3791,
+    "close_type": "TP2",
+    "pnl": 0.04,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 2.06899966866e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.37,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 7.5061,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01515,
+      "bb_pct_b": 0.758,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 33.1,
+      "atr_pct": 0.464,
+      "adx_bonus": 4,
+      "pullback": true,
+      "tp_adjust_notes": [
+        "TP1 7.3048→7.3791（支撐 7.3643）",
+        "TP2 7.2276→7.3791（支撐 7.3643）",
+        "TP3 7.1247→7.3791（支撐 7.3643）"
+      ]
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 52.1,
+      "atr_pct": 0.464,
+      "funding": 0.0206899966866,
+      "vol_ratio": 0.37,
+      "adx": 33.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 45.4
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.1,
+      "atr_pct": 0.464,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-26 11:16",
+    "date": "2026-08-26",
+    "order_id": "1787713587-F12FF830",
+    "coin": "DOT",
+    "side": "SHORT",
+    "entry": 0.8575,
+    "close": 0.8573,
+    "close_type": "TP2",
+    "pnl": 0.02,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 82,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.47,
+      "obv": 5,
+      "vwap": 0.8995,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02207,
+      "bb_pct_b": 0.704,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 39.6,
+      "atr_pct": 0.567,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.8465→0.8573（支撐 0.8556）",
+        "TP2 0.8356→0.8573（支撐 0.8556）",
+        "TP3 0.8210→0.8573（支撐 0.8556）"
+      ]
+    },
+    "features": {
+      "score": 82.0,
+      "rsi": 51.0,
+      "atr_pct": 0.567,
+      "funding": 0.1,
+      "vol_ratio": 0.47,
+      "adx": 39.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 39.6,
+      "atr_pct": 0.567,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-26 11:16",
+    "date": "2026-08-26",
+    "order_id": "1787713585-D63FDFDA",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 7.382,
+    "close": 7.3791,
+    "close_type": "TP3",
+    "pnl": 0.04,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 85,
+    "funding_rate": 2.06899966866e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 52.1,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.37,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 7.5061,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01515,
+      "bb_pct_b": 0.758,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 33.1,
+      "atr_pct": 0.464,
+      "adx_bonus": 4,
+      "pullback": true,
+      "tp_adjust_notes": [
+        "TP1 7.3048→7.3791（支撐 7.3643）",
+        "TP2 7.2276→7.3791（支撐 7.3643）",
+        "TP3 7.1247→7.3791（支撐 7.3643）"
+      ]
+    },
+    "features": {
+      "score": 85.0,
+      "rsi": 52.1,
+      "atr_pct": 0.464,
+      "funding": 0.0206899966866,
+      "vol_ratio": 0.37,
+      "adx": 33.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 43.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 45.4
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 33.1,
+      "atr_pct": 0.464,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-26 11:16",
+    "date": "2026-08-26",
+    "order_id": "1787713587-F12FF830",
+    "coin": "DOT",
+    "side": "SHORT",
+    "entry": 0.8575,
+    "close": 0.8573,
+    "close_type": "TP3",
+    "pnl": 0.02,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 82,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.0,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.47,
+      "obv": 5,
+      "vwap": 0.8995,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02207,
+      "bb_pct_b": 0.704,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 39.6,
+      "atr_pct": 0.567,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.8465→0.8573（支撐 0.8556）",
+        "TP2 0.8356→0.8573（支撐 0.8556）",
+        "TP3 0.8210→0.8573（支撐 0.8556）"
+      ]
+    },
+    "features": {
+      "score": 82.0,
+      "rsi": 51.0,
+      "atr_pct": 0.567,
+      "funding": 0.1,
+      "vol_ratio": 0.47,
+      "adx": 39.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 35.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.7
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 39.6,
+      "atr_pct": 0.567,
+      "volatile": false
+    }
   }
 ]

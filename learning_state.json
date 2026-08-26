@@ -13,16 +13,16 @@
       "total": 2
     },
     "fund:neutral": {
-      "win": 3,
+      "win": 9,
       "loss": 3,
       "be": 0,
-      "total": 6
+      "total": 12
     },
     "sess:asia_day": {
-      "win": 3,
+      "win": 9,
       "loss": 3,
       "be": 0,
-      "total": 6
+      "total": 12
     },
     "coin:BTC": {
       "win": 0,
@@ -49,10 +49,10 @@
       "total": 1
     },
     "score:80-89": {
-      "win": 3,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 4
+      "total": 10
     },
     "rsishort:40-49": {
       "win": 3,
@@ -73,10 +73,34 @@
       "total": 3
     },
     "rsishort:50-59": {
-      "win": 0,
+      "win": 6,
       "loss": 1,
       "be": 0,
-      "total": 1
+      "total": 7
+    },
+    "coin:AVAX": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:AVAXSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:DOT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:DOTSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -97,8 +121,20 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "AVAX": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "DOT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [],
-  "updated_at": 1787713591.6644714
+  "updated_at": 1787714208.319234
 }
