@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 7,
-      "loss": 6,
+      "loss": 7,
       "be": 1,
-      "total": 14
+      "total": 15
     },
     "rsishort:30-39": {
       "win": 3,
@@ -14,27 +14,27 @@
     },
     "fund:neutral": {
       "win": 22,
-      "loss": 8,
+      "loss": 10,
       "be": 1,
-      "total": 31
+      "total": 33
     },
     "sess:asia_day": {
       "win": 18,
-      "loss": 3,
+      "loss": 5,
       "be": 0,
-      "total": 21
+      "total": 23
     },
     "coin:BTC": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:BTCSHORT": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:NEAR": {
       "win": 0,
@@ -50,15 +50,15 @@
     },
     "score:80-89": {
       "win": 15,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 16
+      "total": 17
     },
     "rsishort:40-49": {
       "win": 10,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "coin:DOGE": {
       "win": 4,
@@ -74,9 +74,9 @@
     },
     "rsishort:50-59": {
       "win": 9,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 12
+      "total": 13
     },
     "coin:AVAX": {
       "win": 3,
@@ -116,15 +116,15 @@
     },
     "coin:XRP": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:XRPSHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:LINK": {
       "win": 3,
@@ -202,9 +202,9 @@
   "by_coin": {
     "BTC": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "NEAR": {
       "win": 0,
@@ -238,9 +238,9 @@
     },
     "XRP": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "LINK": {
       "win": 3,
@@ -281,7 +281,21 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1787787322.110143,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1787787323.9561388,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1787778126.3461635
+  "updated_at": 1787787323.2694948
 }
