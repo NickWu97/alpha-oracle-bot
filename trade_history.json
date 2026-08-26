@@ -173,5 +173,272 @@
       "atr_pct": 0.811,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-08-26 10:08",
+    "date": "2026-08-26",
+    "order_id": "1787709090-898405CB",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0864,
+    "close": 0.0863,
+    "close_type": "TP1",
+    "pnl": 0.12,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 9.63554365209e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.51,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0909,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.017,
+      "bb_pct_b": 0.697,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 44.4,
+      "atr_pct": 0.634,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.0852→0.0863（支撐 0.0861）",
+        "TP2 0.0839→0.0863（支撐 0.0861）",
+        "TP3 0.0823→0.0863（支撐 0.0861）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 47.0,
+      "atr_pct": 0.634,
+      "funding": 0.0963554365209,
+      "vol_ratio": 0.51,
+      "adx": 44.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.8
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 55.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 44.4,
+      "atr_pct": 0.634,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-26 10:09",
+    "date": "2026-08-26",
+    "order_id": "1787709090-898405CB",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0864,
+    "close": 0.0863,
+    "close_type": "TP2",
+    "pnl": 0.12,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 9.63554365209e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.51,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0909,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.017,
+      "bb_pct_b": 0.697,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 44.4,
+      "atr_pct": 0.634,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.0852→0.0863（支撐 0.0861）",
+        "TP2 0.0839→0.0863（支撐 0.0861）",
+        "TP3 0.0823→0.0863（支撐 0.0861）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 47.0,
+      "atr_pct": 0.634,
+      "funding": 0.0963554365209,
+      "vol_ratio": 0.51,
+      "adx": 44.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.8
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 55.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 44.4,
+      "atr_pct": 0.634,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-08-26 10:09",
+    "date": "2026-08-26",
+    "order_id": "1787709090-898405CB",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0864,
+    "close": 0.0863,
+    "close_type": "TP3",
+    "pnl": 0.12,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": 9.63554365209e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 47.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.51,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0909,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.017,
+      "bb_pct_b": 0.697,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 44.4,
+      "atr_pct": 0.634,
+      "adx_bonus": 4,
+      "tp_adjust_notes": [
+        "TP1 0.0852→0.0863（支撐 0.0861）",
+        "TP2 0.0839→0.0863（支撐 0.0861）",
+        "TP3 0.0823→0.0863（支撐 0.0861）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 47.0,
+      "atr_pct": 0.634,
+      "funding": 0.0963554365209,
+      "vol_ratio": 0.51,
+      "adx": 44.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.1
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 42.8
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 55.0
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 44.4,
+      "atr_pct": 0.634,
+      "volatile": false
+    }
   }
 ]
