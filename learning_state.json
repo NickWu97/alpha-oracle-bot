@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 0,
+      "win": 3,
       "loss": 2,
       "be": 0,
-      "total": 2
+      "total": 5
     },
     "rsishort:30-39": {
       "win": 0,
@@ -13,16 +13,16 @@
       "total": 2
     },
     "fund:neutral": {
-      "win": 9,
+      "win": 18,
       "loss": 3,
       "be": 0,
-      "total": 12
+      "total": 21
     },
     "sess:asia_day": {
-      "win": 9,
+      "win": 18,
       "loss": 3,
       "be": 0,
-      "total": 12
+      "total": 21
     },
     "coin:BTC": {
       "win": 0,
@@ -49,16 +49,16 @@
       "total": 1
     },
     "score:80-89": {
-      "win": 9,
+      "win": 15,
       "loss": 1,
       "be": 0,
-      "total": 10
+      "total": 16
     },
     "rsishort:40-49": {
-      "win": 3,
+      "win": 9,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 9
     },
     "coin:DOGE": {
       "win": 3,
@@ -73,10 +73,10 @@
       "total": 3
     },
     "rsishort:50-59": {
-      "win": 6,
+      "win": 9,
       "loss": 1,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "coin:AVAX": {
       "win": 3,
@@ -97,6 +97,42 @@
       "total": 3
     },
     "coin_side:DOTSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:SOL": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:SOLSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:XRP": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:XRPSHORT": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin:LINK": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:LINKSHORT": {
       "win": 3,
       "loss": 0,
       "be": 0,
@@ -133,8 +169,26 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "SOL": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "XRP": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "LINK": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [],
-  "updated_at": 1787714208.319234
+  "updated_at": 1787721649.8997245
 }
