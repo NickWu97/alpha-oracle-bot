@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 30,
-      "loss": 10,
+      "loss": 11,
       "be": 6,
-      "total": 46
+      "total": 47
     },
     "rsishort:30-39": {
       "win": 9,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 51,
-      "loss": 14,
+      "loss": 15,
       "be": 6,
-      "total": 71
+      "total": 72
     },
     "sess:asia_day": {
       "win": 22,
@@ -56,9 +56,9 @@
     },
     "rsishort:40-49": {
       "win": 13,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 19
+      "total": 20
     },
     "coin:DOGE": {
       "win": 7,
@@ -152,15 +152,15 @@
     },
     "coin:BNB": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "coin_side:BNBSHORT": {
       "win": 3,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "rsilong:50-59": {
       "win": 8,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 17,
-      "loss": 3,
+      "loss": 4,
       "be": 3,
-      "total": 23
+      "total": 24
     },
     "coin:ADA": {
       "win": 3,
@@ -310,9 +310,9 @@
     },
     "BNB": {
       "win": 4,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 7
+      "total": 8
     },
     "ETH": {
       "win": 3,
@@ -383,7 +383,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1788029572.1878707,
+      "coin": "BNB",
+      "side": "SHORT",
+      "code": "TREND_REVERSAL",
+      "title": "🔄 趨勢反轉"
     }
   ],
-  "updated_at": 1788017903.4263475
+  "updated_at": 1788029571.6537812
 }
