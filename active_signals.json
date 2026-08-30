@@ -84,99 +84,8 @@
     "hit_tp3": false,
     "activated_at": 1788111167.450349,
     "entry_message_id": 12058,
-    "last_checked_ts": 1788111167.450349
-  },
-  "BNB-USDT-SWAPLONG1788111171-6764FF91": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 699.1,
-    "sl": 696.4196,
-    "tp1": 699.1948,
-    "tp2": 699.1948,
-    "tp3": 699.1948,
-    "atr": 1.78692373,
-    "score": 120,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 53.1,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 5,
-      "volume_ratio": 1.58,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 699.813,
-      "vwap_score": 0,
-      "bb_bandwidth": 0.01359,
-      "bb_pct_b": 0.516,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "trend",
-      "adx": 33.1,
-      "atr_pct": 0.256,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "fund:neutral (n=88, 勝率 65%) → +1",
-        "sess:asia_dawn (n=24, 勝率 71%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 8,
-      "tp_adjust_notes": [
-        "TP1 703.1206→699.1948（阻力 700.5960）",
-        "TP2 707.1412→699.1948（阻力 700.5960）",
-        "TP3 712.5019→699.1948（阻力 700.5960）"
-      ]
-    },
-    "funding_rate": 0.0001,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 74.2
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 53.8
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 62.6
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 33.1,
-      "atr_pct": 0.256,
-      "volatile": false
-    },
-    "created": 1788111171.219521,
-    "expires": 1788197571.219521,
-    "order_id": "1788111171-6764FF91",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1788111171.2195585,
-    "entry_message_id": 12059,
-    "last_checked_ts": 1788111171.2195585
+    "last_checked_ts": 1788112800.0,
+    "current_price": 78856.8
   },
   "XRP-USDT-SWAPLONG1788111173-D5CC0A8A": {
     "instId": "XRP-USDT-SWAP",
@@ -267,6 +176,7 @@
     "hit_tp3": false,
     "activated_at": 1788111173.362105,
     "entry_message_id": 12060,
-    "last_checked_ts": 1788111173.362105
+    "last_checked_ts": 1788112800.0,
+    "current_price": 1.4204
   }
 }
