@@ -1,1 +1,95 @@
-{}
+{
+  "SOL-USDT-SWAPSHORT1788129883-E16EBD28": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 103.65,
+    "sl": 104.5462,
+    "tp1": 103.3663,
+    "tp2": 103.3663,
+    "tp3": 103.3663,
+    "atr": 0.59743614,
+    "score": 92,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 28.9,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 2,
+      "volume_ratio": 1.16,
+      "obv": 5,
+      "vwap": 105.6788,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.03955,
+      "bb_pct_b": 0.066,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 38.3,
+      "atr_pct": 0.577,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:80-89 (n=31, 勝率 77%) → +2",
+        "fund:neutral (n=96, 勝率 64%) → +1",
+        "sess:asia_day (n=40, 勝率 70%) → +1",
+        "coin:SOL (n=17, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 11,
+      "tp_adjust_notes": [
+        "TP1 102.3058→103.3663（支撐 103.1600）",
+        "TP2 100.9615→103.3663（支撐 103.1600）",
+        "TP3 99.1692→103.3663（支撐 103.1600）"
+      ]
+    },
+    "funding_rate": -8.11194231655e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.5
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 66.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 38.3,
+      "atr_pct": 0.577,
+      "volatile": false
+    },
+    "created": 1788129883.965455,
+    "expires": 1788216283.9654553,
+    "order_id": "1788129883-E16EBD28",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1788129883.9654996,
+    "entry_message_id": 12084,
+    "last_checked_ts": 1788129883.9654996
+  }
+}
