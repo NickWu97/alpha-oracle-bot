@@ -1,100 +1,4 @@
 {
-  "DOGE-USDT-SWAPSHORT1788158754-864889EC": {
-    "instId": "DOGE-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.0827,
-    "sl": 0.0827,
-    "tp1": 0.0825,
-    "tp2": 0.0825,
-    "tp3": 0.0825,
-    "atr": 0.00040244,
-    "score": 122,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 51.7,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.76,
-      "obv": 5,
-      "vwap": 0.0851,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01793,
-      "bb_pct_b": 0.788,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 28.0,
-      "atr_pct": 0.487,
-      "adx_bonus": 2,
-      "pullback": true,
-      "learning_notes": [
-        "score:90+ (n=66, 勝率 61%) → +1",
-        "rsishort:50-59 (n=24, 勝率 67%) → +1",
-        "fund:neutral (n=99, 勝率 65%) → +1",
-        "coin:DOGE (n=11, 勝率 73%) → +2",
-        "coin_side:DOGESHORT (n=11, 勝率 73%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 12,
-      "tp_adjust_notes": [
-        "TP1 0.0818→0.0825（支撐 0.0824）",
-        "TP2 0.0809→0.0825（支撐 0.0824）",
-        "TP3 0.0797→0.0825（支撐 0.0824）"
-      ]
-    },
-    "funding_rate": 1.96510069539e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 40.2
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 32.8
-      },
-      "1W": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 47.3
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 28.0,
-      "atr_pct": 0.487,
-      "volatile": false
-    },
-    "created": 1788158754.6325068,
-    "expires": 1788245154.632507,
-    "order_id": "1788158754-864889EC",
-    "status": "BE",
-    "hit_tp1": true,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1788158754.632537,
-    "entry_message_id": 12094,
-    "last_checked_ts": 1788186600.0,
-    "current_price": 0.0829
-  },
   "ADA-USDT-SWAPSHORT1788188052-D98F6945": {
     "instId": "ADA-USDT-SWAP",
     "side": "SHORT",
@@ -182,7 +86,7 @@
     "hit_tp3": false,
     "activated_at": 1788188052.3392138,
     "entry_message_id": 12099,
-    "last_checked_ts": 1788188052.3392138,
-    "current_price": 0.196
+    "last_checked_ts": 1788188400.0,
+    "current_price": 0.1953
   }
 }
