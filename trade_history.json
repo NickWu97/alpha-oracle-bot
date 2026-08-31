@@ -9611,5 +9611,98 @@
       "atr_pct": 0.487,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-01 04:41",
+    "date": "2026-09-01",
+    "order_id": "1788188052-D98F6945",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.1961,
+    "close": 0.1981,
+    "close_type": "SL",
+    "pnl": -1.02,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 110,
+    "funding_rate": 9.91096131469e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 53.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 5,
+      "volume_ratio": 1.88,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.1999,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02177,
+      "bb_pct_b": 0.568,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 18.1,
+      "atr_pct": 0.681,
+      "learning_notes": [
+        "score:90+ (n=66, 勝率 61%) → +1",
+        "rsishort:50-59 (n=24, 勝率 67%) → +1",
+        "fund:neutral (n=99, 勝率 65%) → +1",
+        "coin:ADA (n=5, 勝率 80%) → +2",
+        "coin_side:ADASHORT (n=5, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 12
+    },
+    "features": {
+      "score": 110.0,
+      "rsi": 53.8,
+      "atr_pct": 0.681,
+      "funding": 0.09910961314689999,
+      "vol_ratio": 1.88,
+      "adx": 18.1,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 36.4
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 46.8
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 18.1,
+      "atr_pct": 0.681,
+      "volatile": false
+    }
   }
 ]
