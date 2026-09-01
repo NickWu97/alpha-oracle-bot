@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 2471.12,
-    "sl": 2486.3069,
+    "sl": 2471.12,
     "tp1": 2466.2383,
     "tp2": 2466.2383,
     "tp3": 2466.2383,
@@ -87,21 +87,21 @@
     "created": 1788208893.853332,
     "expires": 1788295293.8533325,
     "order_id": "1788208893-EFDC82A4",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1788208893.8533614,
     "entry_message_id": 12109,
-    "last_checked_ts": 1788208893.8533614,
-    "current_price": 2471.14
+    "last_checked_ts": 1788219900.0,
+    "current_price": 2469.18
   },
   "DOGE-USDT-SWAPSHORT1788208898-C20520A8": {
     "instId": "DOGE-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 0.0832,
-    "sl": 0.0837,
+    "sl": 0.0832,
     "tp1": 0.0829,
     "tp2": 0.0829,
     "tp3": 0.0829,
@@ -182,13 +182,13 @@
     "created": 1788208898.549606,
     "expires": 1788295298.5496063,
     "order_id": "1788208898-C20520A8",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1788208898.549635,
     "entry_message_id": 12110,
-    "last_checked_ts": 1788208898.549635,
-    "current_price": 0.08316
+    "last_checked_ts": 1788219900.0,
+    "current_price": 0.08279
   }
 }
