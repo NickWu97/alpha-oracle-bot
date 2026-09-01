@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 54,
-      "loss": 20,
+      "loss": 21,
       "be": 12,
-      "total": 86
+      "total": 87
     },
     "rsishort:30-39": {
       "win": 10,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 81,
-      "loss": 26,
+      "loss": 28,
       "be": 15,
-      "total": 122
+      "total": 124
     },
     "sess:asia_day": {
       "win": 43,
@@ -50,9 +50,9 @@
     },
     "score:80-89": {
       "win": 27,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 34
+      "total": 35
     },
     "rsishort:40-49": {
       "win": 13,
@@ -128,9 +128,9 @@
     },
     "coin:LINK": {
       "win": 11,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 13
+      "total": 14
     },
     "coin_side:LINKSHORT": {
       "win": 7,
@@ -152,9 +152,9 @@
     },
     "coin:BNB": {
       "win": 8,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "coin_side:BNBSHORT": {
       "win": 4,
@@ -164,9 +164,9 @@
     },
     "rsilong:50-59": {
       "win": 14,
-      "loss": 6,
+      "loss": 8,
       "be": 2,
-      "total": 22
+      "total": 24
     },
     "coin:ETH": {
       "win": 6,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 21,
-      "loss": 8,
+      "loss": 10,
       "be": 4,
-      "total": 33
+      "total": 35
     },
     "coin:ADA": {
       "win": 4,
@@ -206,9 +206,9 @@
     },
     "coin_side:BNBLONG": {
       "win": 4,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 8
+      "total": 9
     },
     "rsilong:40-49": {
       "win": 4,
@@ -224,9 +224,9 @@
     },
     "coin_side:LINKLONG": {
       "win": 4,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 5
+      "total": 6
     },
     "coin_side:BTCLONG": {
       "win": 1,
@@ -334,15 +334,15 @@
     },
     "LINK": {
       "win": 11,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 13
+      "total": 14
     },
     "BNB": {
       "win": 8,
-      "loss": 5,
+      "loss": 6,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "ETH": {
       "win": 6,
@@ -483,7 +483,21 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1788286328.5125039,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1788286330.3383522,
+      "coin": "LINK",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1788274609.5780225
+  "updated_at": 1788286329.675061
 }
