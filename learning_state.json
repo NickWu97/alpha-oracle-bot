@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 50,
+      "win": 51,
       "loss": 18,
       "be": 11,
-      "total": 79
+      "total": 80
     },
     "rsishort:30-39": {
       "win": 9,
@@ -13,10 +13,10 @@
       "total": 12
     },
     "fund:neutral": {
-      "win": 77,
+      "win": 78,
       "loss": 24,
       "be": 14,
-      "total": 115
+      "total": 116
     },
     "sess:asia_day": {
       "win": 43,
@@ -91,10 +91,10 @@
       "total": 7
     },
     "coin:DOT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:DOTSHORT": {
       "win": 3,
@@ -139,10 +139,10 @@
       "total": 8
     },
     "sess:europe": {
-      "win": 11,
+      "win": 12,
       "loss": 8,
       "be": 2,
-      "total": 21
+      "total": 22
     },
     "score:70-79": {
       "win": 0,
@@ -163,10 +163,10 @@
       "total": 7
     },
     "rsilong:50-59": {
-      "win": 11,
+      "win": 12,
       "loss": 6,
       "be": 2,
-      "total": 19
+      "total": 20
     },
     "coin:ETH": {
       "win": 6,
@@ -281,6 +281,12 @@
       "loss": 0,
       "be": 0,
       "total": 3
+    },
+    "coin_side:DOTLONG": {
+      "win": 1,
+      "loss": 0,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -309,10 +315,10 @@
       "total": 8
     },
     "DOT": {
-      "win": 3,
+      "win": 4,
       "loss": 0,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "SOL": {
       "win": 15,
@@ -465,5 +471,5 @@
       "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1788240173.114842
+  "updated_at": 1788257271.1980731
 }
