@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 57,
-      "loss": 23,
+      "loss": 24,
       "be": 15,
-      "total": 95
+      "total": 96
     },
     "rsishort:30-39": {
       "win": 11,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 91,
-      "loss": 30,
+      "loss": 32,
       "be": 19,
-      "total": 140
+      "total": 142
     },
     "sess:asia_day": {
       "win": 53,
-      "loss": 8,
+      "loss": 10,
       "be": 10,
-      "total": 71
+      "total": 73
     },
     "coin:BTC": {
       "win": 6,
@@ -50,9 +50,9 @@
     },
     "score:80-89": {
       "win": 34,
-      "loss": 5,
+      "loss": 6,
       "be": 4,
-      "total": 43
+      "total": 44
     },
     "rsishort:40-49": {
       "win": 22,
@@ -62,21 +62,21 @@
     },
     "coin:DOGE": {
       "win": 16,
-      "loss": 2,
+      "loss": 3,
       "be": 4,
-      "total": 22
+      "total": 23
     },
     "coin_side:DOGESHORT": {
       "win": 16,
-      "loss": 2,
+      "loss": 3,
       "be": 4,
-      "total": 22
+      "total": 23
     },
     "rsishort:50-59": {
       "win": 29,
-      "loss": 5,
+      "loss": 7,
       "be": 5,
-      "total": 39
+      "total": 41
     },
     "coin:AVAX": {
       "win": 6,
@@ -116,15 +116,15 @@
     },
     "coin:XRP": {
       "win": 8,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 12
+      "total": 13
     },
     "coin_side:XRPSHORT": {
       "win": 6,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 8
+      "total": 9
     },
     "coin:LINK": {
       "win": 11,
@@ -304,9 +304,9 @@
     },
     "DOGE": {
       "win": 16,
-      "loss": 2,
+      "loss": 3,
       "be": 4,
-      "total": 22
+      "total": 23
     },
     "AVAX": {
       "win": 6,
@@ -328,9 +328,9 @@
     },
     "XRP": {
       "win": 8,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 12
+      "total": 13
     },
     "LINK": {
       "win": 11,
@@ -504,7 +504,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1788398639.42779,
+      "coin": "DOGE",
+      "side": "SHORT",
+      "code": "RSI_REBOUND",
+      "title": "📈 空頭動能反轉"
     }
   ],
-  "updated_at": 1788327766.9545956
+  "updated_at": 1788398640.6742406
 }
