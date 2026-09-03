@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 58,
-      "loss": 24,
-      "be": 16,
-      "total": 98
+      "win": 60,
+      "loss": 25,
+      "be": 18,
+      "total": 103
     },
     "rsishort:30-39": {
       "win": 11,
@@ -13,10 +13,10 @@
       "total": 17
     },
     "fund:neutral": {
-      "win": 92,
-      "loss": 32,
-      "be": 20,
-      "total": 144
+      "win": 94,
+      "loss": 33,
+      "be": 22,
+      "total": 149
     },
     "sess:asia_day": {
       "win": 54,
@@ -74,15 +74,15 @@
     },
     "rsishort:50-59": {
       "win": 29,
-      "loss": 7,
+      "loss": 8,
       "be": 5,
-      "total": 41
+      "total": 42
     },
     "coin:AVAX": {
-      "win": 6,
+      "win": 7,
       "loss": 3,
-      "be": 0,
-      "total": 9
+      "be": 1,
+      "total": 11
     },
     "coin_side:AVAXSHORT": {
       "win": 6,
@@ -115,10 +115,10 @@
       "total": 12
     },
     "coin:XRP": {
-      "win": 8,
+      "win": 9,
       "loss": 3,
-      "be": 2,
-      "total": 13
+      "be": 3,
+      "total": 15
     },
     "coin_side:XRPSHORT": {
       "win": 6,
@@ -128,21 +128,21 @@
     },
     "coin:LINK": {
       "win": 11,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "coin_side:LINKSHORT": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "sess:europe": {
-      "win": 12,
-      "loss": 8,
-      "be": 3,
-      "total": 23
+      "win": 14,
+      "loss": 9,
+      "be": 5,
+      "total": 28
     },
     "score:70-79": {
       "win": 0,
@@ -163,10 +163,10 @@
       "total": 8
     },
     "rsilong:50-59": {
-      "win": 14,
+      "win": 16,
       "loss": 8,
-      "be": 2,
-      "total": 24
+      "be": 4,
+      "total": 28
     },
     "coin:ETH": {
       "win": 6,
@@ -241,10 +241,10 @@
       "total": 2
     },
     "coin_side:XRPLONG": {
-      "win": 2,
+      "win": 3,
       "loss": 0,
-      "be": 2,
-      "total": 4
+      "be": 3,
+      "total": 6
     },
     "rsilong:30-39": {
       "win": 3,
@@ -271,10 +271,10 @@
       "total": 4
     },
     "coin_side:AVAXLONG": {
-      "win": 0,
+      "win": 1,
       "loss": 1,
-      "be": 0,
-      "total": 1
+      "be": 1,
+      "total": 3
     },
     "rsishort:20-29": {
       "win": 3,
@@ -309,10 +309,10 @@
       "total": 23
     },
     "AVAX": {
-      "win": 6,
+      "win": 7,
       "loss": 3,
-      "be": 0,
-      "total": 9
+      "be": 1,
+      "total": 11
     },
     "DOT": {
       "win": 6,
@@ -327,16 +327,16 @@
       "total": 25
     },
     "XRP": {
-      "win": 8,
+      "win": 9,
       "loss": 3,
-      "be": 2,
-      "total": 13
+      "be": 3,
+      "total": 15
     },
     "LINK": {
       "win": 11,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "BNB": {
       "win": 9,
@@ -511,7 +511,14 @@
       "side": "SHORT",
       "code": "RSI_REBOUND",
       "title": "📈 空頭動能反轉"
+    },
+    {
+      "ts": 1788428317.5445044,
+      "coin": "LINK",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1788416140.5702732
+  "updated_at": 1788428339.7727606
 }
