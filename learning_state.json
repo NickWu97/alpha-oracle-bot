@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 78,
-      "loss": 29,
+      "loss": 30,
       "be": 21,
-      "total": 128
+      "total": 129
     },
     "rsishort:30-39": {
       "win": 11,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 112,
-      "loss": 37,
+      "loss": 38,
       "be": 25,
-      "total": 174
+      "total": 175
     },
     "sess:asia_day": {
       "win": 72,
@@ -56,9 +56,9 @@
     },
     "rsishort:40-49": {
       "win": 22,
-      "loss": 12,
+      "loss": 13,
       "be": 4,
-      "total": 38
+      "total": 39
     },
     "coin:DOGE": {
       "win": 16,
@@ -104,15 +104,15 @@
     },
     "coin:SOL": {
       "win": 20,
-      "loss": 2,
+      "loss": 3,
       "be": 5,
-      "total": 27
+      "total": 28
     },
     "coin_side:SOLSHORT": {
       "win": 10,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 12
+      "total": 13
     },
     "coin:XRP": {
       "win": 9,
@@ -140,9 +140,9 @@
     },
     "sess:europe": {
       "win": 14,
-      "loss": 9,
+      "loss": 10,
       "be": 6,
-      "total": 29
+      "total": 30
     },
     "score:70-79": {
       "win": 0,
@@ -328,9 +328,9 @@
     },
     "SOL": {
       "win": 20,
-      "loss": 2,
+      "loss": 3,
       "be": 5,
-      "total": 27
+      "total": 28
     },
     "XRP": {
       "win": 9,
@@ -538,7 +538,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1788598589.6254385,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1788584254.0982862
+  "updated_at": 1788598589.1261914
 }
