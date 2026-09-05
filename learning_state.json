@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 78,
-      "loss": 27,
+      "loss": 29,
       "be": 21,
-      "total": 126
+      "total": 128
     },
     "rsishort:30-39": {
       "win": 11,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 112,
-      "loss": 35,
+      "loss": 37,
       "be": 25,
-      "total": 172
+      "total": 174
     },
     "sess:asia_day": {
       "win": 72,
-      "loss": 12,
+      "loss": 14,
       "be": 12,
-      "total": 96
+      "total": 98
     },
     "coin:BTC": {
       "win": 9,
@@ -56,21 +56,21 @@
     },
     "rsishort:40-49": {
       "win": 22,
-      "loss": 10,
+      "loss": 12,
       "be": 4,
-      "total": 36
+      "total": 38
     },
     "coin:DOGE": {
       "win": 16,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 23
+      "total": 24
     },
     "coin_side:DOGESHORT": {
       "win": 16,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 23
+      "total": 24
     },
     "rsishort:50-59": {
       "win": 29,
@@ -128,15 +128,15 @@
     },
     "coin:LINK": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 19
+      "total": 20
     },
     "coin_side:LINKSHORT": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "sess:europe": {
       "win": 14,
@@ -310,9 +310,9 @@
     },
     "DOGE": {
       "win": 16,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 23
+      "total": 24
     },
     "AVAX": {
       "win": 10,
@@ -340,9 +340,9 @@
     },
     "LINK": {
       "win": 12,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 19
+      "total": 20
     },
     "BNB": {
       "win": 12,
@@ -524,7 +524,21 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1788584252.928867,
+      "coin": "DOGE",
+      "side": "SHORT",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
+    },
+    {
+      "ts": 1788584254.7636034,
+      "coin": "LINK",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1788512465.5325496
+  "updated_at": 1788584254.0982862
 }
