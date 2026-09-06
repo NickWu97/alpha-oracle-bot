@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 82,
-      "loss": 34,
+      "loss": 37,
       "be": 22,
-      "total": 138
+      "total": 141
     },
     "rsishort:30-39": {
       "win": 11,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 119,
-      "loss": 43,
+      "loss": 46,
       "be": 26,
-      "total": 188
+      "total": 191
     },
     "sess:asia_day": {
       "win": 72,
@@ -104,9 +104,9 @@
     },
     "coin:SOL": {
       "win": 20,
-      "loss": 4,
+      "loss": 5,
       "be": 5,
-      "total": 29
+      "total": 30
     },
     "coin_side:SOLSHORT": {
       "win": 10,
@@ -116,9 +116,9 @@
     },
     "coin:XRP": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 16
+      "total": 17
     },
     "coin_side:XRPSHORT": {
       "win": 6,
@@ -140,9 +140,9 @@
     },
     "sess:europe": {
       "win": 14,
-      "loss": 11,
+      "loss": 14,
       "be": 6,
-      "total": 31
+      "total": 34
     },
     "score:70-79": {
       "win": 0,
@@ -164,21 +164,21 @@
     },
     "rsilong:50-59": {
       "win": 20,
-      "loss": 8,
+      "loss": 9,
       "be": 5,
-      "total": 33
+      "total": 34
     },
     "coin:ETH": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "coin_side:ETHLONG": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "sess:asia_dawn": {
       "win": 28,
@@ -200,9 +200,9 @@
     },
     "rsilong:60-69": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 6,
-      "total": 23
+      "total": 24
     },
     "coin_side:BNBLONG": {
       "win": 8,
@@ -218,9 +218,9 @@
     },
     "coin_side:SOLLONG": {
       "win": 10,
-      "loss": 2,
+      "loss": 3,
       "be": 4,
-      "total": 16
+      "total": 17
     },
     "coin_side:LINKLONG": {
       "win": 5,
@@ -236,15 +236,15 @@
     },
     "rsilong:70-79": {
       "win": 2,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 5
+      "total": 6
     },
     "coin_side:XRPLONG": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 3,
-      "total": 6
+      "total": 7
     },
     "rsilong:30-39": {
       "win": 3,
@@ -334,15 +334,15 @@
     },
     "SOL": {
       "win": 20,
-      "loss": 4,
+      "loss": 5,
       "be": 5,
-      "total": 29
+      "total": 30
     },
     "XRP": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 16
+      "total": 17
     },
     "LINK": {
       "win": 12,
@@ -358,9 +358,9 @@
     },
     "ETH": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "ADA": {
       "win": 9,
@@ -565,7 +565,28 @@
       "side": "SHORT",
       "code": "RSI_REBOUND",
       "title": "📈 空頭動能反轉"
+    },
+    {
+      "ts": 1788687680.2542715,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1788687682.0307393,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1788687683.880133,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1788643919.158677
+  "updated_at": 1788687683.2821562
 }
