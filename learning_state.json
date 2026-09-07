@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 83,
-      "loss": 37,
+      "loss": 38,
       "be": 23,
-      "total": 143
+      "total": 144
     },
     "rsishort:30-39": {
       "win": 11,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 120,
-      "loss": 46,
+      "loss": 47,
       "be": 27,
-      "total": 193
+      "total": 194
     },
     "sess:asia_day": {
       "win": 72,
@@ -92,9 +92,9 @@
     },
     "coin:DOT": {
       "win": 10,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "coin_side:DOTSHORT": {
       "win": 3,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 28,
-      "loss": 14,
+      "loss": 15,
       "be": 5,
-      "total": 47
+      "total": 48
     },
     "coin:ADA": {
       "win": 9,
@@ -200,9 +200,9 @@
     },
     "rsilong:60-69": {
       "win": 12,
-      "loss": 6,
+      "loss": 7,
       "be": 6,
-      "total": 24
+      "total": 25
     },
     "coin_side:BNBLONG": {
       "win": 8,
@@ -284,9 +284,9 @@
     },
     "coin_side:DOTLONG": {
       "win": 7,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 8
+      "total": 9
     },
     "coin_side:ADALONG": {
       "win": 4,
@@ -328,9 +328,9 @@
     },
     "DOT": {
       "win": 10,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "SOL": {
       "win": 20,
@@ -586,7 +586,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1788813932.0016816,
+      "coin": "DOT",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1788793854.0277436
+  "updated_at": 1788813931.5189025
 }
