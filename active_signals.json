@@ -1,1 +1,91 @@
-{}
+{
+  "XRP-USDT-SWAPLONG1788893568-35AE4D0B": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 1.4269,
+    "sl": 1.4134,
+    "tp1": 1.431,
+    "tp2": 1.431,
+    "tp3": 1.431,
+    "atr": 0.00900924,
+    "score": 99,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.38,
+      "obv": 5,
+      "vwap": 1.4082,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.03082,
+      "bb_pct_b": 0.772,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.627,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=204, 勝率 60%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 1 (勝率 50%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 1.4472→1.4310（阻力 1.4339）",
+        "TP2 1.4674→1.4310（阻力 1.4339）",
+        "TP3 1.4945→1.4310（阻力 1.4339）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.9
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.627,
+      "volatile": false
+    },
+    "created": 1788893568.702574,
+    "expires": 1788979968.7025747,
+    "order_id": "1788893568-35AE4D0B",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1788893568.7026193,
+    "entry_message_id": 12500,
+    "last_checked_ts": 1788893568.7026193
+  }
+}
