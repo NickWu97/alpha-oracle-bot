@@ -19374,5 +19374,191 @@
       "atr_pct": 0.486,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-09 04:00",
+    "date": "2026-09-09",
+    "order_id": "1788893568-35AE4D0B",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.4269,
+    "close": 1.431,
+    "close_type": "TP1",
+    "pnl": 0.29,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 99,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.38,
+      "obv": 5,
+      "vwap": 1.4082,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.03082,
+      "bb_pct_b": 0.772,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.627,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=204, 勝率 60%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 1 (勝率 50%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 1.4472→1.4310（阻力 1.4339）",
+        "TP2 1.4674→1.4310（阻力 1.4339）",
+        "TP3 1.4945→1.4310（阻力 1.4339）"
+      ]
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 64.1,
+      "atr_pct": 0.627,
+      "funding": 0.1,
+      "vol_ratio": 0.38,
+      "adx": 36.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.627,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-09-09 04:01",
+    "date": "2026-09-09",
+    "order_id": "1788893568-35AE4D0B",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.4269,
+    "close": 1.4269,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 99,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 64.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.38,
+      "obv": 5,
+      "vwap": 1.4082,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.03082,
+      "bb_pct_b": 0.772,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.627,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "fund:neutral (n=204, 勝率 60%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 1 (勝率 50%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 1.4472→1.4310（阻力 1.4339）",
+        "TP2 1.4674→1.4310（阻力 1.4339）",
+        "TP3 1.4945→1.4310（阻力 1.4339）"
+      ]
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 64.1,
+      "atr_pct": 0.627,
+      "funding": 0.1,
+      "vol_ratio": 0.38,
+      "adx": 36.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 63.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.9
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 36.4,
+      "atr_pct": 0.627,
+      "volatile": false
+    }
   }
 ]
