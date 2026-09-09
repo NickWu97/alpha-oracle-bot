@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 90,
-      "loss": 42,
+      "win": 91,
+      "loss": 43,
       "be": 27,
-      "total": 159
+      "total": 161
     },
     "rsishort:30-39": {
       "win": 11,
@@ -13,16 +13,16 @@
       "total": 17
     },
     "fund:neutral": {
-      "win": 127,
-      "loss": 51,
+      "win": 128,
+      "loss": 52,
       "be": 31,
-      "total": 209
+      "total": 211
     },
     "sess:asia_day": {
-      "win": 77,
-      "loss": 18,
+      "win": 78,
+      "loss": 19,
       "be": 15,
-      "total": 110
+      "total": 112
     },
     "coin:BTC": {
       "win": 9,
@@ -38,9 +38,9 @@
     },
     "coin:NEAR": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:NEARSHORT": {
       "win": 0,
@@ -151,10 +151,10 @@
       "total": 2
     },
     "coin:BNB": {
-      "win": 12,
+      "win": 13,
       "loss": 8,
       "be": 3,
-      "total": 23
+      "total": 24
     },
     "coin_side:BNBSHORT": {
       "win": 4,
@@ -205,16 +205,16 @@
       "total": 27
     },
     "coin_side:BNBLONG": {
-      "win": 8,
+      "win": 9,
       "loss": 4,
       "be": 2,
-      "total": 14
+      "total": 15
     },
     "rsilong:40-49": {
-      "win": 21,
-      "loss": 1,
+      "win": 22,
+      "loss": 2,
       "be": 3,
-      "total": 25
+      "total": 27
     },
     "coin_side:SOLLONG": {
       "win": 10,
@@ -299,6 +299,12 @@
       "loss": 1,
       "be": 0,
       "total": 4
+    },
+    "coin_side:NEARLONG": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -310,9 +316,9 @@
     },
     "NEAR": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "DOGE": {
       "win": 19,
@@ -351,10 +357,10 @@
       "total": 23
     },
     "BNB": {
-      "win": 12,
+      "win": 13,
       "loss": 8,
       "be": 3,
-      "total": 23
+      "total": 24
     },
     "ETH": {
       "win": 6,
@@ -607,7 +613,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1788930326.170719,
+      "coin": "NEAR",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1788917653.1726623
+  "updated_at": 1788930325.5580597
 }
