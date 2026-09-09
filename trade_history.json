@@ -20026,5 +20026,96 @@
       "atr_pct": 0.932,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-09 14:42",
+    "date": "2026-09-09",
+    "order_id": "1788917643-0B518DC1",
+    "coin": "BNB",
+    "side": "LONG",
+    "entry": 750.9,
+    "close": 750.9,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 99,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 44.2,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.33,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 750.9052,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.00789,
+      "bb_pct_b": 0.21,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 16.2,
+      "atr_pct": 0.257,
+      "learning_notes": [
+        "rsilong:40-49 (n=24, 勝率 83%) → +2",
+        "fund:neutral (n=208, 勝率 61%) → +1",
+        "sess:asia_day (n=109, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 1 (勝率 60%)"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 99.0,
+      "rsi": 44.2,
+      "atr_pct": 0.257,
+      "funding": 0.1,
+      "vol_ratio": 1.33,
+      "adx": 16.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.7
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 16.2,
+      "atr_pct": 0.257,
+      "volatile": false
+    }
   }
 ]
