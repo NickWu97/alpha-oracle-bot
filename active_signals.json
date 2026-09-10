@@ -85,103 +85,8 @@
     "hit_tp3": false,
     "activated_at": 1789011450.9017196,
     "entry_message_id": 12583,
-    "last_checked_ts": 1789011450.9017196
-  },
-  "SOL-USDT-SWAPSHORT1789011452-0AF0B80C": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 101.72,
-    "sl": 102.3764,
-    "tp1": 101.6061,
-    "tp2": 101.6061,
-    "tp3": 101.6061,
-    "atr": 0.43759206,
-    "score": 102,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 54.6,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 3,
-      "mtf_desc": "1H=順 / 4H=反",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.95,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 103.6206,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01308,
-      "bb_pct_b": 0.936,
-      "bb_squeeze": false,
-      "bb_score": 2,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 41.7,
-      "atr_pct": 0.43,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "rsishort:50-59 (n=43, 勝率 67%) → +1",
-        "fund:neutral (n=232, 勝率 62%) → +1",
-        "sess:asia_day (n=116, 勝率 71%) → +2",
-        "coin:SOL (n=34, 勝率 65%) → +1",
-        "coin_side:SOLSHORT (n=15, 勝率 73%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
-        "KNN 中高勝率 → +3"
-      ],
-      "learning_adjust": 10,
-      "tp_adjust_notes": [
-        "TP1 100.7354→101.6061（支撐 101.4033）",
-        "TP2 99.7508→101.6061（支撐 101.4033）",
-        "TP3 98.4381→101.6061（支撐 101.4033）"
-      ]
-    },
-    "funding_rate": -6.93798098907e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 43.3
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 41.2
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 66.7
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 41.7,
-      "atr_pct": 0.43,
-      "volatile": false
-    },
-    "created": 1789011452.6996093,
-    "expires": 1789097852.6996098,
-    "order_id": "1789011452-0AF0B80C",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1789011452.6996408,
-    "entry_message_id": 12584,
-    "last_checked_ts": 1789011452.6996408
+    "last_checked_ts": 1789014600.0,
+    "current_price": 2476.1
   },
   "BNB-USDT-SWAPSHORT1789011454-10B5524C": {
     "instId": "BNB-USDT-SWAP",
@@ -267,6 +172,7 @@
     "hit_tp3": false,
     "activated_at": 1789011454.5684617,
     "entry_message_id": 12585,
-    "last_checked_ts": 1789011454.5684617
+    "last_checked_ts": 1789014600.0,
+    "current_price": 721.6
   }
 }
