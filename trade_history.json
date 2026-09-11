@@ -24396,5 +24396,94 @@
       "atr_pct": 0.325,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-11 16:18",
+    "date": "2026-09-11",
+    "order_id": "1789077296-91D1C230",
+    "coin": "XRP",
+    "side": "SHORT",
+    "entry": 1.3533,
+    "close": 1.3533,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 103,
+    "funding_rate": 9.0561890868e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 44.7,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.54,
+      "obv": 5,
+      "vwap": 1.4006,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00887,
+      "bb_pct_b": 0.355,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 23.6,
+      "atr_pct": 0.383,
+      "learning_notes": [
+        "fund:neutral (n=239, 勝率 62%) → +1",
+        "sess:asia_dawn (n=63, 勝率 62%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 103.0,
+      "rsi": 44.7,
+      "atr_pct": 0.383,
+      "funding": 0.09056189086800001,
+      "vol_ratio": 0.54,
+      "adx": 23.6,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.0
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.9
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 23.6,
+      "atr_pct": 0.383,
+      "volatile": false
+    }
   }
 ]
