@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 122,
-      "loss": 44,
+      "loss": 45,
       "be": 35,
-      "total": 201
+      "total": 202
     },
     "rsishort:30-39": {
       "win": 20,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 162,
-      "loss": 55,
+      "loss": 56,
       "be": 39,
-      "total": 256
+      "total": 257
     },
     "sess:asia_day": {
       "win": 94,
@@ -38,9 +38,9 @@
     },
     "coin:NEAR": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:NEARSHORT": {
       "win": 0,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 42,
-      "loss": 18,
+      "loss": 19,
       "be": 7,
-      "total": 67
+      "total": 68
     },
     "coin:ADA": {
       "win": 9,
@@ -212,9 +212,9 @@
     },
     "rsilong:40-49": {
       "win": 23,
-      "loss": 3,
+      "loss": 4,
       "be": 5,
-      "total": 31
+      "total": 32
     },
     "coin_side:SOLLONG": {
       "win": 11,
@@ -302,9 +302,9 @@
     },
     "coin_side:NEARLONG": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "fund:neg": {
       "win": 3,
@@ -322,9 +322,9 @@
     },
     "NEAR": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "DOGE": {
       "win": 26,
@@ -640,7 +640,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1789155289.7156665,
+      "coin": "NEAR",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1789151784.9182632
+  "updated_at": 1789155289.234105
 }
