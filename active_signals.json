@@ -85,7 +85,92 @@
     "hit_tp3": false,
     "activated_at": 1789145964.1223805,
     "entry_message_id": 12666,
-    "last_checked_ts": 1789318800.0,
-    "current_price": 1.0217
+    "last_checked_ts": 1789319700.0,
+    "current_price": 1.0179
+  },
+  "BTC-USDT-SWAPLONG1789321291-1C8D81F6": {
+    "instId": "BTC-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 77241.8,
+    "sl": 77054.2413,
+    "tp1": 77523.1381,
+    "tp2": 77804.4762,
+    "tp3": 78179.5937,
+    "atr": 125.0391642,
+    "score": 96,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.45,
+      "obv": 5,
+      "vwap": 77428.8762,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.01173,
+      "bb_pct_b": 0.769,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 27.6,
+      "atr_pct": 0.162,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "fund:neutral (n=274, 勝率 63%) → +1",
+        "sess:asia_dawn (n=72, 勝率 61%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 1 (勝率 60%)"
+      ],
+      "learning_adjust": 2
+    },
+    "funding_rate": 9.35323366109e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.4
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 61.5
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 27.6,
+      "atr_pct": 0.162,
+      "volatile": false
+    },
+    "created": 1789321291.2778788,
+    "expires": 1789407691.2778792,
+    "order_id": "1789321291-1C8D81F6",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1789321291.2779267,
+    "entry_message_id": 12757,
+    "last_checked_ts": 1789321291.2779267
   }
 }
