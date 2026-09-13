@@ -26569,5 +26569,302 @@
       "atr_pct": 0.162,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-14 07:33",
+    "date": "2026-09-14",
+    "order_id": "1789337495-9A1AFA59",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 7.357,
+    "close": 7.3558,
+    "close_type": "TP1",
+    "pnl": 0.02,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": -1.84926278607e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 59.8,
+      "rsi": 25,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.82,
+      "obv": 5,
+      "vwap": 7.4718,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00638,
+      "bb_pct_b": 0.692,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.245,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "rsishort:50-59 (n=60, 勝率 70%) → +1",
+        "fund:neutral (n=276, 勝率 62%) → +1",
+        "sess:asia_day (n=131, 勝率 73%) → +2",
+        "coin:AVAX (n=24, 勝率 75%) → +2",
+        "coin_side:AVAXSHORT (n=13, 勝率 77%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 13,
+      "tp_adjust_notes": [
+        "TP1 7.3160→7.3558（支撐 7.3411）",
+        "TP2 7.2749→7.3558（支撐 7.3411）",
+        "TP3 7.2202→7.3558（支撐 7.3411）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 59.8,
+      "atr_pct": 0.245,
+      "funding": -0.018492627860700002,
+      "vol_ratio": 0.82,
+      "adx": 29.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.9
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.245,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-09-14 07:33",
+    "date": "2026-09-14",
+    "order_id": "1789337495-9A1AFA59",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 7.357,
+    "close": 7.3558,
+    "close_type": "TP2",
+    "pnl": 0.02,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": -1.84926278607e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 59.8,
+      "rsi": 25,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.82,
+      "obv": 5,
+      "vwap": 7.4718,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00638,
+      "bb_pct_b": 0.692,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.245,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "rsishort:50-59 (n=60, 勝率 70%) → +1",
+        "fund:neutral (n=276, 勝率 62%) → +1",
+        "sess:asia_day (n=131, 勝率 73%) → +2",
+        "coin:AVAX (n=24, 勝率 75%) → +2",
+        "coin_side:AVAXSHORT (n=13, 勝率 77%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 13,
+      "tp_adjust_notes": [
+        "TP1 7.3160→7.3558（支撐 7.3411）",
+        "TP2 7.2749→7.3558（支撐 7.3411）",
+        "TP3 7.2202→7.3558（支撐 7.3411）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 59.8,
+      "atr_pct": 0.245,
+      "funding": -0.018492627860700002,
+      "vol_ratio": 0.82,
+      "adx": 29.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.9
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.245,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-09-14 07:33",
+    "date": "2026-09-14",
+    "order_id": "1789337495-9A1AFA59",
+    "coin": "AVAX",
+    "side": "SHORT",
+    "entry": 7.357,
+    "close": 7.3558,
+    "close_type": "TP3",
+    "pnl": 0.02,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 86,
+    "funding_rate": -1.84926278607e-05,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 59.8,
+      "rsi": 25,
+      "ob": 0,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.82,
+      "obv": 5,
+      "vwap": 7.4718,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00638,
+      "bb_pct_b": 0.692,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.245,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "rsishort:50-59 (n=60, 勝率 70%) → +1",
+        "fund:neutral (n=276, 勝率 62%) → +1",
+        "sess:asia_day (n=131, 勝率 73%) → +2",
+        "coin:AVAX (n=24, 勝率 75%) → +2",
+        "coin_side:AVAXSHORT (n=13, 勝率 77%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 2 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 13,
+      "tp_adjust_notes": [
+        "TP1 7.3160→7.3558（支撐 7.3411）",
+        "TP2 7.2749→7.3558（支撐 7.3411）",
+        "TP3 7.2202→7.3558（支撐 7.3411）"
+      ]
+    },
+    "features": {
+      "score": 86.0,
+      "rsi": 59.8,
+      "atr_pct": 0.245,
+      "funding": -0.018492627860700002,
+      "vol_ratio": 0.82,
+      "adx": 29.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 56.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.9
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.2
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.245,
+      "volatile": false
+    }
   }
 ]
