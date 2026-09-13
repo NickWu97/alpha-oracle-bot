@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 127,
-      "loss": 46,
-      "be": 38,
-      "total": 211
+      "win": 128,
+      "loss": 47,
+      "be": 39,
+      "total": 214
     },
     "rsishort:30-39": {
       "win": 22,
@@ -13,10 +13,10 @@
       "total": 30
     },
     "fund:neutral": {
-      "win": 171,
-      "loss": 57,
-      "be": 43,
-      "total": 271
+      "win": 172,
+      "loss": 58,
+      "be": 44,
+      "total": 274
     },
     "sess:asia_day": {
       "win": 95,
@@ -55,28 +55,28 @@
       "total": 58
     },
     "rsishort:40-49": {
-      "win": 40,
+      "win": 41,
       "loss": 20,
-      "be": 8,
-      "total": 68
+      "be": 9,
+      "total": 70
     },
     "coin:DOGE": {
-      "win": 27,
+      "win": 28,
       "loss": 5,
-      "be": 6,
-      "total": 38
+      "be": 7,
+      "total": 40
     },
     "coin_side:DOGESHORT": {
-      "win": 23,
+      "win": 24,
       "loss": 4,
-      "be": 5,
-      "total": 32
+      "be": 6,
+      "total": 34
     },
     "rsishort:50-59": {
       "win": 42,
-      "loss": 9,
+      "loss": 10,
       "be": 6,
-      "total": 57
+      "total": 58
     },
     "coin:AVAX": {
       "win": 18,
@@ -128,15 +128,15 @@
     },
     "coin:LINK": {
       "win": 20,
-      "loss": 6,
+      "loss": 7,
       "be": 5,
-      "total": 31
+      "total": 32
     },
     "coin_side:LINKSHORT": {
       "win": 13,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 17
+      "total": 18
     },
     "sess:europe": {
       "win": 23,
@@ -181,10 +181,10 @@
       "total": 7
     },
     "sess:asia_dawn": {
-      "win": 43,
-      "loss": 19,
-      "be": 7,
-      "total": 69
+      "win": 44,
+      "loss": 20,
+      "be": 8,
+      "total": 72
     },
     "coin:ADA": {
       "win": 9,
@@ -327,10 +327,10 @@
       "total": 3
     },
     "DOGE": {
-      "win": 27,
+      "win": 28,
       "loss": 5,
-      "be": 6,
-      "total": 38
+      "be": 7,
+      "total": 40
     },
     "AVAX": {
       "win": 18,
@@ -358,9 +358,9 @@
     },
     "LINK": {
       "win": 20,
-      "loss": 6,
+      "loss": 7,
       "be": 5,
-      "total": 31
+      "total": 32
     },
     "BNB": {
       "win": 22,
@@ -654,7 +654,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1789320425.7724848,
+      "coin": "LINK",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1789309093.6471345
+  "updated_at": 1789320446.7913346
 }
