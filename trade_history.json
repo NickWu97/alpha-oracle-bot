@@ -29073,5 +29073,103 @@
       "atr_pct": 0.319,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-15 20:48",
+    "date": "2026-09-15",
+    "order_id": "1789456929-D52388A4",
+    "coin": "DOGE",
+    "side": "SHORT",
+    "entry": 0.0828,
+    "close": 0.0828,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 119,
+    "funding_rate": 2.22204079568e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 30.5,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.16,
+      "obv": 5,
+      "vwap": 0.084,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01617,
+      "bb_pct_b": 0.135,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 34.9,
+      "atr_pct": 0.326,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=228, 勝率 60%) → +1",
+        "rsishort:30-39 (n=36, 勝率 75%) → +2",
+        "fund:neutral (n=296, 勝率 62%) → +1",
+        "coin:DOGE (n=42, 勝率 67%) → +1",
+        "coin_side:DOGESHORT (n=36, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 0.0822→0.0825（支撐 0.0824）",
+        "TP2 0.0816→0.0825（支撐 0.0824）",
+        "TP3 0.0808→0.0825（支撐 0.0824）"
+      ]
+    },
+    "features": {
+      "score": 119.0,
+      "rsi": 30.5,
+      "atr_pct": 0.326,
+      "funding": 0.022220407956799998,
+      "vol_ratio": 1.16,
+      "adx": 34.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.7
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.4
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 49.4
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 34.9,
+      "atr_pct": 0.326,
+      "volatile": false
+    }
   }
 ]
