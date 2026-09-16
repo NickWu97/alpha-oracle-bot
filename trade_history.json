@@ -31484,5 +31484,97 @@
       "atr_pct": 0.405,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-17 00:57",
+    "date": "2026-09-17",
+    "order_id": "1789540324-4AD18674",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.1946,
+    "close": 0.1922,
+    "close_type": "TP1",
+    "pnl": 1.23,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 125,
+    "funding_rate": 6.414669975e-06,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 46.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.66,
+      "obv": 5,
+      "vwap": 0.204,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01969,
+      "bb_pct_b": 0.526,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 17.2,
+      "atr_pct": 0.55,
+      "pullback": true,
+      "learning_notes": [
+        "score:90+ (n=252, 勝率 61%) → +1",
+        "rsishort:40-49 (n=80, 勝率 61%) → +1",
+        "fund:neutral (n=320, 勝率 63%) → +1",
+        "coin:ADA (n=14, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 7
+    },
+    "features": {
+      "score": 125.0,
+      "rsi": 46.6,
+      "atr_pct": 0.55,
+      "funding": 0.006414669975,
+      "vol_ratio": 0.66,
+      "adx": 17.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 31.8
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.2
+      }
+    },
+    "regime": {
+      "regime": "range",
+      "adx": 17.2,
+      "atr_pct": 0.55,
+      "volatile": false
+    }
   }
 ]
