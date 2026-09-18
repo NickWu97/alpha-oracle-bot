@@ -1,97 +1,4 @@
 {
-  "BTC-USDT-SWAPLONG1789761519-32DBEBF3": {
-    "instId": "BTC-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 81168.0,
-    "sl": 80741.3149,
-    "tp1": 81214.5454,
-    "tp2": 81214.5454,
-    "tp3": 81214.5454,
-    "atr": 284.45673507,
-    "score": 110,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 72.3,
-      "rsi": 0,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 5,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.64,
-      "obv": 5,
-      "vwap": 77249.2943,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.00797,
-      "bb_pct_b": 0.969,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 55.3,
-      "atr_pct": 0.35,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "score:90+ (n=284, 勝率 63%) → +1",
-        "rsilong:70-79 (n=8, 勝率 25%) → -3",
-        "fund:neutral (n=369, 勝率 66%) → +1",
-        "sess:asia_dawn (n=99, 勝率 64%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
-      ],
-      "learning_adjust": 0,
-      "tp_adjust_notes": [
-        "TP1 81808.0277→81214.5454（阻力 81377.3000）",
-        "TP2 82448.0553→81214.5454（阻力 81377.3000）",
-        "TP3 83301.4255→81214.5454（阻力 81377.3000）"
-      ]
-    },
-    "funding_rate": 9.45970699574e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 84.0
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 77.9
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 61.5
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 55.3,
-      "atr_pct": 0.35,
-      "volatile": false
-    },
-    "created": 1789761519.6866558,
-    "expires": 1789847919.686656,
-    "order_id": "1789761519-32DBEBF3",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1789761519.686699,
-    "entry_message_id": 13047,
-    "last_checked_ts": 1789761519.686699
-  },
   "BNB-USDT-SWAPLONG1789761522-C4687567": {
     "instId": "BNB-USDT-SWAP",
     "side": "LONG",
@@ -185,7 +92,8 @@
     "hit_tp3": false,
     "activated_at": 1789761522.3529165,
     "entry_message_id": 13048,
-    "last_checked_ts": 1789761522.3529165
+    "last_checked_ts": 1789767000.0,
+    "current_price": 764.1
   },
   "XRP-USDT-SWAPLONG1789761524-66465BC0": {
     "instId": "XRP-USDT-SWAP",
@@ -275,6 +183,7 @@
     "hit_tp3": false,
     "activated_at": 1789761524.1498218,
     "entry_message_id": 13049,
-    "last_checked_ts": 1789761524.1498218
+    "last_checked_ts": 1789767000.0,
+    "current_price": 1.4005
   }
 }
