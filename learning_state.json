@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 197,
-      "loss": 63,
+      "loss": 64,
       "be": 47,
-      "total": 307
+      "total": 308
     },
     "rsishort:30-39": {
       "win": 34,
@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 263,
-      "loss": 80,
+      "loss": 81,
       "be": 56,
-      "total": 399
+      "total": 400
     },
     "sess:asia_day": {
       "win": 136,
@@ -26,9 +26,9 @@
     },
     "coin:BTC": {
       "win": 17,
-      "loss": 17,
+      "loss": 18,
       "be": 8,
-      "total": 42
+      "total": 43
     },
     "coin_side:BTCSHORT": {
       "win": 12,
@@ -182,9 +182,9 @@
     },
     "sess:asia_dawn": {
       "win": 83,
-      "loss": 27,
+      "loss": 28,
       "be": 13,
-      "total": 123
+      "total": 124
     },
     "coin:ADA": {
       "win": 10,
@@ -200,9 +200,9 @@
     },
     "rsilong:60-69": {
       "win": 29,
-      "loss": 12,
+      "loss": 13,
       "be": 11,
-      "total": 52
+      "total": 53
     },
     "coin_side:BNBLONG": {
       "win": 24,
@@ -230,9 +230,9 @@
     },
     "coin_side:BTCLONG": {
       "win": 5,
-      "loss": 8,
+      "loss": 9,
       "be": 2,
-      "total": 15
+      "total": 16
     },
     "rsilong:70-79": {
       "win": 4,
@@ -316,9 +316,9 @@
   "by_coin": {
     "BTC": {
       "win": 17,
-      "loss": 17,
+      "loss": 18,
       "be": 8,
-      "total": 42
+      "total": 43
     },
     "NEAR": {
       "win": 12,
@@ -731,7 +731,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1789938885.0822875,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1789937828.3588853
+  "updated_at": 1789938884.5964172
 }
