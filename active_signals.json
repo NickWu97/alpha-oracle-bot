@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 0.099,
-    "sl": 0.0975,
+    "sl": 0.099,
     "tp1": 0.1011,
     "tp2": 0.1032,
     "tp3": 0.1061,
@@ -81,108 +81,14 @@
     "created": 1790094631.02881,
     "expires": 1790181031.0288105,
     "order_id": "1790094631-C5B77E45",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1790094631.0288544,
     "entry_message_id": 13245,
-    "last_checked_ts": 1790116200.0,
-    "current_price": 0.10097
-  },
-  "BNB-USDT-SWAPLONG1790117243-729854E5": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "LONG",
-    "tf": "15m",
-    "entry": 787.4,
-    "sl": 784.3076,
-    "tp1": 788.0549,
-    "tp2": 788.0549,
-    "tp3": 788.0549,
-    "atr": 2.0615872,
-    "score": 89,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 0,
-      "rsi_value": 53.3,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": 0,
-      "volume_ratio": 0.77,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 781.0455,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.0081,
-      "bb_pct_b": 0.666,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD金叉✅",
-      "macd_score": 8,
-      "regime": "transitional",
-      "adx": 20.6,
-      "atr_pct": 0.262,
-      "learning_notes": [
-        "rsilong:50-59 (n=91, 勝率 79%) → +2",
-        "fund:neutral (n=448, 勝率 68%) → +1",
-        "sess:asia_day (n=214, 勝率 76%) → +2",
-        "coin:BNB (n=69, 勝率 71%) → +2",
-        "coin_side:BNBLONG (n=46, 勝率 72%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 3 (勝率 70%)",
-        "KNN 中高勝率 → +3"
-      ],
-      "learning_adjust": 12,
-      "tp_adjust_notes": [
-        "TP1 792.0386→788.0549（阻力 789.6342）",
-        "TP2 796.6771→788.0549（阻力 789.6342）",
-        "TP3 802.8619→788.0549（阻力 789.6342）"
-      ]
-    },
-    "funding_rate": 7.49433781758e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 43.5
-      },
-      "4H": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 60.4
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 66.2
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 20.6,
-      "atr_pct": 0.262,
-      "volatile": false
-    },
-    "created": 1790117243.7033749,
-    "expires": 1790203643.7033753,
-    "order_id": "1790117243-729854E5",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1790117243.7034159,
-    "entry_message_id": 13270,
-    "last_checked_ts": 1790117243.7034159
+    "last_checked_ts": 1790119800.0,
+    "current_price": 0.10016
   },
   "XRP-USDT-SWAPLONG1790117245-9AD4AA20": {
     "instId": "XRP-USDT-SWAP",
@@ -271,14 +177,15 @@
     "hit_tp3": false,
     "activated_at": 1790117245.3608892,
     "entry_message_id": 13271,
-    "last_checked_ts": 1790117245.3608892
+    "last_checked_ts": 1790119800.0,
+    "current_price": 1.5717
   },
   "AVAX-USDT-SWAPLONG1790117247-643BA648": {
     "instId": "AVAX-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 11.222,
-    "sl": 11.1032,
+    "sl": 11.222,
     "tp1": 11.3187,
     "tp2": 11.3187,
     "tp3": 11.3187,
@@ -358,12 +265,13 @@
     "created": 1790117247.1400592,
     "expires": 1790203647.1400597,
     "order_id": "1790117247-643BA648",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1790117247.1401,
     "entry_message_id": 13272,
-    "last_checked_ts": 1790117247.1401
+    "last_checked_ts": 1790119800.0,
+    "current_price": 11.238
   }
 }
