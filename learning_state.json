@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 213,
-      "loss": 65,
+      "loss": 66,
       "be": 48,
-      "total": 326
+      "total": 327
     },
     "rsishort:30-39": {
       "win": 34,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 291,
-      "loss": 82,
+      "loss": 83,
       "be": 57,
-      "total": 430
+      "total": 431
     },
     "sess:asia_day": {
       "win": 163,
-      "loss": 30,
+      "loss": 31,
       "be": 18,
-      "total": 211
+      "total": 212
     },
     "coin:BTC": {
       "win": 26,
@@ -152,9 +152,9 @@
     },
     "coin:BNB": {
       "win": 46,
-      "loss": 12,
+      "loss": 13,
       "be": 7,
-      "total": 65
+      "total": 66
     },
     "coin_side:BNBSHORT": {
       "win": 16,
@@ -200,15 +200,15 @@
     },
     "rsilong:60-69": {
       "win": 39,
-      "loss": 13,
+      "loss": 14,
       "be": 12,
-      "total": 64
+      "total": 65
     },
     "coin_side:BNBLONG": {
       "win": 30,
-      "loss": 6,
+      "loss": 7,
       "be": 6,
-      "total": 42
+      "total": 43
     },
     "rsilong:40-49": {
       "win": 36,
@@ -364,9 +364,9 @@
     },
     "BNB": {
       "win": 46,
-      "loss": 12,
+      "loss": 13,
       "be": 7,
-      "total": 65
+      "total": 66
     },
     "ETH": {
       "win": 18,
@@ -738,7 +738,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1790039103.1102295,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1790037894.6566515
+  "updated_at": 1790039102.5948963
 }
