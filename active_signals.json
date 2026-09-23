@@ -87,8 +87,8 @@
     "hit_tp3": false,
     "activated_at": 1790094631.0288544,
     "entry_message_id": 13245,
-    "last_checked_ts": 1790119800.0,
-    "current_price": 0.10016
+    "last_checked_ts": 1790125200.0,
+    "current_price": 0.10162
   },
   "XRP-USDT-SWAPLONG1790117245-9AD4AA20": {
     "instId": "XRP-USDT-SWAP",
@@ -177,15 +177,15 @@
     "hit_tp3": false,
     "activated_at": 1790117245.3608892,
     "entry_message_id": 13271,
-    "last_checked_ts": 1790119800.0,
-    "current_price": 1.5717
+    "last_checked_ts": 1790125200.0,
+    "current_price": 1.5974
   },
   "AVAX-USDT-SWAPLONG1790117247-643BA648": {
     "instId": "AVAX-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 11.222,
-    "sl": 11.222,
+    "sl": 11.3187,
     "tp1": 11.3187,
     "tp2": 11.3187,
     "tp3": 11.3187,
@@ -265,13 +265,13 @@
     "created": 1790117247.1400592,
     "expires": 1790203647.1400597,
     "order_id": "1790117247-643BA648",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1790117247.1401,
     "entry_message_id": 13272,
-    "last_checked_ts": 1790119800.0,
-    "current_price": 11.238
+    "last_checked_ts": 1790125200.0,
+    "current_price": 11.126
   }
 }
