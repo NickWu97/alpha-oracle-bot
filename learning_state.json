@@ -13,16 +13,16 @@
       "total": 49
     },
     "fund:neutral": {
-      "win": 330,
-      "loss": 85,
+      "win": 331,
+      "loss": 86,
       "be": 57,
-      "total": 472
+      "total": 474
     },
     "sess:asia_day": {
-      "win": 176,
-      "loss": 33,
+      "win": 177,
+      "loss": 34,
       "be": 18,
-      "total": 227
+      "total": 229
     },
     "coin:BTC": {
       "win": 26,
@@ -49,16 +49,16 @@
       "total": 4
     },
     "score:80-89": {
-      "win": 87,
-      "loss": 14,
+      "win": 88,
+      "loss": 15,
       "be": 9,
-      "total": 110
+      "total": 112
     },
     "rsishort:40-49": {
       "win": 67,
-      "loss": 25,
+      "loss": 26,
       "be": 13,
-      "total": 105
+      "total": 106
     },
     "coin:DOGE": {
       "win": 46,
@@ -73,10 +73,10 @@
       "total": 48
     },
     "rsishort:50-59": {
-      "win": 45,
+      "win": 46,
       "loss": 16,
       "be": 6,
-      "total": 67
+      "total": 68
     },
     "coin:AVAX": {
       "win": 33,
@@ -104,15 +104,15 @@
     },
     "coin:SOL": {
       "win": 51,
-      "loss": 11,
+      "loss": 12,
       "be": 12,
-      "total": 74
+      "total": 75
     },
     "coin_side:SOLSHORT": {
       "win": 22,
-      "loss": 7,
+      "loss": 8,
       "be": 4,
-      "total": 33
+      "total": 34
     },
     "coin:XRP": {
       "win": 43,
@@ -127,16 +127,16 @@
       "total": 24
     },
     "coin:LINK": {
-      "win": 26,
+      "win": 27,
       "loss": 8,
       "be": 5,
-      "total": 39
+      "total": 40
     },
     "coin_side:LINKSHORT": {
-      "win": 19,
+      "win": 20,
       "loss": 5,
       "be": 1,
-      "total": 25
+      "total": 26
     },
     "sess:europe": {
       "win": 42,
@@ -346,9 +346,9 @@
     },
     "SOL": {
       "win": 51,
-      "loss": 11,
+      "loss": 12,
       "be": 12,
-      "total": 74
+      "total": 75
     },
     "XRP": {
       "win": 43,
@@ -357,10 +357,10 @@
       "total": 59
     },
     "LINK": {
-      "win": 26,
+      "win": 27,
       "loss": 8,
       "be": 5,
-      "total": 39
+      "total": 40
     },
     "BNB": {
       "win": 52,
@@ -759,7 +759,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1790212312.6403034,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1790204572.0514967
+  "updated_at": 1790212313.7653897
 }
