@@ -48625,5 +48625,97 @@
       "atr_pct": 0.336,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-09-26 01:26",
+    "date": "2026-09-26",
+    "order_id": "1790338628-13312434",
+    "coin": "SOL",
+    "side": "LONG",
+    "entry": 119.11,
+    "close": 119.11,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 98,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 61.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.33,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 116.5267,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.05593,
+      "bb_pct_b": 0.721,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 42.9,
+      "atr_pct": 0.723,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "score:90+ (n=371, 勝率 67%) → +1",
+        "fund:neutral (n=494, 勝率 69%) → +1",
+        "coin:SOL (n=78, 勝率 67%) → +1",
+        "coin_side:SOLLONG (n=44, 勝率 68%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 4
+    },
+    "features": {
+      "score": 98.0,
+      "rsi": 61.9,
+      "atr_pct": 0.723,
+      "funding": 0.1,
+      "vol_ratio": 1.33,
+      "adx": 42.9,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 75.4
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 65.8
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 42.9,
+      "atr_pct": 0.723,
+      "volatile": false
+    }
   }
 ]
