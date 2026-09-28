@@ -1,10 +1,10 @@
 {
   "buckets": {
     "score:90+": {
-      "win": 254,
-      "loss": 75,
+      "win": 255,
+      "loss": 76,
       "be": 56,
-      "total": 385
+      "total": 387
     },
     "rsishort:30-39": {
       "win": 40,
@@ -13,10 +13,10 @@
       "total": 53
     },
     "fund:neutral": {
-      "win": 351,
-      "loss": 96,
+      "win": 352,
+      "loss": 97,
       "be": 66,
-      "total": 513
+      "total": 515
     },
     "sess:asia_day": {
       "win": 189,
@@ -55,10 +55,10 @@
       "total": 125
     },
     "rsishort:40-49": {
-      "win": 68,
+      "win": 69,
       "loss": 26,
       "be": 14,
-      "total": 108
+      "total": 109
     },
     "coin:DOGE": {
       "win": 46,
@@ -115,16 +115,16 @@
       "total": 34
     },
     "coin:XRP": {
-      "win": 45,
+      "win": 46,
       "loss": 10,
       "be": 9,
-      "total": 64
+      "total": 65
     },
     "coin_side:XRPSHORT": {
-      "win": 16,
+      "win": 17,
       "loss": 7,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "coin:LINK": {
       "win": 35,
@@ -139,10 +139,10 @@
       "total": 28
     },
     "sess:europe": {
-      "win": 47,
-      "loss": 18,
+      "win": 48,
+      "loss": 19,
       "be": 20,
-      "total": 85
+      "total": 87
     },
     "score:70-79": {
       "win": 7,
@@ -152,9 +152,9 @@
     },
     "coin:BNB": {
       "win": 53,
-      "loss": 15,
+      "loss": 16,
       "be": 8,
-      "total": 76
+      "total": 77
     },
     "coin_side:BNBSHORT": {
       "win": 16,
@@ -164,9 +164,9 @@
     },
     "rsilong:50-59": {
       "win": 86,
-      "loss": 17,
+      "loss": 18,
       "be": 14,
-      "total": 117
+      "total": 118
     },
     "coin:ETH": {
       "win": 20,
@@ -206,9 +206,9 @@
     },
     "coin_side:BNBLONG": {
       "win": 37,
-      "loss": 8,
+      "loss": 9,
       "be": 7,
-      "total": 52
+      "total": 53
     },
     "rsilong:40-49": {
       "win": 52,
@@ -351,10 +351,10 @@
       "total": 81
     },
     "XRP": {
-      "win": 45,
+      "win": 46,
       "loss": 10,
       "be": 9,
-      "total": 64
+      "total": 65
     },
     "LINK": {
       "win": 35,
@@ -364,9 +364,9 @@
     },
     "BNB": {
       "win": 53,
-      "loss": 15,
+      "loss": 16,
       "be": 8,
-      "total": 76
+      "total": 77
     },
     "ETH": {
       "win": 20,
@@ -801,7 +801,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1790578776.5913892,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1790559532.8943563
+  "updated_at": 1790578777.699182
 }
