@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 254,
-      "loss": 74,
-      "be": 55,
-      "total": 383
+      "loss": 75,
+      "be": 56,
+      "total": 385
     },
     "rsishort:30-39": {
       "win": 40,
@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 348,
-      "loss": 95,
-      "be": 65,
-      "total": 508
+      "loss": 96,
+      "be": 66,
+      "total": 510
     },
     "sess:asia_day": {
       "win": 186,
-      "loss": 39,
-      "be": 23,
-      "total": 248
+      "loss": 40,
+      "be": 24,
+      "total": 250
     },
     "coin:BTC": {
       "win": 29,
@@ -38,9 +38,9 @@
     },
     "coin:NEAR": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "coin_side:NEARSHORT": {
       "win": 3,
@@ -57,8 +57,8 @@
     "rsishort:40-49": {
       "win": 68,
       "loss": 26,
-      "be": 13,
-      "total": 107
+      "be": 14,
+      "total": 108
     },
     "coin:DOGE": {
       "win": 46,
@@ -164,15 +164,15 @@
     },
     "rsilong:50-59": {
       "win": 86,
-      "loss": 16,
+      "loss": 17,
       "be": 14,
-      "total": 116
+      "total": 117
     },
     "coin:ETH": {
       "win": 20,
       "loss": 9,
-      "be": 1,
-      "total": 30
+      "be": 2,
+      "total": 31
     },
     "coin_side:ETHLONG": {
       "win": 10,
@@ -267,8 +267,8 @@
     "coin_side:ETHSHORT": {
       "win": 10,
       "loss": 3,
-      "be": 0,
-      "total": 13
+      "be": 1,
+      "total": 14
     },
     "coin_side:AVAXLONG": {
       "win": 20,
@@ -302,9 +302,9 @@
     },
     "coin_side:NEARLONG": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "fund:neg": {
       "win": 7,
@@ -322,9 +322,9 @@
     },
     "NEAR": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "DOGE": {
       "win": 46,
@@ -371,8 +371,8 @@
     "ETH": {
       "win": 20,
       "loss": 9,
-      "be": 1,
-      "total": 30
+      "be": 2,
+      "total": 31
     },
     "ADA": {
       "win": 10,
@@ -794,7 +794,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1790557955.6369603,
+      "coin": "NEAR",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1790550562.4752817
+  "updated_at": 1790557954.9148529
 }
