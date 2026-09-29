@@ -1,10 +1,17 @@
 {
   "buckets": {
     "score:90+": {
+<<<<<<< Updated upstream
       "win": 260,
       "loss": 78,
       "be": 59,
       "total": 397
+=======
+      "win": 258,
+      "loss": 78,
+      "be": 59,
+      "total": 395
+>>>>>>> Stashed changes
     },
     "rsishort:30-39": {
       "win": 40,
@@ -13,10 +20,17 @@
       "total": 53
     },
     "fund:neutral": {
+<<<<<<< Updated upstream
       "win": 360,
       "loss": 99,
       "be": 69,
       "total": 528
+=======
+      "win": 358,
+      "loss": 99,
+      "be": 69,
+      "total": 526
+>>>>>>> Stashed changes
     },
     "sess:asia_day": {
       "win": 192,
@@ -169,6 +183,7 @@
       "total": 121
     },
     "coin:ETH": {
+<<<<<<< Updated upstream
       "win": 24,
       "loss": 10,
       "be": 3,
@@ -179,6 +194,18 @@
       "loss": 7,
       "be": 1,
       "total": 21
+=======
+      "win": 22,
+      "loss": 10,
+      "be": 3,
+      "total": 35
+    },
+    "coin_side:ETHLONG": {
+      "win": 11,
+      "loss": 7,
+      "be": 1,
+      "total": 19
+>>>>>>> Stashed changes
     },
     "sess:asia_dawn": {
       "win": 104,
@@ -199,10 +226,17 @@
       "total": 11
     },
     "rsilong:60-69": {
+<<<<<<< Updated upstream
       "win": 44,
       "loss": 15,
       "be": 14,
       "total": 73
+=======
+      "win": 42,
+      "loss": 15,
+      "be": 14,
+      "total": 71
+>>>>>>> Stashed changes
     },
     "coin_side:BNBLONG": {
       "win": 37,
@@ -253,10 +287,17 @@
       "total": 10
     },
     "sess:us": {
+<<<<<<< Updated upstream
       "win": 22,
       "loss": 8,
       "be": 11,
       "total": 41
+=======
+      "win": 20,
+      "loss": 8,
+      "be": 11,
+      "total": 39
+>>>>>>> Stashed changes
     },
     "rsishort:60-69": {
       "win": 1,
@@ -369,10 +410,17 @@
       "total": 77
     },
     "ETH": {
+<<<<<<< Updated upstream
       "win": 24,
       "loss": 10,
       "be": 3,
       "total": 37
+=======
+      "win": 22,
+      "loss": 10,
+      "be": 3,
+      "total": 35
+>>>>>>> Stashed changes
     },
     "ADA": {
       "win": 10,
@@ -824,5 +872,9 @@
       "title": "📋 資料不足"
     }
   ],
+<<<<<<< Updated upstream
   "updated_at": 1790689869.2358007
+=======
+  "updated_at": 1790689899.3512838
+>>>>>>> Stashed changes
 }
