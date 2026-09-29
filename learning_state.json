@@ -2,9 +2,9 @@
   "buckets": {
     "score:90+": {
       "win": 256,
-      "loss": 77,
+      "loss": 78,
       "be": 58,
-      "total": 391
+      "total": 392
     },
     "rsishort:30-39": {
       "win": 40,
@@ -13,16 +13,16 @@
       "total": 53
     },
     "fund:neutral": {
-      "win": 353,
-      "loss": 98,
+      "win": 354,
+      "loss": 99,
       "be": 68,
-      "total": 519
+      "total": 521
     },
     "sess:asia_day": {
-      "win": 189,
-      "loss": 40,
+      "win": 190,
+      "loss": 41,
       "be": 24,
-      "total": 253
+      "total": 255
     },
     "coin:BTC": {
       "win": 29,
@@ -49,16 +49,16 @@
       "total": 4
     },
     "score:80-89": {
-      "win": 97,
+      "win": 98,
       "loss": 18,
       "be": 10,
-      "total": 125
+      "total": 126
     },
     "rsishort:40-49": {
-      "win": 70,
+      "win": 71,
       "loss": 26,
       "be": 16,
-      "total": 112
+      "total": 113
     },
     "coin:DOGE": {
       "win": 46,
@@ -115,16 +115,16 @@
       "total": 34
     },
     "coin:XRP": {
-      "win": 46,
+      "win": 47,
       "loss": 10,
       "be": 10,
-      "total": 66
+      "total": 67
     },
     "coin_side:XRPSHORT": {
-      "win": 17,
+      "win": 18,
       "loss": 7,
       "be": 2,
-      "total": 26
+      "total": 27
     },
     "coin:LINK": {
       "win": 35,
@@ -164,21 +164,21 @@
     },
     "rsilong:50-59": {
       "win": 86,
-      "loss": 18,
+      "loss": 19,
       "be": 14,
-      "total": 118
+      "total": 119
     },
     "coin:ETH": {
       "win": 21,
-      "loss": 9,
+      "loss": 10,
       "be": 3,
-      "total": 33
+      "total": 34
     },
     "coin_side:ETHLONG": {
       "win": 10,
-      "loss": 6,
+      "loss": 7,
       "be": 1,
-      "total": 17
+      "total": 18
     },
     "sess:asia_dawn": {
       "win": 104,
@@ -351,10 +351,10 @@
       "total": 81
     },
     "XRP": {
-      "win": 46,
+      "win": 47,
       "loss": 10,
       "be": 10,
-      "total": 66
+      "total": 67
     },
     "LINK": {
       "win": 35,
@@ -370,9 +370,9 @@
     },
     "ETH": {
       "win": 21,
-      "loss": 9,
+      "loss": 10,
       "be": 3,
-      "total": 33
+      "total": 34
     },
     "ADA": {
       "win": 10,
@@ -815,7 +815,14 @@
       "side": "LONG",
       "code": "RSI_COLLAPSE",
       "title": "📉 多頭動能瓦解"
+    },
+    {
+      "ts": 1790644209.3196354,
+      "coin": "ETH",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1790610941.6770778
+  "updated_at": 1790644210.483372
 }
