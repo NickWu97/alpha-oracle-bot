@@ -1,100 +1,4 @@
 {
-  "XRP-USDT-SWAPSHORT1790630397-769FD491": {
-    "instId": "XRP-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 1.4925,
-    "sl": 1.4925,
-    "tp1": 1.4855,
-    "tp2": 1.4855,
-    "tp3": 1.4855,
-    "atr": 0.01089214,
-    "score": 85,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 46.8,
-      "rsi": 15,
-      "ob": 0,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 5,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.72,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 1.5195,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.02654,
-      "bb_pct_b": 0.315,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 18.2,
-      "atr_pct": 0.729,
-      "pullback": true,
-      "learning_notes": [
-        "score:70-79 (n=11, 勝率 64%) → +1",
-        "rsishort:40-49 (n=112, 勝率 62%) → +1",
-        "fund:neutral (n=519, 勝率 68%) → +1",
-        "sess:asia_dawn (n=149, 勝率 70%) → +1",
-        "coin:XRP (n=66, 勝率 70%) → +1",
-        "coin_side:XRPSHORT (n=26, 勝率 65%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
-      ],
-      "learning_adjust": 6,
-      "tp_adjust_notes": [
-        "TP1 1.4680→1.4855（支撐 1.4825）",
-        "TP2 1.4435→1.4855（支撐 1.4825）",
-        "TP3 1.4108→1.4855（支撐 1.4825）"
-      ]
-    },
-    "funding_rate": 1.95329504706e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 47.7
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 43.0
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 60.4
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 18.2,
-      "atr_pct": 0.729,
-      "volatile": false
-    },
-    "created": 1790630397.144699,
-    "expires": 1790716797.1446996,
-    "order_id": "1790630397-769FD491",
-    "status": "BE",
-    "hit_tp1": true,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1790630397.144728,
-    "entry_message_id": 13526,
-    "last_checked_ts": 1790642700.0,
-    "current_price": 1.4831
-  },
   "LINK-USDT-SWAPLONG1790644203-A8BFA2D0": {
     "instId": "LINK-USDT-SWAP",
     "side": "LONG",
@@ -190,6 +94,6 @@
     "activated_at": 1790644203.4835532,
     "entry_message_id": 13531,
     "last_checked_ts": 1790644203.4835532,
-    "current_price": 15.301
+    "current_price": 15.375
   }
 }
