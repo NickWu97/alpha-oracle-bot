@@ -1,84 +1,4 @@
 {
-  "BNB-USDT-SWAPSHORT1790709038-F959FE44": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 755.6,
-    "sl": 759.2224,
-    "tp1": 750.1665,
-    "tp2": 744.7329,
-    "tp3": 737.4882,
-    "atr": 2.41490571,
-    "score": 76,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 44.7,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": -10,
-      "volume_ratio": 0.43,
-      "obv": -6,
-      "obv_warn": "⚠️ OBV與方向背離",
-      "vwap": 766.5169,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.02101,
-      "bb_pct_b": 0.454,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 31.4,
-      "atr_pct": 0.32,
-      "adx_bonus": 4
-    },
-    "funding_rate": -3.72869532954e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 40.8
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 34.9
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 65.9
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 31.4,
-      "atr_pct": 0.32,
-      "volatile": false
-    },
-    "created": 1790709038.9042025,
-    "expires": 1790795438.9042027,
-    "order_id": "1790709038-F959FE44",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1790709038.9042327,
-    "entry_message_id": 13558,
-    "last_checked_ts": 1790709038.9042327
-  },
   "AVAX-USDT-SWAPLONG1790709043-14D3DB3D": {
     "instId": "AVAX-USDT-SWAP",
     "side": "LONG",
@@ -157,6 +77,7 @@
     "hit_tp3": false,
     "activated_at": 1790709043.7753992,
     "entry_message_id": 13559,
-    "last_checked_ts": 1790709043.7753992
+    "last_checked_ts": 1790721000.0,
+    "current_price": 11.437
   }
 }
