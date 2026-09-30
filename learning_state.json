@@ -13,16 +13,16 @@
       "total": 7
     },
     "fund:neutral": {
-      "win": 8,
+      "win": 11,
       "loss": 4,
       "be": 2,
-      "total": 14
+      "total": 17
     },
     "sess:asia_day": {
-      "win": 4,
+      "win": 7,
       "loss": 1,
       "be": 1,
-      "total": 6
+      "total": 9
     },
     "coin:BNB": {
       "win": 1,
@@ -49,16 +49,16 @@
       "total": 6
     },
     "score:90+": {
-      "win": 2,
+      "win": 5,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 7
     },
     "rsilong:40-49": {
-      "win": 1,
+      "win": 4,
       "loss": 1,
       "be": 1,
-      "total": 3
+      "total": 6
     },
     "coin:LINK": {
       "win": 1,
@@ -125,6 +125,18 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "coin:NEAR": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
+    },
+    "coin_side:NEARLONG": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "by_coin": {
@@ -157,6 +169,12 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "NEAR": {
+      "win": 3,
+      "loss": 0,
+      "be": 0,
+      "total": 3
     }
   },
   "loss_reasons": [
@@ -189,5 +207,5 @@
       "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1790777156.7952857
+  "updated_at": 1790809279.005442
 }
