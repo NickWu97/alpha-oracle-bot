@@ -2,21 +2,21 @@
   "buckets": {
     "score:70-79": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "rsishort:40-49": {
       "win": 7,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 10
+      "total": 11
     },
     "fund:neutral": {
       "win": 18,
-      "loss": 7,
+      "loss": 8,
       "be": 3,
-      "total": 28
+      "total": 29
     },
     "sess:asia_day": {
       "win": 7,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 14
+      "total": 15
     },
     "rsilong:40-49": {
       "win": 4,
@@ -80,9 +80,9 @@
     },
     "coin:AVAX": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "coin_side:AVAXLONG": {
       "win": 0,
@@ -110,9 +110,9 @@
     },
     "rsishort:30-39": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "sess:us": {
       "win": 7,
@@ -191,6 +191,36 @@
       "loss": 1,
       "be": 0,
       "total": 1
+    },
+    "sess:asia_dawn": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "coin_side:AVAXSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "fund:neg": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin:DOT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:DOTSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -214,9 +244,9 @@
     },
     "AVAX": {
       "win": 0,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 2
+      "total": 3
     },
     "XRP": {
       "win": 0,
@@ -241,6 +271,12 @@
       "loss": 1,
       "be": 0,
       "total": 4
+    },
+    "DOT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "loss_reasons": [
@@ -292,7 +328,21 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1790886678.4351234,
+      "coin": "AVAX",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1790886680.1904447,
+      "coin": "DOT",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1790869333.102371
+  "updated_at": 1790886679.653297
 }
