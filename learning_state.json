@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 30,
-      "loss": 13,
+      "loss": 14,
       "be": 3,
-      "total": 46
+      "total": 47
     },
     "sess:asia_day": {
       "win": 11,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 16,
-      "loss": 5,
+      "loss": 6,
       "be": 4,
-      "total": 25
+      "total": 26
     },
     "rsilong:40-49": {
       "win": 7,
@@ -158,21 +158,21 @@
     },
     "rsishort:50-59": {
       "win": 1,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 4
+      "total": 5
     },
     "coin:SOL": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "coin_side:SOLSHORT": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "rsishort:60-69": {
       "win": 0,
@@ -194,9 +194,9 @@
     },
     "sess:asia_dawn": {
       "win": 1,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:AVAXSHORT": {
       "win": 0,
@@ -304,9 +304,9 @@
     },
     "SOL": {
       "win": 3,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 5
+      "total": 6
     },
     "DOT": {
       "win": 0,
@@ -412,7 +412,14 @@
       "side": "SHORT",
       "code": "RSI_REBOUND",
       "title": "📈 空頭動能反轉"
+    },
+    {
+      "ts": 1791048645.9134774,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1791038995.5569723
+  "updated_at": 1791048645.255547
 }
