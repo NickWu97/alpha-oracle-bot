@@ -4575,5 +4575,97 @@
       "atr_pct": 0.187,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-10-04 05:28",
+    "date": "2026-10-04",
+    "order_id": "1791048641-C660A683",
+    "coin": "DOT",
+    "side": "LONG",
+    "entry": 1.1992,
+    "close": 1.1876,
+    "close_type": "SL",
+    "pnl": -0.97,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 117,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 54.8,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.57,
+      "obv": 5,
+      "vwap": 1.198,
+      "vwap_score": 0,
+      "bb_bandwidth": 0.02939,
+      "bb_pct_b": 0.433,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 29.5,
+      "atr_pct": 0.645,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "score:90+ (n=25, 勝率 64%) → +1",
+        "rsilong:50-59 (n=13, 勝率 92%) → +2",
+        "fund:neutral (n=46, 勝率 65%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 0 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9
+    },
+    "features": {
+      "score": 117.0,
+      "rsi": 54.8,
+      "atr_pct": 0.645,
+      "funding": 0.1,
+      "vol_ratio": 0.57,
+      "adx": 29.5,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.2
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 52.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.3
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.5,
+      "atr_pct": 0.645,
+      "volatile": false
+    }
   }
 ]
