@@ -13,16 +13,16 @@
       "total": 17
     },
     "fund:neutral": {
-      "win": 56,
-      "loss": 21,
+      "win": 59,
+      "loss": 22,
       "be": 14,
-      "total": 91
+      "total": 95
     },
     "sess:asia_day": {
-      "win": 18,
-      "loss": 7,
+      "win": 21,
+      "loss": 8,
       "be": 3,
-      "total": 28
+      "total": 32
     },
     "coin:BNB": {
       "win": 7,
@@ -50,15 +50,15 @@
     },
     "score:90+": {
       "win": 38,
-      "loss": 10,
+      "loss": 11,
       "be": 14,
-      "total": 62
+      "total": 63
     },
     "rsilong:40-49": {
-      "win": 8,
-      "loss": 1,
+      "win": 11,
+      "loss": 2,
       "be": 2,
-      "total": 11
+      "total": 15
     },
     "coin:LINK": {
       "win": 2,
@@ -79,22 +79,22 @@
       "total": 37
     },
     "coin:AVAX": {
-      "win": 3,
+      "win": 6,
       "loss": 4,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "coin_side:AVAXLONG": {
-      "win": 3,
+      "win": 6,
       "loss": 3,
       "be": 0,
-      "total": 6
+      "total": 9
     },
     "score:80-89": {
-      "win": 16,
+      "win": 19,
       "loss": 9,
       "be": 1,
-      "total": 26
+      "total": 29
     },
     "coin:XRP": {
       "win": 10,
@@ -146,15 +146,15 @@
     },
     "coin:BTC": {
       "win": 15,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 20
+      "total": 21
     },
     "coin_side:BTCLONG": {
       "win": 14,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 16
+      "total": 17
     },
     "rsishort:50-59": {
       "win": 1,
@@ -327,10 +327,10 @@
       "total": 5
     },
     "AVAX": {
-      "win": 3,
+      "win": 6,
       "loss": 4,
       "be": 0,
-      "total": 7
+      "total": 10
     },
     "XRP": {
       "win": 10,
@@ -346,9 +346,9 @@
     },
     "BTC": {
       "win": 15,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 20
+      "total": 21
     },
     "SOL": {
       "win": 5,
@@ -522,7 +522,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1791331118.7423992,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1791300295.2806866
+  "updated_at": 1791331162.5605612
 }
