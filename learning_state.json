@@ -7,28 +7,28 @@
       "total": 6
     },
     "rsishort:40-49": {
-      "win": 8,
+      "win": 11,
       "loss": 7,
       "be": 2,
-      "total": 17
+      "total": 20
     },
     "fund:neutral": {
-      "win": 59,
-      "loss": 22,
+      "win": 62,
+      "loss": 25,
       "be": 14,
-      "total": 95
+      "total": 101
     },
     "sess:asia_day": {
-      "win": 21,
-      "loss": 8,
+      "win": 24,
+      "loss": 11,
       "be": 3,
-      "total": 32
+      "total": 38
     },
     "coin:BNB": {
       "win": 7,
-      "loss": 4,
+      "loss": 5,
       "be": 4,
-      "total": 15
+      "total": 16
     },
     "coin_side:BNBSHORT": {
       "win": 2,
@@ -50,15 +50,15 @@
     },
     "score:90+": {
       "win": 38,
-      "loss": 11,
+      "loss": 13,
       "be": 14,
-      "total": 63
+      "total": 65
     },
     "rsilong:40-49": {
       "win": 11,
-      "loss": 2,
+      "loss": 4,
       "be": 2,
-      "total": 15
+      "total": 17
     },
     "coin:LINK": {
       "win": 2,
@@ -91,16 +91,16 @@
       "total": 9
     },
     "score:80-89": {
-      "win": 19,
-      "loss": 9,
+      "win": 22,
+      "loss": 10,
       "be": 1,
-      "total": 29
+      "total": 33
     },
     "coin:XRP": {
       "win": 10,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "coin_side:XRPSHORT": {
       "win": 0,
@@ -122,9 +122,9 @@
     },
     "rsilong:30-39": {
       "win": 0,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:NEAR": {
       "win": 6,
@@ -146,15 +146,15 @@
     },
     "coin:BTC": {
       "win": 15,
-      "loss": 3,
+      "loss": 4,
       "be": 3,
-      "total": 21
+      "total": 22
     },
     "coin_side:BTCLONG": {
       "win": 14,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 17
+      "total": 18
     },
     "rsishort:50-59": {
       "win": 1,
@@ -188,9 +188,9 @@
     },
     "coin_side:BNBLONG": {
       "win": 5,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 8
+      "total": 9
     },
     "sess:asia_dawn": {
       "win": 3,
@@ -230,9 +230,9 @@
     },
     "coin_side:XRPLONG": {
       "win": 10,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "rsishort:20-29": {
       "win": 0,
@@ -265,16 +265,16 @@
       "total": 3
     },
     "coin:DOGE": {
-      "win": 2,
+      "win": 5,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 7
     },
     "coin_side:DOGESHORT": {
-      "win": 1,
+      "win": 4,
       "loss": 0,
       "be": 1,
-      "total": 2
+      "total": 5
     },
     "coin_side:LINKSHORT": {
       "win": 0,
@@ -310,9 +310,9 @@
   "by_coin": {
     "BNB": {
       "win": 7,
-      "loss": 4,
+      "loss": 5,
       "be": 4,
-      "total": 15
+      "total": 16
     },
     "ETH": {
       "win": 6,
@@ -334,9 +334,9 @@
     },
     "XRP": {
       "win": 10,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "NEAR": {
       "win": 6,
@@ -346,9 +346,9 @@
     },
     "BTC": {
       "win": 15,
-      "loss": 3,
+      "loss": 4,
       "be": 3,
-      "total": 21
+      "total": 22
     },
     "SOL": {
       "win": 5,
@@ -369,10 +369,10 @@
       "total": 3
     },
     "DOGE": {
-      "win": 2,
+      "win": 5,
       "loss": 0,
       "be": 2,
-      "total": 4
+      "total": 7
     }
   },
   "loss_reasons": [
@@ -529,7 +529,28 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1791350701.381883,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "VOL_SPIKE",
+      "title": "🌪 波動率激增"
+    },
+    {
+      "ts": 1791350703.2290251,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1791350704.9892735,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1791331162.5605612
+  "updated_at": 1791350747.9451566
 }
