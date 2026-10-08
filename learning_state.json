@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 49,
-      "loss": 13,
+      "loss": 14,
       "be": 16,
-      "total": 78
+      "total": 79
     },
     "rsilong:40-49": {
       "win": 11,
@@ -110,9 +110,9 @@
     },
     "rsishort:30-39": {
       "win": 9,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "sess:us": {
       "win": 13,
@@ -194,9 +194,9 @@
     },
     "sess:asia_dawn": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 2,
-      "total": 12
+      "total": 13
     },
     "coin_side:AVAXSHORT": {
       "win": 0,
@@ -206,21 +206,21 @@
     },
     "fund:neg": {
       "win": 1,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 3
+      "total": 4
     },
     "coin:DOT": {
       "win": 0,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "coin_side:DOTSHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:NEARSHORT": {
       "win": 0,
@@ -358,9 +358,9 @@
     },
     "DOT": {
       "win": 0,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 4
+      "total": 5
     },
     "ADA": {
       "win": 1,
@@ -550,7 +550,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1791495253.4298565,
+      "coin": "DOT",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1791478189.4505568
+  "updated_at": 1791495252.9383333
 }
