@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 76,
-      "loss": 25,
+      "loss": 26,
       "be": 16,
-      "total": 117
+      "total": 118
     },
     "sess:asia_day": {
       "win": 30,
-      "loss": 11,
+      "loss": 12,
       "be": 4,
-      "total": 45
+      "total": 46
     },
     "coin:BNB": {
       "win": 7,
@@ -92,9 +92,9 @@
     },
     "score:80-89": {
       "win": 25,
-      "loss": 10,
+      "loss": 11,
       "be": 1,
-      "total": 36
+      "total": 37
     },
     "coin:XRP": {
       "win": 13,
@@ -110,9 +110,9 @@
     },
     "rsishort:30-39": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 11
+      "total": 12
     },
     "sess:us": {
       "win": 13,
@@ -128,9 +128,9 @@
     },
     "coin:NEAR": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "coin_side:NEARLONG": {
       "win": 7,
@@ -224,9 +224,9 @@
     },
     "coin_side:NEARSHORT": {
       "win": 0,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 1
+      "total": 2
     },
     "coin_side:XRPLONG": {
       "win": 10,
@@ -340,9 +340,9 @@
     },
     "NEAR": {
       "win": 7,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 9
+      "total": 10
     },
     "BTC": {
       "win": 24,
@@ -557,7 +557,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1791515124.0289354,
+      "coin": "NEAR",
+      "side": "SHORT",
+      "code": "RSI_REBOUND",
+      "title": "📈 空頭動能反轉"
     }
   ],
-  "updated_at": 1791495252.9383333
+  "updated_at": 1791515123.5431314
 }
