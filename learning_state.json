@@ -13,10 +13,10 @@
       "total": 25
     },
     "fund:neutral": {
-      "win": 88,
-      "loss": 26,
+      "win": 89,
+      "loss": 27,
       "be": 16,
-      "total": 130
+      "total": 132
     },
     "sess:asia_day": {
       "win": 42,
@@ -49,16 +49,16 @@
       "total": 6
     },
     "score:90+": {
-      "win": 62,
+      "win": 63,
       "loss": 14,
       "be": 17,
-      "total": 93
+      "total": 94
     },
     "rsilong:40-49": {
-      "win": 14,
+      "win": 15,
       "loss": 4,
       "be": 2,
-      "total": 20
+      "total": 21
     },
     "coin:LINK": {
       "win": 2,
@@ -92,9 +92,9 @@
     },
     "score:80-89": {
       "win": 25,
-      "loss": 11,
+      "loss": 12,
       "be": 1,
-      "total": 37
+      "total": 38
     },
     "coin:XRP": {
       "win": 16,
@@ -115,10 +115,10 @@
       "total": 12
     },
     "sess:us": {
-      "win": 13,
-      "loss": 4,
+      "win": 14,
+      "loss": 5,
       "be": 3,
-      "total": 20
+      "total": 22
     },
     "rsilong:30-39": {
       "win": 0,
@@ -145,16 +145,16 @@
       "total": 18
     },
     "coin:BTC": {
-      "win": 27,
+      "win": 28,
       "loss": 4,
       "be": 3,
-      "total": 34
+      "total": 35
     },
     "coin_side:BTCLONG": {
-      "win": 17,
+      "win": 18,
       "loss": 2,
       "be": 2,
-      "total": 21
+      "total": 22
     },
     "rsishort:50-59": {
       "win": 5,
@@ -164,9 +164,9 @@
     },
     "coin:SOL": {
       "win": 6,
-      "loss": 3,
+      "loss": 4,
       "be": 3,
-      "total": 12
+      "total": 13
     },
     "coin_side:SOLSHORT": {
       "win": 4,
@@ -182,9 +182,9 @@
     },
     "rsilong:50-59": {
       "win": 28,
-      "loss": 3,
+      "loss": 4,
       "be": 7,
-      "total": 38
+      "total": 39
     },
     "coin_side:BNBLONG": {
       "win": 5,
@@ -284,9 +284,9 @@
     },
     "coin_side:SOLLONG": {
       "win": 2,
-      "loss": 0,
+      "loss": 1,
       "be": 2,
-      "total": 4
+      "total": 5
     },
     "coin_side:DOGELONG": {
       "win": 1,
@@ -345,16 +345,16 @@
       "total": 13
     },
     "BTC": {
-      "win": 27,
+      "win": 28,
       "loss": 4,
       "be": 3,
-      "total": 34
+      "total": 35
     },
     "SOL": {
       "win": 6,
-      "loss": 3,
+      "loss": 4,
       "be": 3,
-      "total": 12
+      "total": 13
     },
     "DOT": {
       "win": 3,
@@ -564,7 +564,14 @@
       "side": "SHORT",
       "code": "RSI_REBOUND",
       "title": "📈 空頭動能反轉"
+    },
+    {
+      "ts": 1791640723.9773746,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1791600116.9432645
+  "updated_at": 1791640723.4259574
 }
