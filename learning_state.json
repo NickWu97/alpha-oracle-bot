@@ -13,22 +13,22 @@
       "total": 25
     },
     "fund:neutral": {
-      "win": 93,
-      "loss": 27,
+      "win": 94,
+      "loss": 30,
       "be": 16,
-      "total": 136
+      "total": 140
     },
     "sess:asia_day": {
-      "win": 42,
-      "loss": 12,
+      "win": 43,
+      "loss": 15,
       "be": 4,
-      "total": 58
+      "total": 62
     },
     "coin:BNB": {
       "win": 10,
-      "loss": 5,
+      "loss": 6,
       "be": 4,
-      "total": 19
+      "total": 20
     },
     "coin_side:BNBSHORT": {
       "win": 2,
@@ -49,16 +49,16 @@
       "total": 6
     },
     "score:90+": {
-      "win": 67,
-      "loss": 14,
+      "win": 68,
+      "loss": 17,
       "be": 17,
-      "total": 98
+      "total": 102
     },
     "rsilong:40-49": {
-      "win": 16,
+      "win": 17,
       "loss": 4,
       "be": 2,
-      "total": 22
+      "total": 23
     },
     "coin:LINK": {
       "win": 2,
@@ -98,9 +98,9 @@
     },
     "coin:XRP": {
       "win": 16,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 20
+      "total": 21
     },
     "coin_side:XRPSHORT": {
       "win": 3,
@@ -145,16 +145,16 @@
       "total": 18
     },
     "coin:BTC": {
-      "win": 29,
+      "win": 30,
       "loss": 4,
       "be": 3,
-      "total": 36
+      "total": 37
     },
     "coin_side:BTCLONG": {
-      "win": 19,
+      "win": 20,
       "loss": 2,
       "be": 2,
-      "total": 23
+      "total": 24
     },
     "rsishort:50-59": {
       "win": 5,
@@ -164,9 +164,9 @@
     },
     "coin:SOL": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 13
+      "total": 14
     },
     "coin_side:SOLSHORT": {
       "win": 4,
@@ -182,15 +182,15 @@
     },
     "rsilong:50-59": {
       "win": 31,
-      "loss": 4,
+      "loss": 7,
       "be": 7,
-      "total": 42
+      "total": 45
     },
     "coin_side:BNBLONG": {
       "win": 8,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 12
+      "total": 13
     },
     "sess:asia_dawn": {
       "win": 7,
@@ -230,9 +230,9 @@
     },
     "coin_side:XRPLONG": {
       "win": 13,
-      "loss": 1,
+      "loss": 2,
       "be": 1,
-      "total": 15
+      "total": 16
     },
     "rsishort:20-29": {
       "win": 0,
@@ -284,9 +284,9 @@
     },
     "coin_side:SOLLONG": {
       "win": 2,
-      "loss": 1,
+      "loss": 2,
       "be": 2,
-      "total": 5
+      "total": 6
     },
     "coin_side:DOGELONG": {
       "win": 1,
@@ -310,9 +310,9 @@
   "by_coin": {
     "BNB": {
       "win": 10,
-      "loss": 5,
+      "loss": 6,
       "be": 4,
-      "total": 19
+      "total": 20
     },
     "ETH": {
       "win": 6,
@@ -334,9 +334,9 @@
     },
     "XRP": {
       "win": 16,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 20
+      "total": 21
     },
     "NEAR": {
       "win": 10,
@@ -345,16 +345,16 @@
       "total": 13
     },
     "BTC": {
-      "win": 29,
+      "win": 30,
       "loss": 4,
       "be": 3,
-      "total": 36
+      "total": 37
     },
     "SOL": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 13
+      "total": 14
     },
     "DOT": {
       "win": 3,
@@ -571,7 +571,28 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1791679557.1623402,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1791679558.740103,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1791679560.3478162,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1791656800.3394754
+  "updated_at": 1791679559.8651822
 }
