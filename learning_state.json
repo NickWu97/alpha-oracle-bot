@@ -13,28 +13,28 @@
       "total": 25
     },
     "fund:neutral": {
-      "win": 94,
-      "loss": 33,
+      "win": 100,
+      "loss": 34,
       "be": 16,
-      "total": 143
+      "total": 150
     },
     "sess:asia_day": {
-      "win": 43,
-      "loss": 15,
+      "win": 49,
+      "loss": 16,
       "be": 4,
-      "total": 62
+      "total": 69
     },
     "coin:BNB": {
-      "win": 10,
+      "win": 13,
       "loss": 7,
       "be": 4,
-      "total": 21
+      "total": 24
     },
     "coin_side:BNBSHORT": {
-      "win": 2,
+      "win": 5,
       "loss": 4,
       "be": 2,
-      "total": 8
+      "total": 11
     },
     "coin:ETH": {
       "win": 6,
@@ -49,10 +49,10 @@
       "total": 6
     },
     "score:90+": {
-      "win": 68,
-      "loss": 18,
+      "win": 74,
+      "loss": 19,
       "be": 17,
-      "total": 103
+      "total": 110
     },
     "rsilong:40-49": {
       "win": 17,
@@ -109,10 +109,10 @@
       "total": 5
     },
     "rsishort:30-39": {
-      "win": 9,
-      "loss": 3,
+      "win": 15,
+      "loss": 4,
       "be": 0,
-      "total": 12
+      "total": 19
     },
     "sess:us": {
       "win": 17,
@@ -146,9 +146,9 @@
     },
     "coin:BTC": {
       "win": 30,
-      "loss": 5,
+      "loss": 6,
       "be": 3,
-      "total": 38
+      "total": 39
     },
     "coin_side:BTCLONG": {
       "win": 20,
@@ -242,9 +242,9 @@
     },
     "coin_side:BTCSHORT": {
       "win": 10,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "coin:ADA": {
       "win": 2,
@@ -265,16 +265,16 @@
       "total": 6
     },
     "coin:DOGE": {
-      "win": 5,
+      "win": 8,
       "loss": 0,
       "be": 2,
-      "total": 7
+      "total": 10
     },
     "coin_side:DOGESHORT": {
-      "win": 4,
+      "win": 7,
       "loss": 0,
       "be": 1,
-      "total": 5
+      "total": 8
     },
     "coin_side:LINKSHORT": {
       "win": 0,
@@ -309,10 +309,10 @@
   },
   "by_coin": {
     "BNB": {
-      "win": 10,
+      "win": 13,
       "loss": 7,
       "be": 4,
-      "total": 21
+      "total": 24
     },
     "ETH": {
       "win": 6,
@@ -346,9 +346,9 @@
     },
     "BTC": {
       "win": 30,
-      "loss": 5,
+      "loss": 6,
       "be": 3,
-      "total": 38
+      "total": 39
     },
     "SOL": {
       "win": 6,
@@ -369,10 +369,10 @@
       "total": 5
     },
     "DOGE": {
-      "win": 5,
+      "win": 8,
       "loss": 0,
       "be": 2,
-      "total": 7
+      "total": 10
     }
   },
   "loss_reasons": [
@@ -613,7 +613,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1791848734.9765577,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1791726617.6465485
+  "updated_at": 1791848780.5851552
 }
