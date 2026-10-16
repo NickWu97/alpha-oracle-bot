@@ -87,7 +87,194 @@
     "hit_tp3": false,
     "activated_at": 1792127051.3841453,
     "entry_message_id": 14236,
-    "last_checked_ts": 1792128600.0,
-    "current_price": 1.3377
+    "last_checked_ts": 1792143000.0,
+    "current_price": 1.3388
+  },
+  "SOL-USDT-SWAPLONG1792144248-50BC4082": {
+    "instId": "SOL-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 106.43,
+    "sl": 105.8499,
+    "tp1": 106.7261,
+    "tp2": 106.7261,
+    "tp3": 106.7261,
+    "atr": 0.38670501,
+    "score": 112,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 56.2,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.58,
+      "obv": 5,
+      "vwap": 105.175,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0136,
+      "bb_pct_b": 0.626,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 20.8,
+      "atr_pct": 0.363,
+      "learning_notes": [
+        "score:90+ (n=145, 勝率 68%) → +1",
+        "rsilong:50-59 (n=52, 勝率 65%) → +1",
+        "fund:neutral (n=194, 勝率 68%) → +1",
+        "sess:europe (n=63, 勝率 65%) → +1",
+        "coin_side:SOLLONG (n=11, 勝率 36%) → -2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 5,
+      "tp_adjust_notes": [
+        "TP1 107.3001→106.7261（阻力 106.9400）",
+        "TP2 108.1702→106.7261（阻力 106.9400）",
+        "TP3 109.3303→106.7261（阻力 106.9400）"
+      ]
+    },
+    "funding_rate": 6.44564917709e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.9
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 48.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 62.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 20.8,
+      "atr_pct": 0.363,
+      "volatile": false
+    },
+    "created": 1792144248.5651987,
+    "expires": 1792230648.565199,
+    "order_id": "1792144248-50BC4082",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1792144248.5652342,
+    "entry_message_id": 14240,
+    "last_checked_ts": 1792144248.5652342
+  },
+  "DOGE-USDT-SWAPLONG1792144250-14E6001C": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 0.0824,
+    "sl": 0.082,
+    "tp1": 0.0824,
+    "tp2": 0.0824,
+    "tp3": 0.0824,
+    "atr": 0.00027613,
+    "score": 89,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 58.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.45,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0817,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.00544,
+      "bb_pct_b": 0.622,
+      "bb_squeeze": true,
+      "bb_score": 8,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "transitional",
+      "adx": 19.4,
+      "atr_pct": 0.336,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=49, 勝率 65%) → +1",
+        "rsilong:50-59 (n=52, 勝率 65%) → +1",
+        "fund:neutral (n=194, 勝率 68%) → +1",
+        "sess:europe (n=63, 勝率 65%) → +1",
+        "coin:DOGE (n=15, 勝率 80%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 4 / 敗 5 (勝率 40%)"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 0.0830→0.0824（阻力 0.0826）",
+        "TP2 0.0836→0.0824（阻力 0.0826）",
+        "TP3 0.0844→0.0824（阻力 0.0826）"
+      ]
+    },
+    "funding_rate": 9.13722879494e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.9
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 51.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 19.4,
+      "atr_pct": 0.336,
+      "volatile": false
+    },
+    "created": 1792144250.8667448,
+    "expires": 1792230650.8667452,
+    "order_id": "1792144250-14E6001C",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1792144250.8667777,
+    "entry_message_id": 14241,
+    "last_checked_ts": 1792144250.8667777
   }
 }
