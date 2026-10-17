@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 143,
-      "loss": 45,
+      "loss": 46,
       "be": 23,
-      "total": 211
+      "total": 212
     },
     "sess:asia_day": {
       "win": 58,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 110,
-      "loss": 28,
+      "loss": 29,
       "be": 23,
-      "total": 161
+      "total": 162
     },
     "rsilong:40-49": {
       "win": 17,
@@ -98,21 +98,21 @@
     },
     "coin:XRP": {
       "win": 26,
-      "loss": 6,
+      "loss": 7,
       "be": 2,
-      "total": 34
+      "total": 35
     },
     "coin_side:XRPSHORT": {
       "win": 12,
-      "loss": 2,
+      "loss": 3,
       "be": 0,
-      "total": 14
+      "total": 15
     },
     "rsishort:30-39": {
       "win": 33,
-      "loss": 6,
+      "loss": 7,
       "be": 0,
-      "total": 39
+      "total": 40
     },
     "sess:us": {
       "win": 20,
@@ -194,9 +194,9 @@
     },
     "sess:asia_dawn": {
       "win": 26,
-      "loss": 7,
+      "loss": 8,
       "be": 5,
-      "total": 38
+      "total": 39
     },
     "coin_side:AVAXSHORT": {
       "win": 3,
@@ -334,9 +334,9 @@
     },
     "XRP": {
       "win": 26,
-      "loss": 6,
+      "loss": 7,
       "be": 2,
-      "total": 34
+      "total": 35
     },
     "NEAR": {
       "win": 13,
@@ -669,7 +669,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1792268518.325391,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1792263205.8495257
+  "updated_at": 1792268517.702216
 }
