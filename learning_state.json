@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 157,
-      "loss": 51,
+      "loss": 53,
       "be": 25,
-      "total": 233
+      "total": 235
     },
     "sess:asia_day": {
       "win": 62,
-      "loss": 21,
+      "loss": 23,
       "be": 8,
-      "total": 91
+      "total": 93
     },
     "coin:BNB": {
       "win": 23,
@@ -50,15 +50,15 @@
     },
     "score:90+": {
       "win": 119,
-      "loss": 33,
+      "loss": 34,
       "be": 23,
-      "total": 175
+      "total": 176
     },
     "rsilong:40-49": {
       "win": 17,
-      "loss": 4,
+      "loss": 6,
       "be": 2,
-      "total": 23
+      "total": 25
     },
     "coin:LINK": {
       "win": 3,
@@ -80,21 +80,21 @@
     },
     "coin:AVAX": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "coin_side:AVAXLONG": {
       "win": 6,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 9
+      "total": 10
     },
     "score:80-89": {
       "win": 37,
-      "loss": 17,
+      "loss": 18,
       "be": 4,
-      "total": 58
+      "total": 59
     },
     "coin:XRP": {
       "win": 27,
@@ -146,15 +146,15 @@
     },
     "coin:BTC": {
       "win": 41,
-      "loss": 10,
+      "loss": 11,
       "be": 5,
-      "total": 56
+      "total": 57
     },
     "coin_side:BTCLONG": {
       "win": 22,
-      "loss": 5,
+      "loss": 6,
       "be": 4,
-      "total": 31
+      "total": 32
     },
     "rsishort:50-59": {
       "win": 17,
@@ -328,9 +328,9 @@
     },
     "AVAX": {
       "win": 9,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 13
+      "total": 14
     },
     "XRP": {
       "win": 27,
@@ -346,9 +346,9 @@
     },
     "BTC": {
       "win": 41,
-      "loss": 10,
+      "loss": 11,
       "be": 5,
-      "total": 56
+      "total": 57
     },
     "SOL": {
       "win": 14,
@@ -690,7 +690,21 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1792460749.1033785,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1792460751.0291011,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1792451249.0400348
+  "updated_at": 1792460750.4552023
 }
