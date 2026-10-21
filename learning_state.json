@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 170,
-      "loss": 54,
+      "loss": 55,
       "be": 26,
-      "total": 250
+      "total": 251
     },
     "sess:asia_day": {
       "win": 69,
-      "loss": 23,
+      "loss": 24,
       "be": 9,
-      "total": 101
+      "total": 102
     },
     "coin:BNB": {
       "win": 24,
@@ -80,21 +80,21 @@
     },
     "coin:AVAX": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "coin_side:AVAXLONG": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "score:80-89": {
       "win": 38,
-      "loss": 18,
+      "loss": 19,
       "be": 4,
-      "total": 60
+      "total": 61
     },
     "coin:XRP": {
       "win": 28,
@@ -140,9 +140,9 @@
     },
     "rsilong:60-69": {
       "win": 22,
-      "loss": 5,
+      "loss": 6,
       "be": 7,
-      "total": 34
+      "total": 35
     },
     "coin:BTC": {
       "win": 45,
@@ -328,9 +328,9 @@
     },
     "AVAX": {
       "win": 12,
-      "loss": 5,
+      "loss": 6,
       "be": 0,
-      "total": 17
+      "total": 18
     },
     "XRP": {
       "win": 28,
@@ -711,7 +711,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1792559372.7770846,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1792547089.384217
+  "updated_at": 1792559372.2980978
 }
