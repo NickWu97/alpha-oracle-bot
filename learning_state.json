@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 184,
-      "loss": 56,
+      "loss": 58,
       "be": 26,
-      "total": 266
+      "total": 268
     },
     "sess:asia_day": {
       "win": 69,
-      "loss": 24,
+      "loss": 26,
       "be": 9,
-      "total": 102
+      "total": 104
     },
     "coin:BNB": {
       "win": 25,
@@ -50,15 +50,15 @@
     },
     "score:90+": {
       "win": 143,
-      "loss": 36,
+      "loss": 37,
       "be": 24,
-      "total": 203
+      "total": 204
     },
     "rsilong:40-49": {
       "win": 20,
-      "loss": 7,
+      "loss": 8,
       "be": 2,
-      "total": 29
+      "total": 30
     },
     "coin:LINK": {
       "win": 6,
@@ -92,15 +92,15 @@
     },
     "score:80-89": {
       "win": 40,
-      "loss": 19,
+      "loss": 20,
       "be": 4,
-      "total": 63
+      "total": 64
     },
     "coin:XRP": {
       "win": 30,
-      "loss": 7,
+      "loss": 8,
       "be": 3,
-      "total": 40
+      "total": 41
     },
     "coin_side:XRPSHORT": {
       "win": 13,
@@ -182,9 +182,9 @@
     },
     "rsilong:50-59": {
       "win": 48,
-      "loss": 11,
+      "loss": 12,
       "be": 10,
-      "total": 69
+      "total": 70
     },
     "coin_side:BNBLONG": {
       "win": 10,
@@ -230,9 +230,9 @@
     },
     "coin_side:XRPLONG": {
       "win": 17,
-      "loss": 4,
+      "loss": 5,
       "be": 2,
-      "total": 23
+      "total": 24
     },
     "rsishort:20-29": {
       "win": 0,
@@ -266,9 +266,9 @@
     },
     "coin:DOGE": {
       "win": 19,
-      "loss": 2,
+      "loss": 3,
       "be": 4,
-      "total": 25
+      "total": 26
     },
     "coin_side:DOGESHORT": {
       "win": 10,
@@ -290,9 +290,9 @@
     },
     "coin_side:DOGELONG": {
       "win": 9,
-      "loss": 2,
+      "loss": 3,
       "be": 3,
-      "total": 14
+      "total": 15
     },
     "rsilong:70-79": {
       "win": 3,
@@ -334,9 +334,9 @@
     },
     "XRP": {
       "win": 30,
-      "loss": 7,
+      "loss": 8,
       "be": 3,
-      "total": 40
+      "total": 41
     },
     "NEAR": {
       "win": 13,
@@ -370,9 +370,9 @@
     },
     "DOGE": {
       "win": 19,
-      "loss": 2,
+      "loss": 3,
       "be": 4,
-      "total": 25
+      "total": 26
     }
   },
   "loss_reasons": [
@@ -718,7 +718,21 @@
       "side": "LONG",
       "code": "AGAINST_MOMENTUM",
       "title": "💪 持續反向動能"
+    },
+    {
+      "ts": 1792622327.8213496,
+      "coin": "XRP",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1792622329.7895901,
+      "coin": "DOGE",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1792610906.1730633
+  "updated_at": 1792622329.2011178
 }
