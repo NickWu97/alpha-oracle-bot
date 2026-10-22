@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 184,
-      "loss": 59,
+      "loss": 60,
       "be": 26,
-      "total": 269
+      "total": 270
     },
     "sess:asia_day": {
       "win": 69,
-      "loss": 27,
+      "loss": 28,
       "be": 9,
-      "total": 105
+      "total": 106
     },
     "coin:BNB": {
       "win": 25,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 143,
-      "loss": 37,
+      "loss": 38,
       "be": 24,
-      "total": 204
+      "total": 205
     },
     "rsilong:40-49": {
       "win": 20,
@@ -146,15 +146,15 @@
     },
     "coin:BTC": {
       "win": 47,
-      "loss": 11,
+      "loss": 12,
       "be": 5,
-      "total": 63
+      "total": 64
     },
     "coin_side:BTCLONG": {
       "win": 25,
-      "loss": 6,
+      "loss": 7,
       "be": 4,
-      "total": 35
+      "total": 36
     },
     "rsishort:50-59": {
       "win": 20,
@@ -182,9 +182,9 @@
     },
     "rsilong:50-59": {
       "win": 48,
-      "loss": 12,
+      "loss": 13,
       "be": 10,
-      "total": 70
+      "total": 71
     },
     "coin_side:BNBLONG": {
       "win": 10,
@@ -346,9 +346,9 @@
     },
     "BTC": {
       "win": 47,
-      "loss": 11,
+      "loss": 12,
       "be": 5,
-      "total": 63
+      "total": 64
     },
     "SOL": {
       "win": 17,
@@ -732,7 +732,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1792630503.6104896,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1792626149.7854364
+  "updated_at": 1792630503.033428
 }
