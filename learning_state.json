@@ -8,21 +8,21 @@
     },
     "rsishort:40-49": {
       "win": 36,
-      "loss": 10,
+      "loss": 12,
       "be": 6,
-      "total": 52
+      "total": 54
     },
     "fund:neutral": {
       "win": 194,
-      "loss": 60,
+      "loss": 62,
       "be": 26,
-      "total": 280
+      "total": 282
     },
     "sess:asia_day": {
       "win": 74,
-      "loss": 28,
+      "loss": 30,
       "be": 9,
-      "total": 111
+      "total": 113
     },
     "coin:BNB": {
       "win": 26,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 147,
-      "loss": 38,
+      "loss": 40,
       "be": 24,
-      "total": 209
+      "total": 211
     },
     "rsilong:40-49": {
       "win": 20,
@@ -62,9 +62,9 @@
     },
     "coin:LINK": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 13
+      "total": 14
     },
     "coin_side:LINKLONG": {
       "win": 5,
@@ -266,21 +266,21 @@
     },
     "coin:DOGE": {
       "win": 19,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 26
+      "total": 27
     },
     "coin_side:DOGESHORT": {
       "win": 10,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 11
+      "total": 12
     },
     "coin_side:LINKSHORT": {
       "win": 1,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 4
+      "total": 5
     },
     "coin_side:SOLLONG": {
       "win": 7,
@@ -322,9 +322,9 @@
     },
     "LINK": {
       "win": 6,
-      "loss": 4,
+      "loss": 5,
       "be": 3,
-      "total": 13
+      "total": 14
     },
     "AVAX": {
       "win": 15,
@@ -370,9 +370,9 @@
     },
     "DOGE": {
       "win": 19,
-      "loss": 3,
+      "loss": 4,
       "be": 4,
-      "total": 26
+      "total": 27
     }
   },
   "loss_reasons": [
@@ -739,7 +739,21 @@
       "side": "LONG",
       "code": "AGAINST_MOMENTUM",
       "title": "💪 持續反向動能"
+    },
+    {
+      "ts": 1792719134.4317508,
+      "coin": "DOGE",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
+    },
+    {
+      "ts": 1792719136.1111748,
+      "coin": "LINK",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1792712408.794718
+  "updated_at": 1792719135.5784218
 }
