@@ -2,9 +2,9 @@
   "buckets": {
     "score:70-79": {
       "win": 3,
-      "loss": 3,
+      "loss": 4,
       "be": 0,
-      "total": 6
+      "total": 7
     },
     "rsishort:40-49": {
       "win": 36,
@@ -14,27 +14,27 @@
     },
     "fund:neutral": {
       "win": 194,
-      "loss": 62,
+      "loss": 64,
       "be": 26,
-      "total": 282
+      "total": 284
     },
     "sess:asia_day": {
       "win": 74,
-      "loss": 30,
+      "loss": 33,
       "be": 9,
-      "total": 113
+      "total": 116
     },
     "coin:BNB": {
       "win": 26,
-      "loss": 10,
+      "loss": 11,
       "be": 5,
-      "total": 41
+      "total": 42
     },
     "coin_side:BNBSHORT": {
       "win": 15,
-      "loss": 6,
+      "loss": 7,
       "be": 3,
-      "total": 24
+      "total": 25
     },
     "coin:ETH": {
       "win": 15,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 147,
-      "loss": 40,
+      "loss": 42,
       "be": 24,
-      "total": 211
+      "total": 213
     },
     "rsilong:40-49": {
       "win": 20,
@@ -80,9 +80,9 @@
     },
     "coin:AVAX": {
       "win": 15,
-      "loss": 6,
+      "loss": 7,
       "be": 0,
-      "total": 21
+      "total": 22
     },
     "coin_side:AVAXLONG": {
       "win": 6,
@@ -98,15 +98,15 @@
     },
     "coin:XRP": {
       "win": 33,
-      "loss": 8,
+      "loss": 9,
       "be": 3,
-      "total": 44
+      "total": 45
     },
     "coin_side:XRPSHORT": {
       "win": 16,
-      "loss": 3,
+      "loss": 4,
       "be": 1,
-      "total": 20
+      "total": 21
     },
     "rsishort:30-39": {
       "win": 48,
@@ -158,9 +158,9 @@
     },
     "rsishort:50-59": {
       "win": 20,
-      "loss": 6,
+      "loss": 9,
       "be": 2,
-      "total": 28
+      "total": 31
     },
     "coin:SOL": {
       "win": 20,
@@ -200,15 +200,15 @@
     },
     "coin_side:AVAXSHORT": {
       "win": 9,
-      "loss": 1,
+      "loss": 2,
       "be": 0,
-      "total": 10
+      "total": 11
     },
     "fund:neg": {
       "win": 5,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 9
+      "total": 10
     },
     "coin:DOT": {
       "win": 3,
@@ -310,9 +310,9 @@
   "by_coin": {
     "BNB": {
       "win": 26,
-      "loss": 10,
+      "loss": 11,
       "be": 5,
-      "total": 41
+      "total": 42
     },
     "ETH": {
       "win": 15,
@@ -328,15 +328,15 @@
     },
     "AVAX": {
       "win": 15,
-      "loss": 6,
+      "loss": 7,
       "be": 0,
-      "total": 21
+      "total": 22
     },
     "XRP": {
       "win": 33,
-      "loss": 8,
+      "loss": 9,
       "be": 3,
-      "total": 44
+      "total": 45
     },
     "NEAR": {
       "win": 13,
@@ -753,7 +753,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1792720645.5902822,
+      "coin": "BNB",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1792719135.5784218
+  "updated_at": 1792720647.6015034
 }
