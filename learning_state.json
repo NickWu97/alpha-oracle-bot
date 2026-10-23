@@ -8,15 +8,15 @@
     },
     "rsishort:40-49": {
       "win": 36,
-      "loss": 12,
+      "loss": 13,
       "be": 6,
-      "total": 54
+      "total": 55
     },
     "fund:neutral": {
       "win": 194,
-      "loss": 64,
+      "loss": 65,
       "be": 26,
-      "total": 284
+      "total": 285
     },
     "sess:asia_day": {
       "win": 74,
@@ -74,9 +74,9 @@
     },
     "sess:europe": {
       "win": 54,
-      "loss": 16,
+      "loss": 17,
       "be": 11,
-      "total": 81
+      "total": 82
     },
     "coin:AVAX": {
       "win": 15,
@@ -92,9 +92,9 @@
     },
     "score:80-89": {
       "win": 49,
-      "loss": 21,
+      "loss": 22,
       "be": 4,
-      "total": 74
+      "total": 75
     },
     "coin:XRP": {
       "win": 33,
@@ -146,9 +146,9 @@
     },
     "coin:BTC": {
       "win": 47,
-      "loss": 12,
+      "loss": 13,
       "be": 5,
-      "total": 64
+      "total": 65
     },
     "coin_side:BTCLONG": {
       "win": 25,
@@ -242,9 +242,9 @@
     },
     "coin_side:BTCSHORT": {
       "win": 22,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 28
+      "total": 29
     },
     "coin:ADA": {
       "win": 2,
@@ -346,9 +346,9 @@
     },
     "BTC": {
       "win": 47,
-      "loss": 12,
+      "loss": 13,
       "be": 5,
-      "total": 64
+      "total": 65
     },
     "SOL": {
       "win": 20,
@@ -760,7 +760,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1792737018.182057,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1792720647.6015034
+  "updated_at": 1792737017.531414
 }
