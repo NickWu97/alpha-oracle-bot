@@ -7,16 +7,16 @@
       "total": 7
     },
     "rsishort:40-49": {
-      "win": 38,
+      "win": 39,
       "loss": 13,
       "be": 6,
-      "total": 57
+      "total": 58
     },
     "fund:neutral": {
-      "win": 200,
-      "loss": 65,
-      "be": 26,
-      "total": 291
+      "win": 207,
+      "loss": 66,
+      "be": 27,
+      "total": 300
     },
     "sess:asia_day": {
       "win": 74,
@@ -25,16 +25,16 @@
       "total": 116
     },
     "coin:BNB": {
-      "win": 28,
+      "win": 29,
       "loss": 11,
       "be": 5,
-      "total": 44
+      "total": 45
     },
     "coin_side:BNBSHORT": {
-      "win": 17,
+      "win": 18,
       "loss": 7,
       "be": 3,
-      "total": 27
+      "total": 28
     },
     "coin:ETH": {
       "win": 15,
@@ -49,10 +49,10 @@
       "total": 15
     },
     "score:90+": {
-      "win": 153,
+      "win": 160,
       "loss": 42,
-      "be": 24,
-      "total": 219
+      "be": 25,
+      "total": 227
     },
     "rsilong:40-49": {
       "win": 20,
@@ -92,33 +92,33 @@
     },
     "score:80-89": {
       "win": 49,
-      "loss": 22,
+      "loss": 23,
       "be": 4,
-      "total": 75
+      "total": 76
     },
     "coin:XRP": {
       "win": 33,
-      "loss": 9,
+      "loss": 10,
       "be": 3,
-      "total": 45
+      "total": 46
     },
     "coin_side:XRPSHORT": {
       "win": 16,
-      "loss": 4,
+      "loss": 5,
       "be": 1,
-      "total": 21
+      "total": 22
     },
     "rsishort:30-39": {
-      "win": 52,
-      "loss": 9,
-      "be": 0,
-      "total": 61
+      "win": 58,
+      "loss": 10,
+      "be": 1,
+      "total": 69
     },
     "sess:us": {
-      "win": 25,
-      "loss": 8,
-      "be": 3,
-      "total": 36
+      "win": 32,
+      "loss": 9,
+      "be": 4,
+      "total": 45
     },
     "rsilong:30-39": {
       "win": 0,
@@ -147,8 +147,8 @@
     "coin:BTC": {
       "win": 48,
       "loss": 13,
-      "be": 5,
-      "total": 66
+      "be": 6,
+      "total": 67
     },
     "coin_side:BTCLONG": {
       "win": 25,
@@ -163,16 +163,16 @@
       "total": 31
     },
     "coin:SOL": {
-      "win": 23,
+      "win": 26,
       "loss": 11,
       "be": 5,
-      "total": 39
+      "total": 42
     },
     "coin_side:SOLSHORT": {
-      "win": 16,
+      "win": 19,
       "loss": 6,
       "be": 1,
-      "total": 23
+      "total": 26
     },
     "rsishort:60-69": {
       "win": 1,
@@ -243,8 +243,8 @@
     "coin_side:BTCSHORT": {
       "win": 23,
       "loss": 6,
-      "be": 1,
-      "total": 30
+      "be": 2,
+      "total": 31
     },
     "coin:ADA": {
       "win": 2,
@@ -265,16 +265,16 @@
       "total": 6
     },
     "coin:DOGE": {
-      "win": 19,
+      "win": 22,
       "loss": 4,
       "be": 4,
-      "total": 27
+      "total": 30
     },
     "coin_side:DOGESHORT": {
-      "win": 10,
+      "win": 13,
       "loss": 1,
       "be": 1,
-      "total": 12
+      "total": 15
     },
     "coin_side:LINKSHORT": {
       "win": 1,
@@ -309,10 +309,10 @@
   },
   "by_coin": {
     "BNB": {
-      "win": 28,
+      "win": 29,
       "loss": 11,
       "be": 5,
-      "total": 44
+      "total": 45
     },
     "ETH": {
       "win": 15,
@@ -334,9 +334,9 @@
     },
     "XRP": {
       "win": 33,
-      "loss": 9,
+      "loss": 10,
       "be": 3,
-      "total": 45
+      "total": 46
     },
     "NEAR": {
       "win": 13,
@@ -347,14 +347,14 @@
     "BTC": {
       "win": 48,
       "loss": 13,
-      "be": 5,
-      "total": 66
+      "be": 6,
+      "total": 67
     },
     "SOL": {
-      "win": 23,
+      "win": 26,
       "loss": 11,
       "be": 5,
-      "total": 39
+      "total": 42
     },
     "DOT": {
       "win": 3,
@@ -369,10 +369,10 @@
       "total": 5
     },
     "DOGE": {
-      "win": 19,
+      "win": 22,
       "loss": 4,
       "be": 4,
-      "total": 27
+      "total": 30
     }
   },
   "loss_reasons": [
@@ -767,7 +767,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1792853278.4403923,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1792841516.7752318
+  "updated_at": 1792853323.2411861
 }
