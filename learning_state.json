@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 214,
-      "loss": 67,
+      "loss": 68,
       "be": 28,
-      "total": 309
+      "total": 310
     },
     "sess:asia_day": {
       "win": 81,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 167,
-      "loss": 43,
+      "loss": 44,
       "be": 26,
-      "total": 236
+      "total": 237
     },
     "rsilong:40-49": {
       "win": 20,
@@ -74,9 +74,9 @@
     },
     "sess:europe": {
       "win": 60,
-      "loss": 17,
+      "loss": 18,
       "be": 11,
-      "total": 88
+      "total": 89
     },
     "coin:AVAX": {
       "win": 15,
@@ -140,9 +140,9 @@
     },
     "rsilong:60-69": {
       "win": 26,
-      "loss": 6,
+      "loss": 7,
       "be": 8,
-      "total": 40
+      "total": 41
     },
     "coin:BTC": {
       "win": 48,
@@ -164,9 +164,9 @@
     },
     "coin:SOL": {
       "win": 26,
-      "loss": 11,
+      "loss": 12,
       "be": 5,
-      "total": 42
+      "total": 43
     },
     "coin_side:SOLSHORT": {
       "win": 19,
@@ -284,9 +284,9 @@
     },
     "coin_side:SOLLONG": {
       "win": 7,
-      "loss": 5,
+      "loss": 6,
       "be": 4,
-      "total": 16
+      "total": 17
     },
     "coin_side:DOGELONG": {
       "win": 10,
@@ -352,9 +352,9 @@
     },
     "SOL": {
       "win": 26,
-      "loss": 11,
+      "loss": 12,
       "be": 5,
-      "total": 42
+      "total": 43
     },
     "DOT": {
       "win": 3,
@@ -774,7 +774,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1792910274.2953615,
+      "coin": "SOL",
+      "side": "LONG",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1792902969.9970481
+  "updated_at": 1792910273.7061443
 }
