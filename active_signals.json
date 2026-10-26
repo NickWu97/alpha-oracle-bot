@@ -1,1 +1,290 @@
-{}
+{
+  "BNB-USDT-SWAPSHORT1792986356-FA9D531C": {
+    "instId": "BNB-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 735.87,
+    "sl": 739.8055,
+    "tp1": 734.967,
+    "tp2": 734.967,
+    "tp3": 734.967,
+    "atr": 2.62364121,
+    "score": 111,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 42.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 5,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.61,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 738.294,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01129,
+      "bb_pct_b": 0.274,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 18.9,
+      "atr_pct": 0.356,
+      "pullback": true,
+      "learning_notes": [
+        "score:90+ (n=249, 勝率 70%) → +2",
+        "rsishort:40-49 (n=62, 勝率 68%) → +1",
+        "fund:neutral (n=326, 勝率 68%) → +1",
+        "sess:asia_day (n=130, 勝率 64%) → +1",
+        "coin:BNB (n=50, 勝率 64%) → +1",
+        "coin_side:BNBSHORT (n=28, 勝率 64%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 0 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 12,
+      "tp_adjust_notes": [
+        "TP1 729.9668→734.9670（支撐 733.5000）",
+        "TP2 724.0636→734.9670（支撐 733.5000）",
+        "TP3 716.1927→734.9670（支撐 733.5000）"
+      ]
+    },
+    "funding_rate": 8.15140936435e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 50.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 59.7
+      }
+    },
+    "regime_snapshot": {
+      "regime": "transitional",
+      "adx": 18.9,
+      "atr_pct": 0.356,
+      "volatile": false
+    },
+    "created": 1792986356.3736422,
+    "expires": 1793072756.3736424,
+    "order_id": "1792986356-FA9D531C",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1792986356.3736722,
+    "entry_message_id": 14713,
+    "last_checked_ts": 1792986356.3736722
+  },
+  "XRP-USDT-SWAPSHORT1792986358-5D72EA44": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.2783,
+    "sl": 1.2877,
+    "tp1": 1.2736,
+    "tp2": 1.2736,
+    "tp3": 1.2736,
+    "atr": 0.00623971,
+    "score": 96,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 30.3,
+      "rsi": 0,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 5,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.94,
+      "obv": 5,
+      "vwap": 1.295,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02014,
+      "bb_pct_b": 0.061,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 37.4,
+      "atr_pct": 0.488,
+      "adx_bonus": 4,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=78, 勝率 63%) → +1",
+        "rsishort:30-39 (n=72, 勝率 85%) → +2",
+        "fund:neutral (n=326, 勝率 68%) → +1",
+        "sess:asia_day (n=130, 勝率 64%) → +1",
+        "coin:XRP (n=50, 勝率 72%) → +2",
+        "coin_side:XRPSHORT (n=22, 勝率 73%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 12,
+      "tp_adjust_notes": [
+        "TP1 1.2643→1.2736（支撐 1.2711）",
+        "TP2 1.2502→1.2736（支撐 1.2711）",
+        "TP3 1.2315→1.2736（支撐 1.2711）"
+      ]
+    },
+    "funding_rate": 0.0001,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 37.2
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 45.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 48.8
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 37.4,
+      "atr_pct": 0.488,
+      "volatile": false
+    },
+    "created": 1792986358.2621577,
+    "expires": 1793072758.2621584,
+    "order_id": "1792986358-5D72EA44",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1792986358.2621877,
+    "entry_message_id": 14714,
+    "last_checked_ts": 1792986358.2621877
+  },
+  "DOGE-USDT-SWAPSHORT1792986360-F50E893F": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.0762,
+    "sl": 0.0768,
+    "tp1": 0.0761,
+    "tp2": 0.0761,
+    "tp3": 0.0761,
+    "atr": 0.00038157,
+    "score": 95,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 36.6,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.76,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.0776,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.0171,
+      "bb_pct_b": 0.159,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.5,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=78, 勝率 63%) → +1",
+        "rsishort:30-39 (n=72, 勝率 85%) → +2",
+        "fund:neutral (n=326, 勝率 68%) → +1",
+        "sess:asia_day (n=130, 勝率 64%) → +1",
+        "coin:DOGE (n=34, 勝率 71%) → +2",
+        "coin_side:DOGESHORT (n=17, 勝率 82%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 0.0753→0.0761（支撐 0.0759）",
+        "TP2 0.0745→0.0761（支撐 0.0759）",
+        "TP3 0.0733→0.0761（支撐 0.0759）"
+      ]
+    },
+    "funding_rate": 2.52094635636e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 38.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 40.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.0
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 29.7,
+      "atr_pct": 0.5,
+      "volatile": false
+    },
+    "created": 1792986360.0491083,
+    "expires": 1793072760.0491085,
+    "order_id": "1792986360-F50E893F",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1792986360.0491376,
+    "entry_message_id": 14715,
+    "last_checked_ts": 1792986360.0491376
+  }
+}
