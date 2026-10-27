@@ -13,22 +13,22 @@
       "total": 66
     },
     "fund:neutral": {
-      "win": 230,
-      "loss": 76,
+      "win": 231,
+      "loss": 77,
       "be": 32,
-      "total": 338
+      "total": 340
     },
     "sess:asia_day": {
-      "win": 86,
-      "loss": 37,
+      "win": 87,
+      "loss": 38,
       "be": 13,
-      "total": 136
+      "total": 138
     },
     "coin:BNB": {
-      "win": 32,
+      "win": 33,
       "loss": 15,
       "be": 5,
-      "total": 52
+      "total": 53
     },
     "coin_side:BNBSHORT": {
       "win": 18,
@@ -49,16 +49,16 @@
       "total": 15
     },
     "score:90+": {
-      "win": 182,
-      "loss": 50,
+      "win": 183,
+      "loss": 51,
       "be": 29,
-      "total": 261
+      "total": 263
     },
     "rsilong:40-49": {
-      "win": 20,
+      "win": 21,
       "loss": 10,
       "be": 2,
-      "total": 32
+      "total": 33
     },
     "coin:LINK": {
       "win": 6,
@@ -80,15 +80,15 @@
     },
     "coin:AVAX": {
       "win": 16,
-      "loss": 7,
+      "loss": 8,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "coin_side:AVAXLONG": {
       "win": 7,
-      "loss": 5,
+      "loss": 6,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "score:80-89": {
       "win": 49,
@@ -140,9 +140,9 @@
     },
     "rsilong:60-69": {
       "win": 26,
-      "loss": 7,
+      "loss": 8,
       "be": 8,
-      "total": 41
+      "total": 42
     },
     "coin:BTC": {
       "win": 52,
@@ -187,10 +187,10 @@
       "total": 76
     },
     "coin_side:BNBLONG": {
-      "win": 14,
+      "win": 15,
       "loss": 6,
       "be": 2,
-      "total": 22
+      "total": 23
     },
     "sess:asia_dawn": {
       "win": 50,
@@ -309,10 +309,10 @@
   },
   "by_coin": {
     "BNB": {
-      "win": 32,
+      "win": 33,
       "loss": 15,
       "be": 5,
-      "total": 52
+      "total": 53
     },
     "ETH": {
       "win": 15,
@@ -328,9 +328,9 @@
     },
     "AVAX": {
       "win": 16,
-      "loss": 7,
+      "loss": 8,
       "be": 1,
-      "total": 24
+      "total": 25
     },
     "XRP": {
       "win": 37,
@@ -809,7 +809,14 @@
       "side": "SHORT",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1793078977.4047763,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "AGAINST_MOMENTUM",
+      "title": "💪 持續反向動能"
     }
   ],
-  "updated_at": 1793061643.1354828
+  "updated_at": 1793078976.9145963
 }
