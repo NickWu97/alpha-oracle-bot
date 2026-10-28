@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 80455.1,
-    "sl": 80455.1,
+    "sl": 80959.2275,
     "tp1": 80959.2275,
     "tp2": 81463.355,
     "tp3": 82135.525,
@@ -80,21 +80,21 @@
     "created": 1793117663.1667287,
     "expires": 1793204063.1667292,
     "order_id": "1793117663-5B84486E",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1793117663.1667817,
     "entry_message_id": 14778,
-    "last_checked_ts": 1793166300.0,
-    "current_price": 80889.0
+    "last_checked_ts": 1793185200.0,
+    "current_price": 81361.9
   },
   "SOL-USDT-SWAPLONG1793117664-A1D684A8": {
     "instId": "SOL-USDT-SWAP",
     "side": "LONG",
     "tf": "15m",
     "entry": 100.82,
-    "sl": 100.82,
+    "sl": 101.809,
     "tp1": 101.809,
     "tp2": 102.7979,
     "tp3": 104.1166,
@@ -169,13 +169,13 @@
     "created": 1793117664.905879,
     "expires": 1793204064.9058795,
     "order_id": "1793117664-A1D684A8",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1793117664.9059246,
     "entry_message_id": 14779,
-    "last_checked_ts": 1793166300.0,
-    "current_price": 101.82
+    "last_checked_ts": 1793185200.0,
+    "current_price": 102.84
   }
 }
