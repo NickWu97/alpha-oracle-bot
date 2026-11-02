@@ -4,7 +4,7 @@
     "side": "SHORT",
     "tf": "15m",
     "entry": 8.601,
-    "sl": 8.601,
+    "sl": 8.5157,
     "tp1": 8.5157,
     "tp2": 8.4303,
     "tp3": 8.3166,
@@ -81,14 +81,14 @@
     "created": 1793612930.4850423,
     "expires": 1793699330.485043,
     "order_id": "1793612930-880CA2F5",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1793612930.4850779,
     "entry_message_id": 14997,
     "last_checked_ts": 1793648700.0,
-    "current_price": 8.361
+    "current_price": 8.339
   },
   "BTC-USDT-SWAPSHORT1793649669-3E7F70C5": {
     "instId": "BTC-USDT-SWAP",
