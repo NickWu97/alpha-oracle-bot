@@ -39795,5 +39795,96 @@
       "atr_pct": 0.321,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-11-02 18:00",
+    "date": "2026-11-02",
+    "order_id": "1793585872-8BB6EBF6",
+    "coin": "XRP",
+    "side": "LONG",
+    "entry": 1.2548,
+    "close": 1.2548,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 94,
+    "funding_rate": 5.65910667833e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 54.3,
+      "rsi": 15,
+      "ob": 0,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 2,
+      "volume_ratio": 1.03,
+      "obv": 5,
+      "vwap": 1.2422,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01446,
+      "bb_pct_b": 0.675,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 19.0,
+      "atr_pct": 0.321,
+      "learning_notes": [
+        "rsilong:50-59 (n=95, 勝率 65%) → +1",
+        "fund:neutral (n=401, 勝率 66%) → +1",
+        "sess:asia_day (n=164, 勝率 62%) → +1",
+        "coin:XRP (n=59, 勝率 68%) → +1",
+        "coin_side:XRPLONG (n=34, 勝率 68%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 5
+    },
+    "features": {
+      "score": 94.0,
+      "rsi": 54.3,
+      "atr_pct": 0.321,
+      "funding": 0.056591066783300004,
+      "vol_ratio": 1.03,
+      "adx": 19.0,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 41.8
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.1
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 19.0,
+      "atr_pct": 0.321,
+      "volatile": false
+    }
   }
 ]
