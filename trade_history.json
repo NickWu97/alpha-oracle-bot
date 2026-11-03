@@ -40951,5 +40951,399 @@
       "atr_pct": 0.25,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-11-04 06:23",
+    "date": "2026-11-04",
+    "order_id": "1793727389-A8ECEFAA",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2295.65,
+    "close": 2303.384,
+    "close_type": "TP1",
+    "pnl": 0.34,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 101,
+    "funding_rate": 9.25565676319e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 62.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.41,
+      "obv": 5,
+      "vwap": 2274.4378,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01012,
+      "bb_pct_b": 0.825,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 29.2,
+      "atr_pct": 0.375,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "score:90+ (n=332, 勝率 68%) → +1",
+        "rsilong:60-69 (n=56, 勝率 64%) → +1",
+        "fund:neutral (n=417, 勝率 67%) → +1",
+        "sess:asia_dawn (n=96, 勝率 71%) → +2",
+        "coin:ETH (n=15, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 10,
+      "tp_adjust_notes": [
+        "TP1 2315.0366→2303.3840（阻力 2308.0000）",
+        "TP2 2334.4232→2303.3840（阻力 2308.0000）",
+        "TP3 2360.2720→2303.3840（阻力 2308.0000）"
+      ]
+    },
+    "features": {
+      "score": 101.0,
+      "rsi": 62.1,
+      "atr_pct": 0.375,
+      "funding": 0.09255656763190001,
+      "vol_ratio": 0.41,
+      "adx": 29.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 58.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 46.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.2,
+      "atr_pct": 0.375,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-11-04 06:23",
+    "date": "2026-11-04",
+    "order_id": "1793727398-8432FD6F",
+    "coin": "LINK",
+    "side": "SHORT",
+    "entry": 11.099,
+    "close": 11.079,
+    "close_type": "TP1",
+    "pnl": 0.18,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 90,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 46.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.15,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 11.3959,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01973,
+      "bb_pct_b": 0.295,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📉 正規空頭背離（價格新高但 RSI 不新高）→ 頂部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 21.4,
+      "atr_pct": 0.54,
+      "pullback": true,
+      "learning_notes": [
+        "rsishort:40-49 (n=80, 勝率 65%) → +1",
+        "fund:neutral (n=417, 勝率 67%) → +1",
+        "sess:asia_dawn (n=96, 勝率 71%) → +2",
+        "coin_side:LINKSHORT (n=5, 勝率 20%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 10.9638→11.0790（支撐 11.0568）",
+        "TP2 10.8286→11.0790（支撐 11.0568）",
+        "TP3 10.6484→11.0790（支撐 11.0568）"
+      ]
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 46.9,
+      "atr_pct": 0.54,
+      "funding": 0.1,
+      "vol_ratio": 0.15,
+      "adx": 21.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 43.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.0
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 21.4,
+      "atr_pct": 0.54,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-11-04 06:23",
+    "date": "2026-11-04",
+    "order_id": "1793727389-A8ECEFAA",
+    "coin": "ETH",
+    "side": "LONG",
+    "entry": 2295.65,
+    "close": 2295.65,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 101,
+    "funding_rate": 9.25565676319e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 62.1,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": -10,
+      "volume_ratio": 0.41,
+      "obv": 5,
+      "vwap": 2274.4378,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01012,
+      "bb_pct_b": 0.825,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "hidden",
+      "rsi_div_desc": "🔒 隱藏多頭背離（RSI 新低但價格未創新低）→ 趨勢延續",
+      "rsi_div_score": 6,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 29.2,
+      "atr_pct": 0.375,
+      "adx_bonus": 2,
+      "learning_notes": [
+        "score:90+ (n=332, 勝率 68%) → +1",
+        "rsilong:60-69 (n=56, 勝率 64%) → +1",
+        "fund:neutral (n=417, 勝率 67%) → +1",
+        "sess:asia_dawn (n=96, 勝率 71%) → +2",
+        "coin:ETH (n=15, 勝率 100%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 10,
+      "tp_adjust_notes": [
+        "TP1 2315.0366→2303.3840（阻力 2308.0000）",
+        "TP2 2334.4232→2303.3840（阻力 2308.0000）",
+        "TP3 2360.2720→2303.3840（阻力 2308.0000）"
+      ]
+    },
+    "features": {
+      "score": 101.0,
+      "rsi": 62.1,
+      "atr_pct": 0.375,
+      "funding": 0.09255656763190001,
+      "vol_ratio": 0.41,
+      "adx": 29.2,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 67.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 58.5
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 46.1
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.2,
+      "atr_pct": 0.375,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-11-04 06:23",
+    "date": "2026-11-04",
+    "order_id": "1793727398-8432FD6F",
+    "coin": "LINK",
+    "side": "SHORT",
+    "entry": 11.099,
+    "close": 11.099,
+    "close_type": "BE",
+    "pnl": 0.0,
+    "exit_rr": 0.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": true,
+    "score": 90,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 46.9,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.15,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 11.3959,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01973,
+      "bb_pct_b": 0.295,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "regular",
+      "rsi_div_desc": "📉 正規空頭背離（價格新高但 RSI 不新高）→ 頂部反轉",
+      "rsi_div_score": 12,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 21.4,
+      "atr_pct": 0.54,
+      "pullback": true,
+      "learning_notes": [
+        "rsishort:40-49 (n=80, 勝率 65%) → +1",
+        "fund:neutral (n=417, 勝率 67%) → +1",
+        "sess:asia_dawn (n=96, 勝率 71%) → +2",
+        "coin_side:LINKSHORT (n=5, 勝率 20%) → -3",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 1,
+      "tp_adjust_notes": [
+        "TP1 10.9638→11.0790（支撐 11.0568）",
+        "TP2 10.8286→11.0790（支撐 11.0568）",
+        "TP3 10.6484→11.0790（支撐 11.0568）"
+      ]
+    },
+    "features": {
+      "score": 90.0,
+      "rsi": 46.9,
+      "atr_pct": 0.54,
+      "funding": 0.1,
+      "vol_ratio": 0.15,
+      "adx": 21.4,
+      "mtf_h1": 1.0,
+      "mtf_h4": 0.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.3
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 43.0
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 54.0
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 21.4,
+      "atr_pct": 0.54,
+      "volatile": false
+    }
   }
 ]
