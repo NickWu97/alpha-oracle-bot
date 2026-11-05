@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 298,
-      "loss": 103,
+      "loss": 104,
       "be": 46,
-      "total": 447
+      "total": 448
     },
     "sess:asia_day": {
       "win": 121,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 243,
-      "loss": 72,
+      "loss": 73,
       "be": 42,
-      "total": 357
+      "total": 358
     },
     "rsilong:40-49": {
       "win": 28,
@@ -146,15 +146,15 @@
     },
     "coin:BTC": {
       "win": 64,
-      "loss": 19,
+      "loss": 20,
       "be": 10,
-      "total": 93
+      "total": 94
     },
     "coin_side:BTCLONG": {
       "win": 32,
-      "loss": 9,
+      "loss": 10,
       "be": 5,
-      "total": 46
+      "total": 47
     },
     "rsishort:50-59": {
       "win": 31,
@@ -182,9 +182,9 @@
     },
     "rsilong:50-59": {
       "win": 76,
-      "loss": 25,
+      "loss": 26,
       "be": 13,
-      "total": 114
+      "total": 115
     },
     "coin_side:BNBLONG": {
       "win": 21,
@@ -194,9 +194,9 @@
     },
     "sess:asia_dawn": {
       "win": 71,
-      "loss": 20,
+      "loss": 21,
       "be": 11,
-      "total": 102
+      "total": 103
     },
     "coin_side:AVAXSHORT": {
       "win": 12,
@@ -352,9 +352,9 @@
     },
     "BTC": {
       "win": 64,
-      "loss": 19,
+      "loss": 20,
       "be": 10,
-      "total": 93
+      "total": 94
     },
     "SOL": {
       "win": 39,
@@ -948,7 +948,14 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1793901546.7889585,
+      "coin": "BTC",
+      "side": "LONG",
+      "code": "TREND_REVERSAL",
+      "title": "🔄 趨勢反轉"
     }
   ],
-  "updated_at": 1793847281.316433
+  "updated_at": 1793901546.2988055
 }
