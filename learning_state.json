@@ -13,22 +13,22 @@
       "total": 85
     },
     "fund:neutral": {
-      "win": 295,
-      "loss": 102,
+      "win": 298,
+      "loss": 103,
       "be": 46,
-      "total": 443
+      "total": 447
     },
     "sess:asia_day": {
-      "win": 118,
-      "loss": 51,
+      "win": 121,
+      "loss": 52,
       "be": 18,
-      "total": 187
+      "total": 191
     },
     "coin:BNB": {
       "win": 42,
-      "loss": 18,
+      "loss": 19,
       "be": 12,
-      "total": 72
+      "total": 73
     },
     "coin_side:BNBSHORT": {
       "win": 21,
@@ -49,10 +49,10 @@
       "total": 15
     },
     "score:90+": {
-      "win": 240,
-      "loss": 71,
+      "win": 243,
+      "loss": 72,
       "be": 42,
-      "total": 353
+      "total": 357
     },
     "rsilong:40-49": {
       "win": 28,
@@ -163,10 +163,10 @@
       "total": 52
     },
     "coin:SOL": {
-      "win": 36,
+      "win": 39,
       "loss": 19,
       "be": 6,
-      "total": 61
+      "total": 64
     },
     "coin_side:SOLSHORT": {
       "win": 26,
@@ -181,16 +181,16 @@
       "total": 3
     },
     "rsilong:50-59": {
-      "win": 73,
-      "loss": 24,
+      "win": 76,
+      "loss": 25,
       "be": 13,
-      "total": 110
+      "total": 114
     },
     "coin_side:BNBLONG": {
       "win": 21,
-      "loss": 8,
+      "loss": 9,
       "be": 6,
-      "total": 35
+      "total": 36
     },
     "sess:asia_dawn": {
       "win": 71,
@@ -283,10 +283,10 @@
       "total": 7
     },
     "coin_side:SOLLONG": {
-      "win": 10,
+      "win": 13,
       "loss": 9,
       "be": 4,
-      "total": 23
+      "total": 26
     },
     "coin_side:DOGELONG": {
       "win": 22,
@@ -316,9 +316,9 @@
   "by_coin": {
     "BNB": {
       "win": 42,
-      "loss": 18,
+      "loss": 19,
       "be": 12,
-      "total": 72
+      "total": 73
     },
     "ETH": {
       "win": 16,
@@ -357,10 +357,10 @@
       "total": 93
     },
     "SOL": {
-      "win": 36,
+      "win": 39,
       "loss": 19,
       "be": 6,
-      "total": 61
+      "total": 64
     },
     "DOT": {
       "win": 12,
@@ -941,7 +941,14 @@
       "side": "LONG",
       "code": "NORMAL_NOISE",
       "title": "📊 正常波動"
+    },
+    {
+      "ts": 1793847239.0059998,
+      "coin": "BNB",
+      "side": "LONG",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1793832647.9027357
+  "updated_at": 1793847281.316433
 }
