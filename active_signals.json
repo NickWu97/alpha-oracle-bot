@@ -1,1 +1,97 @@
-{}
+{
+  "XRP-USDT-SWAPSHORT1793905180-28EF0139": {
+    "instId": "XRP-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1.2345,
+    "sl": 1.2478,
+    "tp1": 1.2303,
+    "tp2": 1.2303,
+    "tp3": 1.2303,
+    "atr": 0.00888138,
+    "score": 78,
+    "grade": "觀望 ⚪",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 22.9,
+      "rsi": -15,
+      "rsi_warn": "⚠️ RSI超賣<25 嚴格懲罰",
+      "ob": 20,
+      "fvg": 15,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": -10,
+      "volume_ratio": 0.36,
+      "obv": 5,
+      "vwap": 1.2783,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.07741,
+      "bb_pct_b": 0.266,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "trend",
+      "adx": 60.3,
+      "atr_pct": 0.72,
+      "adx_bonus": 4,
+      "pullback": true,
+      "learning_notes": [
+        "fund:neutral (n=448, 勝率 67%) → +1",
+        "sess:asia_dawn (n=103, 勝率 69%) → +1",
+        "coin:XRP (n=63, 勝率 67%) → +1",
+        "coin_side:XRPSHORT (n=27, 勝率 67%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 9,
+      "tp_adjust_notes": [
+        "TP1 1.2145→1.2303（支撐 1.2278）",
+        "TP2 1.1945→1.2303（支撐 1.2278）",
+        "TP3 1.1679→1.2303（支撐 1.2278）"
+      ]
+    },
+    "funding_rate": -3.42262704999e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 22.6
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 39.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 60.3,
+      "atr_pct": 0.72,
+      "volatile": false
+    },
+    "created": 1793905180.15808,
+    "expires": 1793991580.1580803,
+    "order_id": "1793905180-28EF0139",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1793905180.1581094,
+    "entry_message_id": 15144,
+    "last_checked_ts": 1793905180.1581094
+  }
+}
