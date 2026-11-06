@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 307,
-      "loss": 105,
+      "loss": 106,
       "be": 49,
-      "total": 461
+      "total": 462
     },
     "sess:asia_day": {
       "win": 124,
-      "loss": 52,
+      "loss": 53,
       "be": 18,
-      "total": 194
+      "total": 195
     },
     "coin:BNB": {
       "win": 43,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 249,
-      "loss": 74,
+      "loss": 75,
       "be": 45,
-      "total": 368
+      "total": 369
     },
     "rsilong:40-49": {
       "win": 28,
@@ -98,21 +98,21 @@
     },
     "coin:XRP": {
       "win": 48,
-      "loss": 15,
+      "loss": 16,
       "be": 6,
-      "total": 69
+      "total": 70
     },
     "coin_side:XRPSHORT": {
       "win": 24,
-      "loss": 6,
+      "loss": 7,
       "be": 3,
-      "total": 33
+      "total": 34
     },
     "rsishort:30-39": {
       "win": 65,
-      "loss": 16,
+      "loss": 17,
       "be": 5,
-      "total": 86
+      "total": 87
     },
     "sess:us": {
       "win": 33,
@@ -340,9 +340,9 @@
     },
     "XRP": {
       "win": 48,
-      "loss": 15,
+      "loss": 16,
       "be": 6,
-      "total": 69
+      "total": 70
     },
     "NEAR": {
       "win": 13,
@@ -962,7 +962,14 @@
       "side": "SHORT",
       "code": "VOL_SPIKE",
       "title": "🌪 波動率激增"
+    },
+    {
+      "ts": 1794006802.4791234,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "INSUFFICIENT",
+      "title": "📋 資料不足"
     }
   ],
-  "updated_at": 1793997808.0552034
+  "updated_at": 1794006802.0028327
 }
