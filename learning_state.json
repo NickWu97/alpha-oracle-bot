@@ -14,9 +14,9 @@
     },
     "fund:neutral": {
       "win": 303,
-      "loss": 104,
+      "loss": 105,
       "be": 48,
-      "total": 455
+      "total": 456
     },
     "sess:asia_day": {
       "win": 124,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 245,
-      "loss": 73,
+      "loss": 74,
       "be": 44,
-      "total": 362
+      "total": 363
     },
     "rsilong:40-49": {
       "win": 28,
@@ -116,9 +116,9 @@
     },
     "sess:us": {
       "win": 33,
-      "loss": 13,
+      "loss": 14,
       "be": 5,
-      "total": 51
+      "total": 52
     },
     "rsilong:30-39": {
       "win": 0,
@@ -158,21 +158,21 @@
     },
     "rsishort:50-59": {
       "win": 31,
-      "loss": 14,
+      "loss": 15,
       "be": 7,
-      "total": 52
+      "total": 53
     },
     "coin:SOL": {
       "win": 39,
-      "loss": 19,
+      "loss": 20,
       "be": 6,
-      "total": 64
+      "total": 65
     },
     "coin_side:SOLSHORT": {
       "win": 26,
-      "loss": 10,
+      "loss": 11,
       "be": 2,
-      "total": 38
+      "total": 39
     },
     "rsishort:60-69": {
       "win": 1,
@@ -358,9 +358,9 @@
     },
     "SOL": {
       "win": 39,
-      "loss": 19,
+      "loss": 20,
       "be": 6,
-      "total": 64
+      "total": 65
     },
     "DOT": {
       "win": 12,
@@ -955,7 +955,14 @@
       "side": "LONG",
       "code": "TREND_REVERSAL",
       "title": "🔄 趨勢反轉"
+    },
+    {
+      "ts": 1793976588.3622315,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "VOL_SPIKE",
+      "title": "🌪 波動率激增"
     }
   ],
-  "updated_at": 1793964412.8843195
+  "updated_at": 1793976587.6059773
 }
