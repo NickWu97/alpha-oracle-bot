@@ -84,8 +84,8 @@
     "hit_tp3": false,
     "activated_at": 1793997799.3483043,
     "entry_message_id": 15180,
-    "last_checked_ts": 1794018600.0,
-    "current_price": 90.42
+    "last_checked_ts": 1794031200.0,
+    "current_price": 90.14
   },
   "ETH-USDT-SWAPSHORT1794011025-3C571EED": {
     "instId": "ETH-USDT-SWAP",
@@ -174,15 +174,15 @@
     "hit_tp3": false,
     "activated_at": 1794011025.0678725,
     "entry_message_id": 15190,
-    "last_checked_ts": 1794018600.0,
-    "current_price": 2247.66
+    "last_checked_ts": 1794031200.0,
+    "current_price": 2244.28
   },
   "XRP-USDT-SWAPSHORT1794011028-510EF0A0": {
     "instId": "XRP-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 1.1802,
-    "sl": 1.1802,
+    "sl": 1.1697,
     "tp1": 1.1697,
     "tp2": 1.1591,
     "tp3": 1.145,
@@ -259,13 +259,13 @@
     "created": 1794011028.5902154,
     "expires": 1794097428.5902162,
     "order_id": "1794011028-510EF0A0",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1794011028.5902479,
     "entry_message_id": 15191,
-    "last_checked_ts": 1794018600.0,
-    "current_price": 1.1673
+    "last_checked_ts": 1794031200.0,
+    "current_price": 1.1637
   }
 }
