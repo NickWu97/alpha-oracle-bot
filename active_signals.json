@@ -1,98 +1,10 @@
 {
-  "SOL-USDT-SWAPSHORT1793997799-1B629BC1": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 89.99,
-    "sl": 88.9491,
-    "tp1": 88.9491,
-    "tp2": 87.9081,
-    "tp3": 86.5202,
-    "atr": 0.46263924,
-    "score": 85,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 0,
-      "rsi_value": 42.8,
-      "rsi": 15,
-      "ob": 20,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 2,
-      "volume_ratio": 1.14,
-      "obv": 5,
-      "vwap": 92.637,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01124,
-      "bb_pct_b": 0.06,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 22.8,
-      "atr_pct": 0.515,
-      "learning_notes": [
-        "score:70-79 (n=16, 勝率 62%) → +1",
-        "rsishort:40-49 (n=93, 勝率 67%) → +1",
-        "fund:neutral (n=460, 勝率 67%) → +1",
-        "sess:asia_dawn (n=107, 勝率 70%) → +2",
-        "coin_side:SOLSHORT (n=39, 勝率 67%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 2 (勝率 60%)"
-      ],
-      "learning_adjust": 6
-    },
-    "funding_rate": 4.43191998186e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 43.7
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 39.5
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 49.1
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 22.8,
-      "atr_pct": 0.515,
-      "volatile": false
-    },
-    "created": 1793997799.3482757,
-    "expires": 1794084199.348276,
-    "order_id": "1793997799-1B629BC1",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1793997799.3483043,
-    "entry_message_id": 15180,
-    "last_checked_ts": 1794177000.0,
-    "current_price": 85.72
-  },
   "ADA-USDT-SWAPSHORT1794164345-F452918A": {
     "instId": "ADA-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 0.1804,
-    "sl": 0.1804,
+    "sl": 0.1789,
     "tp1": 0.1789,
     "tp2": 0.1775,
     "tp3": 0.1755,
@@ -167,13 +79,13 @@
     "created": 1794164345.957774,
     "expires": 1794250745.9577744,
     "order_id": "1794164345-F452918A",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1794164345.9578028,
     "entry_message_id": 15254,
-    "last_checked_ts": 1794177000.0,
-    "current_price": 0.1742
+    "last_checked_ts": 1794179700.0,
+    "current_price": 0.1759
   }
 }
