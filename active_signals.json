@@ -1,97 +1,4 @@
 {
-  "BNB-USDT-SWAPSHORT1794354265-B6DB2697": {
-    "instId": "BNB-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 680.29,
-    "sl": 679.6252,
-    "tp1": 679.6252,
-    "tp2": 679.6252,
-    "tp3": 679.6252,
-    "atr": 1.92983937,
-    "score": 102,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 51.1,
-      "rsi": 25,
-      "ob": 20,
-      "fvg": 0,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.62,
-      "obv": 5,
-      "vwap": 685.8323,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.01,
-      "bb_pct_b": 0.709,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "transitional",
-      "adx": 20.0,
-      "atr_pct": 0.285,
-      "learning_notes": [
-        "score:90+ (n=399, 勝率 68%) → +1",
-        "rsishort:50-59 (n=58, 勝率 60%) → +1",
-        "fund:neutral (n=501, 勝率 67%) → +1",
-        "sess:asia_day (n=211, 勝率 64%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 9 / 敗 1 (勝率 90%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 9,
-      "tp_adjust_notes": [
-        "TP1 675.9479→679.6252（支撐 678.2687）",
-        "TP2 671.6057→679.6252（支撐 678.2687）",
-        "TP3 665.8162→679.6252（支撐 678.2687）"
-      ]
-    },
-    "funding_rate": 4.63437795677e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 41.6
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 36.8
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 51.3
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 20.0,
-      "atr_pct": 0.285,
-      "volatile": false
-    },
-    "created": 1794354265.2360938,
-    "expires": 1794440665.236094,
-    "order_id": "1794354265-B6DB2697",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1794354265.2361305,
-    "entry_message_id": 15330,
-    "last_checked_ts": 1794365100.0,
-    "current_price": 682.86
-  },
   "DOT-USDT-SWAPSHORT1794366492-11A8E228": {
     "instId": "DOT-USDT-SWAP",
     "side": "SHORT",
@@ -180,6 +87,6 @@
     "activated_at": 1794366492.7983472,
     "entry_message_id": 15348,
     "last_checked_ts": 1794366492.7983472,
-    "current_price": 0.846
+    "current_price": 0.8469
   }
 }
