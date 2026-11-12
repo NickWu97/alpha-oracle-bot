@@ -50267,5 +50267,405 @@
       "atr_pct": 0.638,
       "volatile": false
     }
+  },
+  {
+    "time": "2026-11-12 08:53",
+    "date": "2026-11-12",
+    "order_id": "1794422101-02B0DB1F",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.1783,
+    "close": 0.1774,
+    "close_type": "TP1",
+    "pnl": 0.5,
+    "exit_rr": 1.5,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 96,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 53.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.55,
+      "obv": 5,
+      "vwap": 0.1761,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02264,
+      "bb_pct_b": 0.53,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.608,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=99, 勝率 62%) → +1",
+        "rsishort:50-59 (n=66, 勝率 64%) → +1",
+        "fund:neutral (n=514, 勝率 67%) → +1",
+        "sess:asia_dawn (n=113, 勝率 71%) → +2",
+        "coin:ADA (n=15, 勝率 73%) → +2",
+        "coin_side:ADASHORT (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 11,
+      "tp_adjust_notes": [
+        "TP1 0.1759→0.1774（支撐 0.1771）",
+        "TP2 0.1734→0.1774（支撐 0.1771）",
+        "TP3 0.1702→0.1774（支撐 0.1771）"
+      ]
+    },
+    "features": {
+      "score": 96.0,
+      "rsi": 53.3,
+      "atr_pct": 0.608,
+      "funding": 0.1,
+      "vol_ratio": 0.55,
+      "adx": 29.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 65.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 49.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 40.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.608,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-11-12 08:53",
+    "date": "2026-11-12",
+    "order_id": "1794422103-B9E99F5F",
+    "coin": "AVAX",
+    "side": "LONG",
+    "entry": 8.632,
+    "close": 8.5517,
+    "close_type": "SL",
+    "pnl": -0.93,
+    "exit_rr": -1.0,
+    "exit_weight": 1.0,
+    "is_win": false,
+    "is_be": false,
+    "score": 110,
+    "funding_rate": -3.22756894965e-05,
+    "detail": {
+      "trend": 30,
+      "rsi_value": 50.5,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.61,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 8.4526,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.02568,
+      "bb_pct_b": 0.547,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.623,
+      "learning_notes": [
+        "score:90+ (n=411, 勝率 68%) → +1",
+        "rsilong:50-59 (n=116, 勝率 66%) → +1",
+        "fund:neutral (n=514, 勝率 67%) → +1",
+        "sess:asia_dawn (n=113, 勝率 71%) → +2",
+        "coin:AVAX (n=31, 勝率 71%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 4 (勝率 60%)"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP1 8.7525→8.7162（阻力 8.7337）",
+        "TP2 8.8730→8.7162（阻力 8.7337）",
+        "TP3 9.0337→8.7162（阻力 8.7337）"
+      ]
+    },
+    "features": {
+      "score": 110.0,
+      "rsi": 50.5,
+      "atr_pct": 0.623,
+      "funding": -0.0322756894965,
+      "vol_ratio": 0.61,
+      "adx": 20.7,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 1.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 60.9
+      },
+      "4H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 56.2
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 44.6
+      }
+    },
+    "regime": {
+      "regime": "transitional",
+      "adx": 20.7,
+      "atr_pct": 0.623,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-11-12 08:54",
+    "date": "2026-11-12",
+    "order_id": "1794422101-02B0DB1F",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.1783,
+    "close": 0.1774,
+    "close_type": "TP2",
+    "pnl": 0.5,
+    "exit_rr": 3.0,
+    "exit_weight": 0.3,
+    "is_win": true,
+    "is_be": false,
+    "score": 96,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 53.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.55,
+      "obv": 5,
+      "vwap": 0.1761,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02264,
+      "bb_pct_b": 0.53,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.608,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=99, 勝率 62%) → +1",
+        "rsishort:50-59 (n=66, 勝率 64%) → +1",
+        "fund:neutral (n=514, 勝率 67%) → +1",
+        "sess:asia_dawn (n=113, 勝率 71%) → +2",
+        "coin:ADA (n=15, 勝率 73%) → +2",
+        "coin_side:ADASHORT (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 11,
+      "tp_adjust_notes": [
+        "TP1 0.1759→0.1774（支撐 0.1771）",
+        "TP2 0.1734→0.1774（支撐 0.1771）",
+        "TP3 0.1702→0.1774（支撐 0.1771）"
+      ]
+    },
+    "features": {
+      "score": 96.0,
+      "rsi": 53.3,
+      "atr_pct": 0.608,
+      "funding": 0.1,
+      "vol_ratio": 0.55,
+      "adx": 29.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 65.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 49.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 40.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.608,
+      "volatile": false
+    }
+  },
+  {
+    "time": "2026-11-12 08:54",
+    "date": "2026-11-12",
+    "order_id": "1794422101-02B0DB1F",
+    "coin": "ADA",
+    "side": "SHORT",
+    "entry": 0.1783,
+    "close": 0.1774,
+    "close_type": "TP3",
+    "pnl": 0.5,
+    "exit_rr": 5.0,
+    "exit_weight": 0.4,
+    "is_win": true,
+    "is_be": false,
+    "score": 96,
+    "funding_rate": 0.0001,
+    "detail": {
+      "trend": 0,
+      "rsi_value": 53.3,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.55,
+      "obv": 5,
+      "vwap": 0.1761,
+      "vwap_score": -6,
+      "vwap_warn": "⚠️ 價格在VWAP錯側",
+      "bb_bandwidth": 0.02264,
+      "bb_pct_b": 0.53,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD死叉✅",
+      "macd_score": 8,
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.608,
+      "adx_bonus": 2,
+      "pullback": true,
+      "learning_notes": [
+        "score:80-89 (n=99, 勝率 62%) → +1",
+        "rsishort:50-59 (n=66, 勝率 64%) → +1",
+        "fund:neutral (n=514, 勝率 67%) → +1",
+        "sess:asia_dawn (n=113, 勝率 71%) → +2",
+        "coin:ADA (n=15, 勝率 73%) → +2",
+        "coin_side:ADASHORT (n=10, 勝率 70%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 7 / 敗 2 (勝率 70%)",
+        "KNN 中高勝率 → +3"
+      ],
+      "learning_adjust": 11,
+      "tp_adjust_notes": [
+        "TP1 0.1759→0.1774（支撐 0.1771）",
+        "TP2 0.1734→0.1774（支撐 0.1771）",
+        "TP3 0.1702→0.1774（支撐 0.1771）"
+      ]
+    },
+    "features": {
+      "score": 96.0,
+      "rsi": 53.3,
+      "atr_pct": 0.608,
+      "funding": 0.1,
+      "vol_ratio": 0.55,
+      "adx": 29.3,
+      "mtf_h1": 1.0,
+      "mtf_h4": 1.0,
+      "side": 0.0
+    },
+    "mtf": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 65.5
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 49.7
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 40.5
+      }
+    },
+    "regime": {
+      "regime": "trend",
+      "adx": 29.3,
+      "atr_pct": 0.608,
+      "volatile": false
+    }
   }
 ]

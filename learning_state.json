@@ -13,16 +13,16 @@
       "total": 119
     },
     "fund:neutral": {
-      "win": 345,
-      "loss": 115,
+      "win": 348,
+      "loss": 116,
       "be": 54,
-      "total": 514
+      "total": 518
     },
     "sess:asia_day": {
-      "win": 143,
-      "loss": 60,
+      "win": 146,
+      "loss": 61,
       "be": 19,
-      "total": 222
+      "total": 226
     },
     "coin:BNB": {
       "win": 49,
@@ -49,10 +49,10 @@
       "total": 20
     },
     "score:90+": {
-      "win": 280,
-      "loss": 82,
+      "win": 283,
+      "loss": 83,
       "be": 49,
-      "total": 411
+      "total": 415
     },
     "rsilong:40-49": {
       "win": 31,
@@ -80,15 +80,15 @@
     },
     "coin:AVAX": {
       "win": 22,
-      "loss": 8,
+      "loss": 9,
       "be": 1,
-      "total": 31
+      "total": 32
     },
     "coin_side:AVAXLONG": {
       "win": 10,
-      "loss": 6,
+      "loss": 7,
       "be": 1,
-      "total": 17
+      "total": 18
     },
     "score:80-89": {
       "win": 61,
@@ -157,10 +157,10 @@
       "total": 47
     },
     "rsishort:50-59": {
-      "win": 42,
+      "win": 45,
       "loss": 15,
       "be": 9,
-      "total": 66
+      "total": 69
     },
     "coin:SOL": {
       "win": 46,
@@ -182,9 +182,9 @@
     },
     "rsilong:50-59": {
       "win": 76,
-      "loss": 27,
+      "loss": 28,
       "be": 13,
-      "total": 116
+      "total": 117
     },
     "coin_side:BNBLONG": {
       "win": 21,
@@ -247,16 +247,16 @@
       "total": 57
     },
     "coin:ADA": {
-      "win": 11,
+      "win": 14,
       "loss": 2,
       "be": 2,
-      "total": 15
+      "total": 18
     },
     "coin_side:ADASHORT": {
-      "win": 7,
+      "win": 10,
       "loss": 2,
       "be": 1,
-      "total": 10
+      "total": 13
     },
     "coin_side:DOTLONG": {
       "win": 6,
@@ -334,9 +334,9 @@
     },
     "AVAX": {
       "win": 22,
-      "loss": 8,
+      "loss": 9,
       "be": 1,
-      "total": 31
+      "total": 32
     },
     "XRP": {
       "win": 58,
@@ -369,10 +369,10 @@
       "total": 21
     },
     "ADA": {
-      "win": 11,
+      "win": 14,
       "loss": 2,
       "be": 2,
-      "total": 15
+      "total": 18
     },
     "DOGE": {
       "win": 36,
@@ -1011,7 +1011,14 @@
       "side": "SHORT",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1794444834.2793393,
+      "coin": "AVAX",
+      "side": "LONG",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1794394620.3177538
+  "updated_at": 1794444876.1722572
 }
