@@ -1,100 +1,10 @@
 {
-  "DOGE-USDT-SWAPSHORT1794445273-0E3E84A3": {
-    "instId": "DOGE-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 0.0676,
-    "sl": 0.0667,
-    "tp1": 0.0667,
-    "tp2": 0.0658,
-    "tp3": 0.0645,
-    "atr": 0.0004132,
-    "score": 93,
-    "grade": "A 強力 ⭐",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 43.0,
-      "rsi": 15,
-      "ob": 0,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 0,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": -12,
-      "weekly_trend": "逆週線",
-      "volume": 0,
-      "volume_ratio": 0.74,
-      "obv": 5,
-      "vwap": 0.0687,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.03532,
-      "bb_pct_b": 0.338,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "none",
-      "rsi_div_score": 0,
-      "macd": "MACD順向",
-      "macd_score": 4,
-      "regime": "transitional",
-      "adx": 24.1,
-      "atr_pct": 0.612,
-      "learning_notes": [
-        "score:80-89 (n=99, 勝率 62%) → +1",
-        "rsishort:40-49 (n=119, 勝率 68%) → +1",
-        "fund:neutral (n=518, 勝率 67%) → +1",
-        "sess:asia_day (n=226, 勝率 65%) → +1",
-        "coin:DOGE (n=55, 勝率 65%) → +1",
-        "coin_side:DOGESHORT (n=23, 勝率 61%) → +1",
-        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
-        "KNN 高勝率 → +5"
-      ],
-      "learning_adjust": 11
-    },
-    "funding_rate": -4.52536822907e-05,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 39.7
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 37.4
-      },
-      "1W": {
-        "supertrend": 1,
-        "trend": "up",
-        "rsi": 37.7
-      }
-    },
-    "regime_snapshot": {
-      "regime": "transitional",
-      "adx": 24.1,
-      "atr_pct": 0.612,
-      "volatile": false
-    },
-    "created": 1794445273.6583605,
-    "expires": 1794531673.6583607,
-    "order_id": "1794445273-0E3E84A3",
-    "status": "TRAIL",
-    "hit_tp1": true,
-    "hit_tp2": true,
-    "hit_tp3": false,
-    "activated_at": 1794445273.658385,
-    "entry_message_id": 15379,
-    "last_checked_ts": 1794537000.0,
-    "current_price": 0.06555
-  },
   "ETH-USDT-SWAPSHORT1794502758-322278F8": {
     "instId": "ETH-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 2007.43,
-    "sl": 2007.43,
+    "sl": 1977.3004,
     "tp1": 1977.3004,
     "tp2": 1947.1708,
     "tp3": 1906.998,
@@ -172,13 +82,13 @@
     "created": 1794502758.556181,
     "expires": 1794589158.5561814,
     "order_id": "1794502758-322278F8",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1794502758.5562189,
     "entry_message_id": 15412,
-    "last_checked_ts": 1794537000.0,
-    "current_price": 1993.34
+    "last_checked_ts": 1794563100.0,
+    "current_price": 1942.01
   }
 }
