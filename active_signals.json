@@ -86,15 +86,15 @@
     "hit_tp3": false,
     "activated_at": 1794445273.658385,
     "entry_message_id": 15379,
-    "last_checked_ts": 1794536100.0,
-    "current_price": 0.06522
+    "last_checked_ts": 1794537000.0,
+    "current_price": 0.06555
   },
   "ETH-USDT-SWAPSHORT1794502758-322278F8": {
     "instId": "ETH-USDT-SWAP",
     "side": "SHORT",
     "tf": "15m",
     "entry": 2007.43,
-    "sl": 2027.5164,
+    "sl": 2007.43,
     "tp1": 1977.3004,
     "tp2": 1947.1708,
     "tp3": 1906.998,
@@ -172,13 +172,13 @@
     "created": 1794502758.556181,
     "expires": 1794589158.5561814,
     "order_id": "1794502758-322278F8",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1794502758.5562189,
     "entry_message_id": 15412,
-    "last_checked_ts": 1794536100.0,
-    "current_price": 1988.05
+    "last_checked_ts": 1794537000.0,
+    "current_price": 1993.34
   }
 }
