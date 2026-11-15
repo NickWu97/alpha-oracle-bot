@@ -1,1 +1,184 @@
-{}
+{
+  "DOGE-USDT-SWAPSHORT1794774614-64396A6F": {
+    "instId": "DOGE-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 0.0588,
+    "sl": 0.0592,
+    "tp1": 0.0581,
+    "tp2": 0.0574,
+    "tp3": 0.0565,
+    "atr": 0.00030676,
+    "score": 110,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 51.7,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.87,
+      "obv": -6,
+      "obv_warn": "⚠️ OBV與方向背離",
+      "vwap": 0.061,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01375,
+      "bb_pct_b": 0.678,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 15.9,
+      "atr_pct": 0.522,
+      "learning_notes": [
+        "score:90+ (n=454, 勝率 71%) → +2",
+        "rsishort:50-59 (n=78, 勝率 69%) → +1",
+        "fund:neutral (n=567, 勝率 70%) → +1",
+        "sess:asia_dawn (n=130, 勝率 74%) → +2",
+        "coin:DOGE (n=61, 勝率 69%) → +1",
+        "coin_side:DOGESHORT (n=29, 勝率 69%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 8 / 敗 1 (勝率 80%)",
+        "KNN 高勝率 → +5"
+      ],
+      "learning_adjust": 13
+    },
+    "funding_rate": 2.32313867701e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 47.8
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 34.3
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 28.4
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 15.9,
+      "atr_pct": 0.522,
+      "volatile": false
+    },
+    "created": 1794774614.8080902,
+    "expires": 1794861014.8080907,
+    "order_id": "1794774614-64396A6F",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1794774614.8081272,
+    "entry_message_id": 15509,
+    "last_checked_ts": 1794774614.8081272
+  },
+  "AVAX-USDT-SWAPSHORT1794774617-11DBF631": {
+    "instId": "AVAX-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 7.247,
+    "sl": 7.3236,
+    "tp1": 7.2271,
+    "tp2": 7.2271,
+    "tp3": 7.2271,
+    "atr": 0.0510851,
+    "score": 103,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 55.7,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.96,
+      "obv": 5,
+      "vwap": 7.7107,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01754,
+      "bb_pct_b": 0.931,
+      "bb_squeeze": false,
+      "bb_score": 2,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "range",
+      "adx": 15.9,
+      "atr_pct": 0.705,
+      "learning_notes": [
+        "score:90+ (n=454, 勝率 71%) → +2",
+        "rsishort:50-59 (n=78, 勝率 69%) → +1",
+        "sess:asia_dawn (n=130, 勝率 74%) → +2",
+        "coin:AVAX (n=32, 勝率 69%) → +1",
+        "coin_side:AVAXSHORT (n=14, 勝率 86%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 6 / 敗 1 (勝率 60%)"
+      ],
+      "learning_adjust": 8,
+      "tp_adjust_notes": [
+        "TP1 7.1321→7.2271（支撐 7.2127）",
+        "TP2 7.0171→7.2271（支撐 7.2127）",
+        "TP3 6.8639→7.2271（支撐 7.2127）"
+      ]
+    },
+    "funding_rate": -0.000148735615213,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.3
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 30.6
+      },
+      "1W": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 39.6
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 15.9,
+      "atr_pct": 0.705,
+      "volatile": false
+    },
+    "created": 1794774617.9031897,
+    "expires": 1794861017.9031904,
+    "order_id": "1794774617-11DBF631",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1794774617.9032197,
+    "entry_message_id": 15510,
+    "last_checked_ts": 1794774617.9032197
+  }
+}
