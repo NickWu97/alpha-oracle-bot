@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 72.44,
-    "sl": 72.44,
+    "sl": 73.2258,
     "tp1": 73.2258,
     "tp2": 74.0116,
     "tp3": 75.0593,
@@ -79,13 +79,13 @@
     "created": 1794905590.4646187,
     "expires": 1794991990.464619,
     "order_id": "1794905590-E641FB37",
-    "status": "BE",
+    "status": "TRAIL",
     "hit_tp1": true,
-    "hit_tp2": false,
+    "hit_tp2": true,
     "hit_tp3": false,
     "activated_at": 1794905590.4646516,
     "entry_message_id": 15552,
-    "last_checked_ts": 1794915000.0,
-    "current_price": 73.38
+    "last_checked_ts": 1794938400.0,
+    "current_price": 72.0
   }
 }
