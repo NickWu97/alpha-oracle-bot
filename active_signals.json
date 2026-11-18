@@ -4,7 +4,7 @@
     "side": "LONG",
     "tf": "15m",
     "entry": 0.9752,
-    "sl": 0.9672,
+    "sl": 0.9752,
     "tp1": 0.9871,
     "tp2": 0.9991,
     "tp3": 1.015,
@@ -81,13 +81,105 @@
     "created": 1794964208.7250297,
     "expires": 1795050608.7250304,
     "order_id": "1794964208-6F1EC9A4",
-    "status": "ACTIVE",
-    "hit_tp1": false,
+    "status": "BE",
+    "hit_tp1": true,
     "hit_tp2": false,
     "hit_tp3": false,
     "activated_at": 1794964208.725195,
     "entry_message_id": 15571,
-    "last_checked_ts": 1794968100.0,
-    "current_price": 0.9751
+    "last_checked_ts": 1794989700.0,
+    "current_price": 1.002
+  },
+  "LINK-USDT-SWAPLONG1794990802-DAB0CDAF": {
+    "instId": "LINK-USDT-SWAP",
+    "side": "LONG",
+    "tf": "15m",
+    "entry": 9.247,
+    "sl": 9.182,
+    "tp1": 9.2728,
+    "tp2": 9.2728,
+    "tp3": 9.2728,
+    "atr": 0.04330596,
+    "score": 96,
+    "grade": "A+ 極強 🔥",
+    "detail": {
+      "trend": 30,
+      "rsi_value": 53.0,
+      "rsi": 15,
+      "ob": 20,
+      "fvg": 15,
+      "snr": 5,
+      "pa": 0,
+      "liq": 0,
+      "mom": 0,
+      "mtf": 3,
+      "mtf_desc": "1H=順 / 4H=反",
+      "weekly_penalty": -12,
+      "weekly_trend": "逆週線",
+      "volume": 0,
+      "volume_ratio": 0.62,
+      "obv": 5,
+      "vwap": 9.1765,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.01097,
+      "bb_pct_b": 0.67,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD順向",
+      "macd_score": 4,
+      "regime": "range",
+      "adx": 15.2,
+      "atr_pct": 0.468,
+      "learning_notes": [
+        "score:90+ (n=465, 勝率 71%) → +2",
+        "rsilong:50-59 (n=122, 勝率 63%) → +1",
+        "fund:neutral (n=575, 勝率 69%) → +1",
+        "sess:europe (n=151, 勝率 70%) → +1",
+        "coin_side:LINKLONG (n=17, 勝率 65%) → +1",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 6,
+      "tp_adjust_notes": [
+        "TP1 9.3444→9.2728（阻力 9.2914）",
+        "TP2 9.4419→9.2728（阻力 9.2914）",
+        "TP3 9.5718→9.2728（阻力 9.2914）"
+      ]
+    },
+    "funding_rate": 7.3297150865e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": 1,
+        "trend": "up",
+        "rsi": 57.1
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 46.8
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 42.2
+      }
+    },
+    "regime_snapshot": {
+      "regime": "range",
+      "adx": 15.2,
+      "atr_pct": 0.468,
+      "volatile": false
+    },
+    "created": 1794990802.057986,
+    "expires": 1795077202.0579865,
+    "order_id": "1794990802-DAB0CDAF",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1794990802.058033,
+    "entry_message_id": 15575,
+    "last_checked_ts": 1794990802.058033
   }
 }
