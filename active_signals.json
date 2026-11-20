@@ -94,102 +94,8 @@
     "hit_tp3": false,
     "activated_at": 1795206145.0130277,
     "entry_message_id": 15652,
-    "last_checked_ts": 1795206145.0130277
-  },
-  "SOL-USDT-SWAPSHORT1795206146-7731E25C": {
-    "instId": "SOL-USDT-SWAP",
-    "side": "SHORT",
-    "tf": "15m",
-    "entry": 68.41,
-    "sl": 69.414,
-    "tp1": 67.5448,
-    "tp2": 67.5448,
-    "tp3": 67.5448,
-    "atr": 0.66930668,
-    "score": 100,
-    "grade": "A+ 極強 🔥",
-    "detail": {
-      "trend": 30,
-      "rsi_value": 37.3,
-      "rsi": 15,
-      "ob": 0,
-      "fvg": 15,
-      "snr": 5,
-      "pa": 0,
-      "liq": 0,
-      "mom": 5,
-      "mtf": 15,
-      "mtf_desc": "1H=順 / 4H=順",
-      "weekly_penalty": 0,
-      "weekly_trend": "順週線 ✅",
-      "volume": -10,
-      "volume_ratio": 0.3,
-      "obv": 5,
-      "vwap": 72.547,
-      "vwap_score": 5,
-      "bb_bandwidth": 0.02602,
-      "bb_pct_b": 0.172,
-      "bb_squeeze": false,
-      "bb_score": 0,
-      "rsi_div": "hidden",
-      "rsi_div_desc": "🔒 隱藏空頭背離（RSI 新高但價格未創新高）→ 趨勢延續",
-      "rsi_div_score": 6,
-      "macd": "MACD逆向⚠️",
-      "macd_score": -5,
-      "regime": "trend",
-      "adx": 33.4,
-      "atr_pct": 0.982,
-      "adx_bonus": 4,
-      "learning_notes": [
-        "score:90+ (n=488, 勝率 71%) → +2",
-        "rsishort:30-39 (n=115, 勝率 77%) → +2",
-        "fund:neg (n=21, 勝率 62%) → +1",
-        "sess:asia_dawn (n=141, 勝率 75%) → +2",
-        "coin:SOL (n=93, 勝率 68%) → +1",
-        "coin_side:SOLSHORT (n=61, 勝率 75%) → +2",
-        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
-      ],
-      "learning_adjust": 10,
-      "tp_adjust_notes": [
-        "TP1 66.9041→67.5448（支撐 67.4100）",
-        "TP2 65.3981→67.5448（支撐 67.4100）",
-        "TP3 63.3902→67.5448（支撐 67.4100）"
-      ]
-    },
-    "funding_rate": -0.0001441727371267,
-    "mtf_snapshot": {
-      "1H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 29.5
-      },
-      "4H": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 26.7
-      },
-      "1W": {
-        "supertrend": -1,
-        "trend": "down",
-        "rsi": 37.7
-      }
-    },
-    "regime_snapshot": {
-      "regime": "trend",
-      "adx": 33.4,
-      "atr_pct": 0.982,
-      "volatile": false
-    },
-    "created": 1795206146.6447866,
-    "expires": 1795292546.6447868,
-    "order_id": "1795206146-7731E25C",
-    "status": "ACTIVE",
-    "hit_tp1": false,
-    "hit_tp2": false,
-    "hit_tp3": false,
-    "activated_at": 1795206146.6448188,
-    "entry_message_id": 15653,
-    "last_checked_ts": 1795206146.6448188
+    "last_checked_ts": 1795208400.0,
+    "current_price": 58408.7
   },
   "ADA-USDT-SWAPSHORT1795206151-5DBB3828": {
     "instId": "ADA-USDT-SWAP",
@@ -285,6 +191,7 @@
     "hit_tp3": false,
     "activated_at": 1795206151.4385703,
     "entry_message_id": 15654,
-    "last_checked_ts": 1795206151.4385703
+    "last_checked_ts": 1795208400.0,
+    "current_price": 0.1391
   }
 }
