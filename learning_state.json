@@ -14,15 +14,15 @@
     },
     "fund:neutral": {
       "win": 415,
-      "loss": 126,
+      "loss": 127,
       "be": 61,
-      "total": 602
+      "total": 603
     },
     "sess:asia_day": {
       "win": 168,
-      "loss": 68,
+      "loss": 70,
       "be": 23,
-      "total": 259
+      "total": 261
     },
     "coin:BNB": {
       "win": 65,
@@ -50,9 +50,9 @@
     },
     "score:90+": {
       "win": 350,
-      "loss": 88,
+      "loss": 90,
       "be": 53,
-      "total": 491
+      "total": 493
     },
     "rsilong:40-49": {
       "win": 35,
@@ -110,9 +110,9 @@
     },
     "rsishort:30-39": {
       "win": 91,
-      "loss": 20,
+      "loss": 22,
       "be": 7,
-      "total": 118
+      "total": 120
     },
     "sess:us": {
       "win": 47,
@@ -146,9 +146,9 @@
     },
     "coin:BTC": {
       "win": 80,
-      "loss": 22,
+      "loss": 23,
       "be": 14,
-      "total": 116
+      "total": 117
     },
     "coin_side:BTCLONG": {
       "win": 32,
@@ -206,9 +206,9 @@
     },
     "fund:neg": {
       "win": 16,
-      "loss": 4,
+      "loss": 5,
       "be": 4,
-      "total": 24
+      "total": 25
     },
     "coin:DOT": {
       "win": 13,
@@ -242,21 +242,21 @@
     },
     "coin_side:BTCSHORT": {
       "win": 48,
-      "loss": 12,
+      "loss": 13,
       "be": 9,
-      "total": 69
+      "total": 70
     },
     "coin:ADA": {
       "win": 14,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 18
+      "total": 19
     },
     "coin_side:ADASHORT": {
       "win": 10,
-      "loss": 2,
+      "loss": 3,
       "be": 1,
-      "total": 13
+      "total": 14
     },
     "coin_side:DOTLONG": {
       "win": 6,
@@ -352,9 +352,9 @@
     },
     "BTC": {
       "win": 80,
-      "loss": 22,
+      "loss": 23,
       "be": 14,
-      "total": 116
+      "total": 117
     },
     "SOL": {
       "win": 66,
@@ -370,9 +370,9 @@
     },
     "ADA": {
       "win": 14,
-      "loss": 2,
+      "loss": 3,
       "be": 2,
-      "total": 18
+      "total": 19
     },
     "DOGE": {
       "win": 45,
@@ -1060,7 +1060,21 @@
       "side": "LONG",
       "code": "INSUFFICIENT",
       "title": "📋 資料不足"
+    },
+    {
+      "ts": 1795225189.0818853,
+      "coin": "BTC",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1795225190.999692,
+      "coin": "ADA",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
     }
   ],
-  "updated_at": 1795209720.5292664
+  "updated_at": 1795225190.2865682
 }
