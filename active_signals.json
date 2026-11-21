@@ -1,1 +1,95 @@
-{}
+{
+  "ETH-USDT-SWAPSHORT1795250805-FC427AA4": {
+    "instId": "ETH-USDT-SWAP",
+    "side": "SHORT",
+    "tf": "15m",
+    "entry": 1626.13,
+    "sl": 1649.2858,
+    "tp1": 1625.9682,
+    "tp2": 1625.9682,
+    "tp3": 1625.9682,
+    "atr": 15.43720129,
+    "score": 81,
+    "grade": "A 強力 ⭐",
+    "detail": {
+      "trend": 0,
+      "rsi_value": 59.8,
+      "rsi": 25,
+      "ob": 20,
+      "fvg": 0,
+      "snr": 0,
+      "pa": 0,
+      "liq": 0,
+      "mom": 5,
+      "mtf": 15,
+      "mtf_desc": "1H=順 / 4H=順",
+      "weekly_penalty": 0,
+      "weekly_trend": "順週線 ✅",
+      "volume": 0,
+      "volume_ratio": 0.53,
+      "obv": 5,
+      "vwap": 1700.7746,
+      "vwap_score": 5,
+      "bb_bandwidth": 0.08706,
+      "bb_pct_b": 0.752,
+      "bb_squeeze": false,
+      "bb_score": 0,
+      "rsi_div": "none",
+      "rsi_div_score": 0,
+      "macd": "MACD逆向⚠️",
+      "macd_score": -5,
+      "regime": "trend",
+      "adx": 36.7,
+      "atr_pct": 0.949,
+      "adx_bonus": 4,
+      "learning_notes": [
+        "rsishort:50-59 (n=88, 勝率 68%) → +1",
+        "fund:neutral (n=609, 勝率 69%) → +1",
+        "sess:europe (n=155, 勝率 69%) → +1",
+        "coin:ETH (n=28, 勝率 86%) → +2",
+        "coin_side:ETHSHORT (n=23, 勝率 96%) → +2",
+        "🧬 KNN：10 筆最相似訊號 → 勝 5 / 敗 4 (勝率 50%)"
+      ],
+      "learning_adjust": 7,
+      "tp_adjust_notes": [
+        "TP1 1591.3963→1625.9682（支撐 1622.7228）",
+        "TP2 1556.6626→1625.9682（支撐 1622.7228）",
+        "TP3 1510.3510→1625.9682（支撐 1622.7228）"
+      ]
+    },
+    "funding_rate": -2.70198215821e-05,
+    "mtf_snapshot": {
+      "1H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 44.4
+      },
+      "4H": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.8
+      },
+      "1W": {
+        "supertrend": -1,
+        "trend": "down",
+        "rsi": 33.1
+      }
+    },
+    "regime_snapshot": {
+      "regime": "trend",
+      "adx": 36.7,
+      "atr_pct": 0.949,
+      "volatile": false
+    },
+    "created": 1795250805.5903757,
+    "expires": 1795337205.5903761,
+    "order_id": "1795250805-FC427AA4",
+    "status": "ACTIVE",
+    "hit_tp1": false,
+    "hit_tp2": false,
+    "hit_tp3": false,
+    "activated_at": 1795250805.5904093,
+    "entry_message_id": 15680,
+    "last_checked_ts": 1795250805.5904093
+  }
+}
