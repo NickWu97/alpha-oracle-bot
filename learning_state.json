@@ -2,21 +2,21 @@
   "buckets": {
     "score:90+": {
       "win": 7,
-      "loss": 0,
+      "loss": 1,
       "be": 1,
-      "total": 8
+      "total": 9
     },
     "rsishort:40-49": {
       "win": 3,
-      "loss": 0,
+      "loss": 3,
       "be": 0,
-      "total": 3
+      "total": 6
     },
     "fund:neutral": {
       "win": 7,
-      "loss": 0,
+      "loss": 3,
       "be": 1,
-      "total": 8
+      "total": 11
     },
     "sess:asia_dawn": {
       "win": 7,
@@ -44,15 +44,15 @@
     },
     "coin:SOL": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin_side:SOLSHORT": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "coin:BNB": {
       "win": 1,
@@ -65,6 +65,42 @@
       "loss": 0,
       "be": 1,
       "total": 2
+    },
+    "sess:asia_day": {
+      "win": 0,
+      "loss": 3,
+      "be": 0,
+      "total": 3
+    },
+    "coin:ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:ETHSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "score:80-89": {
+      "win": 0,
+      "loss": 2,
+      "be": 0,
+      "total": 2
+    },
+    "coin:XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "coin_side:XRPSHORT": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
   "by_coin": {
@@ -76,17 +112,51 @@
     },
     "SOL": {
       "win": 3,
-      "loss": 0,
+      "loss": 1,
       "be": 0,
-      "total": 3
+      "total": 4
     },
     "BNB": {
       "win": 1,
       "loss": 0,
       "be": 1,
       "total": 2
+    },
+    "ETH": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
+    },
+    "XRP": {
+      "win": 0,
+      "loss": 1,
+      "be": 0,
+      "total": 1
     }
   },
-  "loss_reasons": [],
-  "updated_at": 1795553138.3970423
+  "loss_reasons": [
+    {
+      "ts": 1795578259.546962,
+      "coin": "ETH",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1795578261.2811916,
+      "coin": "SOL",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    },
+    {
+      "ts": 1795578262.9857326,
+      "coin": "XRP",
+      "side": "SHORT",
+      "code": "NORMAL_NOISE",
+      "title": "📊 正常波動"
+    }
+  ],
+  "updated_at": 1795578262.379111
 }
